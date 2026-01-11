@@ -28,4 +28,11 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final DriveMode driveMode = DriveMode.NORMAL;
+
+  public static enum DriveMode {
+    NORMAL,
+    DEMO
+  };
 }

@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -22,10 +22,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveConstants;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -207,7 +208,7 @@ public class DriveCommands {
                   double kS = (sumY * sumX2 - sumX * sumXY) / (n * sumX2 - sumX * sumX);
                   double kV = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
 
-                  NumberFormat formatter = new DecimalFormat("#0.00000");
+                  NumberFormat formatter = new DecimalFormat("#0.00000000");
                   System.out.println("********** Drive FF Characterization Results **********");
                   System.out.println("\tkS: " + formatter.format(kS));
                   System.out.println("\tkV: " + formatter.format(kV));
@@ -268,7 +269,7 @@ public class DriveCommands {
                       double wheelRadius =
                           (state.gyroDelta * DriveConstants.driveBaseRadius) / wheelDelta;
 
-                      NumberFormat formatter = new DecimalFormat("#0.000");
+                      NumberFormat formatter = new DecimalFormat("#0.00000000");
                       System.out.println(
                           "********** Wheel Radius Characterization Results **********");
                       System.out.println(
@@ -288,5 +289,177 @@ public class DriveCommands {
     double[] positions = new double[4];
     Rotation2d lastAngle = Rotation2d.kZero;
     double gyroDelta = 0.0;
+  }
+
+  public static Command linearWheelRadiusCharacterization(Drive drive) {
+    SlewRateLimiter limiter = new SlewRateLimiter(WHEEL_RADIUS_RAMP_RATE);
+    LinearWheelRadiusCharacterizationState state = new LinearWheelRadiusCharacterizationState();
+
+    return Commands.parallel(
+            // Drive control sequence
+            Commands.sequence(
+                // Reset acceleration limiter
+                Commands.runOnce(
+                    () -> {
+                      limiter.reset(0.0);
+                    }),
+
+                // Turn in place, accelerating up to full speed
+                Commands.run(
+                    () -> {
+                      double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
+                      drive.runVelocity(new ChassisSpeeds(speed, 0.0, 0.0));
+                    },
+                    drive)),
+
+            // Measurement sequence
+            Commands.sequence(
+                // Wait for modules to fully orient before starting measurement
+                Commands.waitSeconds(0.0),
+
+                // Record starting measurement
+                Commands.runOnce(
+                    () -> {
+                      state.positions = drive.getWheelRadiusCharacterizationPositions();
+                    })))
+
+        // When cancelled, calculate and print results
+        .finallyDo(
+            () -> {
+              double[] positions = drive.getWheelRadiusCharacterizationPositions();
+              double wheelDelta = 0.0;
+              for (int i = 0; i < 4; i++) {
+                wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+              }
+
+              NumberFormat formatter = new DecimalFormat("#0.000000");
+              System.out.println(
+                  "********** Linear Wheel Radius Characterization Results **********");
+              System.out.println("\tWheel Delta: " + formatter.format(wheelDelta) + " radians");
+            });
+  }
+
+  private static class LinearWheelRadiusCharacterizationState {
+    double[] positions = new double[4];
+  }
+
+  public static Command turnSpeedCharacterization(Drive drive) {
+    TurnSpeedCharacterizationState state = new TurnSpeedCharacterizationState();
+
+    double ROTATION_SPEED_MARGIN = 3;
+
+    return Commands.sequence(
+        // Wait until spinning at max speed
+        Commands.deadline(
+            Commands.waitUntil(
+                () ->
+                    Math.abs(
+                            drive.getChassisSpeeds().omegaRadiansPerSecond
+                                - drive.getMaxAngularSpeedRadPerSec())
+                        < ROTATION_SPEED_MARGIN),
+            Commands.run(
+                () -> {
+                  drive.runVelocity(
+                      new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                },
+                drive)),
+
+        // Measure rotation speed of robot while moving
+        Commands.sequence(
+            Commands.race(
+                Commands.waitSeconds(2.5),
+                Commands.run(
+                    () -> {
+                      drive.runVelocity(
+                          ChassisSpeeds.fromFieldRelativeSpeeds(
+                              drive.getMaxLinearSpeedMetersPerSec(),
+                              0,
+                              drive.getMaxAngularSpeedRadPerSec(),
+                              drive.getRotation()));
+                    },
+                    drive),
+                Commands.run(
+                    () -> {
+                      state.movingRotationSpeeds.add(drive.getYawVelocityRadPerSec());
+                    }))),
+
+        // Wait until spinning in place at max speed
+        Commands.deadline(
+            Commands.waitUntil(
+                () ->
+                    Math.abs(
+                            drive.getChassisSpeeds().omegaRadiansPerSecond
+                                - drive.getMaxAngularSpeedRadPerSec())
+                        < ROTATION_SPEED_MARGIN),
+            Commands.run(
+                () -> {
+                  drive.runVelocity(
+                      new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                },
+                drive)),
+
+        // Measure rotation speed of robot while stationary
+        Commands.race(
+                Commands.waitSeconds(5),
+                Commands.run(
+                    () -> {
+                      drive.runVelocity(
+                          new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
+                    },
+                    drive),
+                Commands.run(
+                    () -> {
+                      state.stationaryRotationSpeeds.add(drive.getYawVelocityRadPerSec());
+                    }))
+            .finallyDo(
+                () -> {
+                  drive.stop();
+                }),
+
+        // Stop driving and output values
+        Commands.runOnce(
+            () -> {
+              double movingAverageSpeed = 0.0;
+              for (double speed : state.movingRotationSpeeds) {
+                movingAverageSpeed += speed;
+              }
+              movingAverageSpeed /= state.movingRotationSpeeds.size();
+
+              double stationaryAverageSpeed = 0.0;
+              for (double speed : state.stationaryRotationSpeeds) {
+                stationaryAverageSpeed += speed;
+              }
+              stationaryAverageSpeed /= state.stationaryRotationSpeeds.size();
+
+              NumberFormat formatter = new DecimalFormat("#0.00000");
+              System.out.println("********** Turn Speed Characterization Results **********");
+              System.out.println(
+                  "\tRotation speed while moving: " + formatter.format(movingAverageSpeed));
+              System.out.println(
+                  "\tRotation speed while stationary: " + formatter.format(stationaryAverageSpeed));
+            },
+            drive));
+  }
+
+  private static class TurnSpeedCharacterizationState {
+    ArrayList<Double> movingRotationSpeeds = new ArrayList<Double>();
+    ArrayList<Double> stationaryRotationSpeeds = new ArrayList<Double>();
+  }
+
+  public static Command turnErrorCharacterization(Drive drive) {
+    return Commands.deadline(
+            new WaitCommand(60),
+            Commands.run(
+                () -> {
+                  drive.runVelocity(
+                      new ChassisSpeeds(0, 0, 0.8 * drive.getMaxAngularSpeedRadPerSec()));
+                },
+                drive))
+        .finallyDo(
+            () -> {
+              System.out.println(
+                  "Complete turns: "
+                      + Math.floor(drive.getRawRotation().getRadians() / (2 * Math.PI)));
+            });
   }
 }

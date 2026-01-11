@@ -38,13 +38,17 @@ public class GyroIOPigeon2 implements GyroIO {
     var yawClone = yaw.clone(); // Status signals are not thread-safe
     yawPositionQueue =
         SparkOdometryThread.getInstance()
-            .registerSignal(() -> yawClone.refresh().getValueAsDouble());
+            .registerSignal(
+                () ->
+                    yawClone.refresh().getValueAsDouble() / DriveConstants.pigeonYawPositionFactor);
   }
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity).equals(StatusCode.OK);
-    inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
+    inputs.rawYawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
+    inputs.yawPosition =
+        Rotation2d.fromDegrees(yaw.getValueAsDouble() / DriveConstants.pigeonYawPositionFactor);
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
 
     inputs.odometryYawTimestamps =

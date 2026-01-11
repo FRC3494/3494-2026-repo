@@ -20,7 +20,11 @@ public interface ModuleIO {
     public double driveCurrentAmps = 0.0;
 
     public boolean turnConnected = false;
+    public Rotation2d relativeRotationOffset = Rotation2d.kZero;
+    public Rotation2d rawRelativeTurnPosition = Rotation2d.kZero;
     public Rotation2d turnPosition = Rotation2d.kZero;
+    public Rotation2d rawAbsoluteTurnPosition = Rotation2d.kZero;
+    public Rotation2d absoluteTurnPosition = Rotation2d.kZero;
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
     public double turnCurrentAmps = 0.0;
@@ -44,4 +48,6 @@ public interface ModuleIO {
 
   /** Run the turn motor to the specified rotation. */
   public default void setTurnPosition(Rotation2d rotation) {}
+
+  public default void rezeroTurnEncoder() {}
 }

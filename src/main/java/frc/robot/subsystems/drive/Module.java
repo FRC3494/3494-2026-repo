@@ -35,6 +35,8 @@ public class Module {
     turnDisconnectedAlert =
         new Alert(
             "Disconnected turn motor on module " + Integer.toString(index) + ".", AlertType.kError);
+
+    rezeroTurnEncoder();
   }
 
   public void periodic() {
@@ -121,5 +123,9 @@ public class Module {
   /** Returns the module velocity in rad/sec. */
   public double getFFCharacterizationVelocity() {
     return inputs.driveVelocityRadPerSec;
+  }
+
+  public void rezeroTurnEncoder() {
+    io.rezeroTurnEncoder();
   }
 }

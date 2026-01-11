@@ -10,6 +10,7 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
+import choreo.trajectory.SwerveSample;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -19,6 +20,7 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -64,6 +66,10 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
+
+  private final PIDController xController = new PIDController(autoLinearKp, 0.0, 0.0);
+  private final PIDController yController = new PIDController(autoLinearKp, 0.0, 0.0);
+  private final PIDController headingController = new PIDController(autoAngularKp, 0.0, 0.0);
 
   public Drive(
       GyroIO gyroIO,
@@ -199,6 +205,25 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
   }
 
+  public void followTrajectory(SwerveSample sample) {
+    Logger.recordOutput("Odometry/TargetPose", sample.getPose());
+
+    // Get the current pose of the robot
+    Pose2d pose = getPose();
+
+    // Generate the next speeds for the robot
+    ChassisSpeeds speeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            sample.vx + xController.calculate(pose.getX(), sample.x),
+            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.omega
+                + headingController.calculate(pose.getRotation().getRadians(), sample.heading),
+            getRotation());
+
+    // Apply the generated speeds
+    runVelocity(speeds);
+  }
+
   /** Runs the drive in a straight line with the specified drive output. */
   public void runCharacterization(double output) {
     for (int i = 0; i < 4; i++) {
@@ -257,7 +282,7 @@ public class Drive extends SubsystemBase {
 
   /** Returns the measured chassis speeds of the robot. */
   @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-  private ChassisSpeeds getChassisSpeeds() {
+  public ChassisSpeeds getChassisSpeeds() {
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -290,6 +315,14 @@ public class Drive extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  public Rotation2d getRawRotation() {
+    return rawGyroRotation;
+  }
+
+  public double getYawVelocityRadPerSec() {
+    return gyroInputs.yawVelocityRadPerSec;
+  }
+
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
@@ -306,11 +339,39 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return maxSpeedMetersPerSec;
+    switch (Constants.driveMode) {
+      case DEMO -> {
+        return maxSpeedMetersPerSec * 0.15;
+      }
+      default -> {
+        return maxSpeedMetersPerSec;
+      }
+    }
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    return maxSpeedMetersPerSec / driveBaseRadius;
+    double speed =
+        switch (Constants.driveMode) {
+          case DEMO -> (maxSpeedMetersPerSec / driveBaseRadius) * 0.15;
+          default -> maxSpeedMetersPerSec / driveBaseRadius;
+        };
+
+    return speed * maxAngularSpeedFactor;
+  }
+
+  public void rezeroTurnEncoders() {
+    for (var module : modules) {
+      module.rezeroTurnEncoder();
+    }
+  }
+
+  public void rezeroGyro() {
+    if (DriverStation.getAlliance().isPresent()
+        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
+    } else {
+      poseEstimator.resetRotation(Rotation2d.kZero);
+    }
   }
 }
