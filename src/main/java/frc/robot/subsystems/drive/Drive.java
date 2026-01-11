@@ -122,6 +122,7 @@ public class Drive extends SubsystemBase {
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
   }
 
+  // @codescene (disable: "Bumpy Road Ahead", disable: "Complex Method")
   @Override
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data

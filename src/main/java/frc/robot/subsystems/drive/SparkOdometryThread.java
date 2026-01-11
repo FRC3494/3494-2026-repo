@@ -52,6 +52,7 @@ public class SparkOdometryThread {
   }
 
   /** Registers a Spark signal to be read from the thread. */
+  // @codescene (disable: "Code Duplication")
   public Queue<Double> registerSignal(SparkBase spark, DoubleSupplier signal) {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
     Drive.odometryLock.lock();
@@ -79,6 +80,7 @@ public class SparkOdometryThread {
   }
 
   /** Returns a new queue that returns timestamp values for each sample. */
+  // @codescene (disable: "Code Duplication")
   public Queue<Double> makeTimestampQueue() {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
     Drive.odometryLock.lock();
@@ -90,6 +92,7 @@ public class SparkOdometryThread {
     return queue;
   }
 
+  // @codescene (disable: "Bumpy Road Ahead")
   private void run() {
     // Save new data to queues
     Drive.odometryLock.lock();

@@ -1,3 +1,5 @@
+// @codescene (disable-all)
+
 // Copyright (c) 2023-2026 Gold87 and other Elastic contributors
 // This software can be modified and/or shared under the terms
 // defined by the Elastic license:

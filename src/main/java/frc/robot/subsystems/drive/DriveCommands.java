@@ -342,6 +342,7 @@ public class DriveCommands {
     double[] positions = new double[4];
   }
 
+  // @codescene (disable: "Large Method")
   public static Command turnSpeedCharacterization(Drive drive) {
     TurnSpeedCharacterizationState state = new TurnSpeedCharacterizationState();
 

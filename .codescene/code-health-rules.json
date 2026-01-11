@@ -1,0 +1,14 @@
+{
+  "usage": "Code Health",
+  "rule_sets": [
+    {
+      "matching_content_path": "src/main/java/frc/robot/util/Elastic.java",
+      "rules": [
+        {
+          "name": "Primitive Obsession",
+          "weight": 0
+        }
+      ]
+    }
+  ]
+}
