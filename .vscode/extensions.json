@@ -5,6 +5,7 @@
     "streetsidesoftware.code-spell-checker",
     "vscjava.vscode-java-pack",
     "oderwat.indent-rainbow",
-    "wpilibsuite.vscode-wpilib"
+    "wpilibsuite.vscode-wpilib",
+    "emeraldwalk.runonsave"
   ]
 }

@@ -69,5 +69,13 @@
   },
   "[java]": {
     "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
+  },
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": ".*\\.java$",
+        "cmd": "${workspaceFolder}\\gradlew spotlessApply -Dorg.gradle.java.home=\"C:\\Users\\Public\\wpilib\\2026\\jdk\""
+      }
+    ]
   }
 }
