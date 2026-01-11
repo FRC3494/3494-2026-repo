@@ -1,5 +1,10 @@
 {
   "recommendations": [
-    "richardwillis.vscode-spotless-gradle"
+    "richardwillis.vscode-spotless-gradle",
+    "aaron-bond.better-comments",
+    "streetsidesoftware.code-spell-checker",
+    "vscjava.vscode-java-pack",
+    "oderwat.indent-rainbow",
+    "wpilibsuite.vscode-wpilib"
   ]
 }
