@@ -9,6 +9,27 @@
           "weight": 0
         }
       ]
+    },
+    {
+      "matching_content_path": "src/main/java/frc/robot/util/LimelightHelpers.java",
+      "rules": [
+        {
+          "name": "Low Cohesion",
+          "weight": 0
+        },
+        {
+          "name": "Constructor Over-Injection",
+          "weight": 0
+        },
+        {
+          "name": "Primitive Obsession",
+          "weight": 0
+        },
+        {
+          "name": "String Heavy Function Arguments",
+          "weight": 0
+        }
+      ]
     }
   ]
 }
