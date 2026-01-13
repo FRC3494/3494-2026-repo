@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.ElasticTab;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -102,8 +103,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
 
-    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> Elastic.selectTab("Autonomous")));
-    RobotModeTriggers.teleop().onTrue(Commands.runOnce(() -> Elastic.selectTab("Teleoperated")));
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
+    RobotModeTriggers.teleop().onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
 
     // Configure the button bindings
     configureButtonBindings();

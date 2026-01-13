@@ -42,6 +42,12 @@ public final class Constants {
     DEMO
   };
 
+  public static enum ElasticTab {
+    Teleoperated,
+    Autonomous,
+    Testing
+  }
+
   public static class OIConstants {
     public static final int primaryControllerPort = 0;
     public static final int leftButtonBoardPort = 1;
