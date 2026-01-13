@@ -8,7 +8,7 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.*;
 
 import choreo.trajectory.SwerveSample;
 import com.pathplanner.lib.auto.AutoBuilder;

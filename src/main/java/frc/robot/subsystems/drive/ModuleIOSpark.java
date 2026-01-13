@@ -7,7 +7,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.PersistMode;
@@ -261,7 +261,7 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void setTurnPosition(Rotation2d rotation) {
     double setpoint =
-        DriveConstants.turnMotorReduction
+        turnMotorReduction
             * MathUtil.inputModulus(
                 rotation.plus(relativeEncoderOffset).getRadians(),
                 turnPIDMinInput,
@@ -272,8 +272,7 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void rezeroTurnEncoder() {
     relativeEncoderOffset =
-        Rotation2d.fromRadians(
-                turnRelativeEncoder.getPosition() / DriveConstants.turnMotorReduction)
+        Rotation2d.fromRadians(turnRelativeEncoder.getPosition() / turnMotorReduction)
             .minus(getAbsoluteTurnPosition());
   }
 
@@ -287,8 +286,7 @@ public class ModuleIOSpark implements ModuleIO {
   }
 
   public Rotation2d getTurnPosition() {
-    return Rotation2d.fromRadians(
-            turnRelativeEncoder.getPosition() / DriveConstants.turnMotorReduction)
+    return Rotation2d.fromRadians(turnRelativeEncoder.getPosition() / turnMotorReduction)
         .minus(relativeEncoderOffset);
   }
 }

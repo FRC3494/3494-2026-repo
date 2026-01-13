@@ -7,7 +7,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -38,17 +38,14 @@ public class GyroIOPigeon2 implements GyroIO {
     var yawClone = yaw.clone(); // Status signals are not thread-safe
     yawPositionQueue =
         SparkOdometryThread.getInstance()
-            .registerSignal(
-                () ->
-                    yawClone.refresh().getValueAsDouble() / DriveConstants.pigeonYawPositionFactor);
+            .registerSignal(() -> yawClone.refresh().getValueAsDouble() / pigeonYawPositionFactor);
   }
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity).equals(StatusCode.OK);
     inputs.rawYawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
-    inputs.yawPosition =
-        Rotation2d.fromDegrees(yaw.getValueAsDouble() / DriveConstants.pigeonYawPositionFactor);
+    inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble() / pigeonYawPositionFactor);
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
 
     inputs.odometryYawTimestamps =
