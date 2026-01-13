@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static frc.robot.Constants.OIConstants.*;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -7,9 +9,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public final class OI {
   private static EventLoop eventLoop = new EventLoop();
-  private static CommandXboxController primaryController = new CommandXboxController(0);
-  private static Joystick leftButtonBoard = new Joystick(1);
-  private static Joystick rightButtonBoard = new Joystick(2);
+  private static CommandXboxController primaryController =
+      new CommandXboxController(primaryControllerPort);
+  private static Joystick leftButtonBoard = new Joystick(leftButtonBoardPort);
+  private static Joystick rightButtonBoard = new Joystick(rightButtonBoardPort);
 
   public static void update() {
     eventLoop.poll();

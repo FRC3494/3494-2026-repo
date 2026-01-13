@@ -42,6 +42,12 @@ public final class Constants {
     DEMO
   };
 
+  public static class OIConstants {
+    public static final int primaryControllerPort = 0;
+    public static final int leftButtonBoardPort = 1;
+    public static final int rightButtonBoardPort = 2;
+  }
+
   public static class DriveConstants {
     /*
     ! Things that need to be configured in addition to AdvantageKit Swerve Template configs
