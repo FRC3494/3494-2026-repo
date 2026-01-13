@@ -116,17 +116,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // ==================== DRIVE ====================
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            OI.Drive::joystickDriveX,
+            OI.Drive::joystickDriveY,
+            OI.Drive::joystickDriveOmega));
 
     // Lock to 0° when A button is held
-    controller
-        .a()
+    OI.Drive.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -135,18 +135,14 @@ public class RobotContainer {
                 () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    OI.Drive.stopWithX().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
+    // Reset gyro to 0° when Back button is pressed
+    OI.Drive.resetYaw().onTrue(Commands.runOnce(drive::resetYaw).ignoringDisable(true));
+
+    // Rezero swerve turn relative encoders off of absolute encoders
+    OI.Drive.rezeroSwerveTurnEncoders()
+        .onTrue(Commands.runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
   }
 
   /**

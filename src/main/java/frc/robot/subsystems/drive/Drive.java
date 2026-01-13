@@ -367,7 +367,7 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  public void rezeroGyro() {
+  public void resetYaw() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
       poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
