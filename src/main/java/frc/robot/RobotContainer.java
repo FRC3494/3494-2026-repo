@@ -99,8 +99,10 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
 
-    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
-    RobotModeTriggers.teleop().onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
+    RobotModeTriggers.autonomous()
+        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
+    RobotModeTriggers.teleop()
+        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -126,10 +128,7 @@ public class RobotContainer {
     OI.Drive.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                OI.Drive::joystickDriveX,
-                OI.Drive::joystickDriveY,
-                () -> Rotation2d.kZero));
+                drive, OI.Drive::joystickDriveX, OI.Drive::joystickDriveY, () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
     OI.Drive.stopWithX().onTrue(Commands.runOnce(drive::stopWithX, drive));

@@ -8,6 +8,4 @@ public class RobotCommands {
   public RobotCommands(Drive drive) {
     this.drive = drive;
   }
-
-  
 }
