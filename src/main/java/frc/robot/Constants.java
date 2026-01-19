@@ -61,8 +61,8 @@ public final class Constants {
     public static final int backLeftTurnCanId = 4;
     public static final int backRightTurnCanId = 8;
 
-    public static final int shooterLeftCanId = 0;
-    public static final int shooterRightCanId = 0;
+    public static final int shooterLeftCanId = 10;
+    public static final int shooterRightCanId = 11;
   }
 
   public static class OIConstants {
@@ -175,5 +175,18 @@ public final class Constants {
     // Auto config
     public static final double autoLinearKp = 10.0;
     public static final double autoAngularKp = 7.5;
+  }
+
+  public static final class ShooterConstants {
+    public static final boolean shooterInverted = false;
+    public static final int shooterCurrentLimit = 20;
+
+    public static final double shooterKp = 0.0;
+    public static final double shooterKi = 0.0;
+    public static final double shooterKd = 0.0;
+
+    public static final double shooterKs = 0.0;
+    public static final double shooterKv = 0.0;
+    public static final double shooterKa = 0.0;
   }
 }

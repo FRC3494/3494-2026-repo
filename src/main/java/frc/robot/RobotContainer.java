@@ -24,6 +24,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.Elastic;
 
 /**
@@ -35,6 +36,7 @@ import frc.robot.util.Elastic;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Shooter shooter;
 
   // Dashboard inputs
   private final AutoChooser autoChooser;
@@ -75,6 +77,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+
+    shooter = new Shooter();
 
     // Set up auto routines
     autoChooser = new AutoChooser();
