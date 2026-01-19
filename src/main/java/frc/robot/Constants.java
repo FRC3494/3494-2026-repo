@@ -48,6 +48,23 @@ public final class Constants {
     Testing
   }
 
+  public static class RobotMap {
+    public static final int pigeonCanId = 9;
+
+    public static final int frontLeftDriveCanId = 1;
+    public static final int frontRightDriveCanId = 5;
+    public static final int backLeftDriveCanId = 3;
+    public static final int backRightDriveCanId = 7;
+
+    public static final int frontLeftTurnCanId = 2;
+    public static final int frontRightTurnCanId = 6;
+    public static final int backLeftTurnCanId = 4;
+    public static final int backRightTurnCanId = 8;
+
+    public static final int shooterLeftCanId = 0;
+    public static final int shooterRightCanId = 0;
+  }
+
   public static class OIConstants {
     public static final int primaryControllerPort = 0;
     public static final int leftButtonBoardPort = 1;
@@ -87,19 +104,6 @@ public final class Constants {
     public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
     public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
     public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
-
-    // Device CAN IDs
-    public static final int pigeonCanId = 9;
-
-    public static final int frontLeftDriveCanId = 1;
-    public static final int frontRightDriveCanId = 5;
-    public static final int backLeftDriveCanId = 3;
-    public static final int backRightDriveCanId = 7;
-
-    public static final int frontLeftTurnCanId = 2;
-    public static final int frontRightTurnCanId = 6;
-    public static final int backLeftTurnCanId = 4;
-    public static final int backRightTurnCanId = 8;
 
     // Drive motor configuration
     public static final boolean driveInverted = false;
