@@ -30,6 +30,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants.RobotMap;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -77,20 +78,20 @@ public class ModuleIOSpark implements ModuleIO {
     driveSpark =
         new SparkFlex(
             switch (module) {
-              case 0 -> frontLeftDriveCanId;
-              case 1 -> frontRightDriveCanId;
-              case 2 -> backLeftDriveCanId;
-              case 3 -> backRightDriveCanId;
+              case 0 -> RobotMap.frontLeftDriveCanId;
+              case 1 -> RobotMap.frontRightDriveCanId;
+              case 2 -> RobotMap.backLeftDriveCanId;
+              case 3 -> RobotMap.backRightDriveCanId;
               default -> 0;
             },
             MotorType.kBrushless);
     turnSpark =
         new SparkMax(
             switch (module) {
-              case 0 -> frontLeftTurnCanId;
-              case 1 -> frontRightTurnCanId;
-              case 2 -> backLeftTurnCanId;
-              case 3 -> backRightTurnCanId;
+              case 0 -> RobotMap.frontLeftTurnCanId;
+              case 1 -> RobotMap.frontRightTurnCanId;
+              case 2 -> RobotMap.backLeftTurnCanId;
+              case 3 -> RobotMap.backRightTurnCanId;
               default -> 0;
             },
             MotorType.kBrushless);
@@ -99,10 +100,10 @@ public class ModuleIOSpark implements ModuleIO {
     turnAbsoluteEncoder =
         new AnalogInput(
             switch (module) {
-              case 0 -> frontLeftTurnCanId;
-              case 1 -> frontRightTurnCanId;
-              case 2 -> backLeftTurnCanId;
-              case 3 -> backRightTurnCanId;
+              case 0 -> RobotMap.frontLeftTurnCanId;
+              case 1 -> RobotMap.frontRightTurnCanId;
+              case 2 -> RobotMap.backLeftTurnCanId;
+              case 3 -> RobotMap.backRightTurnCanId;
               default -> 0;
             });
     driveController = driveSpark.getClosedLoopController();

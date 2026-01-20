@@ -48,6 +48,23 @@ public final class Constants {
     Testing
   }
 
+  public static class RobotMap {
+    public static final int pigeonCanId = 9;
+
+    public static final int frontLeftDriveCanId = 1;
+    public static final int frontRightDriveCanId = 5;
+    public static final int backLeftDriveCanId = 3;
+    public static final int backRightDriveCanId = 7;
+
+    public static final int frontLeftTurnCanId = 2;
+    public static final int frontRightTurnCanId = 6;
+    public static final int backLeftTurnCanId = 4;
+    public static final int backRightTurnCanId = 8;
+
+    public static final int shooterLeftCanId = 10;
+    public static final int shooterRightCanId = 11;
+  }
+
   public static class OIConstants {
     public static final int primaryControllerPort = 0;
     public static final int leftButtonBoardPort = 1;
@@ -83,23 +100,10 @@ public final class Constants {
         };
 
     // Zeroed rotation values for each module, see setup instructions
-    public static final Rotation2d frontLeftZeroRotation = new Rotation2d(0.0);
-    public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);
-    public static final Rotation2d backLeftZeroRotation = new Rotation2d(0.0);
-    public static final Rotation2d backRightZeroRotation = new Rotation2d(0.0);
-
-    // Device CAN IDs
-    public static final int pigeonCanId = 9;
-
-    public static final int frontLeftDriveCanId = 1;
-    public static final int frontRightDriveCanId = 5;
-    public static final int backLeftDriveCanId = 3;
-    public static final int backRightDriveCanId = 7;
-
-    public static final int frontLeftTurnCanId = 2;
-    public static final int frontRightTurnCanId = 6;
-    public static final int backLeftTurnCanId = 4;
-    public static final int backRightTurnCanId = 8;
+    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(0.0);
+    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(0.0);
+    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(0.0);
+    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(0.0);
 
     // Drive motor configuration
     public static final boolean driveInverted = false;
@@ -171,5 +175,18 @@ public final class Constants {
     // Auto config
     public static final double autoLinearKp = 10.0;
     public static final double autoAngularKp = 7.5;
+  }
+
+  public static final class ShooterConstants {
+    public static final boolean shooterInverted = false;
+    public static final int shooterCurrentLimit = 20;
+
+    public static final double shooterKp = 0.0;
+    public static final double shooterKi = 0.0;
+    public static final double shooterKd = 0.0;
+
+    public static final double shooterKs = 0.0;
+    public static final double shooterKv = 0.0;
+    public static final double shooterKa = 0.0;
   }
 }

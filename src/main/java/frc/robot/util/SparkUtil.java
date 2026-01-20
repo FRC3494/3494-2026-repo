@@ -7,12 +7,15 @@
 
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class SparkUtil {
   /** Stores whether any error was has been detected by other utility methods. */
@@ -52,5 +55,30 @@ public class SparkUtil {
         sparkStickyFault = true;
       }
     }
+  }
+
+  public static void logMotorStats(String key, SparkBase spark, boolean absoluteEncoder) {
+    if (absoluteEncoder) {
+      Logger.recordOutput(
+          key + "/Position", Rotations.of(spark.getAbsoluteEncoder().getPosition()));
+      Logger.recordOutput(key + "/Velocity", RPM.of(spark.getAbsoluteEncoder().getVelocity()));
+    } else {
+      Logger.recordOutput(key + "/Position", Rotations.of(spark.getEncoder().getPosition()));
+      Logger.recordOutput(key + "/Velocity", RPM.of(spark.getEncoder().getVelocity()));
+    }
+
+    Logger.recordOutput(key + "/AppliedOutput", spark.getAppliedOutput());
+    Logger.recordOutput(key + "/BusVoltage", Volts.of(spark.getBusVoltage()));
+    Logger.recordOutput(key + "/Temp", Celsius.of(spark.getMotorTemperature()));
+
+    // TODO: make work later?
+    // var stats = new java.util.HashMap<String, Measure>();
+    // stats.put("Temp", Celsius.of(spark.getMotorTemperature()));
+    // stats.put("BusVoltage", Volts.of(spark.getBusVoltage()));
+    // stats.put("AppliedOutput", spark.getAppliedOutput());
+
+    // for (var entry : stats.entrySet()) {
+    //   Logger.recordOutput(key + "/" + entry.getKey(), entry.getValue());
+    // }
   }
 }
