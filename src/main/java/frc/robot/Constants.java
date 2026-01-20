@@ -63,6 +63,9 @@ public final class Constants {
 
     public static final int shooterLeftCanId = 10;
     public static final int shooterRightCanId = 11;
+
+    public static final int hopperSpindexerCanId = 12;
+    public static final int hopperFeederCanId = 13;
   }
 
   public static class OIConstants {
@@ -188,5 +191,33 @@ public final class Constants {
     public static final double shooterKs = 0.0;
     public static final double shooterKv = 0.0;
     public static final double shooterKa = 0.0;
+  }
+
+  public static final class HopperConstants {
+    // spindexer constants
+    public static final boolean hopperSpindexerInverted = false;
+    public static final int hopperSpindexerCurrentLimit = 20;
+
+    public static final double spindexerKp = 0.0;
+    public static final double spindexerKi = 0.0;
+    public static final double spindexerKd = 0.0;
+
+    // spindexer sva constants
+    // public static final double spindexerKs = 0.0;
+    // public static final double spindexerKv = 0.0;
+    // public static final double spindexerKa = 0.0;
+
+    // feeder constants
+    public static final boolean hopperFeederInverted = true;
+    public static final int hopperFeederCurrentLimit = 20;
+
+    public static final double feederKp = 0.0;
+    public static final double feederKi = 0.0;
+    public static final double feederKd = 0.0;
+
+    // feeder sva constants
+    // public static final double feederKs = 0.0;
+    // public static final double feederKv = 0.0;
+    // public static final double feederKa = 0.0;
   }
 }
