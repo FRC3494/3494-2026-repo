@@ -38,6 +38,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Shooter shooter;
+  private final Hopper hopper;
 
   // Dashboard inputs
   private final AutoChooser autoChooser;
@@ -79,9 +80,8 @@ public class RobotContainer {
         break;
     }
 
-    Shooter shooter = new Shooter();
-
-    Hopper hopper = new Hopper();
+    shooter = new Shooter();
+    hopper = new Hopper();
 
     // Set up auto routines
     autoChooser = new AutoChooser();
