@@ -14,10 +14,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Hopper extends SubsystemBase {
   private SparkMax spindexerMotor;
   private SparkMax feederMotor;
+
+  @AutoLogOutput private AngularVelocity spindexerSetpointRPM = RPM.of(0.0);
+  @AutoLogOutput private AngularVelocity feederSetpointRPM = RPM.of(0.0);
 
   public Hopper() {
     spindexerMotor = new SparkMax(RobotMap.hopperSpindexerCanId, MotorType.kBrushless);
@@ -53,12 +57,14 @@ public class Hopper extends SubsystemBase {
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {
+    spindexerSetpointRPM = velocity;
     spindexerMotor
         .getClosedLoopController()
         .setSetpoint(velocity.in(RPM), ControlType.kMAXMotionVelocityControl);
   }
 
   public void setFeederVelocity(AngularVelocity velocity) {
+    feederSetpointRPM = velocity;
     feederMotor
         .getClosedLoopController()
         .setSetpoint(velocity.in(RPM), ControlType.kMAXMotionVelocityControl);
