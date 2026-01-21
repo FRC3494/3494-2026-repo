@@ -28,10 +28,9 @@ public class Hopper extends SubsystemBase {
     spindexerConfig
         .smartCurrentLimit(hopperSpindexerCurrentLimit)
         .idleMode(IdleMode.kCoast)
-        .inverted(hopperSpindexerInverted)
-        // .feedForward.sva(spindexerKs, spindexerKv, spindexerKa)
-        .closedLoop
-        .pid(spindexerKp, spindexerKi, spindexerKd);
+        .inverted(hopperSpindexerInverted);
+    // spindexerConfig.closedLoop.feedForward.sva(spindexerKs, spindexerKv, spindexerKa);
+    spindexerConfig.closedLoop.pid(spindexerKp, spindexerKi, spindexerKd);
     spindexerMotor.configure(
         spindexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -40,10 +39,9 @@ public class Hopper extends SubsystemBase {
     feederConfig
         .smartCurrentLimit(hopperFeederCurrentLimit)
         .idleMode(IdleMode.kCoast)
-        .inverted(hopperFeederInverted)
-        // .feedForward.sva(feederKs, feederKv, feederKa)
-        .closedLoop
-        .pid(feederKp, feederKi, feederKd);
+        .inverted(hopperFeederInverted);
+    // feederConfig.closedLoop.feedForward.sva(feederKs, feederKv, feederKa);
+    feederConfig.closedLoop.pid(feederKp, feederKi, feederKd);
     feederMotor.configure(
         feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
