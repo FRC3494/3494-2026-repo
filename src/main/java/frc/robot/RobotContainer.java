@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 
 /**
@@ -37,6 +39,7 @@ import frc.robot.util.Elastic;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final AprilTagVision aprilTagVision;
   private final Shooter shooter;
   private final Hopper hopper;
 
@@ -79,6 +82,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+
+    aprilTagVision = new AprilTagVision(RobotMap.aprilTagLimelightNames, drive);
 
     shooter = new Shooter();
     hopper = new Hopper();

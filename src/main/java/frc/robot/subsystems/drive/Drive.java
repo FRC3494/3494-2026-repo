@@ -338,6 +338,10 @@ public class Drive extends SubsystemBase {
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+    poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+  }
+
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {

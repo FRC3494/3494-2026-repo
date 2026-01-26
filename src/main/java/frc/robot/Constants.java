@@ -7,12 +7,15 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -71,6 +74,10 @@ public final class Constants {
 
     public static final int hopperSpindexerCanId = 12;
     public static final int hopperFeederCanId = 13;
+
+    public static final String[] aprilTagLimelightNames = {
+      "limelight-right", "limelight-left", "limelight-swerve", "limelight-barge", "limelight-coral"
+    };
   }
 
   public static class OIConstants {
@@ -183,6 +190,10 @@ public final class Constants {
     // Auto config
     public static final double autoLinearKp = 10.0;
     public static final double autoAngularKp = 7.5;
+  }
+
+  public static final class VisionConstants {
+    public static final Distance maxTagDistance = Meters.of(5.0);
   }
 
   public static final class ShooterConstants {
