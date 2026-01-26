@@ -100,10 +100,10 @@ public class ModuleIOSpark implements ModuleIO {
     turnAbsoluteEncoder =
         new AnalogInput(
             switch (module) {
-              case 0 -> RobotMap.frontLeftTurnCanId;
-              case 1 -> RobotMap.frontRightTurnCanId;
-              case 2 -> RobotMap.backLeftTurnCanId;
-              case 3 -> RobotMap.backRightTurnCanId;
+              case 0 -> RobotMap.frontLeftAbsEncoderCanId;
+              case 1 -> RobotMap.frontRightAbsEncoderCanId;
+              case 2 -> RobotMap.backLeftAbsEncoderCanId;
+              case 3 -> RobotMap.backRightAbsEncoderCanId;
               default -> 0;
             });
     driveController = driveSpark.getClosedLoopController();
