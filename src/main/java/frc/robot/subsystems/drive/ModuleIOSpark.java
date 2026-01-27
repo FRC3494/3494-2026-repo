@@ -21,10 +21,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -86,7 +84,7 @@ public class ModuleIOSpark implements ModuleIO {
             },
             MotorType.kBrushless);
     turnSpark =
-        new SparkMax(
+        new SparkFlex(
             switch (module) {
               case 0 -> RobotMap.frontLeftTurnCanId;
               case 1 -> RobotMap.frontRightTurnCanId;
@@ -144,7 +142,7 @@ public class ModuleIOSpark implements ModuleIO {
     tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
 
     // Configure turn motor
-    var turnConfig = new SparkMaxConfig();
+    var turnConfig = new SparkFlexConfig();
     turnConfig
         .inverted(turnInverted)
         .idleMode(IdleMode.kBrake)
