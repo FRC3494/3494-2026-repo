@@ -121,7 +121,7 @@ public final class Constants {
     public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(5.934);
 
     // Drive motor configuration
-    public static final boolean driveInverted = false;
+    public static final boolean driveInverted = true;
     public static final int driveMotorCurrentLimit = 50;
     public static final double wheelRadiusMeters = Units.inchesToMeters(2.389129574685109);
     public static final double driveMotorReduction =
