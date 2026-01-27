@@ -220,7 +220,7 @@ public class ModuleIOSpark implements ModuleIO {
     ifOk(turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
     inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault);
     inputs.relativeRotationOffset = relativeEncoderOffset;
-    inputs.rawRelativeTurnPosition = Rotation2d.fromRadians(turnRelativeEncoder.getPosition());
+    inputs.rawRelativeTurnPosition = getRawRelativeTurnPosition();
     inputs.rawAbsoluteTurnPosition = getRawAbsoluteTurnPosition();
     inputs.absoluteTurnPosition = getAbsoluteTurnPosition();
 
@@ -264,7 +264,10 @@ public class ModuleIOSpark implements ModuleIO {
     double setpoint =
         turnMotorReduction
             * MathUtil.inputModulus(
-                rotation.plus(relativeEncoderOffset).getRadians(),
+                rotation
+                    .plus(relativeEncoderOffset)
+                    .times(turnRelEncoderInverted ? -1 : 1)
+                    .getRadians(),
                 turnPIDMinInput,
                 turnPIDMaxInput);
     turnController.setSetpoint(setpoint, ControlType.kPosition);
@@ -272,9 +275,7 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void rezeroTurnEncoder() {
-    relativeEncoderOffset =
-        Rotation2d.fromRadians(turnRelativeEncoder.getPosition() / turnMotorReduction)
-            .minus(getAbsoluteTurnPosition());
+    relativeEncoderOffset = getRawRelativeTurnPosition().minus(getAbsoluteTurnPosition());
   }
 
   public Rotation2d getRawAbsoluteTurnPosition() {
@@ -283,11 +284,16 @@ public class ModuleIOSpark implements ModuleIO {
   }
 
   public Rotation2d getAbsoluteTurnPosition() {
-    return getRawAbsoluteTurnPosition().minus(zeroRotation);
+    return getRawAbsoluteTurnPosition().minus(zeroRotation).times(turnAbsEncoderInverted ? -1 : 1);
+  }
+
+  public Rotation2d getRawRelativeTurnPosition() {
+    return Rotation2d.fromRadians(
+            MathUtil.angleModulus(turnRelativeEncoder.getPosition() / turnMotorReduction))
+        .times(turnRelEncoderInverted ? -1 : 1);
   }
 
   public Rotation2d getTurnPosition() {
-    return Rotation2d.fromRadians(turnRelativeEncoder.getPosition() / turnMotorReduction)
-        .minus(relativeEncoderOffset);
+    return getRawRelativeTurnPosition().minus(relativeEncoderOffset);
   }
 }
