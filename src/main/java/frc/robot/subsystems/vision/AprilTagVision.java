@@ -31,7 +31,12 @@ public class AprilTagVision extends SubsystemBase {
           0,
           0);
 
-      PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+      PoseEstimate poseEstimate;
+      if (false) {
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+      } else {
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+      }
 
       boolean validMeasurement =
           poseEstimate != null
