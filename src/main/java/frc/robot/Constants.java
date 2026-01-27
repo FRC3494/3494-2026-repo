@@ -153,7 +153,8 @@ public final class Constants {
     public static final DCMotor turnGearbox = DCMotor.getNeo550(1);
 
     // Turn encoder configuration
-    public static final boolean turnEncoderInverted = true;
+    public static final boolean turnAbsEncoderInverted = false;
+    public static final boolean turnRelEncoderInverted = true;
     public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
