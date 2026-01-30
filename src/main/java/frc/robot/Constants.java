@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -195,6 +196,9 @@ public final class Constants {
 
   public static final class VisionConstants {
     public static final Distance maxTagDistance = Meters.of(5.0);
+
+    public static final double maxDistanceStdDev = 998999;
+    public static final Angle maxAngleStdDev = Degrees.of(999999);
   }
 
   public static final class ShooterConstants {
