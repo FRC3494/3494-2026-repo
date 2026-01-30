@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.VisionConstants.*;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,7 +42,7 @@ public class AprilTagVision extends SubsystemBase {
       boolean validMeasurement =
           poseEstimate != null
               && poseEstimate.tagCount > 0
-              && poseEstimate.avgTagDist < VisionConstants.maxTagDistance.in(Meters);
+              && poseEstimate.avgTagDist < maxTagDistance.in(Meters);
 
       if (validMeasurement) {
         drive.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
