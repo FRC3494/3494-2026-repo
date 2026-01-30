@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -56,5 +57,10 @@ public class GyroIOPigeon2 implements GyroIO {
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
+  }
+
+  @Override
+  public void setYaw(Rotation2d yaw) {
+    pigeon.setYaw(Degrees.of(yaw.getDegrees()));
   }
 }

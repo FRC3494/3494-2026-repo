@@ -46,5 +46,9 @@ public final class OI {
     public static Trigger lockToForward() {
       return primaryController.a(eventLoop);
     }
+
+    public static Trigger resetYawPigeon() {
+      return primaryController.b(eventLoop);
+    }
   }
 }

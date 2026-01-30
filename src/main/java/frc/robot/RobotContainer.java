@@ -162,6 +162,8 @@ public class RobotContainer {
     // Rezero swerve turn relative encoders off of absolute encoders
     OI.Drive.rezeroSwerveTurnEncoders()
         .onTrue(Commands.runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
+
+    OI.Drive.resetYawPigeon().onTrue(Commands.runOnce(drive::resetYawPigeon).ignoringDisable(true));
   }
 
   /**
