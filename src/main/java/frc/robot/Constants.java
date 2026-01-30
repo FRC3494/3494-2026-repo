@@ -94,10 +94,6 @@ public final class Constants {
     * maxAngularSpeedFactor
        - Units: rad/sec
        - Divide max rotation speed when driving by max rotation speed while stationary
-
-    * pigeonYawPositionFactor
-       - Units: Unit: rad
-       - Divide measured yaw from Pigeon after 30 turns by expected reading after 30 turns
     */
 
     public static final double maxSpeedMetersPerSec = 4.8;
@@ -166,11 +162,6 @@ public final class Constants {
     public static final double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
-
-    // Pigeon configuration
-    // * Measured yaw (rad) after # of turns / # of turns
-    public static final double pigeonYawPositionFactor =
-        ((43 * 2 * Math.PI + 2.33861709845736) / (43 * 2 * Math.PI));
 
     // PathPlanner configuration
     public static final double robotMassKg = 74.088;
