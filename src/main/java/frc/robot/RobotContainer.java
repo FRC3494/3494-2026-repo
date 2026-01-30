@@ -146,7 +146,10 @@ public class RobotContainer {
     OI.Drive.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, OI.Drive::joystickDriveX, OI.Drive::joystickDriveY, () -> Rotation2d.kZero));
+                drive,
+                OI.Drive::joystickDriveX,
+                OI.Drive::joystickDriveY,
+                () -> Rotation2d.kPi.div(4)));
 
     // Switch to X pattern when X button is pressed
     OI.Drive.stopWithX().onTrue(Commands.runOnce(drive::stopWithX, drive));
