@@ -58,8 +58,8 @@ public class AprilTagVision extends SubsystemBase {
             //                 / (2 * Math.PI)));
             VecBuilder.fill(.1, .1, 9999999);
 
-        drive.addVisionMeasurement(
-            poseEstimate.pose, poseEstimate.timestampSeconds, measurementStdDevs);
+        // drive.addVisionMeasurement(
+        //     poseEstimate.pose, poseEstimate.timestampSeconds, measurementStdDevs);
       }
     }
   }
