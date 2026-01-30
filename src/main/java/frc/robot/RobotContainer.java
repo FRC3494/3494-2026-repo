@@ -83,13 +83,27 @@ public class RobotContainer {
     shooter = new Shooter();
     hopper = new Hopper();
 
+    RobotModeTriggers.autonomous()
+        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
+    RobotModeTriggers.teleop()
+        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
+
     // Set up auto routines
     autoChooser = new AutoChooser();
+    configureAutos();
 
+    // Configure the button bindings
+    configureButtonBindings();
+  }
+
+  private void configureAutos() {
     // Set up SysId routines
     autoChooser.addCmd(
-        "Drive Wheel Radius Characterization",
+        "Drive Wheel Radius Rotational Characterization",
         () -> DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addCmd(
+        "Drive Wheel Radius Linear Characterization",
+        () -> DriveCommands.linearWheelRadiusCharacterization(drive));
     autoChooser.addCmd(
         "Drive Simple FF Characterization", () -> DriveCommands.feedforwardCharacterization(drive));
     autoChooser.addCmd(
@@ -105,14 +119,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
-
-    RobotModeTriggers.autonomous()
-        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
-    RobotModeTriggers.teleop()
-        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
-
-    // Configure the button bindings
-    configureButtonBindings();
   }
 
   /**
