@@ -123,7 +123,7 @@ public final class Constants {
     // Drive motor configuration
     public static final boolean driveInverted = true;
     public static final int driveMotorCurrentLimit = 50;
-    public static final double wheelRadiusMeters = Units.inchesToMeters(2.389129574685109);
+    public static final double wheelRadiusMeters = Units.feetToMeters(27.25) / 126.411703;
     public static final double driveMotorReduction =
         (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2 Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
