@@ -11,6 +11,7 @@ import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -76,6 +77,9 @@ public class Robot extends LoggedRobot {
 
     // Enable Elastic layout download
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+
+    // Add command scheduler to dashboard
+    SmartDashboard.putData(CommandScheduler.getInstance());
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
