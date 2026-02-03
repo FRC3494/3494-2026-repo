@@ -27,7 +27,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 
@@ -41,7 +41,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
-  private final Shooter shooter;
+  private final Flywheel shooter;
   private final Hopper hopper;
 
   // Dashboard inputs
@@ -86,7 +86,7 @@ public class RobotContainer {
 
     aprilTagVision = new AprilTagVision(RobotMap.aprilTagLimelightNames, drive);
 
-    shooter = new Shooter();
+    shooter = new Flywheel();
     hopper = new Hopper();
 
     RobotModeTriggers.autonomous()

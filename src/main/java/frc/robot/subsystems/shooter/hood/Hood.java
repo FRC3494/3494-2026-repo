@@ -1,6 +1,6 @@
-package frc.robot.subsystems.turret;
+package frc.robot.subsystems.shooter.hood;
 
-import static frc.robot.Constants.TurretConstants.*;
+import static frc.robot.Constants.HoodConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -12,23 +12,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-public class Turret extends SubsystemBase {
-  private SparkMax turretMotor;
+public class Hood extends SubsystemBase {
+  private SparkMax hoodMotor;
 
-  @AutoLogOutput private Rotation2d turretSetpoint = Rotation2d.kZero;
+  @AutoLogOutput private Rotation2d hoodSetpoint = Rotation2d.kZero;
 
-  public Turret() {
-    turretMotor = new SparkMax(RobotMap.turretMotorCanId, MotorType.kBrushless);
+  public Hood() {
+    hoodMotor = new SparkMax(RobotMap.hoodMotorCanId, MotorType.kBrushless);
 
     SparkMaxConfig turretConfig = new SparkMaxConfig();
     turretConfig
-        .smartCurrentLimit(turretCurrentLimit)
+        .smartCurrentLimit(hoodCurrentLimit)
         .idleMode(IdleMode.kBrake)
-        .inverted(turretInverted);
+        .inverted(hoodInverted);
   }
 
   @Override
   public void periodic() {
-    logMotorStats("TurretMotor", turretMotor, false);
+    logMotorStats("Hood/Motor", hoodMotor, false);
   }
 }
