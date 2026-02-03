@@ -3,6 +3,8 @@ package frc.robot.subsystems.shooter.turret;
 import static frc.robot.Constants.TurretConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -25,6 +27,10 @@ public class Turret extends SubsystemBase {
         .smartCurrentLimit(turretCurrentLimit)
         .idleMode(IdleMode.kBrake)
         .inverted(turretInverted);
+    turretConfig.closedLoop.pid(turretKp, turretKi, turretKd);
+    turretConfig.closedLoop.feedForward.sva(turretKs, turretKv, turretKa);
+    turretMotor.configure(
+        turretConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override

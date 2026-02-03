@@ -3,6 +3,8 @@ package frc.robot.subsystems.shooter.hood;
 import static frc.robot.Constants.HoodConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -20,11 +22,12 @@ public class Hood extends SubsystemBase {
   public Hood() {
     hoodMotor = new SparkMax(RobotMap.hoodMotorCanId, MotorType.kBrushless);
 
-    SparkMaxConfig turretConfig = new SparkMaxConfig();
-    turretConfig
-        .smartCurrentLimit(hoodCurrentLimit)
-        .idleMode(IdleMode.kBrake)
-        .inverted(hoodInverted);
+    SparkMaxConfig hoodConfig = new SparkMaxConfig();
+    hoodConfig.smartCurrentLimit(hoodCurrentLimit).idleMode(IdleMode.kBrake).inverted(hoodInverted);
+    hoodConfig.closedLoop.pid(hoodKp, hoodKi, hoodKd);
+    hoodConfig.closedLoop.feedForward.sva(hoodKs, hoodKv, hoodKa);
+    hoodMotor.configure(
+        hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
