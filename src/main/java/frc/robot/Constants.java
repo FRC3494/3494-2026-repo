@@ -76,6 +76,8 @@ public final class Constants {
     public static final int hopperSpindexerCanId = 12;
     public static final int hopperFeederCanId = 13;
 
+    public static final int turretMotorCanId = 15;
+
     public static final String[] aprilTagLimelightNames = {
       "limelight-right", "limelight-left", "limelight-swerve", "limelight-barge", "limelight-coral"
     };
@@ -203,6 +205,21 @@ public final class Constants {
     public static final double shooterKs = 0.0;
     public static final double shooterKv = 0.0;
     public static final double shooterKa = 0.0;
+  }
+
+  public static final class TurretConstants {
+    public static final boolean turretInverted = false;
+    public static final int turretCurrentLimit = 20;
+
+    public static final double turretKp = 0.0;
+    public static final double turretKi = 0.0;
+    public static final double turretKd = 0.0;
+
+    public static final double turretKs = 0.0;
+    public static final double turretKv = 0.0;
+    public static final double turretKa = 0.0;
+
+    public static final double turretGearRatio = (1.0 / 5.0) * (9.0 / 1.0);
   }
 
   public static final class HopperConstants {
