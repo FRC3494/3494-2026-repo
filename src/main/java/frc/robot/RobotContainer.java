@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 
 /**
@@ -40,6 +42,7 @@ import frc.robot.util.Elastic;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final AprilTagVision aprilTagVision;
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turret turret;
@@ -85,6 +88,8 @@ public class RobotContainer {
         break;
     }
 
+    aprilTagVision = new AprilTagVision(RobotMap.aprilTagLimelightNames, drive);
+
     flywheel = new Flywheel();
     hood = new Hood();
     turret = new Turret();
@@ -123,6 +128,8 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
         "Drive SysId (Dynamic Reverse)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -148,7 +155,10 @@ public class RobotContainer {
     OI.Drive.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, OI.Drive::joystickDriveX, OI.Drive::joystickDriveY, () -> Rotation2d.kZero));
+                drive,
+                OI.Drive::joystickDriveX,
+                OI.Drive::joystickDriveY,
+                () -> Rotation2d.kPi.div(4)));
 
     // Switch to X pattern when X button is pressed
     OI.Drive.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
@@ -159,6 +169,8 @@ public class RobotContainer {
     // Rezero swerve turn relative encoders off of absolute encoders
     OI.Drive.rezeroSwerveTurnEncoders()
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
+
+    OI.Drive.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
   }
 
   /**

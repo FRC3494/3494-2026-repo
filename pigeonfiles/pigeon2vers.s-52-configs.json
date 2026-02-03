@@ -1,0 +1,29 @@
+{
+  "Device": [
+    {
+      "name": "Gyro Trim",
+      "summary": "",
+      "description": "",
+      "ordinal": 0,
+      "configs": [
+        {
+          "name": "Gyro Scalar Y",
+          "summary": "The gyro scalar component for the Y axis.",
+          "ordinal": 0,
+          "type": "double",
+          "description": "",
+          "units": "deg per rotation",
+          "min_value": -180,
+          "max_value": 180,
+          "signal_id": 941,
+          "signal_name": "Pigeon2GyroScalarY",
+          "default_value": 0,
+          "value": 6.558166667,
+          "param_value": 6.558166667,
+          "enum_values": []
+        }
+      ]
+    }
+  ],
+  "JsonVersion": 2
+}
