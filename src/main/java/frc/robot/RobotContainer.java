@@ -7,13 +7,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
@@ -84,9 +85,9 @@ public class RobotContainer {
     hopper = new Hopper();
 
     RobotModeTriggers.autonomous()
-        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
+        .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
     RobotModeTriggers.teleop()
-        .onTrue(Commands.runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
+        .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
 
     // Set up auto routines
     autoChooser = new AutoChooser();
@@ -144,14 +145,14 @@ public class RobotContainer {
                 drive, OI.Drive::joystickDriveX, OI.Drive::joystickDriveY, () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    OI.Drive.stopWithX().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    OI.Drive.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when Back button is pressed
-    OI.Drive.resetYaw().onTrue(Commands.runOnce(drive::resetYaw).ignoringDisable(true));
+    OI.Drive.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
 
     // Rezero swerve turn relative encoders off of absolute encoders
     OI.Drive.rezeroSwerveTurnEncoders()
-        .onTrue(Commands.runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
+        .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
   }
 
   /**
