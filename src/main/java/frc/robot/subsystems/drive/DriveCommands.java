@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -21,7 +23,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import java.text.DecimalFormat;
@@ -67,7 +68,7 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
-    return Commands.run(
+    return run(
         () -> {
           // Get linear velocity
           Translation2d linearVelocity =
@@ -119,7 +120,7 @@ public class DriveCommands {
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Construct command
-    return Commands.run(
+    return run(
             () -> {
               // Get linear velocity
               Translation2d linearVelocity =
@@ -162,16 +163,16 @@ public class DriveCommands {
     List<Double> voltageSamples = new LinkedList<>();
     Timer timer = new Timer();
 
-    return Commands.sequence(
+    return sequence(
         // Reset data
-        Commands.runOnce(
+        runOnce(
             () -> {
               velocitySamples.clear();
               voltageSamples.clear();
             }),
 
         // Allow modules to orient
-        Commands.run(
+        run(
                 () -> {
                   drive.runCharacterization(0.0);
                 },
@@ -179,10 +180,10 @@ public class DriveCommands {
             .withTimeout(FF_START_DELAY),
 
         // Start timer
-        Commands.runOnce(timer::restart),
+        runOnce(timer::restart),
 
         // Accelerate and gather data
-        Commands.run(
+        run(
                 () -> {
                   double voltage = timer.get() * FF_RAMP_RATE;
                   drive.runCharacterization(voltage);
@@ -220,17 +221,17 @@ public class DriveCommands {
     SlewRateLimiter limiter = new SlewRateLimiter(WHEEL_RADIUS_RAMP_RATE);
     WheelRadiusCharacterizationState state = new WheelRadiusCharacterizationState();
 
-    return Commands.parallel(
+    return parallel(
         // Drive control sequence
-        Commands.sequence(
+        sequence(
             // Reset acceleration limiter
-            Commands.runOnce(
+            runOnce(
                 () -> {
                   limiter.reset(0.0);
                 }),
 
             // Turn in place, accelerating up to full speed
-            Commands.run(
+            run(
                 () -> {
                   double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
                   drive.runVelocity(new ChassisSpeeds(0.0, 0.0, speed));
@@ -238,12 +239,12 @@ public class DriveCommands {
                 drive)),
 
         // Measurement sequence
-        Commands.sequence(
+        sequence(
             // Wait for modules to fully orient before starting measurement
-            Commands.waitSeconds(1.0),
+            waitSeconds(1.0),
 
             // Record starting measurement
-            Commands.runOnce(
+            runOnce(
                 () -> {
                   state.positions = drive.getWheelRadiusCharacterizationPositions();
                   state.lastAngle = drive.getRotation();
@@ -251,12 +252,11 @@ public class DriveCommands {
                 }),
 
             // Update gyro delta
-            Commands.run(
-                    () -> {
-                      var rotation = drive.getRotation();
-                      state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
-                      state.lastAngle = rotation;
-                    })
+            run(() -> {
+                  var rotation = drive.getRotation();
+                  state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
+                  state.lastAngle = rotation;
+                })
 
                 // When cancelled, calculate and print results
                 .finallyDo(
@@ -295,17 +295,17 @@ public class DriveCommands {
     SlewRateLimiter limiter = new SlewRateLimiter(WHEEL_RADIUS_RAMP_RATE);
     LinearWheelRadiusCharacterizationState state = new LinearWheelRadiusCharacterizationState();
 
-    return Commands.parallel(
+    return parallel(
             // Drive control sequence
-            Commands.sequence(
+            sequence(
                 // Reset acceleration limiter
-                Commands.runOnce(
+                runOnce(
                     () -> {
                       limiter.reset(0.0);
                     }),
 
                 // Turn in place, accelerating up to full speed
-                Commands.run(
+                run(
                     () -> {
                       double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
                       drive.runVelocity(new ChassisSpeeds(speed, 0.0, 0.0));
@@ -313,12 +313,12 @@ public class DriveCommands {
                     drive)),
 
             // Measurement sequence
-            Commands.sequence(
+            sequence(
                 // Wait for modules to fully orient before starting measurement
-                Commands.waitSeconds(0.0),
+                waitSeconds(0.0),
 
                 // Record starting measurement
-                Commands.runOnce(
+                runOnce(
                     () -> {
                       state.positions = drive.getWheelRadiusCharacterizationPositions();
                     })))
@@ -349,16 +349,16 @@ public class DriveCommands {
 
     double ROTATION_SPEED_MARGIN = 3;
 
-    return Commands.sequence(
+    return sequence(
         // Wait until spinning at max speed
-        Commands.deadline(
-            Commands.waitUntil(
+        deadline(
+            waitUntil(
                 () ->
                     Math.abs(
                             drive.getChassisSpeeds().omegaRadiansPerSecond
                                 - drive.getMaxAngularSpeedRadPerSec())
                         < ROTATION_SPEED_MARGIN),
-            Commands.run(
+            run(
                 () -> {
                   drive.runVelocity(
                       new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
@@ -366,10 +366,10 @@ public class DriveCommands {
                 drive)),
 
         // Measure rotation speed of robot while moving
-        Commands.sequence(
-            Commands.race(
-                Commands.waitSeconds(2.5),
-                Commands.run(
+        sequence(
+            race(
+                waitSeconds(2.5),
+                run(
                     () -> {
                       drive.runVelocity(
                           ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -379,20 +379,20 @@ public class DriveCommands {
                               drive.getRotation()));
                     },
                     drive),
-                Commands.run(
+                run(
                     () -> {
                       state.movingRotationSpeeds.add(drive.getYawVelocityRadPerSec());
                     }))),
 
         // Wait until spinning in place at max speed
-        Commands.deadline(
-            Commands.waitUntil(
+        deadline(
+            waitUntil(
                 () ->
                     Math.abs(
                             drive.getChassisSpeeds().omegaRadiansPerSecond
                                 - drive.getMaxAngularSpeedRadPerSec())
                         < ROTATION_SPEED_MARGIN),
-            Commands.run(
+            run(
                 () -> {
                   drive.runVelocity(
                       new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
@@ -400,15 +400,15 @@ public class DriveCommands {
                 drive)),
 
         // Measure rotation speed of robot while stationary
-        Commands.race(
-                Commands.waitSeconds(5),
-                Commands.run(
+        race(
+                waitSeconds(5),
+                run(
                     () -> {
                       drive.runVelocity(
                           new ChassisSpeeds(0.0, 0.0, drive.getMaxAngularSpeedRadPerSec()));
                     },
                     drive),
-                Commands.run(
+                run(
                     () -> {
                       state.stationaryRotationSpeeds.add(drive.getYawVelocityRadPerSec());
                     }))
@@ -418,7 +418,7 @@ public class DriveCommands {
                 }),
 
         // Stop driving and output values
-        Commands.runOnce(
+        runOnce(
             () -> {
               double movingAverageSpeed = 0.0;
               for (double speed : state.movingRotationSpeeds) {
@@ -448,9 +448,9 @@ public class DriveCommands {
   }
 
   public static Command turnErrorCharacterization(Drive drive) {
-    return Commands.deadline(
+    return deadline(
             new WaitCommand(60),
-            Commands.run(
+            run(
                 () -> {
                   drive.runVelocity(
                       new ChassisSpeeds(0, 0, 0.8 * drive.getMaxAngularSpeedRadPerSec()));
