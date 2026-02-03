@@ -14,13 +14,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
+import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Flywheel extends SubsystemBase {
   private SparkMax leftMotor;
   private SparkMax rightMotor;
 
-  @AutoLogOutput private AngularVelocity setpointRPM = RPM.of(0.0);
+  @Getter @AutoLogOutput private AngularVelocity flywheelSetpoint = RPM.of(0.0);
 
   public Flywheel() {
     leftMotor = new SparkMax(RobotMap.shooterLeftCanId, MotorType.kBrushless);
@@ -48,7 +49,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setVelocity(AngularVelocity velocity) {
-    setpointRPM = velocity;
+    flywheelSetpoint = velocity;
     leftMotor
         .getClosedLoopController()
         .setSetpoint(velocity.in(RPM), ControlType.kMAXMotionVelocityControl);
