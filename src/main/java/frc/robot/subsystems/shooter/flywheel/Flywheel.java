@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems.shooter.flywheel;
 
 import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import org.littletonrobotics.junction.AutoLogOutput;
 
-public class Shooter extends SubsystemBase {
+public class Flywheel extends SubsystemBase {
   private SparkMax leftMotor;
   private SparkMax rightMotor;
 
   @AutoLogOutput private AngularVelocity setpointRPM = RPM.of(0.0);
 
-  public Shooter() {
+  public Flywheel() {
     leftMotor = new SparkMax(RobotMap.shooterLeftCanId, MotorType.kBrushless);
     rightMotor = new SparkMax(RobotMap.shooterRightCanId, MotorType.kBrushless);
 
@@ -43,8 +43,8 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Shooter/LeftMotor", leftMotor, false);
-    logMotorStats("Shooter/RightMotor", rightMotor, false);
+    logMotorStats("Flywheel/LeftMotor", leftMotor, false);
+    logMotorStats("Flywheel/RightMotor", rightMotor, false);
   }
 
   public void setVelocity(AngularVelocity velocity) {

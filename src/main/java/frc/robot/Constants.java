@@ -68,6 +68,8 @@ public final class Constants {
     public static final int hopperFeederCanId = 13;
 
     public static final int turretMotorCanId = 15;
+
+    public static final int hoodMotorCanId = 16;
   }
 
   public static class OIConstants {
@@ -209,6 +211,22 @@ public final class Constants {
     public static final double turretKa = 0.0;
 
     public static final double turretGearRatio = (1.0 / 5.0) * (9.0 / 1.0);
+  }
+
+  public static final class HoodConstants {
+    public static final boolean hoodInverted = false;
+    public static final int hoodCurrentLimit = 20;
+
+    public static final double hoodKp = 0.0;
+    public static final double hoodKi = 0.0;
+    public static final double hoodKd = 0.0;
+
+    public static final double hoodKs = 0.0;
+    public static final double hoodKv = 0.0;
+    public static final double hoodKa = 0.0;
+
+    public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(0.0);
+    public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(0.0);
   }
 
   public static final class HopperConstants {
