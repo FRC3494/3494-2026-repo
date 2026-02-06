@@ -22,7 +22,7 @@ public class Turret extends SubsystemBase {
   @Getter @AutoLogOutput private Rotation2d turretSetpoint = Rotation2d.kZero;
 
   public Turret() {
-    turretMotor = new SparkMax(RobotMap.turretMotorCanId, MotorType.kBrushless);
+    turretMotor = new SparkMax(RobotMap.Shooter.turretMotorCanId, MotorType.kBrushless);
 
     SparkMaxConfig turretConfig = new SparkMaxConfig();
     turretConfig

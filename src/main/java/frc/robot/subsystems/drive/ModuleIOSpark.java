@@ -78,20 +78,20 @@ public class ModuleIOSpark implements ModuleIO {
     driveSpark =
         new SparkFlex(
             switch (module) {
-              case 0 -> RobotMap.frontLeftDriveCanId;
-              case 1 -> RobotMap.frontRightDriveCanId;
-              case 2 -> RobotMap.backLeftDriveCanId;
-              case 3 -> RobotMap.backRightDriveCanId;
+              case 0 -> RobotMap.Drive.frontLeftDriveCanId;
+              case 1 -> RobotMap.Drive.frontRightDriveCanId;
+              case 2 -> RobotMap.Drive.backLeftDriveCanId;
+              case 3 -> RobotMap.Drive.backRightDriveCanId;
               default -> 0;
             },
             MotorType.kBrushless);
     turnSpark =
         new SparkMax(
             switch (module) {
-              case 0 -> RobotMap.frontLeftTurnCanId;
-              case 1 -> RobotMap.frontRightTurnCanId;
-              case 2 -> RobotMap.backLeftTurnCanId;
-              case 3 -> RobotMap.backRightTurnCanId;
+              case 0 -> RobotMap.Drive.frontLeftTurnCanId;
+              case 1 -> RobotMap.Drive.frontRightTurnCanId;
+              case 2 -> RobotMap.Drive.backLeftTurnCanId;
+              case 3 -> RobotMap.Drive.backRightTurnCanId;
               default -> 0;
             },
             MotorType.kBrushless);
@@ -100,10 +100,10 @@ public class ModuleIOSpark implements ModuleIO {
     turnAbsoluteEncoder =
         new AnalogInput(
             switch (module) {
-              case 0 -> RobotMap.frontLeftTurnCanId;
-              case 1 -> RobotMap.frontRightTurnCanId;
-              case 2 -> RobotMap.backLeftTurnCanId;
-              case 3 -> RobotMap.backRightTurnCanId;
+              case 0 -> RobotMap.Drive.frontLeftTurnCanId;
+              case 1 -> RobotMap.Drive.frontRightTurnCanId;
+              case 2 -> RobotMap.Drive.backLeftTurnCanId;
+              case 3 -> RobotMap.Drive.backRightTurnCanId;
               default -> 0;
             });
     driveController = driveSpark.getClosedLoopController();

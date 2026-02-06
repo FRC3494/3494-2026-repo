@@ -21,7 +21,7 @@ public class Hood extends SubsystemBase {
   @Getter @AutoLogOutput private Rotation2d hoodSetpoint = Rotation2d.kZero;
 
   public Hood() {
-    hoodMotor = new SparkMax(RobotMap.hoodMotorCanId, MotorType.kBrushless);
+    hoodMotor = new SparkMax(RobotMap.Shooter.hoodMotorCanId, MotorType.kBrushless);
 
     SparkMaxConfig hoodConfig = new SparkMaxConfig();
     hoodConfig.smartCurrentLimit(hoodCurrentLimit).idleMode(IdleMode.kBrake).inverted(hoodInverted);

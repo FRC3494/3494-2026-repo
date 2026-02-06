@@ -24,8 +24,8 @@ public class Flywheel extends SubsystemBase {
   @Getter @AutoLogOutput private AngularVelocity flywheelSetpoint = RPM.of(0.0);
 
   public Flywheel() {
-    leftMotor = new SparkMax(RobotMap.shooterLeftCanId, MotorType.kBrushless);
-    rightMotor = new SparkMax(RobotMap.shooterRightCanId, MotorType.kBrushless);
+    leftMotor = new SparkMax(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
+    rightMotor = new SparkMax(RobotMap.Shooter.flywheelRightCadId, MotorType.kBrushless);
 
     SparkMaxConfig leftConfig = new SparkMaxConfig();
     leftConfig

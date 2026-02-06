@@ -51,25 +51,38 @@ public final class Constants {
   public static class RobotMap {
     public static final int pigeonCanId = 9;
 
-    public static final int frontLeftDriveCanId = 1;
-    public static final int frontRightDriveCanId = 5;
-    public static final int backLeftDriveCanId = 3;
-    public static final int backRightDriveCanId = 7;
+    public static final class Climber {
+      public static final int climberMotorCanId = 14;
+    }
 
-    public static final int frontLeftTurnCanId = 2;
-    public static final int frontRightTurnCanId = 6;
-    public static final int backLeftTurnCanId = 4;
-    public static final int backRightTurnCanId = 8;
+    public static final class Drive {
+      public static final int frontLeftDriveCanId = 1;
+      public static final int frontRightDriveCanId = 5;
+      public static final int backLeftDriveCanId = 3;
+      public static final int backRightDriveCanId = 7;
 
-    public static final int shooterLeftCanId = 10;
-    public static final int shooterRightCanId = 11;
+      public static final int frontLeftTurnCanId = 2;
+      public static final int frontRightTurnCanId = 6;
+      public static final int backLeftTurnCanId = 4;
+      public static final int backRightTurnCanId = 8;
+    }
 
-    public static final int hopperSpindexerCanId = 12;
-    public static final int hopperFeederCanId = 13;
+    public static final class Intake {
+      public static final int spinnySpinnyCanId = 17;
+      public static final int uppyDownyCanId = 18;
+    }
 
-    public static final int turretMotorCanId = 15;
+    public static final class Shooter {
+      public static final int flywheelLeftCanId = 10;
+      public static final int flywheelRightCadId = 11;
 
-    public static final int hoodMotorCanId = 16;
+      public static final int hoodMotorCanId = 16;
+
+      public static final int hopperSpindexerCanId = 12;
+      public static final int hopperFeederCanId = 13;
+
+      public static final int turretMotorCanId = 15;
+    }
   }
 
   public static class OIConstants {
