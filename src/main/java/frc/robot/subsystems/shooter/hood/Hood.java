@@ -1,10 +1,11 @@
 package frc.robot.subsystems.shooter.hood;
 
-import static frc.robot.Constants.HoodConstants.*;
+import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -33,6 +34,13 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Hood/Motor", hoodMotor, false);
+    logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
+  }
+
+  public void setPosition(Rotation2d setpoint) {
+    hoodSetpoint = setpoint;
+    hoodMotor
+        .getClosedLoopController()
+        .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
   }
 }

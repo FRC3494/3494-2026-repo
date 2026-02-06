@@ -44,8 +44,8 @@ public class Flywheel extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Flywheel/LeftMotor", leftMotor, false);
-    logMotorStats("Flywheel/RightMotor", rightMotor, false);
+    logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
+    logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
   }
 
   public void setVelocity(AngularVelocity velocity) {

@@ -1,6 +1,6 @@
 package frc.robot.subsystems.shooter.turret;
 
-import static frc.robot.Constants.TurretConstants.*;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
@@ -41,10 +41,10 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Turret/Motor", turretMotor, false);
+    logMotorStats("Shooter/Turret/Motor", turretMotor, false);
   }
 
-  public void setTurretSetpoint(Rotation2d setpoint) {
+  public void setPosition(Rotation2d setpoint) {
     turretSetpoint = setpoint;
     turretMotor
         .getClosedLoopController()

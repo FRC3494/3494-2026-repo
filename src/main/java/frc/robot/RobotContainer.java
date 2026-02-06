@@ -25,10 +25,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.Elastic;
 
 /**
@@ -40,10 +37,7 @@ import frc.robot.util.Elastic;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Flywheel flywheel;
-  private final Hood hood;
-  private final Turret turret;
-  private final Hopper hopper;
+  private final Shooter shooter;
 
   // Dashboard inputs
   private final AutoChooser autoChooser;
@@ -85,10 +79,7 @@ public class RobotContainer {
         break;
     }
 
-    flywheel = new Flywheel();
-    hood = new Hood();
-    turret = new Turret();
-    hopper = new Hopper();
+    shooter = new Shooter();
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
