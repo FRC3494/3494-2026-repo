@@ -41,15 +41,18 @@ public class AprilTagCamera {
     this.megaTag2Enabled = megaTag2;
   }
 
+  // ! This MUST be manually called since AprilTagCamera is not a SubsystemBase
   public void periodic() {
-    // Determine whether camera is connected
+    // Determine whether Limelight is connected
     double newHeartbeat = LimelightHelpers.getHeartbeat(name);
     Logger.recordOutput(name + "/Connected", newHeartbeat != heartbeat);
     heartbeat = newHeartbeat;
 
+    // Give robot yaw info to Limelight
     LimelightHelpers.SetRobotOrientation(
         name, robotYaw.getDegrees(), robotYawVelocity.in(DegreesPerSecond), 0, 0, 0, 0);
 
+    // Get pose estimate from Limelight
     PoseEstimate poseEstimate;
     if (megaTag2Enabled) {
       poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
@@ -57,6 +60,19 @@ public class AprilTagCamera {
       poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
     }
 
+    logPoseEstimateStats(poseEstimate);
+
+    boolean validMeasurement = isMeasurementValid(poseEstimate);
+
+    // Save pose estimate if valid
+    if (validMeasurement) {
+      pose = poseEstimate.pose;
+      poseTimestamp = poseEstimate.timestampSeconds;
+      stdDevs = getStdDevs(poseEstimate);
+    }
+  }
+
+  private void logPoseEstimateStats(PoseEstimate poseEstimate) {
     Logger.recordOutput("Vision/" + name + "/AvgTagDist", poseEstimate.avgTagDist);
     Logger.recordOutput("Vision/" + name + "/AvgTagArea", poseEstimate.avgTagArea);
     Logger.recordOutput("Vision/" + name + "/Pose", poseEstimate.pose);
@@ -68,31 +84,37 @@ public class AprilTagCamera {
     Logger.recordOutput("Vision/" + name + "/PoseTimestamp", poseEstimate.timestampSeconds);
 
     Logger.recordOutput("Vision/" + name + "/RawFiducials", poseEstimate.rawFiducials.toString());
+  }
 
+  private boolean isMeasurementValid(PoseEstimate poseEstimate) {
     boolean estimateNotNull = poseEstimate != null;
-    boolean tagsPresent = poseEstimate.tagCount > 0;
-    boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
-    boolean validMeasurement = estimateNotNull && tagsPresent && tagsWithinRange;
-
     Logger.recordOutput("Vision/" + name + "/EstimateNotNull", estimateNotNull);
+
+    boolean tagsPresent = poseEstimate.tagCount > 0;
     Logger.recordOutput("Vision/" + name + "/TagsPresent", tagsPresent);
+
+    boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
     Logger.recordOutput("Vision/" + name + "/TagsWithinRange", tagsWithinRange);
+
+    boolean validMeasurement = estimateNotNull && tagsPresent && tagsWithinRange;
     Logger.recordOutput("Vision/" + name + "/ValidMeasurement", validMeasurement);
 
-    if (validMeasurement) {
-      stdDevs =
-          // VecBuilder.fill(
-          //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
-          //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
-          //     maxAngleStdDev.in(Radians)
-          //         * Math.abs(
-          //             poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians()
-          //                 / (2 * Math.PI)));
-          VecBuilder.fill(.1, .1, 9999999);
-      Logger.recordOutput("Vision/" + name + "/StdDevs", stdDevs);
+    return validMeasurement;
+  }
 
-      pose = poseEstimate.pose;
-      poseTimestamp = poseEstimate.timestampSeconds;
-    }
+  private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
+    Matrix<N3, N1> standardDeviations =
+        // VecBuilder.fill(
+        //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
+        //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
+        //     maxAngleStdDev.in(Radians)
+        //         * Math.abs(
+        //             poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians()
+        //                 / (2 * Math.PI)));
+        VecBuilder.fill(.1, .1, 9999999);
+
+    Logger.recordOutput("Vision/" + name + "/StdDevs", standardDeviations);
+
+    return standardDeviations;
   }
 }
