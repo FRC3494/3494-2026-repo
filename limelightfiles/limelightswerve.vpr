@@ -74,7 +74,7 @@
   "nnp_rotate": 0,
   "pipeline_led_enabled": 0,
   "pipeline_led_power": 100,
-  "pipeline_res": 0,
+  "pipeline_res": 3,
   "pipeline_type": "pipe_fiducial",
   "python_snapscript_name": "",
   "quality_focus": 0.3,
@@ -100,6 +100,6 @@
   "val_min": 70,
   "x_outlier_miqr": 1.5,
   "y_outlier_miqr": 1.5,
-  "yaw_latency_adjustment": 389.1,
+  "yaw_latency_adjustment": 0,
   "zsclassifier_conf": 0.1
 }

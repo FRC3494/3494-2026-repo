@@ -74,7 +74,7 @@
   "nnp_rotate": 0,
   "pipeline_led_enabled": 0,
   "pipeline_led_power": 100,
-  "pipeline_res": 6,
+  "pipeline_res": 3,
   "pipeline_type": "pipe_fiducial",
   "python_snapscript_name": "",
   "quality_focus": 1,
