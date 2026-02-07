@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class SparkUtil {
   /** Stores whether any error was has been detected by other utility methods. */
@@ -54,5 +55,20 @@ public class SparkUtil {
         sparkStickyFault = true;
       }
     }
+  }
+
+  public static void logMotorStats(String key, SparkBase spark, boolean absoluteEncoder) {
+    if (absoluteEncoder) {
+      Logger.recordOutput(
+          key + "/Position", Rotations.of(spark.getAbsoluteEncoder().getPosition()));
+      Logger.recordOutput(key + "/Velocity", RPM.of(spark.getAbsoluteEncoder().getVelocity()));
+    } else {
+      Logger.recordOutput(key + "/Position", Rotations.of(spark.getEncoder().getPosition()));
+      Logger.recordOutput(key + "/Velocity", RPM.of(spark.getEncoder().getVelocity()));
+    }
+
+    Logger.recordOutput(key + "/AppliedOutput", spark.getAppliedOutput());
+    Logger.recordOutput(key + "/BusVoltage", Volts.of(spark.getBusVoltage()));
+    Logger.recordOutput(key + "/Temp", Celsius.of(spark.getMotorTemperature()));
   }
 }
