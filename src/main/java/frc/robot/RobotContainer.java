@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
-import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -88,7 +87,7 @@ public class RobotContainer {
         break;
     }
 
-    aprilTagVision = new AprilTagVision(RobotMap.aprilTagLimelightNames, drive);
+    aprilTagVision = new AprilTagVision(drive);
 
     flywheel = new Flywheel();
     hood = new Hood();
