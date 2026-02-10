@@ -11,13 +11,16 @@ import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants.VisionConstants.LimelightConstants;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -80,8 +83,35 @@ public final class Constants {
 
     public static final int hoodMotorCanId = 16;
 
-    public static final String[] aprilTagLimelightNames = {
-      "limelight-right", "limelight-left", "limelight-swerve", "limelight-barge", "limelight-coral"
+    public static final LimelightConstants[] aprilTagLimelights = {
+      new LimelightConstants(
+          "limelight-barge",
+          new Pose3d(
+              Inches.of(-8.1296),
+              Inches.of(-6.376),
+              Inches.of(27.6),
+              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+      new LimelightConstants(
+          "limelight-coral",
+          new Pose3d(
+              Inches.of(-8.0936),
+              Inches.of(6.376),
+              Inches.of(29.1),
+              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-90)))),
+      new LimelightConstants(
+          "limelight-left",
+          new Pose3d(
+              Meters.of(-0.2093),
+              Meters.of(-0.2092),
+              Meters.of(0.327),
+              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+      new LimelightConstants(
+          "limelight-swerve",
+          new Pose3d(
+              Meters.of(0.2355),
+              Meters.of(-0.2499),
+              Meters.of(0.2267),
+              new Rotation3d(Degrees.of(0), Degrees.of(15), Degrees.of(105))))
     };
   }
 
@@ -198,8 +228,10 @@ public final class Constants {
   public static final class VisionConstants {
     public static final Distance maxTagDistance = Meters.of(5.0);
 
-    public static final double maxDistanceStdDev = 998999;
+    public static final double maxDistanceStdDev = 999999;
     public static final Angle maxAngleStdDev = Degrees.of(999999);
+
+    public static record LimelightConstants(String name, Pose3d position) {}
   }
 
   public static final class ShooterConstants {

@@ -6,10 +6,12 @@ import static frc.robot.Constants.VisionConstants.maxTagDistance;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import lombok.Getter;
@@ -19,6 +21,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class AprilTagCamera {
   private String name;
+
+  @AutoLogOutput(key = "Vision/{name}/LimelightPosition")
+  private Pose3d position;
 
   private double heartbeat;
 
@@ -36,9 +41,20 @@ public class AprilTagCamera {
   @Getter private double poseTimestamp;
   @Getter private Matrix<N3, N1> stdDevs;
 
-  public AprilTagCamera(String name, boolean megaTag2) {
-    this.name = name;
+  public AprilTagCamera(LimelightConstants limelightConstants, boolean megaTag2) {
+    this.name = limelightConstants.name();
+    this.position = limelightConstants.position();
+
     this.megaTag2Enabled = megaTag2;
+
+    LimelightHelpers.setCameraPose_RobotSpace(
+        name,
+        position.getMeasureX().in(Meters),
+        position.getMeasureY().in(Meters),
+        position.getMeasureZ().in(Meters),
+        position.getRotation().getMeasureX().in(Degrees),
+        position.getRotation().getMeasureY().in(Degrees),
+        position.getRotation().getMeasureZ().in(Degrees));
   }
 
   // ! This MUST be manually called since AprilTagCamera is not a SubsystemBase
