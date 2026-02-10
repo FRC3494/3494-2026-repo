@@ -122,18 +122,18 @@ public class AprilTagCamera {
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
-    Matrix<N3, N1> standardDeviations =
-        // VecBuilder.fill(
-        //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
-        //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
-        //     maxAngleStdDev.in(Radians)
-        //         * Math.abs(
-        //             poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians()
-        //                 / (2 * Math.PI)));
-        VecBuilder.fill(.1, .1, 9999999);
+    double standardDeviationX =
+        .1; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
+    double standardDeviationY =
+        .1; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
+    double standardDeviationTheta = 99999999; // maxAngleStdDev.in(Radians) *
+    // Math.abs(poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians() / (2 *
+    // Math.PI)));
 
-    Logger.recordOutput("Vision/" + name + "/StdDevs", standardDeviations);
+    Logger.recordOutput("Vision/" + name + "/StdDevX", standardDeviationX);
+    Logger.recordOutput("Vision/" + name + "/StdDevY", standardDeviationY);
+    Logger.recordOutput("Vision/" + name + "/StdDevTheta", standardDeviationTheta);
 
-    return standardDeviations;
+    return VecBuilder.fill(standardDeviationX, standardDeviationY, standardDeviationTheta);
   }
 }
