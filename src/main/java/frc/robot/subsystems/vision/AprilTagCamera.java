@@ -61,11 +61,11 @@ public class AprilTagCamera {
         position.getRotation().getMeasureZ().in(Degrees));
   }
 
-  // ! This MUST be manually called since AprilTagCamera is not a SubsystemBase
+  // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
   public void periodic() {
     // Determine whether Limelight is connected
     double newHeartbeat = LimelightHelpers.getHeartbeat(name);
-    Logger.recordOutput(name + "/Connected", newHeartbeat != heartbeat);
+    Logger.recordOutput("Vision/" + name + "/Connected", newHeartbeat != heartbeat);
     heartbeat = newHeartbeat;
 
     // Give robot yaw info to Limelight
