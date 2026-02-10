@@ -37,6 +37,10 @@ public class AprilTagCamera {
   @AutoLogOutput(key = "Vision/{name}/RobotYawVelocity")
   private AngularVelocity robotYawVelocity = DegreesPerSecond.of(0.0);
 
+  @Getter
+  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement")
+  private boolean validMeasurement;
+
   @Getter private Pose2d pose;
   @Getter private double poseTimestamp;
   @Getter private Matrix<N3, N1> stdDevs;
@@ -78,7 +82,7 @@ public class AprilTagCamera {
 
     logPoseEstimateStats(poseEstimate);
 
-    boolean validMeasurement = isMeasurementValid(poseEstimate);
+    validMeasurement = isMeasurementValid(poseEstimate);
 
     // Save pose estimate if valid
     if (validMeasurement) {
@@ -103,6 +107,8 @@ public class AprilTagCamera {
   }
 
   private boolean isMeasurementValid(PoseEstimate poseEstimate) {
+    // TODO: use limelight's own measurement valid function
+
     boolean estimateNotNull = poseEstimate != null;
     Logger.recordOutput("Vision/" + name + "/EstimateNotNull", estimateNotNull);
 
@@ -112,10 +118,7 @@ public class AprilTagCamera {
     boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
     Logger.recordOutput("Vision/" + name + "/TagsWithinRange", tagsWithinRange);
 
-    boolean validMeasurement = estimateNotNull && tagsPresent && tagsWithinRange;
-    Logger.recordOutput("Vision/" + name + "/ValidMeasurement", validMeasurement);
-
-    return validMeasurement;
+    return estimateNotNull && tagsPresent && tagsWithinRange;
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
