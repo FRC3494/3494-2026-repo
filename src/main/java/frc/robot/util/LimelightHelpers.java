@@ -604,6 +604,7 @@ public class LimelightHelpers {
       this.ambiguity = ambiguity;
     }
 
+    // @codescene (disable: "Complex Method")
     @Override
     public boolean equals(Object obj) {
       if (this == obj) return true;
@@ -733,6 +734,7 @@ public class LimelightHelpers {
       this.isMegaTag2 = isMegaTag2;
     }
 
+    // @codescene (disable: "Complex Method")
     @Override
     public boolean equals(Object obj) {
       if (this == obj) return true;
@@ -1208,7 +1210,7 @@ public class LimelightHelpers {
   }
 
   /**
-   * T2D is an array that contains several targeting metrcis
+   * T2D is an array that contains several targeting metrics
    *
    * @param limelightName Name of the Limelight camera
    * @return Array containing [targetValid, targetCount, targetLatency, captureLatency, tx, ty,
@@ -1670,6 +1672,7 @@ public class LimelightHelpers {
     setLimelightNTDouble(limelightName, "stream", 2);
   }
 
+  // @codescene (disable: "Excess Number of Function Arguments")
   /**
    * Sets the crop window for the camera. The crop window in the UI must be completely open.
    *
@@ -1713,6 +1716,7 @@ public class LimelightHelpers {
     setLimelightNTDoubleArray(limelightName, "fiducial_offset_set", entries);
   }
 
+  // @codescene (disable: "Excess Number of Function Arguments")
   /**
    * Sets robot orientation values used by MegaTag2 localization algorithm.
    *
@@ -1736,6 +1740,7 @@ public class LimelightHelpers {
         limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, true);
   }
 
+  // @codescene (disable: "Excess Number of Function Arguments")
   public static void SetRobotOrientation_NoFlush(
       String limelightName,
       double yaw,
@@ -1748,6 +1753,7 @@ public class LimelightHelpers {
         limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, false);
   }
 
+  // @codescene (disable: "Excess Number of Function Arguments")
   private static void SetRobotOrientation_INTERNAL(
       String limelightName,
       double yaw,
@@ -1797,7 +1803,7 @@ public class LimelightHelpers {
    * output/temperature.
    *
    * @param limelightName Name/identifier of the Limelight
-   * @param throttle Defaults to 0. Your Limelgiht will process one frame after skipping <throttle>
+   * @param throttle Defaults to 0. Your Limelight will process one frame after skipping <throttle>
    *     frames.
    */
   public static void SetThrottle(String limelightName, int throttle) {
@@ -1847,6 +1853,7 @@ public class LimelightHelpers {
     setLimelightNTDouble(limelightName, "fiducial_downscale_set", d);
   }
 
+  // @codescene (disable: "Excess Number of Function Arguments")
   /**
    * Sets the camera pose relative to the robot.
    *
@@ -1944,6 +1951,7 @@ public class LimelightHelpers {
 
     try {
       String jsonString = getJSONDump(limelightName);
+      // @codescene (disable: "Complex Conditional")
       if (jsonString == null || jsonString.isEmpty() || jsonString.isBlank()) {
         results.error = "lljson error: empty json";
       } else {
