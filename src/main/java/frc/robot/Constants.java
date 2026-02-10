@@ -89,6 +89,8 @@ public final class Constants {
     public static final int primaryControllerPort = 0;
     public static final int leftButtonBoardPort = 1;
     public static final int rightButtonBoardPort = 2;
+
+    public static final double controllerStickDeadband = 0.05;
   }
 
   public static class DriveConstants {
