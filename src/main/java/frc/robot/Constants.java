@@ -81,7 +81,7 @@ public final class Constants {
 
     public static final int turretMotorCanId = 15;
 
-    public static final int hoodMotorCanId = 16;
+    public static final int hoodMotorCanId = 20;
 
     public static final LimelightConstants[] aprilTagLimelights = {
       new LimelightConstants(
