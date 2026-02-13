@@ -50,6 +50,8 @@ public class RobotContainer {
   // Dashboard inputs
   private final AutoChooser autoChooser;
 
+  private final Command joystickDriveCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -86,6 +88,12 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+    joystickDriveCommand =
+        DriveCommands.joystickDrive(
+            drive,
+            OI.Drive::joystickDriveX,
+            OI.Drive::joystickDriveY,
+            OI.Drive::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
 
@@ -143,12 +151,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // ==================== DRIVE ====================
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            OI.Drive::joystickDriveX,
-            OI.Drive::joystickDriveY,
-            OI.Drive::joystickDriveOmega));
+    drive.setDefaultCommand(joystickDriveCommand);
 
     // Lock to 0° when A button is held
     OI.Drive.lockToForward()
