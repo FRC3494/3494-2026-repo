@@ -232,6 +232,9 @@ public final class Constants {
     public static final double autoAngularKi = 0.0;
     public static final double autoAngularKd = 0.0;
 
+    public static final Distance fieldWidth = Meters.of(8.07);
+    public static final Distance fieldLength = Meters.of(16.54);
+
     public static class AutoAlignConstants {
       public static final double autoAlignLinearKp = 10.0;
       public static final double autoAlignLinearKi = 0.0;
