@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -74,6 +75,10 @@ public class Robot extends LoggedRobot {
     // Initialize URCL
     Logger.registerURCL(URCL.startExternal());
     StatusLogger.disableAutoLogging(); // Disable REVLib's built-in logging
+
+    // Start CTRE logging
+    SignalLogger.setPath("/media/sda1/");
+    SignalLogger.start();
 
     // Start AdvantageKit logger
     LoggedPowerDistribution.getInstance(RobotMap.pdhCanId, ModuleType.kRev);
