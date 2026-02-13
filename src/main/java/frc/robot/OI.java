@@ -19,7 +19,7 @@ public final class OI {
     eventLoop.poll();
   }
 
-  public static class Drive {
+  public static final class DriveOI {
     public static double joystickDriveX() {
       return MathUtil.applyDeadband(-primaryController.getLeftY(), controllerStickDeadband);
     }

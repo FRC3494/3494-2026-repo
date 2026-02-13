@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.OI.DriveOI;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -91,9 +92,9 @@ public class RobotContainer {
     joystickDriveCommand =
         DriveCommands.joystickDrive(
             drive,
-            OI.Drive::joystickDriveX,
-            OI.Drive::joystickDriveY,
-            OI.Drive::joystickDriveOmega);
+            OI.DriveOI::joystickDriveX,
+            OI.DriveOI::joystickDriveY,
+            OI.DriveOI::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
 
@@ -154,25 +155,25 @@ public class RobotContainer {
     drive.setDefaultCommand(joystickDriveCommand);
 
     // Lock to 0° when A button is held
-    OI.Drive.lockToForward()
+    DriveOI.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                OI.Drive::joystickDriveX,
-                OI.Drive::joystickDriveY,
+                OI.DriveOI::joystickDriveX,
+                OI.DriveOI::joystickDriveY,
                 () -> Rotation2d.kPi.div(4)));
 
     // Switch to X pattern when X button is pressed
-    OI.Drive.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
+    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when Back button is pressed
-    OI.Drive.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
+    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
 
     // Rezero swerve turn relative encoders off of absolute encoders
-    OI.Drive.rezeroSwerveTurnEncoders()
+    DriveOI.rezeroSwerveTurnEncoders()
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
 
-    OI.Drive.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
+    DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
   }
 
   /**
