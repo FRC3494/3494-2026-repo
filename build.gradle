@@ -132,6 +132,20 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+task(removeChoreoComments) {
+    doLast {
+        def tree = fileTree(dir: 'src/main/java/frc/robot/util/choreo', include: 'ChoreoTraj.java')
+
+        tree.each { file ->
+            def content = file.text
+            content = content.replaceAll("// If these imports cause errors because you're not using ChoreoLib,", "")
+            content = content.replaceAll("// turn off \"Include ChoreoLib-specific Helpers\" in Choreo's codegen settings.", "")
+            file.text = content
+        }
+    }
+}
+project.compileJava.dependsOn(removeChoreoComments)
+
 // Create version file
 project.compileJava.dependsOn(createVersionFile)
 gversion {
