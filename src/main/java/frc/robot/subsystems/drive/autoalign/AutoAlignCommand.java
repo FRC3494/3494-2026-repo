@@ -43,4 +43,9 @@ public class AutoAlignCommand extends Command {
 
     drive.runVelocity(chassisSpeeds);
   }
+
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
