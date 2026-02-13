@@ -43,6 +43,8 @@ import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.Getter;
+import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -66,6 +68,8 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
+
+  @Getter @Setter @AutoLogOutput private boolean autoAligning = false;
 
   private final PIDController xController =
       new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);

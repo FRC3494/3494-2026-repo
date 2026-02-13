@@ -68,7 +68,10 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier omegaSupplier) {
-    return run(
+    return startRun(
+        () -> {
+          drive.setAutoAligning(false);
+        },
         () -> {
           // Get linear velocity
           Translation2d linearVelocity =

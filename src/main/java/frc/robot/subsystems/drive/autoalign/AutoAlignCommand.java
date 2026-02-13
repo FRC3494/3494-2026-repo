@@ -31,6 +31,11 @@ public class AutoAlignCommand extends Command {
   }
 
   @Override
+  public void initialize() {
+    drive.setAutoAligning(true);
+  }
+
+  @Override
   public void execute() {
     Pose2d currentPose = drive.getPose();
 
