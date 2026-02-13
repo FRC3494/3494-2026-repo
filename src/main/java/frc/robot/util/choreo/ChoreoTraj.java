@@ -48,7 +48,7 @@ public record ChoreoTraj(
   }
 
   // If these methods cause errors because you're not using ChoreoLib,
-  // turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
+
   /**
    * Load an AutoTrajectory directly from a ChoreoTraj, which may be a segment of a larger
    * trajectory.
