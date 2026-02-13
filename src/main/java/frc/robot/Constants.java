@@ -224,7 +224,22 @@ public final class Constants {
 
     // Auto config
     public static final double autoLinearKp = 10.0;
+    public static final double autoLinearKi = 0.0;
+    public static final double autoLinearKd = 0.0;
+
     public static final double autoAngularKp = 7.5;
+    public static final double autoAngularKi = 0.0;
+    public static final double autoAngularKd = 0.0;
+
+    public static class AutoAlignConstants {
+      public static final double autoAlignLinearKp = 10.0;
+      public static final double autoAlignLinearKi = 0.0;
+      public static final double autoAlignLinearKd = 0.0;
+
+      public static final double autoAlignAngularKp = 7.5;
+      public static final double autoAlignAngularKi = 0.0;
+      public static final double autoAlignAngularKd = 0.0;
+    }
   }
 
   public static final class VisionConstants {

@@ -67,9 +67,12 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
-  private final PIDController xController = new PIDController(autoLinearKp, 0.0, 0.0);
-  private final PIDController yController = new PIDController(autoLinearKp, 0.0, 0.0);
-  private final PIDController headingController = new PIDController(autoAngularKp, 0.0, 0.0);
+  private final PIDController xController =
+      new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);
+  private final PIDController yController =
+      new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);
+  private final PIDController headingController =
+      new PIDController(autoAngularKp, autoAngularKi, autoAngularKd);
 
   public Drive(
       GyroIO gyroIO,
