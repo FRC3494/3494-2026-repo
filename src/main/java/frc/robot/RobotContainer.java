@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
 import frc.robot.OI.DriveOI;
 import frc.robot.subsystems.drive.Drive;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -153,6 +155,15 @@ public class RobotContainer {
     // ==================== DRIVE ====================
     // Default command, normal field-relative drive
     drive.setDefaultCommand(joystickDriveCommand);
+
+    DriveOI.autoAlignClimb()
+        .onTrue(
+            runOnce(
+                () ->
+                    drive.setDefaultCommand(
+                        new AutoAlignCommand(AutoAlignConstants.climbPose, drive)),
+                drive))
+        .onFalse(runOnce(() -> drive.setDefaultCommand(joystickDriveCommand), drive));
 
     // Lock to 0° when A button is held
     DriveOI.lockToForward()

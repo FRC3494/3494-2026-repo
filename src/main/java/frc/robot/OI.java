@@ -32,6 +32,10 @@ public final class OI {
       return MathUtil.applyDeadband(-primaryController.getRightX(), controllerStickDeadband);
     }
 
+    public static Trigger autoAlignClimb() {
+      return primaryController.y(eventLoop);
+    }
+
     public static Trigger resetYaw() {
       return primaryController.back(eventLoop);
     }

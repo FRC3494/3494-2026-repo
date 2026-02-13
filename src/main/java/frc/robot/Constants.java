@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -239,6 +240,9 @@ public final class Constants {
       public static final double autoAlignAngularKp = 7.5;
       public static final double autoAlignAngularKi = 0.0;
       public static final double autoAlignAngularKd = 0.0;
+
+      public static final Pose2d climbPose =
+          new Pose2d(Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.kZero);
     }
   }
 
