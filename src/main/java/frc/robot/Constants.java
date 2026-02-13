@@ -56,6 +56,8 @@ public final class Constants {
   }
 
   public static class RobotMap {
+    public static final int pdhCanId = 63;
+
     public static final int pigeonCanId = 52;
 
     public static final int frontLeftDriveCanId = 18;

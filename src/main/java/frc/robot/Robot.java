@@ -10,11 +10,14 @@ package frc.robot;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.RobotMap;
 import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
@@ -73,6 +76,7 @@ public class Robot extends LoggedRobot {
     StatusLogger.disableAutoLogging(); // Disable REVLib's built-in logging
 
     // Start AdvantageKit logger
+    LoggedPowerDistribution.getInstance(RobotMap.pdhCanId, ModuleType.kRev);
     Logger.start();
 
     // Enable Elastic layout download
