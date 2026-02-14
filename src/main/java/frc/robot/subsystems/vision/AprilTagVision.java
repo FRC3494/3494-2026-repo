@@ -8,9 +8,9 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 
 public class AprilTagVision extends SubsystemBase {
-  private AprilTagCamera[] cameras = new AprilTagCamera[RobotMap.aprilTagLimelightNames.length];
-
-  private Drive drive;
+  private final AprilTagCamera[] cameras = new AprilTagCamera[RobotMap.aprilTagLimelightNames.length];
+  private final Drive drive;
+  private final boolean megaTagTwo;
 
   public AprilTagVision(Drive drive) {
     this.drive = drive;
@@ -18,6 +18,7 @@ public class AprilTagVision extends SubsystemBase {
     for (int i = 0; i < cameras.length; i++) {
       cameras[i] = new AprilTagCamera(RobotMap.aprilTagLimelightNames[i], true);
     }
+    this.megaTagTwo = true;
   }
 
   @Override
@@ -29,6 +30,45 @@ public class AprilTagVision extends SubsystemBase {
       camera.periodic();
 
       drive.addVisionMeasurement(camera.getPose(), camera.getPoseTimestamp(), camera.getStdDevs());
+    for (String name : names) {
+      LimelightHelpers.SetRobotOrientation(
+          name,
+          drive.getRotation().getDegrees(),
+          Units.radiansToDegrees(drive.getYawVelocityRadPerSec()),
+          0,
+          0,
+          0,
+          0);
+
+      PoseEstimate poseEstimate;
+      if (megaTagTwo) {
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+      } else {
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+      }
+
+      boolean validMeasurement =
+          poseEstimate != null
+              && poseEstimate.tagCount > 0
+              && poseEstimate.avgTagDist < maxTagDistance.in(Meters);
+
+      if (validMeasurement) {
+        Matrix<N3, N1> measurementStdDevs =
+            // VecBuilder.fill(
+            //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
+            //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
+            //     maxAngleStdDev.in(Radians)
+            //         * Math.abs(
+            //             poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians()
+            //                 / (2 * Math.PI)));
+            VecBuilder.fill(.1, .1, 9999999);
+
+        // drive.addVisionMeasurement(
+        //     poseEstimate.pose, poseEstimate.timestampSeconds, measurementStdDevs);
+
+        frc.robot.util.LogUtil.logCameraStats(
+            "Vision/" + name, poseEstimate, validMeasurement, megaTagTwo, measurementStdDevs);
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.shooter.hood;
 
 import static frc.robot.Constants.HoodConstants.*;
-import static frc.robot.util.SparkUtil.logMotorStats;
+import static frc.robot.util.LogUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;

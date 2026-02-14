@@ -2,7 +2,7 @@ package frc.robot.subsystems.hopper;
 
 import static edu.wpi.first.units.Units.RPM;
 import static frc.robot.Constants.HopperConstants.*;
-import static frc.robot.util.SparkUtil.logMotorStats;
+import static frc.robot.util.LogUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;

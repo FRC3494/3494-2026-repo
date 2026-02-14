@@ -1,7 +1,7 @@
 package frc.robot.subsystems.shooter.turret;
 
 import static frc.robot.Constants.TurretConstants.*;
-import static frc.robot.util.SparkUtil.logMotorStats;
+import static frc.robot.util.LogUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
