@@ -223,6 +223,9 @@ public final class Constants {
                 1),
             moduleTranslations);
 
+    // Pigeon config
+    public static final double pigeonGyroYawTrimDegPerRot = 6.558166667;
+
     // Auto config
     public static final double autoLinearKp = 10.0;
     public static final double autoLinearKi = 0.0;
