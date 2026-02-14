@@ -77,7 +77,6 @@ public class Robot extends LoggedRobot {
     StatusLogger.disableAutoLogging(); // Disable REVLib's built-in logging
 
     // Start CTRE logging
-    SignalLogger.setPath("/media/sda1/logs/ctre-logs/");
     SignalLogger.start();
 
     // Start AdvantageKit logger
