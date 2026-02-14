@@ -29,6 +29,8 @@ public class AutoAlignCommand extends Command {
     this.drive = drive;
 
     addRequirements(drive);
+
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
