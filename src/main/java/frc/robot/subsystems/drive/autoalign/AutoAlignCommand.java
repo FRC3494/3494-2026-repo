@@ -10,6 +10,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.QuadranglesUtil;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoAlignCommand extends Command {
   private final Drive drive;
@@ -37,6 +38,8 @@ public class AutoAlignCommand extends Command {
 
   @Override
   public void execute() {
+    Logger.recordOutput("Drive/AutoAlign/TargetPose", targetPose);
+
     Pose2d currentPose = drive.getPose();
 
     ChassisSpeeds chassisSpeeds =
