@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.OI.DriveOI;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -25,6 +27,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -49,6 +52,8 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final AutoChooser autoChooser;
+
+  private final Command joystickDriveCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -86,6 +91,12 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+    joystickDriveCommand =
+        DriveCommands.joystickDrive(
+            drive,
+            OI.DriveOI::joystickDriveX,
+            OI.DriveOI::joystickDriveY,
+            OI.DriveOI::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
 
@@ -143,33 +154,37 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // ==================== DRIVE ====================
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            OI.Drive::joystickDriveX,
-            OI.Drive::joystickDriveY,
-            OI.Drive::joystickDriveOmega));
+    drive.setDefaultCommand(joystickDriveCommand);
+
+    DriveOI.autoAlignClimb()
+        .onTrue(
+            runOnce(
+                () ->
+                    drive.setDefaultCommand(
+                        new AutoAlignCommand(AutoAlignConstants.climbPose, drive)),
+                drive))
+        .onFalse(runOnce(() -> drive.setDefaultCommand(joystickDriveCommand), drive));
 
     // Lock to 0° when A button is held
-    OI.Drive.lockToForward()
+    DriveOI.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                OI.Drive::joystickDriveX,
-                OI.Drive::joystickDriveY,
+                OI.DriveOI::joystickDriveX,
+                OI.DriveOI::joystickDriveY,
                 () -> Rotation2d.kPi.div(4)));
 
     // Switch to X pattern when X button is pressed
-    OI.Drive.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
+    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when Back button is pressed
-    OI.Drive.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
+    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
 
     // Rezero swerve turn relative encoders off of absolute encoders
-    OI.Drive.rezeroSwerveTurnEncoders()
+    DriveOI.rezeroSwerveTurnEncoders()
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
 
-    OI.Drive.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
+    DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
   }
 
   /**

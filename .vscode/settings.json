@@ -76,5 +76,7 @@
         "cmd": "${workspaceFolder}\\gradlew spotlessApply -Dorg.gradle.java.home=\"C:\\Users\\Public\\wpilib\\2026\\jdk\""
       }
     ]
-  }
+  },
+  "codescene.enableTelemetry": false,
+  "codescene.enableAutoRefactor": false
 }

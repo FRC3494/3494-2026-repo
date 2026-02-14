@@ -6,10 +6,12 @@ import static frc.robot.Constants.VisionConstants.maxTagDistance;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import lombok.Getter;
@@ -19,6 +21,9 @@ import org.littletonrobotics.junction.Logger;
 
 public class AprilTagCamera {
   private String name;
+
+  @AutoLogOutput(key = "Vision/{name}/LimelightPosition")
+  private Pose3d position;
 
   private double heartbeat;
 
@@ -32,20 +37,35 @@ public class AprilTagCamera {
   @AutoLogOutput(key = "Vision/{name}/RobotYawVelocity")
   private AngularVelocity robotYawVelocity = DegreesPerSecond.of(0.0);
 
+  @Getter
+  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement")
+  private boolean validMeasurement;
+
   @Getter private Pose2d pose;
   @Getter private double poseTimestamp;
   @Getter private Matrix<N3, N1> stdDevs;
 
-  public AprilTagCamera(String name, boolean megaTag2) {
-    this.name = name;
+  public AprilTagCamera(LimelightConstants limelightConstants, boolean megaTag2) {
+    this.name = limelightConstants.name();
+    this.position = limelightConstants.position();
+
     this.megaTag2Enabled = megaTag2;
+
+    LimelightHelpers.setCameraPose_RobotSpace(
+        name,
+        position.getMeasureX().in(Meters),
+        position.getMeasureY().in(Meters),
+        position.getMeasureZ().in(Meters),
+        position.getRotation().getMeasureX().in(Degrees),
+        position.getRotation().getMeasureY().in(Degrees),
+        position.getRotation().getMeasureZ().in(Degrees));
   }
 
-  // ! This MUST be manually called since AprilTagCamera is not a SubsystemBase
+  // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
   public void periodic() {
     // Determine whether Limelight is connected
     double newHeartbeat = LimelightHelpers.getHeartbeat(name);
-    Logger.recordOutput(name + "/Connected", newHeartbeat != heartbeat);
+    Logger.recordOutput("Vision/" + name + "/Connected", newHeartbeat != heartbeat);
     heartbeat = newHeartbeat;
 
     // Give robot yaw info to Limelight
@@ -62,7 +82,7 @@ public class AprilTagCamera {
 
     logPoseEstimateStats(poseEstimate);
 
-    boolean validMeasurement = isMeasurementValid(poseEstimate);
+    validMeasurement = isMeasurementValid(poseEstimate);
 
     // Save pose estimate if valid
     if (validMeasurement) {
@@ -87,6 +107,8 @@ public class AprilTagCamera {
   }
 
   private boolean isMeasurementValid(PoseEstimate poseEstimate) {
+    // TODO: use limelight's own measurement valid function
+
     boolean estimateNotNull = poseEstimate != null;
     Logger.recordOutput("Vision/" + name + "/EstimateNotNull", estimateNotNull);
 
@@ -96,25 +118,22 @@ public class AprilTagCamera {
     boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
     Logger.recordOutput("Vision/" + name + "/TagsWithinRange", tagsWithinRange);
 
-    boolean validMeasurement = estimateNotNull && tagsPresent && tagsWithinRange;
-    Logger.recordOutput("Vision/" + name + "/ValidMeasurement", validMeasurement);
-
-    return validMeasurement;
+    return estimateNotNull && tagsPresent && tagsWithinRange;
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
-    Matrix<N3, N1> standardDeviations =
-        // VecBuilder.fill(
-        //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
-        //     maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters)),
-        //     maxAngleStdDev.in(Radians)
-        //         * Math.abs(
-        //             poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians()
-        //                 / (2 * Math.PI)));
-        VecBuilder.fill(.1, .1, 9999999);
+    double standardDeviationX =
+        .1; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
+    double standardDeviationY =
+        .1; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
+    double standardDeviationTheta = 99999999; // maxAngleStdDev.in(Radians) *
+    // Math.abs(poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians() / (2 *
+    // Math.PI)));
 
-    Logger.recordOutput("Vision/" + name + "/StdDevs", standardDeviations);
+    Logger.recordOutput("Vision/" + name + "/StdDevX", standardDeviationX);
+    Logger.recordOutput("Vision/" + name + "/StdDevY", standardDeviationY);
+    Logger.recordOutput("Vision/" + name + "/StdDevTheta", standardDeviationTheta);
 
-    return standardDeviations;
+    return VecBuilder.fill(standardDeviationX, standardDeviationY, standardDeviationTheta);
   }
 }

@@ -7,7 +7,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.DoubleArrayEntry;
-import frc.robot.util.LimelightHelpers.LimelightResults;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import org.littletonrobotics.junction.Logger;
 
@@ -52,14 +51,14 @@ public class LogUtil {
     Logger.recordOutput(key + "/StdDevTheta", Radians.of(measurementStdDevs.get(2, 0)));
 
     DoubleArrayEntry hardwareEntry = LimelightHelpers.getLimelightDoubleArrayEntry(key, "hw");
-        double[] hw = hardwareEntry != null ? hardwareEntry.get(new double[0]) : new double[0];
-        if (hw.length >= 4) {
-          Logger.recordOutput(key + "/CPUTemp", Celsius.of(hw[0]));
-          Logger.recordOutput(key + "/CPUUsage", Percent.of(hw[1]));
-          Logger.recordOutput(key + "/RAMUsage", Percent.of(hw[2]));
-          Logger.recordOutput(key + "/FPS", hw[3]);
-        }
-    /* 
+    double[] hw = hardwareEntry != null ? hardwareEntry.get(new double[0]) : new double[0];
+    if (hw.length >= 4) {
+      Logger.recordOutput(key + "/CPUTemp", Celsius.of(hw[0]));
+      Logger.recordOutput(key + "/CPUUsage", Percent.of(hw[1]));
+      Logger.recordOutput(key + "/RAMUsage", Percent.of(hw[2]));
+      Logger.recordOutput(key + "/FPS", hw[3]);
+    }
+    /*
 
         Json based hardware logging
 
@@ -72,6 +71,5 @@ public class LogUtil {
     }
     */
 
-    
   }
 }

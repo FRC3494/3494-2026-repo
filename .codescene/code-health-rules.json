@@ -28,6 +28,10 @@
         {
           "name": "String Heavy Function Arguments",
           "weight": 0
+        },
+        {
+          "name": "Complex Conditional",
+          "weight": 0
         }
       ]
     }
