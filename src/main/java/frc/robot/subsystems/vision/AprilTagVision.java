@@ -16,7 +16,7 @@ public class AprilTagVision extends SubsystemBase {
     this.drive = drive;
 
     for (int i = 0; i < cameras.length; i++) {
-      cameras[i] = new AprilTagCamera(RobotMap.aprilTagLimelights[i], true);
+      cameras[i] = new AprilTagCamera(RobotMap.aprilTagLimelights[i], useMegaTag2);
     }
   }
 
