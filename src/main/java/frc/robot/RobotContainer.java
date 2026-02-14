@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
 import frc.robot.OI.DriveOI;
+import frc.robot.autos.TestAuto;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -50,8 +52,9 @@ public class RobotContainer {
   private final Turret turret;
   private final Hopper hopper;
 
-  // Dashboard inputs
+  // Choreo
   private final AutoChooser autoChooser;
+  private final AutoFactory autoFactory;
 
   private final Command joystickDriveCommand;
 
@@ -112,6 +115,9 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new AutoChooser();
+    // TODO: add another argument at the end for TrajectoryLogger
+    autoFactory =
+        new AutoFactory(drive::getPose, drive::setPose, drive::followTrajectory, true, drive);
     configureAutos();
 
     // Configure the button bindings
@@ -119,6 +125,9 @@ public class RobotContainer {
   }
 
   private void configureAutos() {
+    // Set up autos
+    autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine(drive, autoFactory));
+
     // Set up SysId routines
     autoChooser.addCmd(
         "Drive Wheel Radius Rotational Characterization",
