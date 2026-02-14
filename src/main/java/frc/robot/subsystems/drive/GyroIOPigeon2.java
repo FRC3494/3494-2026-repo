@@ -34,7 +34,7 @@ public class GyroIOPigeon2 implements GyroIO {
     Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
     pigeonConfig.GyroTrim.GyroScalarY = pigeonGyroYawTrimDegPerRot;
     pigeon.getConfigurator().apply(pigeonConfig);
-    pigeon.getConfigurator().setYaw(0.0);
+    // pigeon.getConfigurator().setYaw(0.0);
 
     yaw.setUpdateFrequency(odometryFrequency);
     yawVelocity.setUpdateFrequency(50.0);
