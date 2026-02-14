@@ -6,6 +6,8 @@ import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.DoubleArrayEntry;
+import frc.robot.util.LimelightHelpers.LimelightResults;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import org.littletonrobotics.junction.Logger;
 
@@ -35,6 +37,7 @@ public class LogUtil {
 
   public static void logCameraStats(
       String key,
+      String limelightName,
       PoseEstimate poseEstimate,
       boolean validMeasurement,
       boolean megaTagTwo,
@@ -47,5 +50,13 @@ public class LogUtil {
     Logger.recordOutput(key + "/StdDevX", Meters.of(measurementStdDevs.get(0, 0)));
     Logger.recordOutput(key + "/StdDevY", Meters.of(measurementStdDevs.get(1, 0)));
     Logger.recordOutput(key + "/StdDevTheta", Radians.of(measurementStdDevs.get(2, 0)));
+
+    LimelightResults results = LimelightHelpers.getLatestResults(limelightName);
+    if (results != null && results.hardware != null) {
+      Logger.recordOutput(key + "/CPUTemp", Celsius.of(results.hardware.temperature));
+      Logger.recordOutput(key + "/CPUUsage", Percent.of(results.hardware.cpuUsage));
+      Logger.recordOutput(key + "/RAMUsage", Percent.of(results.hardware.ramUsage));
+      Logger.recordOutput(key + "/DiskFree", results.hardware.diskFree);
+    }
   }
 }
