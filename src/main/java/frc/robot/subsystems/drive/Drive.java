@@ -380,6 +380,10 @@ public class Drive extends SubsystemBase {
     }
   }
 
+  public boolean isGyroConnected() {
+    return gyroInputs.connected;
+  }
+
   public void resetYaw() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {

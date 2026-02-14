@@ -23,6 +23,10 @@ public class AprilTagVision extends SubsystemBase {
   @Override
   public void periodic() {
     for (AprilTagCamera camera : cameras) {
+      if (useMegaTag2 && drive.isGyroConnected() != camera.isMegaTag2Enabled()) {
+        camera.setMegaTag2Enabled(drive.isGyroConnected());
+      }
+
       camera.setRobotYaw(drive.getRotation());
       camera.setRobotYawVelocity(RadiansPerSecond.of(drive.getYawVelocityRadPerSec()));
 
