@@ -11,8 +11,8 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.choreo.ChoreoTraj;
 
 public class TestAuto {
-  public static AutoRoutine getRoutine(Drive drive, AutoFactory autoFactory) {
-    AutoRoutine routine = autoFactory.newRoutine("TestAuto");
+  public static AutoRoutine getRoutine(String name, AutoFactory autoFactory, Drive drive) {
+    AutoRoutine routine = autoFactory.newRoutine(name);
 
     AutoTrajectory traj1 = ChoreoTraj.NewPath.asAutoTraj(routine);
     AutoTrajectory traj2 = ChoreoTraj.NewPath_copy1.asAutoTraj(routine);

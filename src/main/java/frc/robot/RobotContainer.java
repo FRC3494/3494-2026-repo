@@ -126,7 +126,7 @@ public class RobotContainer {
 
   private void configureAutos() {
     // Set up autos
-    autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine(drive, autoFactory));
+    autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine("TestAuto", autoFactory, drive));
 
     // Set up SysId routines
     autoChooser.addCmd(
