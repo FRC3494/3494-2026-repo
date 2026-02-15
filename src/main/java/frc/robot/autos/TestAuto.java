@@ -18,7 +18,7 @@ public class TestAuto {
     AutoTrajectory traj2 = ChoreoTraj.NewPath_copy1.asAutoTraj(routine);
 
     routine.active().onTrue(sequence(traj1.resetOdometry(), traj1.cmd()));
-    traj1.done().onTrue(sequence(print("Doneeeeee with #1"), waitSeconds(3), traj2.cmd()));
+    traj1.done().onTrue(sequence(print("Doneeeeee with #1"), waitSeconds(3)));
 
     traj2.done().onTrue(sequence(waitSeconds(1), print("Traj2 done")));
 

@@ -23,23 +23,33 @@ public record ChoreoTraj(
       new ChoreoTraj(
           "NewPath",
           OptionalInt.empty(),
-          5.34494,
+          2.79247,
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)),
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)));
   public static final ChoreoTraj NewPath_copy1 =
       new ChoreoTraj(
           "NewPath_copy1",
           OptionalInt.empty(),
-          6.16091,
+          2.85896,
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)),
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)));
+  public static final ChoreoTraj NewPath_copy2 =
+      new ChoreoTraj(
+          "NewPath_copy2",
+          OptionalInt.empty(),
+          0.84365,
+          new Pose2d(0.467, 1.838, Rotation2d.fromRadians(0)),
+          new Pose2d(0.467, 0.508, Rotation2d.fromRadians(0)));
 
   /**
    * A map between trajectory names and their corresponding data. This allows for trajectory data to
    * be looked up with strings during runtime.
    */
   public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES =
-      Map.ofEntries(Map.entry("NewPath", NewPath), Map.entry("NewPath_copy1", NewPath_copy1));
+      Map.ofEntries(
+          Map.entry("NewPath", NewPath),
+          Map.entry("NewPath_copy1", NewPath_copy1),
+          Map.entry("NewPath_copy2", NewPath_copy2));
 
   /**
    * Looks up the ChoreoTraj segment of the given overall ChoreoTraj. WARNING: will raise an
