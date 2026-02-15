@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
 import frc.robot.OI.DriveOI;
+import frc.robot.autos.Autos;
 import frc.robot.autos.TestAuto;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
@@ -117,7 +118,13 @@ public class RobotContainer {
     autoChooser = new AutoChooser();
     // TODO: add another argument at the end for TrajectoryLogger
     autoFactory =
-        new AutoFactory(drive::getPose, drive::setPose, drive::followTrajectory, true, drive);
+        new AutoFactory(
+            drive::getPose,
+            drive::setPose,
+            drive::followTrajectory,
+            true,
+            drive,
+            Autos::logTrajectory);
     configureAutos();
 
     // Configure the button bindings
