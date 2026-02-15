@@ -102,8 +102,10 @@ public class AprilTagCamera {
     Logger.recordOutput("Vision/" + name + "/TagCount", poseEstimate.tagCount);
     Logger.recordOutput("Vision/" + name + "/TagSpan", poseEstimate.tagSpan);
     Logger.recordOutput("Vision/" + name + "/PoseTimestamp", poseEstimate.timestampSeconds);
-
     Logger.recordOutput("Vision/" + name + "/RawFiducials", poseEstimate.rawFiducials.toString());
+    Logger.recordOutput(
+        "Vision/" + name + "/CameraPoseRobotSpace",
+        LimelightHelpers.getCameraPose3d_RobotSpace(name));
   }
 
   private boolean isMeasurementValid(PoseEstimate poseEstimate) {
