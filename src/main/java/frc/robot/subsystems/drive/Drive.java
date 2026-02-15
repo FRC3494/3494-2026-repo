@@ -216,7 +216,20 @@ public class Drive extends SubsystemBase {
   }
 
   public void followTrajectory(SwerveSample sample) {
-    Logger.recordOutput("Odometry/TargetPose", sample.getPose());
+    Logger.recordOutput("Choreo/TargetPose", sample.getPose());
+    Logger.recordOutput(
+        "Choreo/TargetVelocity",
+        new Pose2d(
+            Meters.of(sample.x + sample.vx),
+            Meters.of(sample.y + sample.vy),
+            Rotation2d.fromRadians(sample.heading + sample.omega)));
+    Logger.recordOutput(
+        "Choreo/TargetAccel",
+        new Pose2d(
+            Meters.of(sample.x + sample.ax),
+            Meters.of(sample.y + sample.ay),
+            Rotation2d.fromRadians(sample.heading + sample.alpha)));
+    Logger.recordOutput("Choreo/t", Seconds.of(sample.t));
 
     // Get the current pose of the robot
     Pose2d pose = getPose();
@@ -229,6 +242,17 @@ public class Drive extends SubsystemBase {
             sample.omega
                 + headingController.calculate(pose.getRotation().getRadians(), sample.heading),
             getRotation());
+
+    Logger.recordOutput(
+        "Choreo/VelocitySetpoint",
+        new Pose2d(
+            pose.getX() + sample.vx + xController.calculate(pose.getX(), sample.x),
+            pose.getY() + sample.vy + yController.calculate(pose.getY(), sample.y),
+            Rotation2d.fromRadians(
+                pose.getRotation().getRadians()
+                    + sample.omega
+                    + headingController.calculate(
+                        pose.getRotation().getRadians(), sample.heading))));
 
     // Apply the generated speeds
     runVelocity(speeds);

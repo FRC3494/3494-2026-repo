@@ -227,6 +227,8 @@ public final class Constants {
     public static final double pigeonGyroYawTrimDegPerRot = 6.558166667;
 
     // Auto config
+    public static final boolean mirrorForRedAlliance = true;
+
     public static final double autoLinearKp = 10.0;
     public static final double autoLinearKi = 0.0;
     public static final double autoLinearKd = 0.0;
