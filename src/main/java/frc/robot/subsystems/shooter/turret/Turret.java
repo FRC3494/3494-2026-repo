@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Turret extends SubsystemBase {
   private SparkMax turretMotor;
+  private DigitalInput turretMagSensor;
 
   @Getter @AutoLogOutput private Rotation2d turretSetpoint = Rotation2d.kZero;
 
@@ -37,6 +39,8 @@ public class Turret extends SubsystemBase {
         .velocityConversionFactor(turretGearRatio);
     turretMotor.configure(
         turretConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    turretMagSensor = new DigitalInput(RobotMap.Shooter.turretMagSensorDIO);
   }
 
   @Override
@@ -56,5 +60,9 @@ public class Turret extends SubsystemBase {
     turretMotor
         .getClosedLoopController()
         .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
+  }
+
+  private boolean isMagSensorTripped() {
+    return turretMagSensor.get();
   }
 }

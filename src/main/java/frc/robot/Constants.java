@@ -97,6 +97,7 @@ public final class Constants {
       public static final int hopperFeederCanId = 13;
 
       public static final int turretMotorCanId = 15;
+      public static final int turretMagSensorDIO = 0;
     }
 
     public static final class Vision {
