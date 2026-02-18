@@ -14,7 +14,7 @@ public class TestAuto {
   public static AutoRoutine getRoutine(String name, AutoFactory autoFactory, Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
-    AutoTrajectory traj1 = ChoreoTraj.NewPath.asAutoTraj(routine);
+    AutoTrajectory traj1 = ChoreoTraj.NewPath_copy2.asAutoTraj(routine);
     AutoTrajectory traj2 = ChoreoTraj.NewPath_copy1.asAutoTraj(routine);
 
     routine.active().onTrue(sequence(traj1.resetOdometry(), traj1.cmd()));
