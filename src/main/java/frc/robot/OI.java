@@ -2,6 +2,7 @@ package frc.robot;
 
 import static frc.robot.Constants.OIConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,17 +19,21 @@ public final class OI {
     eventLoop.poll();
   }
 
-  public static class Drive {
+  public static final class DriveOI {
     public static double joystickDriveX() {
-      return -primaryController.getLeftY();
+      return MathUtil.applyDeadband(-primaryController.getLeftY(), controllerStickDeadband);
     }
 
     public static double joystickDriveY() {
-      return -primaryController.getLeftX();
+      return MathUtil.applyDeadband(-primaryController.getLeftX(), controllerStickDeadband);
     }
 
     public static double joystickDriveOmega() {
-      return -primaryController.getRightX();
+      return MathUtil.applyDeadband(-primaryController.getRightX(), controllerStickDeadband);
+    }
+
+    public static Trigger autoAlignClimb() {
+      return primaryController.y(eventLoop);
     }
 
     public static Trigger resetYaw() {
@@ -45,6 +50,10 @@ public final class OI {
 
     public static Trigger lockToForward() {
       return primaryController.a(eventLoop);
+    }
+
+    public static Trigger resetYawPigeon() {
+      return primaryController.b(eventLoop);
     }
   }
 }

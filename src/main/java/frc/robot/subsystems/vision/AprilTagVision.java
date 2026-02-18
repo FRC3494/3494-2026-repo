@@ -8,7 +8,7 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 
 public class AprilTagVision extends SubsystemBase {
-  private AprilTagCamera[] cameras = new AprilTagCamera[RobotMap.aprilTagLimelights.length];
+  private AprilTagCamera[] cameras = new AprilTagCamera[RobotMap.Vision.aprilTagLimelights.length];
 
   private Drive drive;
 
@@ -16,7 +16,7 @@ public class AprilTagVision extends SubsystemBase {
     this.drive = drive;
 
     for (int i = 0; i < cameras.length; i++) {
-      cameras[i] = new AprilTagCamera(RobotMap.aprilTagLimelights[i], useMegaTag2);
+      cameras[i] = new AprilTagCamera(RobotMap.Vision.aprilTagLimelights[i], useMegaTag2);
     }
   }
 

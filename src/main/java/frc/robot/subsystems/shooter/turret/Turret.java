@@ -50,4 +50,11 @@ public class Turret extends SubsystemBase {
         .getClosedLoopController()
         .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
   }
+
+  public void setTurretSetpoint(Rotation2d setpoint) {
+    turretSetpoint = setpoint;
+    turretMotor
+        .getClosedLoopController()
+        .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
+  }
 }

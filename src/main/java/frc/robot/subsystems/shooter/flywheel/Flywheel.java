@@ -25,7 +25,7 @@ public class Flywheel extends SubsystemBase {
 
   public Flywheel() {
     leftMotor = new SparkMax(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
-    rightMotor = new SparkMax(RobotMap.Shooter.flywheelRightCadId, MotorType.kBrushless);
+    rightMotor = new SparkMax(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
 
     SparkMaxConfig leftConfig = new SparkMaxConfig();
     leftConfig
