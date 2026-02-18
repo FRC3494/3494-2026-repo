@@ -250,9 +250,9 @@ public final class Constants {
       public static final double autoAlignLinearKd = 0.1;
       public static final Distance autoAlignLinearTolerance = Centimeters.of(1.0);
 
-      public static final double autoAlignAngularKp = 0;
+      public static final double autoAlignAngularKp = 5.0;
       public static final double autoAlignAngularKi = 0.0;
-      public static final double autoAlignAngularKd = 0.0;
+      public static final double autoAlignAngularKd = 0.1;
 
       public static final Pose2d climbPose =
           new Pose2d(Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.kZero);
