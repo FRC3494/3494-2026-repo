@@ -66,6 +66,17 @@ public class AutoAlignCommand extends Command {
         ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omega, drive.getRotation());
 
     drive.runVelocity(chassisSpeeds);
+
+    Logger.recordOutput(
+        "Drive/AutoAlign/VelocitySetpoint",
+        new Pose2d(
+            currentPose.getX() + xSpeed,
+            currentPose.getY() + ySpeed,
+            Rotation2d.fromRadians(currentPose.getRotation().getRadians() + omega)));
+    Logger.recordOutput("Drive/AutoAlign/XError", Meters.of(xController.getError()));
+    Logger.recordOutput("Drive/AutoAlign/YError", Meters.of(yController.getError()));
+    Logger.recordOutput(
+        "Drive/AutoAlign/HeadingError", Rotation2d.fromRadians(headingController.getError()));
   }
 
   @Override

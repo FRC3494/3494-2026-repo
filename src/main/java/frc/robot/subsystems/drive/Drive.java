@@ -235,6 +235,8 @@ public class Drive extends SubsystemBase {
             Meters.of(sample.y + sample.ay),
             Rotation2d.fromRadians(sample.heading + sample.alpha)));
     Logger.recordOutput("Choreo/t", Seconds.of(sample.t));
+    Logger.recordOutput("Choreo/ModuleForcesX", sample.moduleForcesX());
+    Logger.recordOutput("Choreo/ModuleForcesY", sample.moduleForcesY());
 
     // Get the current pose of the robot
     Pose2d pose = getPose();
