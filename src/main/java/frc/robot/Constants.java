@@ -245,9 +245,10 @@ public final class Constants {
       // Tuned with Ziegler-Nichols for classic PID
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       // kU is 0.5, tU is 0.193s (9.65 robot loops)
-      public static final double autoAlignLinearKp = 10;
+      public static final double autoAlignLinearKp = 4.0;
       public static final double autoAlignLinearKi = 0;
-      public static final double autoAlignLinearKd = 8.0;
+      public static final double autoAlignLinearKd = 0.1;
+      public static final Distance autoAlignLinearTolerance = Centimeters.of(1.0);
 
       public static final double autoAlignAngularKp = 0;
       public static final double autoAlignAngularKi = 0.0;

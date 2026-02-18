@@ -1,9 +1,11 @@
 package frc.robot.subsystems.drive.autoalign;
 
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
@@ -30,6 +32,8 @@ public class AutoAlignCommand extends Command {
 
     addRequirements(drive);
 
+    xController.setTolerance(autoAlignLinearTolerance.in(Meters));
+    yController.setTolerance(autoAlignLinearTolerance.in(Meters));
     headingController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -44,13 +48,22 @@ public class AutoAlignCommand extends Command {
 
     Pose2d currentPose = drive.getPose();
 
+    double xSpeed =
+        !xController.atSetpoint()
+            ? xController.calculate(currentPose.getX(), targetPose.getX())
+            : 0;
+    double ySpeed =
+        !yController.atSetpoint()
+            ? yController.calculate(currentPose.getY(), targetPose.getY())
+            : 0;
+    double omega =
+        !headingController.atSetpoint()
+            ? headingController.calculate(
+                currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians())
+            : 0;
+
     ChassisSpeeds chassisSpeeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-            xController.calculate(currentPose.getX(), targetPose.getX()),
-            yController.calculate(currentPose.getY(), targetPose.getY()),
-            headingController.calculate(
-                currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians()),
-            drive.getRotation());
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omega, drive.getRotation());
 
     drive.runVelocity(chassisSpeeds);
   }
