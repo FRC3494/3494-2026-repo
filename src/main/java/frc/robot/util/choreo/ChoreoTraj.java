@@ -23,21 +23,21 @@ public record ChoreoTraj(
       new ChoreoTraj(
           "NewPath",
           OptionalInt.empty(),
-          2.79247,
+          2.80395,
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)),
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)));
   public static final ChoreoTraj NewPath_copy1 =
       new ChoreoTraj(
           "NewPath_copy1",
           OptionalInt.empty(),
-          2.85896,
+          2.87035,
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)),
           new Pose2d(0.416, 1.838, Rotation2d.fromRadians(0)));
   public static final ChoreoTraj NewPath_copy2 =
       new ChoreoTraj(
           "NewPath_copy2",
           OptionalInt.empty(),
-          0.84365,
+          0.84188,
           new Pose2d(0.467, 1.838, Rotation2d.fromRadians(0)),
           new Pose2d(0.467, 0.508, Rotation2d.fromRadians(0)));
 
