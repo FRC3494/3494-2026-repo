@@ -270,8 +270,8 @@ public final class Constants {
     public static final double autoAngularKi = 0.0;
     public static final double autoAngularKd = 0.0;
 
-    public static final Distance fieldWidth = Meters.of(8.07);
-    public static final Distance fieldLength = Meters.of(16.54);
+    public static final Distance fieldWidth = Meters.of(8.0692);
+    public static final Distance fieldLength = Meters.of(16.541);
 
     public static class AutoAlignConstants {
       // Tuned with Ziegler-Nichols for classic PID
