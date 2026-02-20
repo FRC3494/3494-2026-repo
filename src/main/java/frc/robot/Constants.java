@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.DriveConstants.fieldWidth;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -326,6 +327,13 @@ public final class Constants {
     public static final double shooterKs = 0.0;
     public static final double shooterKv = 0.0;
     public static final double shooterKa = 0.0;
+
+    public static final Translation2d hubLocation =
+        new Translation2d(Inches.of(181.90625), Inches.of(158.84375));
+    public static final Translation2d outpostBumpLocation =
+        new Translation2d(Inches.of(182.0), Inches.of(90.0));
+    public static final Translation2d depotBumpLocation =
+        new Translation2d(Inches.of(182.0), fieldWidth.minus(Inches.of(90.0)));
 
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;

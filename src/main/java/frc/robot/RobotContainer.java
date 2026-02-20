@@ -31,6 +31,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.shooter.AimShooterCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
@@ -52,6 +53,7 @@ public class RobotContainer {
   private final AutoFactory autoFactory;
 
   private final Command joystickDriveCommand;
+  private final Command aimShooterCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -98,6 +100,8 @@ public class RobotContainer {
 
     aprilTagVision = new AprilTagVision(drive);
     shooter = new Shooter();
+
+    aimShooterCommand = new AimShooterCommand(shooter, drive);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -191,6 +195,9 @@ public class RobotContainer {
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
 
     DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
+
+    // ==================== SHOOTER ====================
+    shooter.setDefaultCommand(aimShooterCommand);
   }
 
   /**
