@@ -317,23 +317,25 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final boolean shooterInverted = false;
-    public static final int shooterCurrentLimit = 20;
-
-    public static final double shooterKp = 0.0;
-    public static final double shooterKi = 0.0;
-    public static final double shooterKd = 0.0;
-
-    public static final double shooterKs = 0.0;
-    public static final double shooterKv = 0.0;
-    public static final double shooterKa = 0.0;
-
     public static final Translation2d hubLocation =
         new Translation2d(Inches.of(181.90625), Inches.of(158.84375));
     public static final Translation2d outpostBumpLocation =
         new Translation2d(Inches.of(182.0), Inches.of(90.0));
     public static final Translation2d depotBumpLocation =
         new Translation2d(Inches.of(182.0), fieldWidth.minus(Inches.of(90.0)));
+
+    public static final class FlywheelConstants {
+      public static final boolean flywheelInverted = false;
+      public static final int flywheelCurrentLimit = 20;
+
+      public static final double flywheelKp = 0.0;
+      public static final double flywheelKi = 0.0;
+      public static final double flywheelKd = 0.0;
+
+      public static final double flywheelKs = 0.0;
+      public static final double flywheelKv = 0.0;
+      public static final double flywheelKa = 0.0;
+    }
 
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;
