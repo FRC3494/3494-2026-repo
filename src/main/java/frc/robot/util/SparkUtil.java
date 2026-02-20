@@ -58,13 +58,13 @@ public class SparkUtil {
   }
 
   public static void logMotorStats(String key, SparkBase spark, boolean absoluteEncoder) {
+    Logger.recordOutput(key + "/Position", Rotations.of(spark.getEncoder().getPosition()));
+    Logger.recordOutput(key + "/Velocity", RPM.of(spark.getEncoder().getVelocity()));
+
     if (absoluteEncoder) {
       Logger.recordOutput(
           key + "/Position", Rotations.of(spark.getAbsoluteEncoder().getPosition()));
       Logger.recordOutput(key + "/Velocity", RPM.of(spark.getAbsoluteEncoder().getVelocity()));
-    } else {
-      Logger.recordOutput(key + "/Position", Rotations.of(spark.getEncoder().getPosition()));
-      Logger.recordOutput(key + "/Velocity", RPM.of(spark.getEncoder().getVelocity()));
     }
 
     Logger.recordOutput(key + "/AppliedOutput", spark.getAppliedOutput());
