@@ -56,4 +56,10 @@ public final class OI {
       return primaryController.b(eventLoop);
     }
   }
+
+  public static final class ShooterOI {
+    public static Trigger rezeroTurret() {
+      return primaryController.povRight();
+    }
+  }
 }
