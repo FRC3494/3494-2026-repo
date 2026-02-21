@@ -12,15 +12,16 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
+import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Hood extends SubsystemBase {
   private SparkMax hoodMotor;
 
-  @AutoLogOutput private Rotation2d hoodSetpoint = Rotation2d.kZero;
+  @Getter @AutoLogOutput private Rotation2d hoodSetpoint = Rotation2d.kZero;
 
   public Hood() {
-    hoodMotor = new SparkMax(RobotMap.hoodMotorCanId, MotorType.kBrushless);
+    hoodMotor = new SparkMax(RobotMap.Shooter.hoodMotorCanId, MotorType.kBrushless);
 
     SparkMaxConfig hoodConfig = new SparkMaxConfig();
     hoodConfig.smartCurrentLimit(hoodCurrentLimit).idleMode(IdleMode.kBrake).inverted(hoodInverted);

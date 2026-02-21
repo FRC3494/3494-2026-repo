@@ -24,8 +24,8 @@ public class Hopper extends SubsystemBase {
   @AutoLogOutput private AngularVelocity feederSetpointRPM = RPM.of(0.0);
 
   public Hopper() {
-    spindexerMotor = new SparkMax(RobotMap.hopperSpindexerCanId, MotorType.kBrushless);
-    feederMotor = new SparkMax(RobotMap.hopperFeederCanId, MotorType.kBrushless);
+    spindexerMotor = new SparkMax(RobotMap.Shooter.hopperSpindexerCanId, MotorType.kBrushless);
+    feederMotor = new SparkMax(RobotMap.Shooter.hopperFeederCanId, MotorType.kBrushless);
 
     // initialize spindexer motor config
     SparkMaxConfig spindexerConfig = new SparkMaxConfig();

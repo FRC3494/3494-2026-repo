@@ -70,15 +70,5 @@ public class SparkUtil {
     Logger.recordOutput(key + "/AppliedOutput", spark.getAppliedOutput());
     Logger.recordOutput(key + "/BusVoltage", Volts.of(spark.getBusVoltage()));
     Logger.recordOutput(key + "/Temp", Celsius.of(spark.getMotorTemperature()));
-
-    // TODO: make work later?
-    // var stats = new java.util.HashMap<String, Measure>();
-    // stats.put("Temp", Celsius.of(spark.getMotorTemperature()));
-    // stats.put("BusVoltage", Volts.of(spark.getBusVoltage()));
-    // stats.put("AppliedOutput", spark.getAppliedOutput());
-
-    // for (var entry : stats.entrySet()) {
-    //   Logger.recordOutput(key + "/" + entry.getKey(), entry.getValue());
-    // }
   }
 }

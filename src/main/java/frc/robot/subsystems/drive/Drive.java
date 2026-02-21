@@ -41,8 +41,11 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.QuadranglesUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import lombok.Getter;
+import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -56,6 +59,7 @@ public class Drive extends SubsystemBase {
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
+  // TODO: fix this to fix init yaw?
   private Rotation2d rawGyroRotation = Rotation2d.kZero;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
@@ -65,11 +69,20 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
+      new SwerveDrivePoseEstimator(
+          kinematics,
+          rawGyroRotation,
+          lastModulePositions,
+          QuadranglesUtil.toAlliancePose(AutoAlignConstants.climbPose));
 
-  private final PIDController xController = new PIDController(autoLinearKp, 0.0, 0.0);
-  private final PIDController yController = new PIDController(autoLinearKp, 0.0, 0.0);
-  private final PIDController headingController = new PIDController(autoAngularKp, 0.0, 0.0);
+  @Getter @Setter @AutoLogOutput private boolean autoAligning = false;
+
+  private final PIDController xController =
+      new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);
+  private final PIDController yController =
+      new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);
+  private final PIDController headingController =
+      new PIDController(autoAngularKp, autoAngularKi, autoAngularKd);
 
   public Drive(
       GyroIO gyroIO,
@@ -82,6 +95,8 @@ public class Drive extends SubsystemBase {
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
+
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -207,7 +222,22 @@ public class Drive extends SubsystemBase {
   }
 
   public void followTrajectory(SwerveSample sample) {
-    Logger.recordOutput("Odometry/TargetPose", sample.getPose());
+    Logger.recordOutput("Choreo/TargetPose", sample.getPose());
+    Logger.recordOutput(
+        "Choreo/TargetVelocity",
+        new Pose2d(
+            Meters.of(sample.x + sample.vx),
+            Meters.of(sample.y + sample.vy),
+            Rotation2d.fromRadians(sample.heading + sample.omega)));
+    Logger.recordOutput(
+        "Choreo/TargetAccel",
+        new Pose2d(
+            Meters.of(sample.x + sample.ax),
+            Meters.of(sample.y + sample.ay),
+            Rotation2d.fromRadians(sample.heading + sample.alpha)));
+    Logger.recordOutput("Choreo/t", Seconds.of(sample.t));
+    Logger.recordOutput("Choreo/ModuleForcesX", sample.moduleForcesX());
+    Logger.recordOutput("Choreo/ModuleForcesY", sample.moduleForcesY());
 
     // Get the current pose of the robot
     Pose2d pose = getPose();
@@ -220,6 +250,17 @@ public class Drive extends SubsystemBase {
             sample.omega
                 + headingController.calculate(pose.getRotation().getRadians(), sample.heading),
             getRotation());
+
+    Logger.recordOutput(
+        "Choreo/VelocitySetpoint",
+        new Pose2d(
+            pose.getX() + sample.vx + xController.calculate(pose.getX(), sample.x),
+            pose.getY() + sample.vy + yController.calculate(pose.getY(), sample.y),
+            Rotation2d.fromRadians(
+                pose.getRotation().getRadians()
+                    + sample.omega
+                    + headingController.calculate(
+                        pose.getRotation().getRadians(), sample.heading))));
 
     // Apply the generated speeds
     runVelocity(speeds);
@@ -338,6 +379,10 @@ public class Drive extends SubsystemBase {
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 
+  public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
+    poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+  }
+
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
@@ -367,12 +412,22 @@ public class Drive extends SubsystemBase {
     }
   }
 
+  public boolean isGyroConnected() {
+    return gyroInputs.connected;
+  }
+
   public void resetYaw() {
     if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
+        && DriverStation.getAlliance().get() == Alliance.Red) {
+      poseEstimator.resetRotation(Rotation2d.k180deg);
+      gyroIO.setYaw(Rotation2d.k180deg);
     } else {
       poseEstimator.resetRotation(Rotation2d.kZero);
+      gyroIO.setYaw(Rotation2d.kZero);
     }
+  }
+
+  public void resetYawPigeon() {
+    gyroIO.setYaw(Rotation2d.kZero);
   }
 }

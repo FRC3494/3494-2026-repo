@@ -64,7 +64,7 @@
   "java.dependency.enableDependencyCheckup": false,
   "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
   "[json]": {
-    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[java]": {
     "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
@@ -76,5 +76,7 @@
         "cmd": "${workspaceFolder}\\gradlew spotlessApply -Dorg.gradle.java.home=\"C:\\Users\\Public\\wpilib\\2026\\jdk\""
       }
     ]
-  }
+  },
+  "codescene.enableTelemetry": false,
+  "codescene.enableAutoRefactor": false
 }

@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -17,7 +18,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.OI.DriveOI;
+import frc.robot.autos.Autos;
+import frc.robot.autos.TestAuto;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -25,10 +30,12 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 
 /**
@@ -40,13 +47,17 @@ import frc.robot.util.Elastic;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final AprilTagVision aprilTagVision;
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turret turret;
   private final Hopper hopper;
 
-  // Dashboard inputs
+  // Choreo
   private final AutoChooser autoChooser;
+  private final AutoFactory autoFactory;
+
+  private final Command joystickDriveCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -84,6 +95,14 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
+    joystickDriveCommand =
+        DriveCommands.joystickDrive(
+            drive,
+            OI.DriveOI::joystickDriveX,
+            OI.DriveOI::joystickDriveY,
+            OI.DriveOI::joystickDriveOmega);
+
+    aprilTagVision = new AprilTagVision(drive);
 
     flywheel = new Flywheel();
     hood = new Hood();
@@ -97,6 +116,15 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new AutoChooser();
+    // TODO: add another argument at the end for TrajectoryLogger
+    autoFactory =
+        new AutoFactory(
+            drive::getPose,
+            drive::setPose,
+            drive::followTrajectory,
+            true,
+            drive,
+            Autos::logTrajectory);
     configureAutos();
 
     // Configure the button bindings
@@ -104,6 +132,9 @@ public class RobotContainer {
   }
 
   private void configureAutos() {
+    // Set up autos
+    autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine("TestAuto", autoFactory, drive));
+
     // Set up SysId routines
     autoChooser.addCmd(
         "Drive Wheel Radius Rotational Characterization",
@@ -123,6 +154,8 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
         "Drive SysId (Dynamic Reverse)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
@@ -137,28 +170,37 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // ==================== DRIVE ====================
     // Default command, normal field-relative drive
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            OI.Drive::joystickDriveX,
-            OI.Drive::joystickDriveY,
-            OI.Drive::joystickDriveOmega));
+    drive.setDefaultCommand(joystickDriveCommand);
+
+    DriveOI.autoAlignClimb()
+        .onTrue(
+            runOnce(
+                () ->
+                    drive.setDefaultCommand(
+                        new AutoAlignCommand(AutoAlignConstants.climbPose, drive)),
+                drive))
+        .onFalse(runOnce(() -> drive.setDefaultCommand(joystickDriveCommand), drive));
 
     // Lock to 0° when A button is held
-    OI.Drive.lockToForward()
+    DriveOI.lockToForward()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, OI.Drive::joystickDriveX, OI.Drive::joystickDriveY, () -> Rotation2d.kZero));
+                drive,
+                OI.DriveOI::joystickDriveX,
+                OI.DriveOI::joystickDriveY,
+                () -> Rotation2d.kPi.div(4)));
 
     // Switch to X pattern when X button is pressed
-    OI.Drive.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
+    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when Back button is pressed
-    OI.Drive.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
+    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
 
     // Rezero swerve turn relative encoders off of absolute encoders
-    OI.Drive.rezeroSwerveTurnEncoders()
+    DriveOI.rezeroSwerveTurnEncoders()
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
+
+    DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
   }
 
   /**

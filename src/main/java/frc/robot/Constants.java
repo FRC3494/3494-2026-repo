@@ -7,13 +7,21 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants.VisionConstants.LimelightConstants;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -49,33 +57,91 @@ public final class Constants {
   }
 
   public static class RobotMap {
-    public static final int pigeonCanId = 9;
+    public static final int pdhCanId = 31;
+    public static final int mitoCANdria1CanId = 8;
+    public static final int mitoCANdria2CanId = 9;
 
-    public static final int frontLeftDriveCanId = 1;
-    public static final int frontRightDriveCanId = 5;
-    public static final int backLeftDriveCanId = 3;
-    public static final int backRightDriveCanId = 7;
+    public static final class Climber {
+      public static final int climberMotorCanId = 13;
+    }
 
-    public static final int frontLeftTurnCanId = 2;
-    public static final int frontRightTurnCanId = 6;
-    public static final int backLeftTurnCanId = 4;
-    public static final int backRightTurnCanId = 8;
+    public static final class Drive {
+      public static final int pigeonCanId = 20;
 
-    public static final int shooterLeftCanId = 10;
-    public static final int shooterRightCanId = 11;
+      public static final int frontLeftDriveCanId = 1;
+      public static final int frontRightDriveCanId = 18;
+      public static final int backLeftDriveCanId = 30;
+      public static final int backRightDriveCanId = 19;
 
-    public static final int hopperSpindexerCanId = 12;
-    public static final int hopperFeederCanId = 13;
+      public static final int frontLeftTurnCanId = 3;
+      public static final int frontRightTurnCanId = 16;
+      public static final int backLeftTurnCanId = 2;
+      public static final int backRightTurnCanId = 17;
 
-    public static final int turretMotorCanId = 15;
+      public static final int frontLeftAbsEncoderCanId = 0;
+      public static final int frontRightAbsEncoderCanId = 1;
+      public static final int backLeftAbsEncoderCanId = 2;
+      public static final int backRightAbsEncoderCanId = 3;
+    }
 
-    public static final int hoodMotorCanId = 16;
+    public static final class Intake {
+      public static final int spinnySpinnyCanId = 12;
+      public static final int uppyDownyCanId = 11;
+
+      public static final int intakeMagSensorDIO = 0;
+    }
+
+    public static final class Shooter {
+      public static final int flywheelLeftCanId = 4;
+      public static final int flywheelRightCanId = 5;
+
+      public static final int hoodMotorCanId = 7;
+
+      public static final int hopperSpindexerCanId = 6;
+      public static final int hopperFeederCanId = 15;
+
+      public static final int turretMotorCanId = 14;
+      public static final int turretMagSensorDIO = 0;
+    }
+
+    public static final LimelightConstants[] aprilTagLimelights = {
+      new LimelightConstants(
+          "limelight-barge",
+          new Pose3d(
+              Inches.of(-8.1296),
+              Inches.of(-6.376),
+              Inches.of(27.6),
+              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+      new LimelightConstants(
+          "limelight-coral",
+          new Pose3d(
+              Inches.of(-8.0936),
+              Inches.of(6.376),
+              Inches.of(29.1),
+              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-90)))),
+      new LimelightConstants(
+          "limelight-left",
+          new Pose3d(
+              Meters.of(-0.2093),
+              Meters.of(-0.2092),
+              Meters.of(0.327),
+              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+      new LimelightConstants(
+          "limelight-swerve",
+          new Pose3d(
+              Meters.of(0.2355),
+              Meters.of(-0.2499),
+              Meters.of(0.2267),
+              new Rotation3d(Degrees.of(0), Degrees.of(15), Degrees.of(105))))
+    };
   }
 
   public static class OIConstants {
     public static final int primaryControllerPort = 0;
     public static final int leftButtonBoardPort = 1;
     public static final int rightButtonBoardPort = 2;
+
+    public static final double controllerStickDeadband = 0.05;
   }
 
   public static class DriveConstants {
@@ -85,18 +151,16 @@ public final class Constants {
     * maxAngularSpeedFactor
        - Units: rad/sec
        - Divide max rotation speed when driving by max rotation speed while stationary
-
-    * pigeonYawPositionFactor
-       - Units: Unit: rad
-       - Divide measured yaw from Pigeon after 30 turns by expected reading after 30 turns
     */
 
     public static final double maxSpeedMetersPerSec = 4.8;
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
     public static final double maxAngularSpeedFactor = (1 / 1);
     public static final double odometryFrequency = 100.0; // Hz
-    public static final double trackWidth = Units.inchesToMeters(26.5);
-    public static final double wheelBase = Units.inchesToMeters(26.5);
+    public static final double trackWidth =
+        Units.inchesToMeters(20.75); // Units.inchesToMeters(26.5);
+    public static final double wheelBase =
+        Units.inchesToMeters(20.75); // Units.inchesToMeters(26.5);
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
@@ -107,15 +171,17 @@ public final class Constants {
         };
 
     // Zeroed rotation values for each module, see setup instructions
-    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(0.0);
-    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(0.0);
-    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(0.0);
-    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(0.0);
+    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(2.397);
+    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(6.215);
+    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(3.552);
+    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(5.134);
 
     // Drive motor configuration
-    public static final boolean driveInverted = false;
+    public static final boolean driveInverted = true;
     public static final int driveMotorCurrentLimit = 50;
-    public static final double wheelRadiusMeters = Units.inchesToMeters(1.5);
+    public static final double wheelRadiusMeters =
+        Units.inchesToMeters(
+            1.99162835); // When using linear characterization: actual linear distance / wheel delta
     public static final double driveMotorReduction =
         (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2 Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -129,10 +195,11 @@ public final class Constants {
     // Wheel Rad/Sec
 
     // Drive PID configuration
-    public static final double driveKp = 0.0;
+    public static final double driveKp = 0.0000061024;
     public static final double driveKd = 0.0;
-    public static final double driveKs = 0.0;
-    public static final double driveKv = 0.1;
+    public static final double driveKs = 0.17311;
+    public static final double driveKv = 0.11345;
+    public static final double driveKa = 0.011064;
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;
@@ -158,11 +225,6 @@ public final class Constants {
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
-    // Pigeon configuration
-    // * Measured yaw (rad) after # of turns / # of turns
-    public static final double pigeonYawPositionFactor =
-        ((43 * 2 * Math.PI + 2.33861709845736) / (43 * 2 * Math.PI));
-
     // PathPlanner configuration
     public static final double robotMassKg = 74.088;
     public static final double robotMOI = 6.883;
@@ -180,9 +242,51 @@ public final class Constants {
                 1),
             moduleTranslations);
 
+    // Pigeon config
+    public static final double pigeonGyroYawTrimDegPerRot = 6.558166667;
+
     // Auto config
+    public static final boolean mirrorForRedAlliance = true;
+
     public static final double autoLinearKp = 10.0;
+    public static final double autoLinearKi = 0.0;
+    public static final double autoLinearKd = 0.0;
+
     public static final double autoAngularKp = 7.5;
+    public static final double autoAngularKi = 0.0;
+    public static final double autoAngularKd = 0.0;
+
+    public static final Distance fieldWidth = Meters.of(8.07);
+    public static final Distance fieldLength = Meters.of(16.54);
+
+    public static class AutoAlignConstants {
+      // Tuned with Ziegler-Nichols for classic PID
+      // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
+      // kU is 0.5, tU is 0.193s (9.65 robot loops)
+      public static final double autoAlignLinearKp = 4.0;
+      public static final double autoAlignLinearKi = 0;
+      public static final double autoAlignLinearKd = 0.1;
+      public static final Distance autoAlignLinearTolerance = Centimeters.of(1.0);
+
+      public static final double autoAlignAngularKp = 5.0;
+      public static final double autoAlignAngularKi = 0.0;
+      public static final double autoAlignAngularKd = 0.1;
+
+      public static final Pose2d climbPose =
+          new Pose2d(
+              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+    }
+  }
+
+  public static final class VisionConstants {
+    public static final Distance maxTagDistance = Meters.of(5.0);
+
+    public static final double maxDistanceStdDev = 999999;
+    public static final Angle maxAngleStdDev = Degrees.of(999999);
+
+    public static final boolean useMegaTag2 = true;
+
+    public static record LimelightConstants(String name, Pose3d position) {}
   }
 
   public static final class ShooterConstants {
