@@ -86,7 +86,7 @@ public class Turret extends SubsystemBase {
     logMotorStats("Turret/Motor", turretMotor, false);
   }
 
-  public void setTurretSetpoint(Rotation2d setpoint) {
+  public void setPosition(Rotation2d setpoint) {
     turretSetpoint = setpoint;
     turretMotor
         .getClosedLoopController()
