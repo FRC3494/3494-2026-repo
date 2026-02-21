@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -77,22 +78,53 @@ public class AimShooterCommand extends Command {
     // Convert world bearing into turret-relative angle by removing robot yaw
     Rotation2d turretAngle = angleToTarget.rotateBy(drive.getRotation().times(-1.0));
 
-    // TODO: Compute hoodAngle from distanceToTarget using a lookup table or physics model.
-    Rotation2d hoodAngle = Rotation2d.kZero;
+    // Implementation of desmos calculations provided in discord. Write-up with explainations in .md
+    translationToTarget = shooterTarget.minus(currentLocation);
+    double maxHeight = calculateMaxHeight(currentLocation, shooterTarget);
+    double gravity = 9.81; // get from constants later
+    double finalYVelocity = Math.sqrt(Math.abs(2 * gravity * (maxHeight - shooterTarget.getY())));
+    double initialYVelocity = Math.sqrt(2 * gravity * (maxHeight - currentLocation.getY()) + (maxHeight - shooterTarget.getY()) + Math.pow(finalYVelocity, 2));
+    double timeToTarget = (initialYVelocity - finalYVelocity) / gravity;
+    double initialXVelocity = translationToTarget.getX() / timeToTarget;
+    double flywheelRadius = 0.0762; // get from constants later (assuming 3 inch diameter wheel)
+    double calculatedRPM = calculateFlywheelRPM(Math.sqrt(Math.pow(initialXVelocity, 2) + Math.pow(initialYVelocity, 2)) * 60 / (2 * Math.PI * flywheelRadius));
 
-    // TODO: Compute flywheelVelocity from distanceToTarget. Options:
-    //  - empirical lookup table (recommended early): record (distance -> RPM) pairs and
-    //    interpolate.
-    //  - physics-based model: compute required launch speed given target height and range.
-    //  - add feedforward/closed-loop params in the Shooter subsystem rather than here.
-    AngularVelocity flywheelVelocity = RPM.of(0);
+    AngularVelocity flywheelVelocity = RPM.of(calculatedRPM);
+    // add feedforward/closed-loop params in the Shooter subsystem rather than here.
 
-    // TODO: Validate and clamp all setpoints here before sending to hardware:
-    //  - ensure flywheelVelocity is finite and within motor limits
-    //  - ensure hoodAngle and turretAngle are within mechanical travel limits
-    //  - optionally smooth large jumps (slew) to avoid aggressive motion
+    Rotation2d hoodAngle = Rotation2d.fromRadians(Math.atan2(initialYVelocity, initialXVelocity));
 
+
+    // TODO: Send to constants:
+    Double maxHoodAngle = 45.0;
+    Double minHoodAngle = 24.2238027;
+
+    Double maxTurretAngle = 360.0;
+    Double minTurretAngle = 0.2005;
+
+    Double maxFlywheelRPM = 5700.0; // to be tested and tuned
+    Double minFlywheelRPM = 0.0;
+
+    hoodAngle = new Rotation2d(
+            MathUtil.clamp(hoodAngle.getDegrees(), minHoodAngle, maxHoodAngle));
+    turretAngle =
+        new Rotation2d(
+            MathUtil.clamp(turretAngle.getDegrees(), minTurretAngle, maxTurretAngle));
+    flywheelVelocity =
+        RPM.of(MathUtil.clamp(flywheelVelocity.in(RPM), minFlywheelRPM, maxFlywheelRPM));
     // Send references to the shooter. This method should accept units documented in Shooter.
     shooter.setPosition(flywheelVelocity, hoodAngle, turretAngle);
+  }
+
+  private double calculateFlywheelRPM(double calculatedRPM) {
+    // Converts the calculated RPM (using physics-based model) to tested value
+    // Requires testing of RPM vs Velocity to determine constants for conversion
+    double conversionConstant = 1.0; // placeholder until testing is done
+    return calculatedRPM * conversionConstant;
+  }
+
+  private double calculateMaxHeight(Translation2d currentLocation, Translation2d shooterTarget) {
+    // Placeholder for max height calculation. Replace with actual implementation.
+    return shooterTarget.getY() + 1.0; // example: 1 meter above the target
   }
 }
