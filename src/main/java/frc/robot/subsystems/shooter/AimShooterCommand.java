@@ -32,9 +32,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
  *
  * TODOs (high priority)
  * - TODO: Implement a mapping from distance -> flywheel RPM (e.g. lookup table or physics model).
- * - TODO: Implement a mapping from distance -> hood angle (and clamp to mechanical limits).
- * - TODO: Add validation / safety checks: null checks for pose/rotation, NaN/Inf guards,
- *         and clamp RPM/angles to safe values.
  * - TODO: Add logging/telemetry: distanceToTarget, angleToTarget, computed RPM, hood/turret setpoints.
  * - TODO: Wrap turret target to shortest rotation and consider motion profiling / slew limiting
  *         to avoid commanding large instantaneous moves.
