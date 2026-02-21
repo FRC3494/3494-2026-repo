@@ -1,7 +1,7 @@
-package frc.robot.subsystems.hopper;
+package frc.robot.subsystems.shooter.hopper;
 
 import static edu.wpi.first.units.Units.RPM;
-import static frc.robot.Constants.HopperConstants.*;
+import static frc.robot.Constants.ShooterConstants.HopperConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
@@ -52,8 +52,8 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Hopper/SpindexerMotor", spindexerMotor, false);
-    logMotorStats("Hopper/FeederMotor", feederMotor, false);
+    logMotorStats("Shooter/Hopper/SpindexerMotor", spindexerMotor, false);
+    logMotorStats("Shooter/Hopper/FeederMotor", feederMotor, false);
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {

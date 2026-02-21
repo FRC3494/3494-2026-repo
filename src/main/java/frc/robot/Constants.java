@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.DriveConstants.fieldWidth;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -104,36 +105,38 @@ public final class Constants {
       public static final int turretMagSensorDIO = 0;
     }
 
-    public static final LimelightConstants[] aprilTagLimelights = {
-      new LimelightConstants(
-          "limelight-barge",
-          new Pose3d(
-              Inches.of(-8.1296),
-              Inches.of(-6.376),
-              Inches.of(27.6),
-              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
-      new LimelightConstants(
-          "limelight-coral",
-          new Pose3d(
-              Inches.of(-8.0936),
-              Inches.of(6.376),
-              Inches.of(29.1),
-              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-90)))),
-      new LimelightConstants(
-          "limelight-left",
-          new Pose3d(
-              Meters.of(-0.2093),
-              Meters.of(-0.2092),
-              Meters.of(0.327),
-              new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
-      new LimelightConstants(
-          "limelight-swerve",
-          new Pose3d(
-              Meters.of(0.2355),
-              Meters.of(-0.2499),
-              Meters.of(0.2267),
-              new Rotation3d(Degrees.of(0), Degrees.of(15), Degrees.of(105))))
-    };
+    public static final class Vision {
+      public static final LimelightConstants[] aprilTagLimelights = {
+        new LimelightConstants(
+            "limelight-barge",
+            new Pose3d(
+                Inches.of(-8.1296),
+                Inches.of(-6.376),
+                Inches.of(27.6),
+                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+        new LimelightConstants(
+            "limelight-coral",
+            new Pose3d(
+                Inches.of(-8.0936),
+                Inches.of(6.376),
+                Inches.of(29.1),
+                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-90)))),
+        new LimelightConstants(
+            "limelight-left",
+            new Pose3d(
+                Meters.of(-0.2093),
+                Meters.of(-0.2092),
+                Meters.of(0.327),
+                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+        new LimelightConstants(
+            "limelight-swerve",
+            new Pose3d(
+                Meters.of(0.2355),
+                Meters.of(-0.2499),
+                Meters.of(0.2267),
+                new Rotation3d(Degrees.of(0), Degrees.of(15), Degrees.of(105))))
+      };
+    }
   }
 
   public static class OIConstants {
@@ -142,6 +145,21 @@ public final class Constants {
     public static final int rightButtonBoardPort = 2;
 
     public static final double controllerStickDeadband = 0.05;
+  }
+
+  // ========================= SUBSYSTEMS ========================= //
+
+  public static class ClimberConstants {
+    public static final boolean climberInverted = false;
+    public static final int climberCurrentLimit = 30;
+
+    public static final double climberKp = 0.0;
+    public static final double climberKi = 0.0;
+    public static final double climberKd = 0.0;
+
+    public static final double climberKs = 0.0;
+    public static final double climberKv = 0.0;
+    public static final double climberKa = 0.0;
   }
 
   public static class DriveConstants {
@@ -256,8 +274,8 @@ public final class Constants {
     public static final double autoAngularKi = 0.0;
     public static final double autoAngularKd = 0.0;
 
-    public static final Distance fieldWidth = Meters.of(8.07);
-    public static final Distance fieldLength = Meters.of(16.54);
+    public static final Distance fieldWidth = Meters.of(8.0692);
+    public static final Distance fieldLength = Meters.of(16.541);
 
     public static class AutoAlignConstants {
       // Tuned with Ziegler-Nichols for classic PID
@@ -278,6 +296,112 @@ public final class Constants {
     }
   }
 
+  public static final class IntakeConstants {
+    public static final boolean spinnySpinnyInverted = false;
+    public static final int spinnySpinnyCurrentLimit = 30;
+
+    public static final double spinnySpinnyKp = 0.0;
+    public static final double spinnySpinnyKi = 0.0;
+    public static final double spinnySpinnyKd = 0.0;
+
+    public static final double spinnySpinnyKs = 0.0;
+    public static final double spinnySpinnyKv = 0.0;
+    public static final double spinnySpinnyKa = 0.0;
+
+    public static final boolean uppyDownyInverted = false;
+    public static final int uppyDownyCurrentLimit = 30;
+
+    public static final double uppyDownyKp = 0.0;
+    public static final double uppyDownyKi = 0.0;
+    public static final double uppyDownyKd = 0.0;
+
+    public static final double uppyDownyKs = 0.0;
+    public static final double uppyDownyKv = 0.0;
+    public static final double uppyDownyKa = 0.0;
+  }
+
+  public static final class ShooterConstants {
+    public static final Translation2d hubLocation =
+        new Translation2d(Inches.of(181.90625), Inches.of(158.84375));
+    public static final Translation2d outpostBumpLocation =
+        new Translation2d(Inches.of(182.0), Inches.of(90.0));
+    public static final Translation2d depotBumpLocation =
+        new Translation2d(Inches.of(182.0), fieldWidth.minus(Inches.of(90.0)));
+
+    public static final class FlywheelConstants {
+      public static final boolean flywheelInverted = false;
+      public static final int flywheelCurrentLimit = 20;
+
+      public static final double flywheelKp = 0.0;
+      public static final double flywheelKi = 0.0;
+      public static final double flywheelKd = 0.0;
+
+      public static final double flywheelKs = 0.0;
+      public static final double flywheelKv = 0.0;
+      public static final double flywheelKa = 0.0;
+    }
+
+    public static final class HoodConstants {
+      public static final boolean hoodInverted = false;
+      public static final int hoodCurrentLimit = 20;
+
+      public static final double hoodKp = 0.0;
+      public static final double hoodKi = 0.0;
+      public static final double hoodKd = 0.0;
+
+      public static final double hoodKs = 0.0;
+      public static final double hoodKv = 0.0;
+      public static final double hoodKa = 0.0;
+
+      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(0.0);
+      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(0.0);
+    }
+
+    public static final class HopperConstants {
+      // spindexer constants
+      public static final boolean hopperSpindexerInverted = false;
+      public static final int hopperSpindexerCurrentLimit = 20;
+
+      public static final double spindexerKp = 0.0;
+      public static final double spindexerKi = 0.0;
+      public static final double spindexerKd = 0.0;
+
+      public static final double spindexerKs = 0.0;
+      public static final double spindexerKv = 0.0;
+      public static final double spindexerKa = 0.0;
+
+      // feeder constants
+      public static final boolean hopperFeederInverted = true;
+      public static final int hopperFeederCurrentLimit = 20;
+
+      public static final double feederKp = 0.0;
+      public static final double feederKi = 0.0;
+      public static final double feederKd = 0.0;
+
+      public static final double feederKs = 0.0;
+      public static final double feederKv = 0.0;
+      public static final double feederKa = 0.0;
+    }
+
+    public static final class TurretConstants {
+      public static final boolean turretInverted = false;
+      public static final int turretCurrentLimit = 20;
+
+      public static final double turretKp = 0.0;
+      public static final double turretKi = 0.0;
+      public static final double turretKd = 0.0;
+
+      public static final double turretKs = 0.0;
+      public static final double turretKv = 0.0;
+      public static final double turretKa = 0.0;
+
+      public static final double turretGearRatio = 1.0 / 5.0;
+
+      public static final double turretAbsEncoderGearRatio = 9.0 / 1.0;
+      public static final double turretAbsEncoderOffset = 0;
+    }
+  }
+
   public static final class VisionConstants {
     public static final Distance maxTagDistance = Meters.of(5.0);
 
@@ -287,77 +411,5 @@ public final class Constants {
     public static final boolean useMegaTag2 = true;
 
     public static record LimelightConstants(String name, Pose3d position) {}
-  }
-
-  public static final class ShooterConstants {
-    public static final boolean shooterInverted = false;
-    public static final int shooterCurrentLimit = 20;
-
-    public static final double shooterKp = 0.0;
-    public static final double shooterKi = 0.0;
-    public static final double shooterKd = 0.0;
-
-    public static final double shooterKs = 0.0;
-    public static final double shooterKv = 0.0;
-    public static final double shooterKa = 0.0;
-  }
-
-  public static final class TurretConstants {
-    public static final boolean turretInverted = false;
-    public static final int turretCurrentLimit = 20;
-
-    public static final double turretKp = 0.0;
-    public static final double turretKi = 0.0;
-    public static final double turretKd = 0.0;
-
-    public static final double turretKs = 0.0;
-    public static final double turretKv = 0.0;
-    public static final double turretKa = 0.0;
-
-    public static final double turretGearRatio = (1.0 / 5.0) * (9.0 / 1.0);
-  }
-
-  public static final class HoodConstants {
-    public static final boolean hoodInverted = false;
-    public static final int hoodCurrentLimit = 20;
-
-    public static final double hoodKp = 0.0;
-    public static final double hoodKi = 0.0;
-    public static final double hoodKd = 0.0;
-
-    public static final double hoodKs = 0.0;
-    public static final double hoodKv = 0.0;
-    public static final double hoodKa = 0.0;
-
-    public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(0.0);
-    public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(0.0);
-  }
-
-  public static final class HopperConstants {
-    // spindexer constants
-    public static final boolean hopperSpindexerInverted = false;
-    public static final int hopperSpindexerCurrentLimit = 20;
-
-    public static final double spindexerKp = 0.0;
-    public static final double spindexerKi = 0.0;
-    public static final double spindexerKd = 0.0;
-
-    // spindexer sva constants
-    // public static final double spindexerKs = 0.0;
-    // public static final double spindexerKv = 0.0;
-    // public static final double spindexerKa = 0.0;
-
-    // feeder constants
-    public static final boolean hopperFeederInverted = true;
-    public static final int hopperFeederCurrentLimit = 20;
-
-    public static final double feederKp = 0.0;
-    public static final double feederKi = 0.0;
-    public static final double feederKd = 0.0;
-
-    // feeder sva constants
-    // public static final double feederKs = 0.0;
-    // public static final double feederKv = 0.0;
-    // public static final double feederKa = 0.0;
   }
 }

@@ -1,7 +1,7 @@
 package frc.robot.subsystems.shooter.flywheel;
 
 import static edu.wpi.first.units.Units.RPM;
-import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
@@ -29,23 +29,23 @@ public class Flywheel extends SubsystemBase {
 
     SparkMaxConfig leftConfig = new SparkMaxConfig();
     leftConfig
-        .smartCurrentLimit(shooterCurrentLimit)
+        .smartCurrentLimit(flywheelCurrentLimit)
         .idleMode(IdleMode.kCoast)
-        .inverted(shooterInverted);
-    leftConfig.closedLoop.pid(shooterKp, shooterKi, shooterKd);
-    leftConfig.closedLoop.feedForward.sva(shooterKs, shooterKv, shooterKa);
+        .inverted(flywheelInverted);
+    leftConfig.closedLoop.pid(flywheelKp, flywheelKi, flywheelKd);
+    leftConfig.closedLoop.feedForward.sva(flywheelKs, flywheelKv, flywheelKa);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     SparkMaxConfig rightConfig = new SparkMaxConfig().apply(leftConfig);
-    rightConfig.inverted(!shooterInverted).follow(leftMotor);
+    rightConfig.inverted(!flywheelInverted).follow(leftMotor);
     rightMotor.configure(
         rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
   public void periodic() {
-    logMotorStats("Flywheel/LeftMotor", leftMotor, false);
-    logMotorStats("Flywheel/RightMotor", rightMotor, false);
+    logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
+    logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
   }
 
   public void setVelocity(AngularVelocity velocity) {

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter.turret;
 
-import static frc.robot.Constants.TurretConstants.*;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
@@ -10,16 +11,25 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.RobotMap;
+import frc.robot.OI.ShooterOI;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Turret extends SubsystemBase {
   private SparkMax turretMotor;
+  private DigitalInput turretMagSensor;
 
   @Getter @AutoLogOutput private Rotation2d turretSetpoint = Rotation2d.kZero;
+
+  private double magSensorStartPosition = 0.0;
 
   public Turret() {
     turretMotor = new SparkMax(RobotMap.Shooter.turretMotorCanId, MotorType.kBrushless);
@@ -35,8 +45,40 @@ public class Turret extends SubsystemBase {
         .encoder
         .positionConversionFactor(turretGearRatio)
         .velocityConversionFactor(turretGearRatio);
+    turretConfig
+        .absoluteEncoder
+        .zeroOffset(turretAbsEncoderOffset)
+        .positionConversionFactor(turretAbsEncoderGearRatio)
+        .velocityConversionFactor(turretAbsEncoderGearRatio);
     turretMotor.configure(
         turretConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    turretMagSensor = new DigitalInput(RobotMap.Shooter.turretMagSensorDIO);
+
+    new Trigger(this::isMagSensorTripped)
+        .and(ShooterOI.rezeroTurret())
+        .onTrue(
+            runOnce(
+                    () -> {
+                      magSensorStartPosition = getRawAbsPosition();
+                    })
+                .ignoringDisable(true))
+        .onFalse(
+            runOnce(
+                    () -> {
+                      double magSensorEndPosition = getRawAbsPosition();
+                      double magSensorPosition =
+                          (magSensorStartPosition + magSensorEndPosition) / 2;
+
+                      double absEncoderOffset =
+                          MathUtil.inputModulus(magSensorPosition - turretAbsEncoderOffset, 0, 1);
+
+                      NumberFormat formatter = new DecimalFormat("#0.00000000");
+                      System.out.println("********** Turret Zeroing Results **********");
+                      System.out.println(
+                          "\tAbsolute Encoder Offset: " + formatter.format(absEncoderOffset));
+                    })
+                .ignoringDisable(true));
   }
 
   @Override
@@ -49,5 +91,22 @@ public class Turret extends SubsystemBase {
     turretMotor
         .getClosedLoopController()
         .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
+  }
+
+  @AutoLogOutput(key = "Shooter/Turret/MagSensor")
+  private boolean isMagSensorTripped() {
+    return turretMagSensor.get();
+  }
+
+  public Rotation2d getPosition() {
+    return Rotation2d.fromRotations(turretMotor.getEncoder().getPosition());
+  }
+
+  public Rotation2d getAbsPosition() {
+    return Rotation2d.fromRotations(turretMotor.getAbsoluteEncoder().getPosition());
+  }
+
+  private double getRawAbsPosition() {
+    return turretMotor.getAbsoluteEncoder().getPosition() / turretAbsEncoderGearRatio;
   }
 }

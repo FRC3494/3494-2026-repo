@@ -31,10 +31,8 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
-import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.subsystems.shooter.AimShooterCommand;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 
@@ -48,16 +46,14 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
-  private final Flywheel flywheel;
-  private final Hood hood;
-  private final Turret turret;
-  private final Hopper hopper;
+  private final Shooter shooter;
 
   // Choreo
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
   private final Command joystickDriveCommand;
+  private final Command aimShooterCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -103,11 +99,9 @@ public class RobotContainer {
             OI.DriveOI::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
+    shooter = new Shooter();
 
-    flywheel = new Flywheel();
-    hood = new Hood();
-    turret = new Turret();
-    hopper = new Hopper();
+    aimShooterCommand = new AimShooterCommand(shooter, drive);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -201,6 +195,9 @@ public class RobotContainer {
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
 
     DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
+
+    // ==================== SHOOTER ====================
+    shooter.setDefaultCommand(aimShooterCommand);
   }
 
   /**
