@@ -57,34 +57,52 @@ public final class Constants {
   }
 
   public static class RobotMap {
-    public static final int pdhCanId = 63;
+    public static final int pdhCanId = 31;
+    public static final int mitoCANdria1CanId = 8;
+    public static final int mitoCANdria2CanId = 9;
 
-    public static final int pigeonCanId = 52;
+    public static final class Climber {
+      public static final int climberMotorCanId = 13;
+    }
 
-    public static final int frontLeftDriveCanId = 18;
-    public static final int frontRightDriveCanId = 19;
-    public static final int backLeftDriveCanId = 30;
-    public static final int backRightDriveCanId = 1;
+    public static final class Drive {
+      public static final int pigeonCanId = 20;
 
-    public static final int frontLeftTurnCanId = 16;
-    public static final int frontRightTurnCanId = 17;
-    public static final int backLeftTurnCanId = 2;
-    public static final int backRightTurnCanId = 3;
+      public static final int frontLeftDriveCanId = 1;
+      public static final int frontRightDriveCanId = 18;
+      public static final int backLeftDriveCanId = 30;
+      public static final int backRightDriveCanId = 19;
 
-    public static final int frontLeftAbsEncoderCanId = 3;
-    public static final int frontRightAbsEncoderCanId = 2;
-    public static final int backLeftAbsEncoderCanId = 1;
-    public static final int backRightAbsEncoderCanId = 0;
+      public static final int frontLeftTurnCanId = 3;
+      public static final int frontRightTurnCanId = 16;
+      public static final int backLeftTurnCanId = 2;
+      public static final int backRightTurnCanId = 17;
 
-    public static final int shooterLeftCanId = 10;
-    public static final int shooterRightCanId = 11;
+      public static final int frontLeftAbsEncoderCanId = 0;
+      public static final int frontRightAbsEncoderCanId = 1;
+      public static final int backLeftAbsEncoderCanId = 2;
+      public static final int backRightAbsEncoderCanId = 3;
+    }
 
-    public static final int hopperSpindexerCanId = 12;
-    public static final int hopperFeederCanId = 13;
+    public static final class Intake {
+      public static final int spinnySpinnyCanId = 12;
+      public static final int uppyDownyCanId = 11;
 
-    public static final int turretMotorCanId = 15;
+      public static final int intakeMagSensorDIO = 0;
+    }
 
-    public static final int hoodMotorCanId = 20;
+    public static final class Shooter {
+      public static final int flywheelLeftCanId = 4;
+      public static final int flywheelRightCanId = 5;
+
+      public static final int hoodMotorCanId = 7;
+
+      public static final int hopperSpindexerCanId = 6;
+      public static final int hopperFeederCanId = 15;
+
+      public static final int turretMotorCanId = 14;
+      public static final int turretMagSensorDIO = 0;
+    }
 
     public static final LimelightConstants[] aprilTagLimelights = {
       new LimelightConstants(
