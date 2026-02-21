@@ -6,10 +6,10 @@ import static frc.robot.util.SparkUtil.logMotorStats;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
@@ -17,14 +17,14 @@ import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Climber extends SubsystemBase {
-  private SparkMax climberMotor;
+  private SparkFlex climberMotor;
 
   @Getter @AutoLogOutput private Rotation2d climberSetpoint = Rotation2d.kZero;
 
   public Climber() {
-    climberMotor = new SparkMax(RobotMap.Climber.climberMotorCanId, MotorType.kBrushless);
+    climberMotor = new SparkFlex(RobotMap.Climber.climberMotorCanId, MotorType.kBrushless);
 
-    SparkMaxConfig climberConfig = new SparkMaxConfig();
+    SparkFlexConfig climberConfig = new SparkFlexConfig();
     climberConfig
         .smartCurrentLimit(climberCurrentLimit)
         .idleMode(IdleMode.kBrake)
@@ -40,10 +40,11 @@ public class Climber extends SubsystemBase {
     logMotorStats("Climber/Motor", climberMotor, false);
   }
 
+  // Climb is positive
   public void setPosition(Rotation2d setpoint) {
     climberSetpoint = setpoint;
     climberMotor
         .getClosedLoopController()
-        .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
+        .setSetpoint(setpoint.getRotations(), ControlType.kVoltage);
   }
 }

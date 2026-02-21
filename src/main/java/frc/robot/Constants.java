@@ -297,7 +297,7 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final boolean spinnySpinnyInverted = false;
+    public static final boolean spinnySpinnyInverted = true;
     public static final int spinnySpinnyCurrentLimit = 30;
 
     public static final double spinnySpinnyKp = 0.0;
@@ -329,7 +329,7 @@ public final class Constants {
         new Translation2d(Inches.of(182.0), fieldWidth.minus(Inches.of(90.0)));
 
     public static final class FlywheelConstants {
-      public static final boolean flywheelInverted = false;
+      public static final boolean flywheelInverted = true;
       public static final int flywheelCurrentLimit = 20;
 
       public static final double flywheelKp = 0.0;
@@ -371,7 +371,7 @@ public final class Constants {
       public static final double spindexerKa = 0.0;
 
       // feeder constants
-      public static final boolean hopperFeederInverted = true;
+      public static final boolean hopperFeederInverted = false;
       public static final int hopperFeederCurrentLimit = 20;
 
       public static final double feederKp = 0.0;

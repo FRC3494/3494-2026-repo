@@ -7,10 +7,10 @@ import static frc.robot.util.SparkUtil.logMotorStats;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,15 +19,15 @@ import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Intake extends SubsystemBase {
-  SparkMax spinnySpinnyMotor;
-  SparkMax uppyDownyMotor;
+  SparkFlex spinnySpinnyMotor;
+  SparkFlex uppyDownyMotor;
 
   @Getter @AutoLogOutput AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
   @Getter @AutoLogOutput Rotation2d uppyDownySetpoint = Rotation2d.kZero;
 
   public Intake() {
-    spinnySpinnyMotor = new SparkMax(RobotMap.Intake.spinnySpinnyCanId, MotorType.kBrushless);
-    SparkMaxConfig spinnySpinnyConfig = new SparkMaxConfig();
+    spinnySpinnyMotor = new SparkFlex(RobotMap.Intake.spinnySpinnyCanId, MotorType.kBrushless);
+    SparkFlexConfig spinnySpinnyConfig = new SparkFlexConfig();
     spinnySpinnyConfig
         .smartCurrentLimit(spinnySpinnyCurrentLimit)
         .idleMode(IdleMode.kCoast)
@@ -37,8 +37,8 @@ public class Intake extends SubsystemBase {
     spinnySpinnyMotor.configure(
         spinnySpinnyConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    uppyDownyMotor = new SparkMax(RobotMap.Intake.uppyDownyCanId, MotorType.kBrushless);
-    SparkMaxConfig uppyDownyConfig = new SparkMaxConfig();
+    uppyDownyMotor = new SparkFlex(RobotMap.Intake.uppyDownyCanId, MotorType.kBrushless);
+    SparkFlexConfig uppyDownyConfig = new SparkFlexConfig();
     uppyDownyConfig
         .smartCurrentLimit(uppyDownyCurrentLimit)
         .idleMode(IdleMode.kBrake)
@@ -57,9 +57,7 @@ public class Intake extends SubsystemBase {
 
   public void setSpinnySpinnyVelocity(AngularVelocity velocity) {
     spinnySpinnySetpoint = velocity;
-    spinnySpinnyMotor
-        .getClosedLoopController()
-        .setSetpoint(velocity.in(RPM), ControlType.kMAXMotionVelocityControl);
+    spinnySpinnyMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVoltage);
   }
 
   public void setUppyDownyPosition(Rotation2d setpoint) {

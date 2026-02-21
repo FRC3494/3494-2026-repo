@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import choreo.auto.AutoChooser;
@@ -20,9 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.OI.ClimberOI;
 import frc.robot.OI.DriveOI;
+import frc.robot.OI.IntakeOI;
+import frc.robot.OI.ShooterOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.TestAuto;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -31,6 +36,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.AprilTagVision;
@@ -46,6 +52,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
+  private final Climber climber;
+  private final Intake intake;
   private final Shooter shooter;
 
   // Choreo
@@ -99,6 +107,8 @@ public class RobotContainer {
             OI.DriveOI::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
+    climber = new Climber();
+    intake = new Intake();
     shooter = new Shooter();
 
     aimShooterCommand = new AimShooterCommand(shooter, drive);
@@ -196,8 +206,93 @@ public class RobotContainer {
 
     DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
 
+    // ==================== INTAKE ====================
+    IntakeOI.intake()
+        .onTrue(
+            runOnce(
+                () -> {
+                  intake.setSpinnySpinnyVelocity(RPM.of(5.0));
+                },
+                intake))
+        .onFalse(
+            runOnce(
+                () -> {
+                  intake.setSpinnySpinnyVelocity(RPM.of(0.0));
+                },
+                intake));
+
+    ShooterOI.runSpindexer()
+        .onTrue(
+            runOnce(
+                () -> {
+                  shooter.setSpindexerVelocity(RPM.of(3.0));
+                },
+                shooter))
+        .onFalse(
+            runOnce(
+                () -> {
+                  shooter.setSpindexerVelocity(RPM.of(0.0));
+                },
+                shooter));
+
+    ShooterOI.runFeeder()
+        .onTrue(
+            runOnce(
+                () -> {
+                  shooter.setFeederVelocity(RPM.of(4.0));
+                },
+                shooter))
+        .onFalse(
+            runOnce(
+                () -> {
+                  shooter.setFeederVelocity(RPM.of(0.0));
+                },
+                shooter));
+
+    ShooterOI.runHood()
+        .onTrue(
+            runOnce(
+                () -> {
+                  shooter.setPosition(RPM.of(0), Rotation2d.fromRadians(5.0), Rotation2d.kZero);
+                },
+                shooter))
+        .onFalse(
+            runOnce(
+                () -> {
+                  shooter.setPosition(RPM.of(0), Rotation2d.kZero, Rotation2d.kZero);
+                },
+                shooter));
+
+    ShooterOI.runFlywheel()
+        .onTrue(
+            runOnce(
+                () -> {
+                  shooter.setPosition(RPM.of(0.5), Rotation2d.kZero, Rotation2d.kZero);
+                },
+                shooter))
+        .onFalse(
+            runOnce(
+                () -> {
+                  shooter.setPosition(RPM.of(0), Rotation2d.kZero, Rotation2d.kZero);
+                },
+                shooter));
+
+    ClimberOI.runClimber()
+        .onTrue(
+            runOnce(
+                () -> {
+                  climber.setPosition(Rotation2d.fromRotations(3));
+                },
+                climber))
+        .onFalse(
+            runOnce(
+                () -> {
+                  climber.setPosition(Rotation2d.kZero);
+                },
+                climber));
+
     // ==================== SHOOTER ====================
-    shooter.setDefaultCommand(aimShooterCommand);
+    // shooter.setDefaultCommand(aimShooterCommand);
   }
 
   /**

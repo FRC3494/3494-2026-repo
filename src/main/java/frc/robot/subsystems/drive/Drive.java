@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.OI.DriveOI;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.QuadranglesUtil;
 import java.util.concurrent.locks.Lock;
@@ -195,6 +196,10 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
+    Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
+    Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
   }
 
   /**

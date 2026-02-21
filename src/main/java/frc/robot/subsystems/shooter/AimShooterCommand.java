@@ -114,7 +114,7 @@ public class AimShooterCommand extends Command {
     flywheelVelocity =
         RPM.of(MathUtil.clamp(flywheelVelocity.in(RPM), minFlywheelRPM, maxFlywheelRPM));
     // Send references to the shooter. This method should accept units documented in Shooter.
-    shooter.setPosition(flywheelVelocity, hoodAngle, turretAngle);
+    // shooter.setPosition(flywheelVelocity, hoodAngle, turretAngle);
   }
 
   private double calculateFlywheelRPM(double calculatedRPM) {

@@ -27,4 +27,12 @@ public class Shooter extends SubsystemBase {
     hood.setPosition(hoodPosition);
     turret.setPosition(turretPosition);
   }
+
+  public void setSpindexerVelocity(AngularVelocity velocity) {
+    hopper.setSpindexerVelocity(velocity);
+  }
+
+  public void setFeederVelocity(AngularVelocity velocity) {
+    hopper.setFeederVelocity(velocity);
+  }
 }

@@ -33,7 +33,8 @@ public final class OI {
     }
 
     public static Trigger autoAlignClimb() {
-      return primaryController.y(eventLoop);
+      return new Trigger(() -> false);
+      // return primaryController.y(eventLoop);
     }
 
     public static Trigger resetYaw() {
@@ -49,7 +50,8 @@ public final class OI {
     }
 
     public static Trigger lockToForward() {
-      return primaryController.a(eventLoop);
+      // return primaryController.a(eventLoop);
+      return new Trigger(() -> false);
     }
 
     public static Trigger resetYawPigeon() {
@@ -57,7 +59,35 @@ public final class OI {
     }
   }
 
+  public static final class ClimberOI {
+    public static Trigger runClimber() {
+      return primaryController.leftBumper();
+    }
+  }
+
+  public static final class IntakeOI {
+    public static Trigger intake() {
+      return primaryController.rightTrigger(controllerStickDeadband);
+    }
+  }
+
   public static final class ShooterOI {
+    public static Trigger runSpindexer() {
+      return primaryController.povLeft();
+    }
+
+    public static Trigger runFeeder() {
+      return primaryController.povDown();
+    }
+
+    public static Trigger runHood() {
+      return primaryController.povUp();
+    }
+
+    public static Trigger runFlywheel() {
+      return primaryController.rightBumper();
+    }
+
     public static Trigger rezeroTurret() {
       return primaryController.povRight();
     }

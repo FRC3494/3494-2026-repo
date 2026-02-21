@@ -6,11 +6,10 @@ import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
@@ -18,16 +17,16 @@ import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class Flywheel extends SubsystemBase {
-  private SparkMax leftMotor;
-  private SparkMax rightMotor;
+  private SparkFlex leftMotor;
+  private SparkFlex rightMotor;
 
   @Getter @AutoLogOutput private AngularVelocity flywheelSetpoint = RPM.of(0.0);
 
   public Flywheel() {
-    leftMotor = new SparkMax(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
-    rightMotor = new SparkMax(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
+    leftMotor = new SparkFlex(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
+    rightMotor = new SparkFlex(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
 
-    SparkMaxConfig leftConfig = new SparkMaxConfig();
+    SparkFlexConfig leftConfig = new SparkFlexConfig();
     leftConfig
         .smartCurrentLimit(flywheelCurrentLimit)
         .idleMode(IdleMode.kCoast)
@@ -36,8 +35,8 @@ public class Flywheel extends SubsystemBase {
     leftConfig.closedLoop.feedForward.sva(flywheelKs, flywheelKv, flywheelKa);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    SparkMaxConfig rightConfig = new SparkMaxConfig().apply(leftConfig);
-    rightConfig.inverted(!flywheelInverted).follow(leftMotor);
+    SparkFlexConfig rightConfig = new SparkFlexConfig().apply(leftConfig);
+    rightConfig.follow(leftMotor, true);
     rightMotor.configure(
         rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -50,8 +49,7 @@ public class Flywheel extends SubsystemBase {
 
   public void setVelocity(AngularVelocity velocity) {
     flywheelSetpoint = velocity;
-    leftMotor
-        .getClosedLoopController()
-        .setSetpoint(velocity.in(RPM), ControlType.kMAXMotionVelocityControl);
+    // leftMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVoltage);
+    leftMotor.set(velocity.in(RPM));
   }
 }
