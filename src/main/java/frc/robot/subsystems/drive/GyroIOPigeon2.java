@@ -32,7 +32,16 @@ public class GyroIOPigeon2 implements GyroIO {
 
   public GyroIOPigeon2() {
     Pigeon2Configuration pigeonConfig = new Pigeon2Configuration();
-    pigeonConfig.GyroTrim.GyroScalarY = pigeonGyroYawTrimDegPerRot;
+    pigeonConfig
+        .GyroTrim
+        .withGyroScalarX(pigeonGyroTrimXDegPerRot)
+        .withGyroScalarY(pigeonGyroTrimYDegPerRot)
+        .withGyroScalarY(pigeonGyroTrimZDegPerRot);
+    pigeonConfig
+        .MountPose
+        .withMountPoseYaw(pigeonMountPoseYaw)
+        .withMountPosePitch(pigeonMountPosePitch)
+        .withMountPoseRoll(pigeonMountPoseRoll);
     pigeon.getConfigurator().apply(pigeonConfig);
     // pigeon.getConfigurator().setYaw(0.0);
 
