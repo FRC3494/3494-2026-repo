@@ -139,7 +139,21 @@ public class RobotContainer {
     // Set up autos
     autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine("TestAuto", autoFactory, drive));
 
+    autoChooser.addCmd("=====================", () -> none());
+
     // Set up SysId routines
+    // if (enableTuningAutos.get()) {
+    if (true) {
+      configureTuningAutos();
+    } else {
+      new Trigger(enableTuningAutos::get).onTrue(runOnce(this::configureTuningAutos));
+    }
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+  }
+
+  private void configureTuningAutos() {
     autoChooser.addCmd(
         "Drive Wheel Radius Rotational Characterization",
         () -> DriveCommands.wheelRadiusCharacterization(drive));
@@ -162,7 +176,6 @@ public class RobotContainer {
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
 
   /**
