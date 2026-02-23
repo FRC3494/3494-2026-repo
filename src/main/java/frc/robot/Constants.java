@@ -298,7 +298,16 @@ public final class Constants {
       public static final double autoAlignAngularKi = 0.0;
       public static final double autoAlignAngularKd = 0.1;
 
-      public static final Pose2d climbPose =
+      public static final Pose2d climbSetupPoseOutpost =
+          new Pose2d(
+              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+      public static final Pose2d climbPoseOutpost =
+          new Pose2d(
+              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+      public static final Pose2d climbSetupPoseDepot =
+          new Pose2d(
+              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+      public static final Pose2d climbPoseDepot =
           new Pose2d(
               Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
     }

@@ -248,11 +248,37 @@ public class RobotContainer {
     DriveOI.autoAlignClimb()
         .onTrue(
             runOnce(
-                () ->
+                () -> {
+                  double distanceToOutpostPose =
+                      drive
+                          .getPose()
+                          .getTranslation()
+                          .getDistance(AutoAlignConstants.climbSetupPoseOutpost.getTranslation());
+                  double distanceToDepotPose =
+                      drive
+                          .getPose()
+                          .getTranslation()
+                          .getDistance(AutoAlignConstants.climbSetupPoseDepot.getTranslation());
+
+                  if (distanceToOutpostPose < distanceToDepotPose) {
                     drive.setDefaultCommand(
-                        new AutoAlignCommand(AutoAlignConstants.climbPose, drive)),
+                        sequence(
+                            new AutoAlignCommand(AutoAlignConstants.climbSetupPoseOutpost, drive),
+                            new AutoAlignCommand(AutoAlignConstants.climbPoseOutpost, drive)));
+                  } else {
+                    drive.setDefaultCommand(
+                        sequence(
+                            new AutoAlignCommand(AutoAlignConstants.climbSetupPoseDepot, drive),
+                            new AutoAlignCommand(AutoAlignConstants.climbPoseDepot, drive)));
+                  }
+                },
                 drive))
-        .onFalse(runOnce(() -> drive.setDefaultCommand(joystickDriveCommand), drive));
+        .onFalse(
+            runOnce(
+                () -> {
+                  drive.setDefaultCommand(joystickDriveCommand);
+                },
+                drive));
 
     // Lock to 0° when A button is held
     DriveOI.lockTo45()

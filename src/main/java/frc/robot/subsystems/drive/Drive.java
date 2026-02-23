@@ -74,7 +74,7 @@ public class Drive extends SubsystemBase {
           kinematics,
           rawGyroRotation,
           lastModulePositions,
-          QuadranglesUtil.toAlliancePose(AutoAlignConstants.climbPose));
+          QuadranglesUtil.toAlliancePose(AutoAlignConstants.climbPoseOutpost));
 
   @Getter @Setter @AutoLogOutput private boolean autoAligning = false;
 
