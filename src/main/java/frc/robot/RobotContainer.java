@@ -121,7 +121,7 @@ public class RobotContainer {
     shooter = new Shooter();
 
     robotCommands = new RobotCommands(climber, drive, hopper, intake, shooter);
-    aimShooterCommand = new AimShooterCommand(shooter, drive);
+    aimShooterCommand = new AimShooterCommand(shooter, drive::getPose);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -314,6 +314,8 @@ public class RobotContainer {
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 
     // ==================== SHOOTER ====================
+    // shooter.setDefaultCommand(aimShooterCommand);
+
     ShooterOI.setHubShot().onTrue(robotCommands.setHubShot());
     ShooterOI.setTrenchShot().onTrue(robotCommands.setTrenchShot());
     ShooterOI.setOutpostShot().onTrue(robotCommands.setOutpostShot());
@@ -330,9 +332,6 @@ public class RobotContainer {
     ShooterOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
 
     ShooterOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
-
-    // ==================== SHOOTER ====================
-    // shooter.setDefaultCommand(aimShooterCommand);
   }
 
   /**

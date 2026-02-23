@@ -4,12 +4,13 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.QuadranglesUtil;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -41,7 +42,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
  */
 public class AimShooterCommand extends Command {
   private Shooter shooter;
-  private Drive drive;
+
+  private final Supplier<Pose2d> robotPose;
 
   // Autologging: the target in field coordinates (translation only). This is visible via
   // AutoLogOutput and used by the aim math below. Keep this simple and documented so
@@ -49,18 +51,17 @@ public class AimShooterCommand extends Command {
   @Getter @Setter @AutoLogOutput
   Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-  public AimShooterCommand(Shooter shooter, Drive drive) {
+  public AimShooterCommand(Shooter shooter, Supplier<Pose2d> robotPose) {
     this.shooter = shooter;
     addRequirements(shooter);
 
-    this.drive = drive;
-    addRequirements(drive);
+    this.robotPose = robotPose;
   }
 
   @Override
   public void execute() {
     // TODO: Consider making drive.getPose() return an Optional or add a helper getter that
-    Translation2d currentLocation = drive.getPose().getTranslation();
+    Translation2d currentLocation = robotPose.get().getTranslation();
 
     // Vector from robot to target in field coordinates
     Translation2d translationToTarget = shooterTarget.minus(currentLocation);
@@ -72,7 +73,7 @@ public class AimShooterCommand extends Command {
     Rotation2d angleToTarget = Rotation2d.fromRadians(angleRad);
 
     // Convert world bearing into turret-relative angle by removing robot yaw
-    Rotation2d turretAngle = angleToTarget.rotateBy(drive.getRotation().times(-1.0));
+    Rotation2d turretAngle = angleToTarget.rotateBy(robotPose.get().getRotation().times(-1.0));
 
     // Implementation of desmos calculations provided in discord. Write-up with explainations in .md
     translationToTarget = shooterTarget.minus(currentLocation);
