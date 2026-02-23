@@ -1,19 +1,244 @@
 {
   "version": 1.0,
-  "grid_size": 20,
+  "grid_size": 30,
   "tabs": [
     {
       "name": "Autonomous",
       "grid_layout": {
         "layouts": [],
-        "containers": []
+        "containers": [
+          {
+            "title": "Auto Chooser",
+            "x": 390.0,
+            "y": 330.0,
+            "width": 450.0,
+            "height": 150.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          }
+        ]
       }
     },
     {
       "name": "Teleoperated",
       "grid_layout": {
         "layouts": [],
-        "containers": []
+        "containers": [
+          {
+            "title": "HoodIncrementDeg",
+            "x": 330.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/HoodIncrementDeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "ClimberUpPercent",
+            "x": 480.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/ClimberUpPercent",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "ClimberDownPercent",
+            "x": 630.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/ClimberDownPercent",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Hood - kP",
+            "x": 810.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Hood/kP",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kI",
+            "x": 960.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Hood/kI",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kD",
+            "x": 1110.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Hood/kD",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Flywheel - kP",
+            "x": 810.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Flywheel/kP",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kI",
+            "x": 960.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Flywheel/kI",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kD",
+            "x": 1110.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Flywheel/kD",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "ShooterSpeed",
+            "x": 180.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/ShooterSpeed",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "IntakeVoltage",
+            "x": 30.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/IntakeVoltage",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "ShooterTargetSpeed",
+            "x": 180.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/ShooterTargetSpeed",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "FeederVoltage",
+            "x": 630.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/FeederVoltage",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "SpindexerVoltage",
+            "x": 30.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/SpindexerVoltage",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "HoodAngleDeg",
+            "x": 330.0,
+            "y": 330.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/HoodAngleDeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          }
+        ]
       }
     },
     {
@@ -21,6 +246,67 @@
       "grid_layout": {
         "layouts": [],
         "containers": []
+      }
+    },
+    {
+      "name": "Limelights",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "limelight-barge",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 270.0,
+            "height": 270.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-barge",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-coral",
+            "x": 0.0,
+            "y": 270.0,
+            "width": 330.0,
+            "height": 270.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-coral",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 360.0,
+            "y": 0.0,
+            "width": 600.0,
+            "height": 570.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0,
+              "compression": 65
+            }
+          },
+          {
+            "title": "limelight-swerve",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 300.0,
+            "height": 570.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-swerve",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          }
+        ]
       }
     }
   ]
