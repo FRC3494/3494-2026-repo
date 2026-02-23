@@ -85,6 +85,11 @@ public final class Constants {
       public static final int backRightAbsEncoderCanId = 3;
     }
 
+    public static final class Hopper {
+      public static final int spindexerCanId = 6;
+      public static final int feederCanId = 15;
+    }
+
     public static final class Intake {
       public static final int spinnySpinnyCanId = 12;
       public static final int uppyDownyCanId = 11;
@@ -97,9 +102,6 @@ public final class Constants {
       public static final int flywheelRightCanId = 5;
 
       public static final int hoodMotorCanId = 7;
-
-      public static final int hopperSpindexerCanId = 6;
-      public static final int hopperFeederCanId = 15;
 
       public static final int turretMotorCanId = 14;
       public static final int turretMagSensorDIO = 0;
@@ -300,6 +302,32 @@ public final class Constants {
     }
   }
 
+  public static final class HopperConstants {
+    // spindexer constants
+    public static final boolean spindexerInverted = false;
+    public static final int spindexerCurrentLimit = 20;
+
+    public static final double spindexerKp = 0.0;
+    public static final double spindexerKi = 0.0;
+    public static final double spindexerKd = 0.0;
+
+    public static final double spindexerKs = 0.0;
+    public static final double spindexerKv = 0.0;
+    public static final double spindexerKa = 0.0;
+
+    // feeder constants
+    public static final boolean feederInverted = false;
+    public static final int feederCurrentLimit = 50;
+
+    public static final double feederKp = 2.8084E-08;
+    public static final double feederKi = 0.0;
+    public static final double feederKd = 0.0;
+
+    public static final double feederKs = 0.12681;
+    public static final double feederKv = 0.0017874;
+    public static final double feederKa = 0.00010453;
+  }
+
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
     public static final int spinnySpinnyCurrentLimit = 30;
@@ -347,44 +375,24 @@ public final class Constants {
 
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;
-      public static final int hoodCurrentLimit = 20;
+      public static final int hoodCurrentLimit = 50;
 
-      public static final double hoodKp = 0.0;
+      public static final double hoodKp = 20.0;
       public static final double hoodKi = 0.0;
       public static final double hoodKd = 0.0;
+
+      public static final double hoodToZeroKp = 5.0;
+      public static final double hoodToZeroKi = 0.0;
+      public static final double hoodToZeroKd = 0.0;
 
       public static final double hoodKs = 0.0;
       public static final double hoodKv = 0.0;
       public static final double hoodKa = 0.0;
 
+      public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
+
       public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(0.0);
-      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(0.0);
-    }
-
-    public static final class HopperConstants {
-      // spindexer constants
-      public static final boolean hopperSpindexerInverted = false;
-      public static final int hopperSpindexerCurrentLimit = 20;
-
-      public static final double spindexerKp = 0.0;
-      public static final double spindexerKi = 0.0;
-      public static final double spindexerKd = 0.0;
-
-      public static final double spindexerKs = 0.0;
-      public static final double spindexerKv = 0.0;
-      public static final double spindexerKa = 0.0;
-
-      // feeder constants
-      public static final boolean hopperFeederInverted = false;
-      public static final int hopperFeederCurrentLimit = 20;
-
-      public static final double feederKp = 0.0;
-      public static final double feederKi = 0.0;
-      public static final double feederKd = 0.0;
-
-      public static final double feederKs = 0.0;
-      public static final double feederKv = 0.0;
-      public static final double feederKa = 0.0;
+      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(36.5);
     }
 
     public static final class TurretConstants {
