@@ -22,7 +22,6 @@ import org.littletonrobotics.junction.Logger;
 public class AprilTagCamera {
   private String name;
 
-  @AutoLogOutput(key = "Vision/{name}/LimelightPosition")
   private Pose3d position;
 
   private double heartbeat;
