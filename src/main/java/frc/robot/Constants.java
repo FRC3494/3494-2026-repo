@@ -331,15 +331,15 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
-    public static final int spinnySpinnyCurrentLimit = 30;
+    public static final int spinnySpinnyCurrentLimit = 50;
 
-    public static final double spinnySpinnyKp = 0.0;
+    public static final double spinnySpinnyKp = 1.5158E-07;
     public static final double spinnySpinnyKi = 0.0;
     public static final double spinnySpinnyKd = 0.0;
 
-    public static final double spinnySpinnyKs = 0.0;
-    public static final double spinnySpinnyKv = 0.0;
-    public static final double spinnySpinnyKa = 0.0;
+    public static final double spinnySpinnyKs = 0.19074;
+    public static final double spinnySpinnyKv = 0.0018364;
+    public static final double spinnySpinnyKa = 0.00016227;
 
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 30;
