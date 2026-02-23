@@ -363,15 +363,16 @@ public final class Constants {
 
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;
-      public static final int flywheelCurrentLimit = 20;
+      public static final int flywheelCurrentLimit = 50;
 
-      public static final double flywheelKp = 0.0;
+      // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
+      public static final double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
       public static final double flywheelKi = 0.0;
-      public static final double flywheelKd = 0.0;
+      public static final double flywheelKd = 1.84359E-08;
 
-      public static final double flywheelKs = 0.0;
-      public static final double flywheelKv = 0.0;
-      public static final double flywheelKa = 0.0;
+      public static final double flywheelKs = 0.10996;
+      public static final double flywheelKv = 0.0017972; // From SysId: 0.0021194
+      public static final double flywheelKa = 0.00028032; // From SysId: 0.0011572
     }
 
     public static final class HoodConstants {
