@@ -147,6 +147,7 @@ public final class Constants {
     public static final int rightButtonBoardPort = 2;
 
     public static final double controllerStickDeadband = 0.05;
+    public static final double controllerTriggerDeadband = 0.05;
   }
 
   // ========================= SUBSYSTEMS ========================= //

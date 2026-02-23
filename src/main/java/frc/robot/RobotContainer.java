@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
@@ -36,11 +37,13 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,6 +56,7 @@ public class RobotContainer {
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
   private final Climber climber;
+  private final Hopper hopper;
   private final Intake intake;
   private final Shooter shooter;
 
@@ -60,8 +64,12 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
+  private final RobotCommands robotCommands;
   private final Command joystickDriveCommand;
   private final Command aimShooterCommand;
+
+  private LoggedNetworkBoolean enableTuningAutos =
+      new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", false);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -108,9 +116,11 @@ public class RobotContainer {
 
     aprilTagVision = new AprilTagVision(drive);
     climber = new Climber();
+    hopper = new Hopper();
     intake = new Intake();
     shooter = new Shooter();
 
+    robotCommands = new RobotCommands(climber, drive, hopper, intake, shooter);
     aimShooterCommand = new AimShooterCommand(shooter, drive);
 
     RobotModeTriggers.autonomous()
@@ -175,6 +185,45 @@ public class RobotContainer {
     autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
+    autoChooser.addCmd(
+        "Flywheel SysId (Quasistatic Forward)",
+        () -> shooter.flywheelSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Flywheel SysId (Quasistatic Reverse)",
+        () -> shooter.flywheelSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Flywheel SysId (Dynamic Forward)",
+        () -> shooter.flywheelSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Flywheel SysId (Dynamic Reverse)",
+        () -> shooter.flywheelSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Feeder SysId (Quasistatic Forward)",
+        () -> hopper.feederSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Feeder SysId (Quasistatic Reverse)",
+        () -> hopper.feederSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Feeder SysId (Dynamic Forward)",
+        () -> hopper.feederSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Feeder SysId (Dynamic Reverse)",
+        () -> hopper.feederSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Quasistatic Forward)",
+        () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Quasistatic Reverse)",
+        () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Dynamic Forward)",
+        () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Dynamic Reverse)",
+        () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
@@ -185,6 +234,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // ==================== CLIMBER ====================
+    ClimberOI.climberUp().onTrue(robotCommands.runClimberUp()).onFalse(robotCommands.stopClimber());
+
+    ClimberOI.climberDown()
+        .onTrue(robotCommands.runClimberDown())
+        .onFalse(robotCommands.stopClimber());
+
     // ==================== DRIVE ====================
     // Default command, normal field-relative drive
     drive.setDefaultCommand(joystickDriveCommand);
@@ -199,7 +255,7 @@ public class RobotContainer {
         .onFalse(runOnce(() -> drive.setDefaultCommand(joystickDriveCommand), drive));
 
     // Lock to 0° when A button is held
-    DriveOI.lockToForward()
+    DriveOI.lockTo45()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -219,90 +275,35 @@ public class RobotContainer {
 
     DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
 
-    // ==================== INTAKE ====================
-    IntakeOI.intake()
-        .onTrue(
-            runOnce(
-                () -> {
-                  intake.setSpinnySpinnyVelocity(RPM.of(5.0));
-                },
-                intake))
-        .onFalse(
-            runOnce(
-                () -> {
-                  intake.setSpinnySpinnyVelocity(RPM.of(0.0));
-                },
-                intake));
-
+    // ==================== HOPPER ====================
     ShooterOI.runSpindexer()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooter.setSpindexerVelocity(RPM.of(3.0));
-                },
-                shooter))
-        .onFalse(
-            runOnce(
-                () -> {
-                  shooter.setSpindexerVelocity(RPM.of(0.0));
-                },
-                shooter));
+        .onTrue(robotCommands.runSpindexerReverse())
+        .onFalse(robotCommands.stopSpindexer());
 
-    ShooterOI.runFeeder()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooter.setFeederVelocity(RPM.of(4.0));
-                },
-                shooter))
-        .onFalse(
-            runOnce(
-                () -> {
-                  shooter.setFeederVelocity(RPM.of(0.0));
-                },
-                shooter));
+    ShooterOI.runFeeder().onTrue(robotCommands.runFeeder()).onFalse(robotCommands.stopFeeder());
 
-    ShooterOI.runHood()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooter.setPosition(RPM.of(0), Rotation2d.fromRadians(5.0), Rotation2d.kZero);
-                },
-                shooter))
-        .onFalse(
-            runOnce(
-                () -> {
-                  shooter.setPosition(RPM.of(0), Rotation2d.kZero, Rotation2d.kZero);
-                },
-                shooter));
+    // ==================== INTAKE ====================
+    IntakeOI.intake().onTrue(robotCommands.runIntake()).onFalse(robotCommands.stopIntake());
 
+    IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
+
+    // ==================== SHOOTER ====================
+    ShooterOI.setHubShot().onTrue(robotCommands.setHubShot());
+    ShooterOI.setTrenchShot().onTrue(robotCommands.setTrenchShot());
+    ShooterOI.setOutpostShot().onTrue(robotCommands.setOutpostShot());
+    ShooterOI.setNeutralZoneShot().onTrue(robotCommands.setNeutralZoneShot());
+
+    ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
+
+    // ==================== FLYWHEEL ====================
     ShooterOI.runFlywheel()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooter.setPosition(RPM.of(0.5), Rotation2d.kZero, Rotation2d.kZero);
-                },
-                shooter))
-        .onFalse(
-            runOnce(
-                () -> {
-                  shooter.setPosition(RPM.of(0), Rotation2d.kZero, Rotation2d.kZero);
-                },
-                shooter));
+        .onTrue(robotCommands.runFlywheel())
+        .onFalse(robotCommands.stopFlywheel());
 
-    ClimberOI.runClimber()
-        .onTrue(
-            runOnce(
-                () -> {
-                  climber.setPosition(Rotation2d.fromRotations(3));
-                },
-                climber))
-        .onFalse(
-            runOnce(
-                () -> {
-                  climber.setPosition(Rotation2d.kZero);
-                },
-                climber));
+    // ==================== HOOD ====================
+    ShooterOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
+
+    ShooterOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
 
     // ==================== SHOOTER ====================
     // shooter.setDefaultCommand(aimShooterCommand);
