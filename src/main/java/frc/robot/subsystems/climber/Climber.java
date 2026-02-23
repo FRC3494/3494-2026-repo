@@ -5,7 +5,6 @@ import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -43,8 +42,9 @@ public class Climber extends SubsystemBase {
   // Climb is positive
   public void setPosition(Rotation2d setpoint) {
     climberSetpoint = setpoint;
-    climberMotor
-        .getClosedLoopController()
-        .setSetpoint(setpoint.getRotations(), ControlType.kVoltage);
+    // climberMotor
+    //     .getClosedLoopController()
+    //     .setSetpoint(setpoint.getRotations(), ControlType.kVoltage);
+    climberMotor.set(setpoint.getRotations());
   }
 }

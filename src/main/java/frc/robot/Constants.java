@@ -153,7 +153,7 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static final int climberCurrentLimit = 30;
+    public static final int climberCurrentLimit = 70;
 
     public static final double climberKp = 0.0;
     public static final double climberKi = 0.0;
