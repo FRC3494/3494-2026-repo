@@ -76,11 +76,16 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
     logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
+    logFlywheelInfo();
 
     if (flywheelP.get() != p || flywheelI.get() != i || flywheelD.get() != d) {
       setPID(flywheelP.get(), flywheelI.get(), flywheelD.get());
     }
   }
+
+  public void logFlywheelInfo() {
+    Logger.recordOutput("Flywheel/Setpoint", flywheelSetpoint.in(RPM));
+   }
 
   public void setVelocity(AngularVelocity velocity) {
     flywheelSetpoint = velocity;
