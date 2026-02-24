@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.QuadranglesUtil;
@@ -72,15 +73,15 @@ public class AimShooterCommand extends Command {
     
     // Create shooter Pose3d
     // move to constants later
-    double shooterX = 0.0; // 0.5 meters in front of the robot center
-    double shooterY = 0.0; // centered on the robot
-    double shooterZ = 0.0; // 0.5 meters above the ground
+    double shooterX = 0.0; 
+    double shooterY = Units.inchesToMeters(-2.074); // distance from robot center to shooter in meters
+    double shooterZ = Units.inchesToMeters(13.72);
     
     Transform3d shooterTransform = new Transform3d(new Translation3d(shooterX, shooterY, shooterZ), new Rotation3d());
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
     // Create target Pose3d
-    double targetHeight = 2.6416; // height of the hub in meters, move to constants later
+    double targetHeight = Units.inchesToMeters(120.36); // height of the hub in meters, move to constants later
     Pose3d targetPose3d = new Pose3d(shooterTarget.getX(), shooterTarget.getY(), targetHeight, new Rotation3d());
 
     Translation3d translationToTarget = targetPose3d.minus(shooterPose3d).getTranslation();
@@ -94,7 +95,7 @@ public class AimShooterCommand extends Command {
 
     // Implementation of desmos calculations provided in discord. Write-up with explainations in .md
     double maxHeight = calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
-    double gravity = 9.81; // get from constants later
+    double gravity = -9.81; // get from constants later
     double finalYVelocity = Math.sqrt(Math.abs(2 * gravity * (maxHeight - targetPose3d.getTranslation().getY())));
     double initialYVelocity =
         Math.sqrt(
@@ -103,7 +104,7 @@ public class AimShooterCommand extends Command {
                 + Math.pow(finalYVelocity, 2));
     double timeToTarget = (initialYVelocity - finalYVelocity) / gravity;
     double initialXVelocity = translationToTarget.getX() / timeToTarget;
-    double flywheelRadius = 0.0762; // get from constants later (assuming 3 inch diameter wheel)
+    double flywheelRadius = Units.inchesToMeters(4) / 2.0; // get from constants later (assuming 3 inch diameter wheel)
     double calculatedRPM =
         calculateFlywheelRPM(
             Math.sqrt(Math.pow(initialXVelocity, 2) + Math.pow(initialYVelocity, 2))
@@ -134,11 +135,11 @@ public class AimShooterCommand extends Command {
     // shooter.setPosition(flywheelVelocity, hoodAngle, turretAngle);
   }
 
-  private double calculateFlywheelRPM(double calculatedRPM) {
+  private double calculateFlywheelRPM(double velocity) {
     // Converts the calculated RPM (using physics-based model) to tested value
     // Requires testing of RPM vs Velocity to determine constants for conversion
     double conversionConstant = 1.0; // placeholder until testing is done
-    return calculatedRPM * conversionConstant;
+    return velocity * conversionConstant;
   }
 
   private double calculateMaxHeight(Translation3d currentLocation, Translation3d shooterTarget) {
