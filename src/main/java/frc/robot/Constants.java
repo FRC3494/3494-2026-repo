@@ -174,7 +174,7 @@ public final class Constants {
        - Divide max rotation speed when driving by max rotation speed while stationary
     */
 
-    public static final double maxSpeedMetersPerSec = 4.8;
+    public static final double maxSpeedMetersPerSec = 4.56; // 14.961 ft/s
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
     public static final double maxAngularSpeedFactor = (1 / 1);
     public static final double odometryFrequency = 100.0; // Hz
@@ -197,7 +197,7 @@ public final class Constants {
 
     // Drive motor configuration
     public static final boolean driveInverted = false;
-    public static final int driveMotorCurrentLimit = 50;
+    public static final int driveMotorCurrentLimit = 40;
     public static final double wheelRadiusMeters =
         Units.inchesToMeters(
             1.99162835); // When using linear characterization: actual linear distance / wheel delta
