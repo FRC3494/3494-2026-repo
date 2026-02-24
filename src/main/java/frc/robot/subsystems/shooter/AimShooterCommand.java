@@ -5,8 +5,12 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.QuadranglesUtil;
@@ -61,12 +65,25 @@ public class AimShooterCommand extends Command {
   @Override
   public void execute() {
     // TODO: Consider making drive.getPose() return an Optional or add a helper getter that
-    Translation2d currentLocation = robotPose.get().getTranslation();
+    // Create robot Pose3d
+    Translation2d robotLocation = robotPose.get().getTranslation();
+    Rotation2d robotYaw = robotPose.get().getRotation();
+    Pose3d robotPose3d = new Pose3d(robotLocation.getX(), robotLocation.getY(), 0.0, new Rotation3d(0.0, 0.0, robotYaw.getRadians()));
+    
+    // Create shooter Pose3d
+    // move to constants later
+    double shooterX = 0.0; // 0.5 meters in front of the robot center
+    double shooterY = 0.0; // centered on the robot
+    double shooterZ = 0.0; // 0.5 meters above the ground
+    
+    Transform3d shooterTransform = new Transform3d(new Translation3d(shooterX, shooterY, shooterZ), new Rotation3d());
+    Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
-    // Vector from robot to target in field coordinates
-    Translation2d translationToTarget = shooterTarget.minus(currentLocation);
-    // Distance to target (meters) is available when needed via:
-    // double distanceToTarget = currentLocation.getDistance(shooterTarget);
+    // Create target Pose3d
+    double targetHeight = 2.6416; // height of the hub in meters, move to constants later
+    Pose3d targetPose3d = new Pose3d(shooterTarget.getX(), shooterTarget.getY(), targetHeight, new Rotation3d());
+
+    Translation3d translationToTarget = targetPose3d.minus(shooterPose3d).getTranslation();
 
     // Compute bearing to target in the XY plane.
     double angleRad = Math.atan2(translationToTarget.getY(), translationToTarget.getX());
@@ -76,14 +93,13 @@ public class AimShooterCommand extends Command {
     Rotation2d turretAngle = angleToTarget.rotateBy(robotPose.get().getRotation().times(-1.0));
 
     // Implementation of desmos calculations provided in discord. Write-up with explainations in .md
-    translationToTarget = shooterTarget.minus(currentLocation);
-    double maxHeight = calculateMaxHeight(currentLocation, shooterTarget);
+    double maxHeight = calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
     double gravity = 9.81; // get from constants later
-    double finalYVelocity = Math.sqrt(Math.abs(2 * gravity * (maxHeight - shooterTarget.getY())));
+    double finalYVelocity = Math.sqrt(Math.abs(2 * gravity * (maxHeight - targetPose3d.getTranslation().getY())));
     double initialYVelocity =
         Math.sqrt(
-            2 * gravity * (maxHeight - currentLocation.getY())
-                + (maxHeight - shooterTarget.getY())
+            2 * gravity * (maxHeight - shooterPose3d.getTranslation().getY())
+                + (maxHeight - targetPose3d.getTranslation().getY())
                 + Math.pow(finalYVelocity, 2));
     double timeToTarget = (initialYVelocity - finalYVelocity) / gravity;
     double initialXVelocity = translationToTarget.getX() / timeToTarget;
@@ -125,7 +141,7 @@ public class AimShooterCommand extends Command {
     return calculatedRPM * conversionConstant;
   }
 
-  private double calculateMaxHeight(Translation2d currentLocation, Translation2d shooterTarget) {
+  private double calculateMaxHeight(Translation3d currentLocation, Translation3d shooterTarget) {
     // Placeholder for max height calculation. Replace with actual implementation.
     return shooterTarget.getY() + 1.0; // example: 1 meter above the target
   }
