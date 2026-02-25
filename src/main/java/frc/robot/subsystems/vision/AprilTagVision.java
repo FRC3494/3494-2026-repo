@@ -33,8 +33,8 @@ public class AprilTagVision extends SubsystemBase {
       camera.periodic();
 
       if (camera.isValidMeasurement()) {
-        // drive.addVisionMeasurement(
-        //     camera.getPose(), camera.getPoseTimestamp(), camera.getStdDevs());
+        drive.addVisionMeasurement(
+            camera.getPose(), camera.getPoseTimestamp(), camera.getStdDevs());
       }
     }
   }
