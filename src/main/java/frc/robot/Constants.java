@@ -269,7 +269,7 @@ public final class Constants {
     // Pigeon config
     public static final double pigeonGyroTrimXDegPerRot = 0.0;
     public static final double pigeonGyroTrimYDegPerRot = 0.0;
-    public static final double pigeonGyroTrimZDegPerRot = 0.0;
+    public static final double pigeonGyroTrimZDegPerRot = -1.88;
 
     public static final Angle pigeonMountPoseYaw = Degrees.of(-0.032393235713243484);
     public static final Angle pigeonMountPosePitch = Degrees.of(-0.30914029479026794);
