@@ -117,10 +117,9 @@ public final class Constants {
                 Inches.of(-13.239), // -0.3363 m
                 Inches.of(8.843), // 0.2246 m
                 new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(90)))),
-        // ! This currently does not exist
         // * Left back
         new LimelightConstants(
-            "limelight-leftb",
+            "limelight-kvale",
             new Pose3d(
                 Inches.of(-13.239), // -0.3363 m
                 Inches.of(-8.625), // -0.2191 m
