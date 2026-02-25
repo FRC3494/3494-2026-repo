@@ -204,7 +204,7 @@ public final class Constants {
     public static final int driveMotorCurrentLimit = 40;
     public static final double wheelRadiusMeters =
         Units.inchesToMeters(
-            1.99162835); // When using linear characterization: actual linear distance / wheel delta
+            2.19577028); // When using linear characterization: actual linear distance / wheel delta
     public static final double driveMotorReduction =
         (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2 Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
