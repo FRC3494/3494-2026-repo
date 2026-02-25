@@ -109,34 +109,39 @@ public final class Constants {
 
     public static final class Vision {
       public static final LimelightConstants[] aprilTagLimelights = {
+        // * Left side
         new LimelightConstants(
-            "limelight-barge",
+            "limelight-square",
             new Pose3d(
-                Inches.of(-8.1296),
-                Inches.of(-6.376),
-                Inches.of(27.6),
-                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+                Inches.of(-10.0), // -0.254 m
+                Inches.of(-13.239), // -0.3363 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(90)))),
+        // ! This currently does not exist
+        // * Left back
         new LimelightConstants(
-            "limelight-coral",
+            "limelight-leftb",
             new Pose3d(
-                Inches.of(-8.0936),
-                Inches.of(6.376),
-                Inches.of(29.1),
-                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-90)))),
+                Inches.of(-13.239), // -0.3363 m
+                Inches.of(-8.625), // -0.2191 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(180)))),
+        // * Right side
         new LimelightConstants(
-            "limelight-left",
+            "limelight-cube",
             new Pose3d(
-                Meters.of(-0.2093),
-                Meters.of(-0.2092),
-                Meters.of(0.327),
-                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+                Inches.of(-10.0), // -0.254 m
+                Inches.of(13.239), // 0.3363 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-90)))),
+        // * Right back
         new LimelightConstants(
-            "limelight-swerve",
+            "limelight-angle",
             new Pose3d(
-                Meters.of(0.2355),
-                Meters.of(-0.2499),
-                Meters.of(0.2267),
-                new Rotation3d(Degrees.of(0), Degrees.of(15), Degrees.of(105))))
+                Inches.of(-13.239), // -0.3363 m
+                Inches.of(8.625), // 0.2191 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(180))))
       };
     }
   }
