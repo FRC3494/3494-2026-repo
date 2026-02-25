@@ -20,6 +20,8 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.OI.ShooterOI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import org.littletonrobotics.junction.Logger;
+
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -84,6 +86,11 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     logMotorStats("Turret/Motor", turretMotor, false);
+    logTurretInfo();
+  }
+
+  public void logTurretInfo() {
+    Logger.recordOutput("Turret/MagSensorTripped", isMagSensorTripped());
   }
 
   public void setPosition(Rotation2d setpoint) {
@@ -109,4 +116,6 @@ public class Turret extends SubsystemBase {
   private double getRawAbsPosition() {
     return turretMotor.getAbsoluteEncoder().getPosition() / turretAbsEncoderGearRatio;
   }
+
+
 }
