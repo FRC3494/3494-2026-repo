@@ -154,8 +154,8 @@ public class RobotCommands {
   public Command setHubShot() {
     return runOnce(
         () -> {
-          flywheelSpeed.set(1500);
-          flywheelThresholdSpeed.set(1300);
+          flywheelSpeed.set(3000);
+          flywheelThresholdSpeed.set(2900);
           hoodAngle.set(0);
         });
   }
@@ -207,7 +207,7 @@ public class RobotCommands {
         waitSeconds(0.25),
         stopFeeder(),
         waitSeconds(0.25),
-        stopFeeder(),
+        stopFlywheel(),
         stopIntake());
   }
 
