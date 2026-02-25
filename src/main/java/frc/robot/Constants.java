@@ -180,7 +180,7 @@ public final class Constants {
 
     public static final double maxSpeedMetersPerSec = 4.56; // 14.961 ft/s
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
-    public static final double maxAngularSpeedFactor = (1 / 1);
+    public static final double maxAngularSpeedFactor = (321.5229038 / 630.028839);
     public static final double odometryFrequency = 100.0; // Hz
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
