@@ -85,7 +85,7 @@ public class Flywheel extends SubsystemBase {
 
   public void logFlywheelInfo() {
     Logger.recordOutput("Flywheel/Setpoint", flywheelSetpoint.in(RPM));
-   }
+  }
 
   public void setVelocity(AngularVelocity velocity) {
     flywheelSetpoint = velocity;

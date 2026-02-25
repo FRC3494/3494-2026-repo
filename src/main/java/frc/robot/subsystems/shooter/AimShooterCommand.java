@@ -36,10 +36,9 @@ import org.littletonrobotics.junction.AutoLogOutput;
  *
  * <p>TODOs (high priority) - TODO: Implement a mapping from distance -> flywheel RPM (e.g. lookup
  * table or physics model). - TODO: Implement a mapping from distance -> hood angle (and clamp to
- * mechanical limits).  - TODO: Add logging/telemetry:
- * distanceToTarget, angleToTarget, computed RPM, hood/turret setpoints. - TODO: Wrap turret target
- * to shortest rotation and consider motion profiling / slew limiting to avoid commanding large
- * instantaneous moves.
+ * mechanical limits). - TODO: Add logging/telemetry: distanceToTarget, angleToTarget, computed RPM,
+ * hood/turret setpoints. - TODO: Wrap turret target to shortest rotation and consider motion
+ * profiling / slew limiting to avoid commanding large instantaneous moves.
  *
  * <p>TODOs (structural) - TODO: Consider separating pure math (trajectory solver) into a utility
  * class so it can be tested independently from the Command and the hardware.
@@ -67,20 +66,29 @@ public class AimShooterCommand extends Command {
     // Create robot Pose3d
     Translation2d robotLocation = robotPose.get().getTranslation();
     Rotation2d robotYaw = robotPose.get().getRotation();
-    Pose3d robotPose3d = new Pose3d(robotLocation.getX(), robotLocation.getY(), 0.0, new Rotation3d(0.0, 0.0, robotYaw.getRadians()));
-    
+    Pose3d robotPose3d =
+        new Pose3d(
+            robotLocation.getX(),
+            robotLocation.getY(),
+            0.0,
+            new Rotation3d(0.0, 0.0, robotYaw.getRadians()));
+
     // Create shooter Pose3d
     // move to constants later
-    double shooterX = 0.0; 
-    double shooterY = Units.inchesToMeters(-2.074); // distance from robot center to shooter in meters
+    double shooterX = 0.0;
+    double shooterY =
+        Units.inchesToMeters(-2.074); // distance from robot center to shooter in meters
     double shooterZ = Units.inchesToMeters(13.72);
-    
-    Transform3d shooterTransform = new Transform3d(new Translation3d(shooterX, shooterY, shooterZ), new Rotation3d());
+
+    Transform3d shooterTransform =
+        new Transform3d(new Translation3d(shooterX, shooterY, shooterZ), new Rotation3d());
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
     // Create target Pose3d
-    double targetHeight = Units.inchesToMeters(120.36); // height of the hub in meters, move to constants later
-    Pose3d targetPose3d = new Pose3d(shooterTarget.getX(), shooterTarget.getY(), targetHeight, new Rotation3d());
+    double targetHeight =
+        Units.inchesToMeters(120.36); // height of the hub in meters, move to constants later
+    Pose3d targetPose3d =
+        new Pose3d(shooterTarget.getX(), shooterTarget.getY(), targetHeight, new Rotation3d());
 
     Translation3d translationToTarget = targetPose3d.minus(shooterPose3d).getTranslation();
 
@@ -92,9 +100,11 @@ public class AimShooterCommand extends Command {
     Rotation2d turretAngle = angleToTarget.rotateBy(robotPose.get().getRotation().times(-1.0));
 
     // Implementation of desmos calculations provided in discord. Write-up with explainations in .md
-    double maxHeight = calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
+    double maxHeight =
+        calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
     double gravity = -9.81; // get from constants later
-    double finalYVelocity = Math.sqrt(Math.abs(2 * gravity * (maxHeight - targetPose3d.getTranslation().getY())));
+    double finalYVelocity =
+        Math.sqrt(Math.abs(2 * gravity * (maxHeight - targetPose3d.getTranslation().getY())));
     double initialYVelocity =
         Math.sqrt(
             2 * gravity * (maxHeight - shooterPose3d.getTranslation().getY())
@@ -102,7 +112,8 @@ public class AimShooterCommand extends Command {
                 + Math.pow(finalYVelocity, 2));
     double timeToTarget = (initialYVelocity - finalYVelocity) / gravity;
     double initialXVelocity = translationToTarget.getX() / timeToTarget;
-    double flywheelRadius = Units.inchesToMeters(4) / 2.0; // get from constants later (assuming 3 inch diameter wheel)
+    double flywheelRadius =
+        Units.inchesToMeters(4) / 2.0; // get from constants later (assuming 3 inch diameter wheel)
     double calculatedRPM =
         calculateFlywheelRPM(
             Math.sqrt(Math.pow(initialXVelocity, 2) + Math.pow(initialYVelocity, 2))

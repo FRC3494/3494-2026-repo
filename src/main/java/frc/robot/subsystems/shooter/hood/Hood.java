@@ -64,6 +64,7 @@ public class Hood extends SubsystemBase {
   public void logHoodInfo() {
     Logger.recordOutput("Hood/Setpoint", hoodSetpoint.getRotations());
   }
+
   public void setPosition(Rotation2d setpoint) {
     if (setpoint.getRadians() >= hoodMinAngle.getRadians()
         && setpoint.getRadians() <= hoodMaxAngle.getRadians()) {

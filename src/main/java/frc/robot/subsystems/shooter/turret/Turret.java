@@ -20,10 +20,9 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.OI.ShooterOI;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import org.littletonrobotics.junction.Logger;
-
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class Turret extends SubsystemBase {
   private SparkFlex turretMotor;
@@ -116,6 +115,4 @@ public class Turret extends SubsystemBase {
   private double getRawAbsPosition() {
     return turretMotor.getAbsoluteEncoder().getPosition() / turretAbsEncoderGearRatio;
   }
-
-
 }
