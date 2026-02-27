@@ -407,7 +407,8 @@ public class Drive extends SubsystemBase {
           default -> maxSpeedMetersPerSec / driveBaseRadius;
         };
 
-    return speed * maxAngularSpeedFactor;
+    // return speed * maxAngularSpeedFactor;
+    return Units.degreesToRadians(360 + 72);
   }
 
   public void rezeroTurnEncoders() {
