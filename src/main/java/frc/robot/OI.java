@@ -52,11 +52,6 @@ public final class OI {
       // return primaryController.a(eventLoop);
       return new Trigger(() -> false);
     }
-
-    public static Trigger resetYawPigeon() {
-      // return primaryController.b(eventLoop);
-      return new Trigger(() -> false);
-    }
   }
 
   public static final class ClimberOI {

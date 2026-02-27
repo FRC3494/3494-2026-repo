@@ -305,8 +305,6 @@ public class RobotContainer {
     DriveOI.rezeroSwerveTurnEncoders()
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
 
-    DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
-
     // ==================== HOPPER ====================
     ShooterOI.runSpindexer()
         .onTrue(robotCommands.runSpindexerReverse())

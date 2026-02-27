@@ -428,8 +428,4 @@ public class Drive extends SubsystemBase {
       poseEstimator.resetRotation(Rotation2d.kZero);
     }
   }
-
-  public void resetYawPigeon() {
-    gyroIO.setYaw(Rotation2d.kZero);
-  }
 }
