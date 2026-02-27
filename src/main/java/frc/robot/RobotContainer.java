@@ -27,7 +27,7 @@ import frc.robot.OI.DriveOI;
 import frc.robot.OI.IntakeOI;
 import frc.robot.OI.ShooterOI;
 import frc.robot.autos.Autos;
-import frc.robot.autos.TestAuto;
+import frc.robot.autos.ClimbLeftAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
@@ -148,7 +148,8 @@ public class RobotContainer {
 
   private void configureAutos() {
     // Set up autos
-    autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine("TestAuto", autoFactory, drive));
+    autoChooser.addRoutine(
+        "ClimbLeft", () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, climber, drive));
 
     autoChooser.addCmd("=====================", () -> none());
 
