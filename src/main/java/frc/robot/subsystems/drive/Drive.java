@@ -423,11 +423,11 @@ public class Drive extends SubsystemBase {
   public void resetYaw() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == Alliance.Red) {
-      poseEstimator.resetRotation(Rotation2d.k180deg);
       gyroIO.setYaw(Rotation2d.k180deg);
+      poseEstimator.resetRotation(Rotation2d.k180deg);
     } else {
-      poseEstimator.resetRotation(Rotation2d.kZero);
       gyroIO.setYaw(Rotation2d.kZero);
+      poseEstimator.resetRotation(Rotation2d.kZero);
     }
   }
 
