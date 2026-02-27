@@ -20,9 +20,9 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class AprilTagCamera {
-  private String name;
+  @Getter private final String name;
 
-  private Pose3d position;
+  @Getter private final Pose3d position;
 
   private double heartbeat;
 
