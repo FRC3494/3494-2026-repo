@@ -38,6 +38,10 @@ public class Intake extends SubsystemBase {
         .smartCurrentLimit(spinnySpinnyCurrentLimit)
         .idleMode(IdleMode.kCoast)
         .inverted(spinnySpinnyInverted);
+    spinnySpinnyConfig
+        .encoder
+        .positionConversionFactor(spinnySpinnyGearRatio)
+        .velocityConversionFactor(spinnySpinnyGearRatio);
     spinnySpinnyConfig.closedLoop.pid(spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd);
     spinnySpinnyConfig.closedLoop.feedForward.sva(spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa);
     spinnySpinnyMotor.configure(
