@@ -418,14 +418,17 @@ public class Drive extends SubsystemBase {
     return gyroInputs.connected;
   }
 
+  public void setRotation(Rotation2d rotation) {
+    gyroIO.setYaw(rotation);
+    poseEstimator.resetRotation(rotation);
+  }
+
   public void resetYaw() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == Alliance.Red) {
-      gyroIO.setYaw(Rotation2d.k180deg);
-      poseEstimator.resetRotation(Rotation2d.k180deg);
+      setRotation(Rotation2d.k180deg);
     } else {
-      gyroIO.setYaw(Rotation2d.kZero);
-      poseEstimator.resetRotation(Rotation2d.kZero);
+      setRotation(Rotation2d.kZero);
     }
   }
 }
