@@ -33,8 +33,7 @@ public final class OI {
     }
 
     public static Trigger autoAlignClimb() {
-      return new Trigger(() -> false);
-      // return primaryController.y(eventLoop);
+      return primaryController.povLeft();
     }
 
     public static Trigger resetYaw() {

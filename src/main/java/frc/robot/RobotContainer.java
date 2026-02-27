@@ -43,6 +43,7 @@ import frc.robot.subsystems.shooter.AimShooterCommand;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
+import frc.robot.util.QuadranglesUtil;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 /**
@@ -253,12 +254,16 @@ public class RobotContainer {
                       drive
                           .getPose()
                           .getTranslation()
-                          .getDistance(AutoAlignConstants.climbSetupPoseOutpost.getTranslation());
+                          .getDistance(
+                              QuadranglesUtil.toAllianceTranslation(
+                                  AutoAlignConstants.climbSetupPoseOutpost.getTranslation()));
                   double distanceToDepotPose =
                       drive
                           .getPose()
                           .getTranslation()
-                          .getDistance(AutoAlignConstants.climbSetupPoseDepot.getTranslation());
+                          .getDistance(
+                              QuadranglesUtil.toAllianceTranslation(
+                                  AutoAlignConstants.climbSetupPoseDepot.getTranslation()));
 
                   if (distanceToOutpostPose < distanceToDepotPose) {
                     drive.setDefaultCommand(
