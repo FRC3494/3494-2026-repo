@@ -43,7 +43,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.OI.DriveOI;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.QuadranglesUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -71,11 +70,7 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(
-          kinematics,
-          rawGyroRotation,
-          lastModulePositions,
-          QuadranglesUtil.toAlliancePose(AutoAlignConstants.climbPoseOutpost));
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
   @Getter @Setter @AutoLogOutput private boolean autoAligning = false;
 
