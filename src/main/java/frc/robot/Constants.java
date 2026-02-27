@@ -8,7 +8,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.DriveConstants.fieldWidth;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -23,6 +22,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
+import frc.robot.util.choreo.ChoreoVars;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -302,18 +302,11 @@ public final class Constants {
       public static final double autoAlignAngularKi = 0.0;
       public static final double autoAlignAngularKd = 0.1;
 
-      public static final Pose2d climbSetupPoseOutpost =
-          new Pose2d(
-              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+      public static final Pose2d climbSetupPoseOutpost = ChoreoVars.Poses.ClimbSetupOutpost;
       public static final Pose2d climbPoseOutpost =
-          new Pose2d(
-              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
-      public static final Pose2d climbSetupPoseDepot =
-          new Pose2d(
-              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
-      public static final Pose2d climbPoseDepot =
-          new Pose2d(
-              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+          new Pose2d(Inches.of(41.755), Meters.of(2.0), Rotation2d.kCW_90deg);
+      public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
+      public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
     }
   }
 
@@ -368,12 +361,11 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final Translation2d hubLocation =
-        new Translation2d(Inches.of(181.90625), Inches.of(158.84375));
+    public static final Translation2d hubLocation = ChoreoVars.Poses.Hub.getTranslation();
     public static final Translation2d outpostBumpLocation =
-        new Translation2d(Inches.of(182.0), Inches.of(90.0));
+        ChoreoVars.Poses.BumpOutpost.getTranslation();
     public static final Translation2d depotBumpLocation =
-        new Translation2d(Inches.of(182.0), fieldWidth.minus(Inches.of(90.0)));
+        ChoreoVars.Poses.BumpDepot.getTranslation();
 
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;

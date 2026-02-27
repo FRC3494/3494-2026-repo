@@ -5,14 +5,84 @@
  "variables":{
   "expressions":{},
   "poses":{
-   "Start":{
+   "BumpDepot":{
     "x":{
-     "exp":"16.375 in",
-     "val":0.415925
+     "exp":"182 in",
+     "val":4.6228
     },
     "y":{
-     "exp":"56 in + 16.375 in",
-     "val":1.838325
+     "exp":"8.0692 m - 90 in",
+     "val":5.783200000000001
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
+    }
+   },
+   "BumpOutpost":{
+    "x":{
+     "exp":"182 in",
+     "val":4.6228
+    },
+    "y":{
+     "exp":"90 in",
+     "val":2.286
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
+    }
+   },
+   "ClimbDepot":{
+    "x":{
+     "exp":"41.755 in - 1 in",
+     "val":1.035177
+    },
+    "y":{
+     "exp":"8.0692 m - 3.5 m",
+     "val":4.5692
+    },
+    "heading":{
+     "exp":"90 deg",
+     "val":1.5707963267948966
+    }
+   },
+   "ClimbSetupDepot":{
+    "x":{
+     "exp":"41.755 in - 1 in",
+     "val":1.035177
+    },
+    "y":{
+     "exp":"4.9 m",
+     "val":4.9
+    },
+    "heading":{
+     "exp":"90 deg",
+     "val":1.5707963267948966
+    }
+   },
+   "ClimbSetupOutpost":{
+    "x":{
+     "exp":"41.755 in - 1 in",
+     "val":1.035177
+    },
+    "y":{
+     "exp":"2.65 m",
+     "val":2.65
+    },
+    "heading":{
+     "exp":"-90 deg",
+     "val":-1.5707963267948966
+    }
+   },
+   "Hub":{
+    "x":{
+     "exp":"181.90625 in",
+     "val":4.62041875
+    },
+    "y":{
+     "exp":"158.84375 in",
+     "val":4.0346312499999994
     },
     "heading":{
      "exp":"0 deg",
