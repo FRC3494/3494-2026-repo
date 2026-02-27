@@ -314,6 +314,7 @@ public final class Constants {
     // spindexer constants
     public static final boolean spindexerInverted = false;
     public static final int spindexerCurrentLimit = 20;
+    public static final double spindexerGearRatio = 180.0 / 6293.0;
 
     public static final double spindexerKp = 0.0;
     public static final double spindexerKi = 0.0;

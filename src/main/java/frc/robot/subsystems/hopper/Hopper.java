@@ -39,6 +39,10 @@ public class Hopper extends SubsystemBase {
         .smartCurrentLimit(spindexerCurrentLimit)
         .idleMode(IdleMode.kCoast)
         .inverted(spindexerInverted);
+    spindexerConfig
+        .encoder
+        .positionConversionFactor(spindexerGearRatio)
+        .velocityConversionFactor(spindexerGearRatio);
     spindexerConfig.closedLoop.pid(spindexerKp, spindexerKi, spindexerKd);
     spindexerConfig.closedLoop.feedForward.sva(spindexerKs, spindexerKv, spindexerKa);
     spindexerMotor.configure(
