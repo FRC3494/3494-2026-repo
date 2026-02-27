@@ -116,7 +116,7 @@ public final class Constants {
                 Inches.of(-10.0), // -0.254 m
                 Inches.of(-13.239), // -0.3363 m
                 Inches.of(8.843), // 0.2246 m
-                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(90)))),
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(90)))),
         // * Left back
         new LimelightConstants(
             "limelight-kvale",
@@ -124,7 +124,7 @@ public final class Constants {
                 Inches.of(-13.239), // -0.3363 m
                 Inches.of(-8.625), // -0.2191 m
                 Inches.of(8.843), // 0.2246 m
-                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(180)))),
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(180)))),
         // * Right side
         new LimelightConstants(
             "limelight-cube",
@@ -132,7 +132,7 @@ public final class Constants {
                 Inches.of(-10.0), // -0.254 m
                 Inches.of(13.239), // 0.3363 m
                 Inches.of(8.843), // 0.2246 m
-                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-90)))),
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(-90)))),
         // * Right back
         new LimelightConstants(
             "limelight-angle",
@@ -140,7 +140,7 @@ public final class Constants {
                 Inches.of(-13.239), // -0.3363 m
                 Inches.of(8.625), // 0.2191 m
                 Inches.of(8.843), // 0.2246 m
-                new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(180))))
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(180))))
       };
     }
   }
