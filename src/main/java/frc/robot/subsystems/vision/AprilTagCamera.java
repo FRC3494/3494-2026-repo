@@ -39,6 +39,7 @@ public class AprilTagCamera {
   @Getter
   @AutoLogOutput(key = "Vision/{name}/ValidMeasurement")
   private boolean validMeasurement1;
+
   @Getter
   @AutoLogOutput(key = "Vision/{name}/ValidMeasurement2")
   private boolean validMeasurement2;
@@ -75,17 +76,16 @@ public class AprilTagCamera {
         name, robotYaw.getDegrees(), robotYawVelocity.in(DegreesPerSecond), 0, 0, 0, 0);
 
     // Get pose estimate from Limelight
-    PoseEstimate poseEstimate2;
     PoseEstimate poseEstimate1;
-    poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+    PoseEstimate poseEstimate2;
     poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+    poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-
-    logPoseEstimateStats(poseEstimate2, "MegaTag2");
     logPoseEstimateStats(poseEstimate1, "MegaTag1");
+    logPoseEstimateStats(poseEstimate2, "MegaTag2");
 
-    validMeasurement1 = isMeasurementValid(poseEstimate1);
-    validMeasurement2 = isMeasurementValid(poseEstimate2);
+    validMeasurement1 = isMeasurementValid(poseEstimate1, "MegaTag1");
+    validMeasurement2 = isMeasurementValid(poseEstimate2, "MegaTag2");
 
     // Save pose estimate if valid
     if (validMeasurement1 && !megaTag2Enabled) {
@@ -99,6 +99,14 @@ public class AprilTagCamera {
     }
   }
 
+  public boolean isValidMeasurement() {
+    if (!megaTag2Enabled) {
+      return validMeasurement1;
+    } else {
+      return validMeasurement2;
+    }
+  }
+
   private void logPoseEstimateStats(PoseEstimate poseEstimate, String tagType) {
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/AvgTagDist", poseEstimate.avgTagDist);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/AvgTagArea", poseEstimate.avgTagArea);
@@ -108,24 +116,26 @@ public class AprilTagCamera {
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/Latency", poseEstimate.latency);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCount", poseEstimate.tagCount);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagSpan", poseEstimate.tagSpan);
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/PoseTimestamp", poseEstimate.timestampSeconds);
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/RawFiducials", poseEstimate.rawFiducials.toString());
+    Logger.recordOutput(
+        "Vision/" + name + "/" + tagType + "/PoseTimestamp", poseEstimate.timestampSeconds);
+    Logger.recordOutput(
+        "Vision/" + name + "/" + tagType + "/RawFiducials", poseEstimate.rawFiducials.toString());
     Logger.recordOutput(
         "Vision/" + name + "/" + tagType + "/CameraPoseRobotSpace",
         LimelightHelpers.getCameraPose3d_RobotSpace(name));
   }
 
-  private boolean isMeasurementValid(PoseEstimate poseEstimate) {
+  private boolean isMeasurementValid(PoseEstimate poseEstimate, String tagType) {
     // TODO: use limelight's own measurement valid function
 
     boolean estimateNotNull = poseEstimate != null;
-    Logger.recordOutput("Vision/" + name + "/EstimateNotNull", estimateNotNull);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/EstimateNotNull", estimateNotNull);
 
     boolean tagsPresent = poseEstimate.tagCount > 0;
-    Logger.recordOutput("Vision/" + name + "/TagsPresent", tagsPresent);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsPresent", tagsPresent);
 
     boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
-    Logger.recordOutput("Vision/" + name + "/TagsWithinRange", tagsWithinRange);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsWithinRange", tagsWithinRange);
 
     return estimateNotNull && tagsPresent && tagsWithinRange;
   }
