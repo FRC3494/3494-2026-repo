@@ -22,7 +22,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 public class Turret extends SubsystemBase {
   private SparkFlex turretMotor;
@@ -85,11 +84,6 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     logMotorStats("Turret/Motor", turretMotor, false);
-    logTurretInfo();
-  }
-
-  public void logTurretInfo() {
-    Logger.recordOutput("Turret/MagSensorTripped", isMagSensorTripped());
   }
 
   public void setPosition(Rotation2d setpoint) {

@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Hood extends SubsystemBase {
@@ -55,14 +54,10 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
-    logHoodInfo();
+
     if (hoodP.get() != p || hoodI.get() != i || hoodD.get() != d) {
       setPID(hoodP.get(), hoodI.get(), hoodD.get());
     }
-  }
-
-  public void logHoodInfo() {
-    Logger.recordOutput("Hood/Setpoint", hoodSetpoint.getRotations());
   }
 
   public void setPosition(Rotation2d setpoint) {
