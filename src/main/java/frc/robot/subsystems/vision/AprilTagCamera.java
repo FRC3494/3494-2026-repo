@@ -124,9 +124,9 @@ public class AprilTagCamera {
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
     double standardDeviationX =
-        .1; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
+        .4; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
     double standardDeviationY =
-        .1; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
+        .4; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
     double standardDeviationTheta = 99999999; // maxAngleStdDev.in(Radians) *
     // Math.abs(poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians() / (2 *
     // Math.PI)));

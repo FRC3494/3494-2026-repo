@@ -430,7 +430,7 @@ public final class Constants {
     public static final double maxDistanceStdDev = 999999;
     public static final Angle maxAngleStdDev = Degrees.of(999999);
 
-    public static final boolean useMegaTag2 = true;
+    public static final boolean useMegaTag2 = false;
 
     public static record LimelightConstants(String name, Pose3d position) {}
   }
