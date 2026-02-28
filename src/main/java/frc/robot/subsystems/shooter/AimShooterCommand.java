@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -84,10 +85,9 @@ public class AimShooterCommand extends Command {
         computePhysics(state.shooterPose3d, state.targetPose3d, state.translationToTarget);
 
     // 3) Compute raw RPM from physics
-    double flywheelRadius = Units.inchesToMeters(4) / 2.0; // TODO: move to constants
     double linearVelocity = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
     double calculatedRPM =
-        calculateFlywheelRPM(linearVelocity * 60.0 / (2.0 * Math.PI * flywheelRadius));
+        calculateFlywheelRPM(linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
 
     // 4) Apply offsets and clamp to limits, update clamped flags
     Setpoints set = applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
@@ -140,7 +140,6 @@ public class AimShooterCommand extends Command {
       Pose3d shooterPose3d, Pose3d targetPose3d, Translation3d translationToTarget) {
     double maxHeight =
         calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
-    double gravity = -9.81; // TODO: move to constants
 
     double finalYVelocity =
         Math.sqrt(Math.abs(2 * gravity * (maxHeight - targetPose3d.getTranslation().getY())));
@@ -157,30 +156,24 @@ public class AimShooterCommand extends Command {
 
   private Setpoints applyOffsetsAndClamps(
       double calculatedRPM, PhysicsResult physics, Rotation2d turretAngleWorld) {
-    // limits (TODO -> constants)
-    Double maxHoodAngle = 45.0;
-    Double minHoodAngle = 24.2238027;
-    Double maxTurretAngle = 360.0;
-    Double minTurretAngle = 0.2005;
-    Double maxFlywheelRPM = 5700.0;
-    Double minFlywheelRPM = 0.0;
+
 
     // Flywheel: apply offset then clamp
     double targetRPMBeforeClamp = calculatedRPM + flywheelOffsetRPM;
-    double targetRPM = MathUtil.clamp(targetRPMBeforeClamp, minFlywheelRPM, maxFlywheelRPM);
+    double targetRPM = MathUtil.clamp(targetRPMBeforeClamp, FlywheelConstants.flywheelMinSpeed.in(RPM), FlywheelConstants.flywheelMaxSpeed.in(RPM));
     boolean flywheelClamped = Math.abs(targetRPM - targetRPMBeforeClamp) > 1e-6;
 
     // Hood angle: compute from ballistic angles, then offset/clamp
     double hoodDegBeforeClamp =
         Math.toDegrees(Math.atan2(physics.initialYVelocity, physics.initialXVelocity))
             + hoodOffsetDeg;
-    double hoodDeg = MathUtil.clamp(hoodDegBeforeClamp, minHoodAngle, maxHoodAngle);
+    double hoodDeg = MathUtil.clamp(hoodDegBeforeClamp, HoodConstants.hoodMinAngle.getDegrees(), HoodConstants.hoodMaxAngle.getDegrees());
     boolean hoodClamped = Math.abs(hoodDeg - hoodDegBeforeClamp) > 1e-6;
     Rotation2d hoodAngle = Rotation2d.fromDegrees(hoodDeg);
 
     // Turret: apply offset to world turret angle then clamp
     double turretDegBeforeClamp = turretAngleWorld.getDegrees() + turretOffsetDeg;
-    double turretDeg = MathUtil.clamp(turretDegBeforeClamp, minTurretAngle, maxTurretAngle);
+    double turretDeg = MathUtil.clamp(turretDegBeforeClamp, TurretConstants.turretMinAngle.getDegrees(), TurretConstants.turretMaxAngle.getDegrees());
     boolean turretClamped = Math.abs(turretDeg - turretDegBeforeClamp) > 1e-6;
     Rotation2d turretAngle = Rotation2d.fromDegrees(turretDeg);
 
