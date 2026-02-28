@@ -81,8 +81,8 @@ public class AprilTagCamera {
     poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
 
-    logPoseEstimateStats(poseEstimate2);
-    logPoseEstimateStats(poseEstimate1);
+    logPoseEstimateStats(poseEstimate2, "MegaTag2");
+    logPoseEstimateStats(poseEstimate1, "MegaTag1");
 
     validMeasurement1 = isMeasurementValid(poseEstimate1);
     validMeasurement2 = isMeasurementValid(poseEstimate2);
