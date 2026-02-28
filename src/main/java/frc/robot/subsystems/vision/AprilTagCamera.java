@@ -88,13 +88,11 @@ public class AprilTagCamera {
     validMeasurement2 = isMeasurementValid(poseEstimate2);
 
     // Save pose estimate if valid
-    if (validMeasurement1) {
+    if (validMeasurement1 && !megaTag2Enabled) {
       pose = poseEstimate1.pose;
       poseTimestamp = poseEstimate1.timestampSeconds;
       stdDevs = getStdDevs(poseEstimate1);
-    }
-
-    if (validMeasurement2) {
+    } else if (validMeasurement2 && megaTag2Enabled) {
       pose = poseEstimate2.pose;
       poseTimestamp = poseEstimate2.timestampSeconds;
       stdDevs = getStdDevs(poseEstimate2);
