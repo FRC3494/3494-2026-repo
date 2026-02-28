@@ -38,7 +38,10 @@ public class AprilTagCamera {
 
   @Getter
   @AutoLogOutput(key = "Vision/{name}/ValidMeasurement")
-  private boolean validMeasurement;
+  private boolean validMeasurement1;
+  @Getter
+  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement2")
+  private boolean validMeasurement2;
 
   @Getter private Pose2d pose;
   @Getter private double poseTimestamp;
@@ -72,38 +75,45 @@ public class AprilTagCamera {
         name, robotYaw.getDegrees(), robotYawVelocity.in(DegreesPerSecond), 0, 0, 0, 0);
 
     // Get pose estimate from Limelight
-    PoseEstimate poseEstimate;
-    if (megaTag2Enabled) {
-      poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-    } else {
-      poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-    }
+    PoseEstimate poseEstimate2;
+    PoseEstimate poseEstimate1;
+    poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+    poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
-    logPoseEstimateStats(poseEstimate);
 
-    validMeasurement = isMeasurementValid(poseEstimate);
+    logPoseEstimateStats(poseEstimate2);
+    logPoseEstimateStats(poseEstimate1);
+
+    validMeasurement1 = isMeasurementValid(poseEstimate1);
+    validMeasurement2 = isMeasurementValid(poseEstimate2);
 
     // Save pose estimate if valid
-    if (validMeasurement) {
-      pose = poseEstimate.pose;
-      poseTimestamp = poseEstimate.timestampSeconds;
-      stdDevs = getStdDevs(poseEstimate);
+    if (validMeasurement1) {
+      pose = poseEstimate1.pose;
+      poseTimestamp = poseEstimate1.timestampSeconds;
+      stdDevs = getStdDevs(poseEstimate1);
+    }
+
+    if (validMeasurement2) {
+      pose = poseEstimate2.pose;
+      poseTimestamp = poseEstimate2.timestampSeconds;
+      stdDevs = getStdDevs(poseEstimate2);
     }
   }
 
-  private void logPoseEstimateStats(PoseEstimate poseEstimate) {
-    Logger.recordOutput("Vision/" + name + "/AvgTagDist", poseEstimate.avgTagDist);
-    Logger.recordOutput("Vision/" + name + "/AvgTagArea", poseEstimate.avgTagArea);
-    Logger.recordOutput("Vision/" + name + "/Pose", poseEstimate.pose);
-    Logger.recordOutput("Vision/" + name + "/TagCount", poseEstimate.tagCount);
-    Logger.recordOutput("Vision/" + name + "/IsMegaTag2", poseEstimate.isMegaTag2);
-    Logger.recordOutput("Vision/" + name + "/Latency", poseEstimate.latency);
-    Logger.recordOutput("Vision/" + name + "/TagCount", poseEstimate.tagCount);
-    Logger.recordOutput("Vision/" + name + "/TagSpan", poseEstimate.tagSpan);
-    Logger.recordOutput("Vision/" + name + "/PoseTimestamp", poseEstimate.timestampSeconds);
-    Logger.recordOutput("Vision/" + name + "/RawFiducials", poseEstimate.rawFiducials.toString());
+  private void logPoseEstimateStats(PoseEstimate poseEstimate, String tagType) {
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/AvgTagDist", poseEstimate.avgTagDist);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/AvgTagArea", poseEstimate.avgTagArea);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/Pose", poseEstimate.pose);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCount", poseEstimate.tagCount);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/IsMegaTag2", poseEstimate.isMegaTag2);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/Latency", poseEstimate.latency);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCount", poseEstimate.tagCount);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagSpan", poseEstimate.tagSpan);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/PoseTimestamp", poseEstimate.timestampSeconds);
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/RawFiducials", poseEstimate.rawFiducials.toString());
     Logger.recordOutput(
-        "Vision/" + name + "/CameraPoseRobotSpace",
+        "Vision/" + name + "/" + tagType + "/CameraPoseRobotSpace",
         LimelightHelpers.getCameraPose3d_RobotSpace(name));
   }
 
