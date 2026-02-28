@@ -48,6 +48,19 @@ public class AimShooterCommand extends Command {
 
   private final Supplier<Pose2d> robotPose;
 
+  // Persistent runtime offsets that operators can bump to trim aim during testing.
+  // These are annotated for AutoLogOutput so they appear in logs/networktables for tuning.
+  @Getter @Setter @AutoLogOutput private double flywheelOffsetRPM = 0.0;
+  @Getter @Setter @AutoLogOutput private double hoodOffsetDeg = 0.0;
+  @Getter @Setter @AutoLogOutput private double turretOffsetDeg = 0.0;
+
+  // Flags that indicate whether the applied offset caused the final setpoint to be clipped by
+  // safety clamps. These are updated every execute() and are useful to warn operators that
+  // their trim pushed the requested setpoint outside allowed ranges.
+  @Getter @AutoLogOutput private boolean flywheelOffsetClamped = false;
+  @Getter @AutoLogOutput private boolean hoodOffsetClamped = false;
+  @Getter @AutoLogOutput private boolean turretOffsetClamped = false;
+
   // Autologging: the target in field coordinates (translation only). This is visible via
   // AutoLogOutput and used by the aim math below. Keep this simple and documented so
   // other contributors can change the target at runtime.
@@ -114,18 +127,15 @@ public class AimShooterCommand extends Command {
     double initialXVelocity = translationToTarget.getX() / timeToTarget;
     double flywheelRadius =
         Units.inchesToMeters(4) / 2.0; // get from constants later (assuming 3 inch diameter wheel)
-    double calculatedRPM =
+
+    // Compute a raw target RPM from the physics model and apply persistent operator offset
+    double rawCalculatedRPM =
         calculateFlywheelRPM(
             Math.sqrt(Math.pow(initialXVelocity, 2) + Math.pow(initialYVelocity, 2))
                 * 60
                 / (2 * Math.PI * flywheelRadius));
 
-    AngularVelocity flywheelVelocity = RPM.of(calculatedRPM);
-    // add feedforward/closed-loop params in the Shooter subsystem rather than here.
-
-    Rotation2d hoodAngle = Rotation2d.fromRadians(Math.atan2(initialYVelocity, initialXVelocity));
-
-    // TODO: Send to constants:
+    // TODO: Send these limits to constants/config
     Double maxHoodAngle = 45.0;
     Double minHoodAngle = 24.2238027;
 
@@ -135,13 +145,30 @@ public class AimShooterCommand extends Command {
     Double maxFlywheelRPM = 5700.0; // to be tested and tuned
     Double minFlywheelRPM = 0.0;
 
-    hoodAngle = new Rotation2d(MathUtil.clamp(hoodAngle.getDegrees(), minHoodAngle, maxHoodAngle));
-    turretAngle =
-        new Rotation2d(MathUtil.clamp(turretAngle.getDegrees(), minTurretAngle, maxTurretAngle));
-    flywheelVelocity =
-        RPM.of(MathUtil.clamp(flywheelVelocity.in(RPM), minFlywheelRPM, maxFlywheelRPM));
-    // Send references to the shooter. This method should accept units documented in Shooter.
-    // shooter.setPosition(flywheelVelocity, hoodAngle, turretAngle);
+  // Apply flywheel offset, clamp numerically, then convert to AngularVelocity
+  double targetRPMBeforeClamp = rawCalculatedRPM + flywheelOffsetRPM;
+  double targetRPM = MathUtil.clamp(targetRPMBeforeClamp, minFlywheelRPM, maxFlywheelRPM);
+  // flag if the applied offset forced clamping
+  flywheelOffsetClamped = Math.abs(targetRPM - targetRPMBeforeClamp) > 1e-6;
+  AngularVelocity flywheelVelocity = RPM.of(targetRPM);
+
+  // Compute hood angle (degrees), apply offset and clamp, then build Rotation2d correctly
+  double hoodDegBeforeClamp = Math.toDegrees(Math.atan2(initialYVelocity, initialXVelocity)) + hoodOffsetDeg;
+  double hoodDeg = MathUtil.clamp(hoodDegBeforeClamp, minHoodAngle, maxHoodAngle);
+  hoodOffsetClamped = Math.abs(hoodDeg - hoodDegBeforeClamp) > 1e-6;
+  Rotation2d hoodAngle = Rotation2d.fromDegrees(hoodDeg);
+
+  // Apply turret offset to the previously computed turretAngle
+  double turretDegBeforeClamp = turretAngle.getDegrees() + turretOffsetDeg;
+  double turretDeg = MathUtil.clamp(turretDegBeforeClamp, minTurretAngle, maxTurretAngle);
+  turretOffsetClamped = Math.abs(turretDeg - turretDegBeforeClamp) > 1e-6;
+  turretAngle = Rotation2d.fromDegrees(turretDeg);
+
+    // Send references to the shooter using the public API on Shooter. These delegate to
+    // flywheel/hood/turret subsystem methods respectively.
+    shooter.setFlywheelVelocity(flywheelVelocity);
+    shooter.setHoodAngle(hoodAngle);
+    shooter.setTurretPosition(turretAngle);
   }
 
   private double calculateFlywheelRPM(double velocity) {
@@ -155,4 +182,28 @@ public class AimShooterCommand extends Command {
     // Placeholder for max height calculation. Replace with actual implementation.
     return shooterTarget.getY() + 1.0; // example: 1 meter above the target
   }
+    /**
+   * Increment/decrement helpers for operator trimming during testing.
+   *
+   * <p>These modify the in-memory offsets (persist for the robot runtime). If you want them to
+   * persist across reboots, consider storing/loading from Preferences or a JSON file.
+   */
+  public void bumpFlywheelOffsetRPM(double deltaRPM) {
+    flywheelOffsetRPM += deltaRPM;
+  }
+
+  public void bumpHoodOffsetDeg(double deltaDeg) {
+    hoodOffsetDeg += deltaDeg;
+  }
+
+  public void bumpTurretOffsetDeg(double deltaDeg) {
+    turretOffsetDeg += deltaDeg;
+  }
+
+  public void resetAllOffsets() {
+    flywheelOffsetRPM = 0.0;
+    hoodOffsetDeg = 0.0;
+    turretOffsetDeg = 0.0;
+  }
+
 }
