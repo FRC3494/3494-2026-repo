@@ -14,12 +14,15 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants.FlywheelConstants;
+import frc.robot.Constants.ShooterConstants.HoodConstants;
+import frc.robot.Constants.ShooterConstants.TurretConstants;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * AimShooterCommand
@@ -87,7 +90,8 @@ public class AimShooterCommand extends Command {
     // 3) Compute raw RPM from physics
     double linearVelocity = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
     double calculatedRPM =
-        calculateFlywheelRPM(linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
+        calculateFlywheelRPM(
+            linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
 
     // 4) Apply offsets and clamp to limits, update clamped flags
     Setpoints set = applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
@@ -100,6 +104,9 @@ public class AimShooterCommand extends Command {
     shooter.setFlywheelVelocity(RPM.of(set.rpm));
     shooter.setHoodAngle(set.hoodAngle);
     shooter.setTurretPosition(set.turretAngle);
+
+    // 6) (Optional) Log additional info for debugging/tuning
+    logAimShooterStats(state, physics, set);
   }
 
   private AimState buildAimState() {
@@ -157,23 +164,34 @@ public class AimShooterCommand extends Command {
   private Setpoints applyOffsetsAndClamps(
       double calculatedRPM, PhysicsResult physics, Rotation2d turretAngleWorld) {
 
-
     // Flywheel: apply offset then clamp
     double targetRPMBeforeClamp = calculatedRPM + flywheelOffsetRPM;
-    double targetRPM = MathUtil.clamp(targetRPMBeforeClamp, FlywheelConstants.flywheelMinSpeed.in(RPM), FlywheelConstants.flywheelMaxSpeed.in(RPM));
+    double targetRPM =
+        MathUtil.clamp(
+            targetRPMBeforeClamp,
+            FlywheelConstants.flywheelMinSpeed.in(RPM),
+            FlywheelConstants.flywheelMaxSpeed.in(RPM));
     boolean flywheelClamped = Math.abs(targetRPM - targetRPMBeforeClamp) > 1e-6;
 
     // Hood angle: compute from ballistic angles, then offset/clamp
     double hoodDegBeforeClamp =
         Math.toDegrees(Math.atan2(physics.initialYVelocity, physics.initialXVelocity))
             + hoodOffsetDeg;
-    double hoodDeg = MathUtil.clamp(hoodDegBeforeClamp, HoodConstants.hoodMinAngle.getDegrees(), HoodConstants.hoodMaxAngle.getDegrees());
+    double hoodDeg =
+        MathUtil.clamp(
+            hoodDegBeforeClamp,
+            HoodConstants.hoodMinAngle.getDegrees(),
+            HoodConstants.hoodMaxAngle.getDegrees());
     boolean hoodClamped = Math.abs(hoodDeg - hoodDegBeforeClamp) > 1e-6;
     Rotation2d hoodAngle = Rotation2d.fromDegrees(hoodDeg);
 
     // Turret: apply offset to world turret angle then clamp
     double turretDegBeforeClamp = turretAngleWorld.getDegrees() + turretOffsetDeg;
-    double turretDeg = MathUtil.clamp(turretDegBeforeClamp, TurretConstants.turretMinAngle.getDegrees(), TurretConstants.turretMaxAngle.getDegrees());
+    double turretDeg =
+        MathUtil.clamp(
+            turretDegBeforeClamp,
+            TurretConstants.turretMinAngle.getDegrees(),
+            TurretConstants.turretMaxAngle.getDegrees());
     boolean turretClamped = Math.abs(turretDeg - turretDegBeforeClamp) > 1e-6;
     Rotation2d turretAngle = Rotation2d.fromDegrees(turretDeg);
 
@@ -181,7 +199,7 @@ public class AimShooterCommand extends Command {
         targetRPM, hoodAngle, turretAngle, flywheelClamped, hoodClamped, turretClamped);
   }
 
-  private double calculateFlywheelRPM(double velocity) {
+  private static double calculateFlywheelRPM(double velocity) {
     // Converts the calculated RPM (using physics-based model) to tested value
     // Requires testing of RPM vs Velocity to determine constants for conversion
     double conversionConstant = 1.0; // placeholder until testing is done
@@ -191,7 +209,11 @@ public class AimShooterCommand extends Command {
   private static double calculateMaxHeight(
       Translation3d currentLocation, Translation3d shooterTarget) {
     // Placeholder for max height calculation. Replace with actual implementation.
-    return shooterTarget.getY() + 1.0; // example: 1 meter above the target
+    double heightScalingFactor = 1.5; // example scaling factor to ensure the arc clears the target
+    return heightScalingFactor
+        * Math.hypot(
+            currentLocation.getX() - shooterTarget.getX(),
+            currentLocation.getY() - shooterTarget.getY()); // example: 1 meter above the target
   }
 
   // Small helper structs to make execute() readable and testable
@@ -269,5 +291,37 @@ public class AimShooterCommand extends Command {
     flywheelOffsetRPM = 0.0;
     hoodOffsetDeg = 0.0;
     turretOffsetDeg = 0.0;
+  }
+
+  private static void logAimShooterStats(AimState state, PhysicsResult physics, Setpoints set) {
+    double horizontalDistanceMeters =
+        Math.hypot(state.translationToTarget.getX(), state.translationToTarget.getY());
+    double distance3dMeters = state.translationToTarget.getNorm();
+    double verticalDeltaMeters = state.translationToTarget.getZ();
+
+    double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
+    double calculatedRPM =
+        calculateFlywheelRPM(
+            launchSpeedMps * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
+
+    Logger.recordOutput("AimShooter/Distance/HorizontalMeters", horizontalDistanceMeters);
+    Logger.recordOutput("AimShooter/Distance/Distance3dMeters", distance3dMeters);
+    Logger.recordOutput("AimShooter/Distance/VerticalDeltaMeters", verticalDeltaMeters);
+
+    Logger.recordOutput("AimShooter/Angles/TurretWorldDeg", state.turretAngleWorld.getDegrees());
+    Logger.recordOutput("AimShooter/Angles/HoodSetpointDeg", set.hoodAngle.getDegrees());
+    Logger.recordOutput("AimShooter/Angles/TurretSetpointDeg", set.turretAngle.getDegrees());
+
+    Logger.recordOutput("AimShooter/Physics/InitialXVelocityMps", physics.initialXVelocity);
+    Logger.recordOutput("AimShooter/Physics/InitialYVelocityMps", physics.initialYVelocity);
+    Logger.recordOutput("AimShooter/Physics/LaunchSpeedMps", launchSpeedMps);
+    Logger.recordOutput("AimShooter/Physics/TimeToTargetSec", physics.timeToTarget);
+    Logger.recordOutput("AimShooter/Physics/CalculatedRPM", calculatedRPM);
+
+    Logger.recordOutput("AimShooter/Setpoints/RPM", set.rpm);
+
+    Logger.recordOutput("AimShooter/Clamp/FlywheelClamped", set.flywheelClamped);
+    Logger.recordOutput("AimShooter/Clamp/HoodClamped", set.hoodClamped);
+    Logger.recordOutput("AimShooter/Clamp/TurretClamped", set.turretClamped);
   }
 }
