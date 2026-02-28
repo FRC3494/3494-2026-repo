@@ -85,8 +85,7 @@ public class AimShooterCommand extends Command {
 
     // 3) Compute raw RPM from physics
     double flywheelRadius = Units.inchesToMeters(4) / 2.0; // TODO: move to constants
-    double linearVelocity =
-        Math.sqrt(Math.pow(physics.initialXVelocity, 2) + Math.pow(physics.initialYVelocity, 2));
+    double linearVelocity = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
     double calculatedRPM =
         calculateFlywheelRPM(linearVelocity * 60.0 / (2.0 * Math.PI * flywheelRadius));
 
