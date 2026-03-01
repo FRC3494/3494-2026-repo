@@ -78,7 +78,7 @@ public class RobotContainer {
   private final Command aimShooterCommand;
 
   private LoggedNetworkBoolean enableTuningAutos =
-      new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", false);
+      new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -164,8 +164,7 @@ public class RobotContainer {
     autoChooser.addCmd("=====================", () -> none());
 
     // Set up SysId routines
-    // if (enableTuningAutos.get()) {
-    if (true) {
+    if (enableTuningAutos.get()) {
       configureTuningAutos();
     } else {
       new Trigger(enableTuningAutos::get).onTrue(runOnce(this::configureTuningAutos));
