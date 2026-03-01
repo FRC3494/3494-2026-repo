@@ -31,10 +31,10 @@ public class RobotCommands {
   private final Turret turret;
 
   // ==================== CLIMBER ====================
-  private LoggedNetworkNumber climberUpPower =
-      new LoggedNetworkNumber("Tunable/ClimberUpPower", 0.25);
-  private LoggedNetworkNumber climberDownPower =
-      new LoggedNetworkNumber("Tunable/ClimberDownPower", 0.75);
+  private LoggedNetworkNumber climberUpPos =
+      new LoggedNetworkNumber("Tunable/ClimberUpPos", climberMaxPosition);
+  private LoggedNetworkNumber climberDownPos =
+      new LoggedNetworkNumber("Tunable/ClimberDownPos", climberMinPosition);
 
   // ==================== HOPPER ====================
   private LoggedNetworkNumber spindexerSpeed =
@@ -76,18 +76,26 @@ public class RobotCommands {
   }
 
   // ==================== CLIMBER ====================
-  public Command runClimberUp() {
+  public Command climberUp() {
     return runOnce(
         () -> {
-          climber.setPosition(Rotation2d.fromRotations(-climberUpPower.get()));
+          climber.setPosition(climberUpPos.get());
         },
         climber);
   }
 
-  public Command runClimberDown() {
+  public Command climberMid() {
     return runOnce(
         () -> {
-          climber.setPosition(Rotation2d.fromRotations(climberDownPower.get()));
+          climber.setPosition(climberDownPos.get() / 2.0);
+        },
+        climber);
+  }
+
+  public Command climberDown() {
+    return runOnce(
+        () -> {
+          climber.setPosition(climberDownPos.get());
         },
         climber);
   }
@@ -95,9 +103,31 @@ public class RobotCommands {
   public Command stopClimber() {
     return runOnce(
         () -> {
-          climber.setPosition(Rotation2d.kZero);
+          climber.setOpenLoop(Volts.of(0));
         },
         climber);
+  }
+
+  public Command climberManualUp() {
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setOpenLoop(Volts.of(-2));
+            },
+            climber),
+        waitUntil(() -> climber.getPosition() <= climberMaxPosition + 0.05),
+        stopClimber());
+  }
+
+  public Command climberManualDown() {
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setOpenLoop(Volts.of(2));
+            },
+            climber),
+        waitUntil(() -> climber.getPosition() >= climberMinPosition - 0.05),
+        stopClimber());
   }
 
   // ==================== INTAKE ====================

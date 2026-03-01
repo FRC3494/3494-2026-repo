@@ -9,6 +9,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.ClimberConstants.climberMinPosition;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -29,6 +30,7 @@ import frc.robot.OI.ShooterOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.ClimbLeftAuto;
 import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.RezeroClimberCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -258,10 +260,23 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // ==================== CLIMBER ====================
-    ClimberOI.climberUp().onTrue(robotCommands.runClimberUp()).onFalse(robotCommands.stopClimber());
+    ClimberOI.climberUp().onTrue(robotCommands.climberUp());
 
     ClimberOI.climberDown()
-        .onTrue(robotCommands.runClimberDown())
+        .onTrue(
+            either(
+                robotCommands.climberMid(),
+                robotCommands.climberDown(),
+                () -> climber.getPosition() <= climberMinPosition / 2.0 - 0.05));
+
+    ClimberOI.rezeroClimber().onTrue(RezeroClimberCommand.getCommand(climber));
+
+    ClimberOI.climberManualUp()
+        .onTrue(robotCommands.climberManualUp())
+        .onFalse(robotCommands.stopClimber());
+
+    ClimberOI.climberManualDown()
+        .onTrue(robotCommands.climberManualDown())
         .onFalse(robotCommands.stopClimber());
 
     // ==================== DRIVE ====================

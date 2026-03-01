@@ -158,9 +158,16 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static final int climberCurrentLimit = 70;
+    public static final int climberCurrentLimit = 50; // !  Was 70
+    // 1:80 ratio is to prevent encoder from looping
+    public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 
-    public static final double climberKp = 0.0;
+    public static final int climberCurrentSensingFilterSize = 10;
+
+    public static final double climberMinPosition = 2.443155;
+    public static final double climberMaxPosition = 0.0;
+
+    public static final double climberKp = 10.0;
     public static final double climberKi = 0.0;
     public static final double climberKd = 0.0;
 

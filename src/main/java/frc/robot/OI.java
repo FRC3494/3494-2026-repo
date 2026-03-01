@@ -62,6 +62,22 @@ public final class OI {
     public static Trigger climberUp() {
       return primaryController.y(eventLoop);
     }
+
+    public static Trigger rezeroClimber() {
+      return leftButtonBoard.button(1, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger climberManualUp() {
+      return rightButtonBoard
+          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger climberManualDown() {
+      return rightButtonBoard
+          .axisLessThan(1, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
   }
 
   public static final class IntakeOI {
