@@ -253,7 +253,8 @@ public class RobotCommands {
         stopFeeder(),
         waitSeconds(0.25),
         stopFlywheel(),
-        stopIntake());
+        stopIntake(),
+        hoodDown());
   }
 
   // ==================== FLYWHEEL ====================
