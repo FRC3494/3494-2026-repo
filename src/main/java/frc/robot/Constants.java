@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
@@ -377,9 +378,15 @@ public final class Constants {
     public static final Translation2d depotBumpLocation =
         ChoreoVars.Poses.BumpDepot.getTranslation();
 
+    public static final double gravity = 9.81;
+
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;
       public static final int flywheelCurrentLimit = 50;
+      public static final double flywheelRadius = Units.inchesToMeters(4) / 2.0;
+
+      public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
+      public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
 
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       public static final double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
@@ -416,6 +423,9 @@ public final class Constants {
     public static final class TurretConstants {
       public static final boolean turretInverted = true;
       public static final int turretCurrentLimit = 20;
+
+      public static final Rotation2d turretMinAngle = Rotation2d.fromDegrees(0.2005);
+      public static final Rotation2d turretMaxAngle = Rotation2d.fromDegrees(360.05);
 
       public static final double turretKp = 0.0;
       public static final double turretKi = 0.0;
