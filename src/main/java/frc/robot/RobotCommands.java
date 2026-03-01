@@ -13,7 +13,9 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.turret.Turret;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class RobotCommands {
@@ -21,7 +23,9 @@ public class RobotCommands {
   private final Drive drive;
   private final Hopper hopper;
   private final Intake intake;
-  private final Shooter shooter;
+  private final Flywheel flywheel;
+  private final Hood hood;
+  private final Turret turret;
 
   // ==================== CLIMBER ====================
   private LoggedNetworkNumber climberUpPower =
@@ -51,12 +55,20 @@ public class RobotCommands {
       new LoggedNetworkNumber("Tunable/HoodIncrementDeg", 2.0);
 
   public RobotCommands(
-      Climber climber, Drive drive, Hopper hopper, Intake intake, Shooter shooter) {
+      Climber climber,
+      Drive drive,
+      Hopper hopper,
+      Intake intake,
+      Flywheel flywheel,
+      Hood hood,
+      Turret turret) {
     this.climber = climber;
     this.drive = drive;
     this.hopper = hopper;
     this.intake = intake;
-    this.shooter = shooter;
+    this.flywheel = flywheel;
+    this.hood = hood;
+    this.turret = turret;
   }
 
   // ==================== CLIMBER ====================
@@ -191,7 +203,7 @@ public class RobotCommands {
     return sequence(
         runFlywheel(),
         hoodUp(),
-        waitUntil(() -> shooter.getFlywheelVelocity().gte(RPM.of(flywheelThresholdSpeed.get()))),
+        waitUntil(() -> flywheel.getVelocity().gte(RPM.of(flywheelThresholdSpeed.get()))),
         runOnce(
             () -> {
               spindexerInverted = !spindexerInverted;
@@ -215,51 +227,51 @@ public class RobotCommands {
   public Command runFlywheel() {
     return runOnce(
         () -> {
-          shooter.setFlywheelVelocity(RPM.of(flywheelSpeed.get()));
+          flywheel.setVelocity(RPM.of(flywheelSpeed.get()));
         },
-        shooter);
+        flywheel);
   }
 
   public Command stopFlywheel() {
     return runOnce(
         () -> {
-          shooter.setFlywheelVelocity(RPM.of(0));
+          flywheel.setVelocity(RPM.of(0));
         },
-        shooter);
+        flywheel);
   }
 
   // ==================== HOOD ====================
   public Command increaseHoodAngle() {
     return run(
         () -> {
-          shooter.setHoodAngle(
-              shooter.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrement.get())));
+          hood.setPosition(
+              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrement.get())));
         },
-        shooter);
+        hood);
   }
 
   public Command decreaseHoodAngle() {
     return run(
         () -> {
-          shooter.setHoodAngle(
-              shooter.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrement.get())));
+          hood.setPosition(
+              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrement.get())));
         },
-        shooter);
+        hood);
   }
 
   public Command hoodUp() {
     return runOnce(
         () -> {
-          shooter.setHoodAngle(Rotation2d.fromDegrees(hoodAngle.get()));
+          hood.setPosition(Rotation2d.fromDegrees(hoodAngle.get()));
         },
-        shooter);
+        hood);
   }
 
   public Command hoodDown() {
     return runOnce(
         () -> {
-          shooter.setHoodAngle(Rotation2d.kZero);
+          hood.setPosition(Rotation2d.kZero);
         },
-        shooter);
+        hood);
   }
 }

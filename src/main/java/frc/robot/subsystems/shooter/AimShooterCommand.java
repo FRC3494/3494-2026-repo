@@ -14,6 +14,9 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -44,7 +47,9 @@ import org.littletonrobotics.junction.AutoLogOutput;
  * class so it can be tested independently from the Command and the hardware.
  */
 public class AimShooterCommand extends Command {
-  private Shooter shooter;
+  private Flywheel flywheel;
+  private Hood hood;
+  private Turret turret;
 
   private final Supplier<Pose2d> robotPose;
 
@@ -67,9 +72,12 @@ public class AimShooterCommand extends Command {
   @Getter @Setter @AutoLogOutput
   Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-  public AimShooterCommand(Shooter shooter, Supplier<Pose2d> robotPose) {
-    this.shooter = shooter;
-    addRequirements(shooter);
+  public AimShooterCommand(
+      Flywheel flywheel, Hood hood, Turret turret, Supplier<Pose2d> robotPose) {
+    this.flywheel = flywheel;
+    this.hood = hood;
+    this.turret = turret;
+    addRequirements(flywheel, hood, turret);
 
     this.robotPose = robotPose;
   }
@@ -97,9 +105,9 @@ public class AimShooterCommand extends Command {
     hoodOffsetClamped = set.hoodClamped;
     turretOffsetClamped = set.turretClamped;
 
-    shooter.setFlywheelVelocity(RPM.of(set.rpm));
-    shooter.setHoodAngle(set.hoodAngle);
-    shooter.setTurretPosition(set.turretAngle);
+    flywheel.setVelocity(RPM.of(set.rpm));
+    hood.setPosition(set.hoodAngle);
+    turret.setPosition(set.turretAngle);
   }
 
   private AimState buildAimState() {

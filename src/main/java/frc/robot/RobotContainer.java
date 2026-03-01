@@ -40,7 +40,11 @@ import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterCommand;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.hood.RezeroHoodCommand;
+import frc.robot.subsystems.shooter.turret.RezeroTurretCommand;
+import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 import frc.robot.util.QuadranglesUtil;
@@ -59,7 +63,9 @@ public class RobotContainer {
   private final Climber climber;
   private final Hopper hopper;
   private final Intake intake;
-  private final Shooter shooter;
+  private final Flywheel flywheel;
+  private final Hood hood;
+  private final Turret turret;
 
   // Choreo
   private final AutoChooser autoChooser;
@@ -119,10 +125,12 @@ public class RobotContainer {
     climber = new Climber();
     hopper = new Hopper();
     intake = new Intake();
-    shooter = new Shooter();
+    flywheel = new Flywheel();
+    hood = new Hood();
+    turret = new Turret();
 
-    robotCommands = new RobotCommands(climber, drive, hopper, intake, shooter);
-    aimShooterCommand = new AimShooterCommand(shooter, drive::getPose);
+    robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
+    aimShooterCommand = new AimShooterCommand(flywheel, hood, turret, drive::getPose);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -189,16 +197,29 @@ public class RobotContainer {
 
     autoChooser.addCmd(
         "Flywheel SysId (Quasistatic Forward)",
-        () -> shooter.flywheelSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
         "Flywheel SysId (Quasistatic Reverse)",
-        () -> shooter.flywheelSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     autoChooser.addCmd(
         "Flywheel SysId (Dynamic Forward)",
-        () -> shooter.flywheelSysIdDynamic(SysIdRoutine.Direction.kForward));
+        () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
         "Flywheel SysId (Dynamic Reverse)",
-        () -> shooter.flywheelSysIdDynamic(SysIdRoutine.Direction.kReverse));
+        () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Spindexer SysId (Quasistatic Forward)",
+        () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Spindexer SysId (Quasistatic Reverse)",
+        () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Spindexer SysId (Dynamic Forward)",
+        () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Spindexer SysId (Dynamic Reverse)",
+        () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     autoChooser.addCmd(
         "Feeder SysId (Quasistatic Forward)",
