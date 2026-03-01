@@ -357,6 +357,48 @@ public class RobotContainer {
     ShooterOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
 
     ShooterOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
+
+    ShooterOI.rezeroHood().onTrue(RezeroHoodCommand.getCommand(hood));
+
+    // ==================== TURRET ====================
+    ShooterOI.turretManualNegative()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(-1.5));
+                },
+                turret))
+        .onFalse(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(0));
+                },
+                turret));
+    ShooterOI.turretManualPositive()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(1.5));
+                },
+                turret))
+        .onFalse(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(0));
+                },
+                turret));
+    new Trigger(
+            () ->
+                turret.getAbsPosition().getRotations() < 0.20
+                    || turret.getAbsPosition().getRotations() > 0.95)
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(0));
+                },
+                turret));
+
+    ShooterOI.rezeroTurret().onTrue(RezeroTurretCommand.getCommand(turret).ignoringDisable(true));
   }
 
   /**

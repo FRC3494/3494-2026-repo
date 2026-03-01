@@ -115,6 +115,10 @@ public final class OI {
       return primaryController.rightBumper(eventLoop);
     }
 
+    public static Trigger rezeroHood() {
+      return leftButtonBoard.button(2, eventLoop).castTo(Trigger::new);
+    }
+
     public static Trigger rezeroTurret() {
       // return primaryController.povRight();
       return new Trigger(() -> false);
