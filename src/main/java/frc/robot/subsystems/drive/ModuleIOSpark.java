@@ -60,6 +60,8 @@ public class ModuleIOSpark implements ModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
+  private final double turnMotorReduction;
+
   // @codescene(disable: "Complex Method", disable: "Large Method")
   public ModuleIOSpark(int module) {
 
@@ -104,6 +106,15 @@ public class ModuleIOSpark implements ModuleIO {
             });
     driveController = driveSpark.getClosedLoopController();
     turnController = turnSpark.getClosedLoopController();
+
+    turnMotorReduction =
+        switch (module) {
+          case 0 -> turnMotorReduction4i;
+          case 1 -> turnMotorReduction4i;
+          case 2 -> turnMotorReduction4n;
+          case 3 -> turnMotorReduction4n;
+          default -> turnMotorReduction4i;
+        };
 
     // Configure drive motor
     var driveConfig = new SparkFlexConfig();
@@ -248,11 +259,7 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
-    double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
-    driveController.setSetpoint(velocityRadPerSec, ControlType.kVelocity); // ,
-    // ClosedLoopSlot.kSlot0,
-    // ffVolts,
-    // ArbFFUnits.kVoltage);
+    driveController.setSetpoint(velocityRadPerSec, ControlType.kVelocity);
   }
 
   @Override

@@ -4,44 +4,82 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
+import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 /**
- * AimShooterCommand
+ * Closed-loop aiming command for the shooter.
  *
- * <p>Current responsibility: - Compute a target bearing from the robot's current pose to a fixed
- * shooter target (stored in {@code shooterTarget}). - Convert that world bearing into a
- * turret-relative Rotation2d and call {@link Shooter#setPosition(AngularVelocity, Rotation2d,
- * Rotation2d)} with placeholder flywheel/hood setpoints.
+ * <p>On every {@link #execute()} call this command:
  *
- * <p>Notes about the existing implementation (according to AI): - This class extends the
- * (deprecated/old) {@code Command} interface; it currently only implements {@code execute()} and
- * therefore behaves like a continuously-running action when scheduled. Consider converting to
- * {@link edu.wpi.first.wpilibj2.command.CommandBase} or implementing
- * initialize()/end()/isFinished() for a clearer lifecycle.
+ * <ol>
+ *   <li>Samples the current {@link Pose2d} of the robot from the supplied pose source.
+ *   <li>Builds a {@link Pose3d} for the shooter using a fixed transform from the robot frame.
+ *   <li>Builds a 3D target pose from {@link #shooterTarget}, which is expected to be the
+ *       alliance-relative hub location.
+ *   <li>Solves a simple ballistic model to estimate the required launch velocity.
+ *   <li>Converts that launch velocity into a flywheel RPM setpoint.
+ *   <li>Applies operator-trim offsets for flywheel, hood, and turret and clamps them to the safe
+ *       ranges defined in {@link FlywheelConstants}, {@link HoodConstants}, and {@link
+ *       TurretConstants}.
+ *   <li>Commands the {@link Shooter} subsystem to those setpoints and logs key telemetry via
+ *       AdvantageKit.
+ * </ol>
  *
- * <p>TODOs (high priority) - TODO: Implement a mapping from distance -> flywheel RPM (e.g. lookup
- * table or physics model). - TODO: Implement a mapping from distance -> hood angle (and clamp to
- * mechanical limits). - TODO: Add validation / safety checks: null checks for pose/rotation,
- * NaN/Inf guards, and clamp RPM/angles to safe values. - TODO: Add logging/telemetry:
- * distanceToTarget, angleToTarget, computed RPM, hood/turret setpoints. - TODO: Wrap turret target
- * to shortest rotation and consider motion profiling / slew limiting to avoid commanding large
- * instantaneous moves.
+ * <p>Runtime configuration / tuning hooks:
  *
- * <p>TODOs (structural) - TODO: Consider separating pure math (trajectory solver) into a utility
- * class so it can be tested independently from the Command and the hardware.
+ * <ul>
+ *   <li>{@link #shooterTarget} can be changed at runtime (e.g. to aim at a different field location
+ *       or a moving target).
+ *   <li>{@link #flywheelOffsetRPM}, {@link #hoodOffsetDeg}, and {@link #turretOffsetDeg} may be
+ *       adjusted (or "bumped") by the operator to trim aim without changing the underlying model.
+ * </ul>
+ *
+ * <p>Limitations / known work-in-progress:
+ *
+ * <ul>
+ *   <li>The ballistic model uses placeholder constants and a very simple arc calculation. It must
+ *       be validated and tuned against on-field testing.
+ *   <li>Max-height and RPM conversion are currently approximations; see the {@code TODO} items in
+ *       {@link #calculateMaxHeight(Translation3d, Translation3d)} and {@link
+ *       #calculateFlywheelRPM(double)}.
+ * </ul>
  */
 public class AimShooterCommand extends Command {
-  private Shooter shooter;
-  private Drive drive;
+  private Flywheel flywheel;
+  private Hood hood;
+  private Turret turret;
+
+  private final Supplier<Pose2d> robotPose;
+
+  // Persistent runtime offsets that operators can bump to trim aim during testing.
+  // These are annotated for AutoLogOutput so they appear in logs/networktables for tuning.
+  @Getter @Setter @AutoLogOutput private double flywheelOffsetRPM = 0.0;
+  @Getter @Setter @AutoLogOutput private double hoodOffsetDeg = 0.0;
+  @Getter @Setter @AutoLogOutput private double turretOffsetDeg = 0.0;
+
+  // Flags that indicate whether the applied offset caused the final setpoint to be clipped by
+  // safety clamps. These are updated every execute() and are useful to warn operators that
+  // their trim pushed the requested setpoint outside allowed ranges.
+  @Getter @AutoLogOutput private boolean flywheelOffsetClamped = false;
+  @Getter @AutoLogOutput private boolean hoodOffsetClamped = false;
+  @Getter @AutoLogOutput private boolean turretOffsetClamped = false;
 
   // Autologging: the target in field coordinates (translation only). This is visible via
   // AutoLogOutput and used by the aim math below. Keep this simple and documented so
@@ -49,83 +87,295 @@ public class AimShooterCommand extends Command {
   @Getter @Setter @AutoLogOutput
   Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-  public AimShooterCommand(Shooter shooter, Drive drive) {
-    this.shooter = shooter;
-    addRequirements(shooter);
+  public AimShooterCommand(
+      Flywheel flywheel, Hood hood, Turret turret, Supplier<Pose2d> robotPose) {
+    this.flywheel = flywheel;
+    this.hood = hood;
+    this.turret = turret;
+    addRequirements(flywheel, hood, turret);
 
-    this.drive = drive;
-    addRequirements(drive);
+    this.robotPose = robotPose;
   }
 
+  /** Main control loop step that recomputes aim and updates shooter setpoints. */
   @Override
   public void execute() {
-    // TODO: Consider making drive.getPose() return an Optional or add a helper getter that
-    Translation2d currentLocation = drive.getPose().getTranslation();
+    // 1) Read state and build geometry
+    AimState state = buildAimState();
 
-    // Vector from robot to target in field coordinates
-    Translation2d translationToTarget = shooterTarget.minus(currentLocation);
-    // Distance to target (meters) is available when needed via:
-    // double distanceToTarget = currentLocation.getDistance(shooterTarget);
+    // 2) Compute projectile/velocity physics
+    PhysicsResult physics =
+        computePhysics(state.shooterPose3d, state.targetPose3d, state.translationToTarget);
 
-    // Compute bearing to target in the XY plane.
+    // 3) Compute raw RPM from physics
+    double linearVelocity = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
+    double calculatedRPM =
+        calculateFlywheelRPM(
+            linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
+
+    // 4) Apply offsets and clamp to limits, update clamped flags
+    Setpoints set = applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
+
+    // 5) Send setpoints to hardware
+    flywheelOffsetClamped = set.flywheelClamped;
+    hoodOffsetClamped = set.hoodClamped;
+    turretOffsetClamped = set.turretClamped;
+
+    flywheel.setVelocity(RPM.of(set.rpm));
+    hood.setPosition(set.hoodAngle);
+    turret.setPosition(set.turretAngle);
+  }
+
+  private AimState buildAimState() {
+    Pose2d robot2d = robotPose.get();
+    Translation2d robotLocation = robot2d.getTranslation();
+    Rotation2d robotYaw = robot2d.getRotation();
+
+    Pose3d robotPose3d =
+        new Pose3d(
+            robotLocation.getX(),
+            robotLocation.getY(),
+            0.0,
+            new Rotation3d(0.0, 0.0, robotYaw.getRadians()));
+
+    // shooter offset relative to robot frame.
+    // TODO(#aim-shooter): Move shooter mounting transform into {@link ShooterConstants}
+    // or a dedicated geometry/config class so it can be hardware-specific and
+    // easier to update between robots.
+    double shooterX = 0.0;
+    double shooterY = Units.inchesToMeters(-2.074);
+    double shooterZ = Units.inchesToMeters(13.72);
+    Transform3d shooterTransform =
+        new Transform3d(new Translation3d(shooterX, shooterY, shooterZ), new Rotation3d());
+    Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
+
+    double targetHeight = Units.inchesToMeters(120.36); // hub height
+    Pose3d targetPose3d =
+        new Pose3d(shooterTarget.getX(), shooterTarget.getY(), targetHeight, new Rotation3d());
+
+    Translation3d translationToTarget = targetPose3d.minus(shooterPose3d).getTranslation();
+
     double angleRad = Math.atan2(translationToTarget.getY(), translationToTarget.getX());
     Rotation2d angleToTarget = Rotation2d.fromRadians(angleRad);
+    Rotation2d turretAngleWorld = angleToTarget.rotateBy(robotYaw.times(-1.0));
 
-    // Convert world bearing into turret-relative angle by removing robot yaw
-    Rotation2d turretAngle = angleToTarget.rotateBy(drive.getRotation().times(-1.0));
+    return new AimState(
+        robotPose3d, shooterPose3d, targetPose3d, translationToTarget, turretAngleWorld);
+  }
 
-    // Implementation of desmos calculations provided in discord. Write-up with explainations in .md
-    translationToTarget = shooterTarget.minus(currentLocation);
-    double maxHeight = calculateMaxHeight(currentLocation, shooterTarget);
-    double gravity = 9.81; // get from constants later
-    double finalYVelocity = Math.sqrt(Math.abs(2 * gravity * (maxHeight - shooterTarget.getY())));
+  /**
+   * Computes a simple ballistic model for the shot based on shooter/target poses.
+   *
+   * <p>Returns the initial X/Y launch velocities and time-of-flight needed for the projectile to
+   * travel from the shooter to the target, assuming constant gravity and no air resistance or spin
+   * effects.
+   */
+  private static PhysicsResult computePhysics(
+      Pose3d shooterPose3d, Pose3d targetPose3d, Translation3d translationToTarget) {
+    double maxHeight =
+        calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
+
+    double finalYVelocity =
+        Math.sqrt(Math.abs(2 * gravity * (maxHeight - targetPose3d.getTranslation().getY())));
     double initialYVelocity =
         Math.sqrt(
-            2 * gravity * (maxHeight - currentLocation.getY())
-                + (maxHeight - shooterTarget.getY())
+            2 * gravity * (maxHeight - shooterPose3d.getTranslation().getY())
+                + (maxHeight - targetPose3d.getTranslation().getY())
                 + Math.pow(finalYVelocity, 2));
     double timeToTarget = (initialYVelocity - finalYVelocity) / gravity;
     double initialXVelocity = translationToTarget.getX() / timeToTarget;
-    double flywheelRadius = 0.0762; // get from constants later (assuming 3 inch diameter wheel)
+
+    return new PhysicsResult(initialXVelocity, initialYVelocity, timeToTarget);
+  }
+
+  /**
+   * Applies operator offsets to flywheel/hood/turret and clamps them to safe ranges.
+   *
+   * <p>Also tracks whether any of the resulting setpoints were clamped so the dashboard can warn
+   * the driver when trims push the system beyond its limits.
+   */
+  private Setpoints applyOffsetsAndClamps(
+      double calculatedRPM, PhysicsResult physics, Rotation2d turretAngleWorld) {
+
+    // Flywheel: apply offset then clamp
+    double targetRPMBeforeClamp = calculatedRPM + flywheelOffsetRPM;
+    double targetRPM =
+        MathUtil.clamp(
+            targetRPMBeforeClamp,
+            FlywheelConstants.flywheelMinSpeed.in(RPM),
+            FlywheelConstants.flywheelMaxSpeed.in(RPM));
+    boolean flywheelClamped = Math.abs(targetRPM - targetRPMBeforeClamp) > 1e-6;
+
+    // Hood angle: compute from ballistic angles, then offset/clamp
+    double hoodDegBeforeClamp =
+        Math.toDegrees(Math.atan2(physics.initialYVelocity, physics.initialXVelocity))
+            + hoodOffsetDeg;
+    double hoodDeg =
+        MathUtil.clamp(
+            hoodDegBeforeClamp,
+            HoodConstants.hoodMinAngle.getDegrees(),
+            HoodConstants.hoodMaxAngle.getDegrees());
+    boolean hoodClamped = Math.abs(hoodDeg - hoodDegBeforeClamp) > 1e-6;
+    Rotation2d hoodAngle = Rotation2d.fromDegrees(hoodDeg);
+
+    // Turret: apply offset to world turret angle then clamp
+    double turretDegBeforeClamp = turretAngleWorld.getDegrees() + turretOffsetDeg;
+    double turretDeg =
+        MathUtil.clamp(
+            turretDegBeforeClamp,
+            TurretConstants.turretMinAngle.getDegrees(),
+            TurretConstants.turretMaxAngle.getDegrees());
+    boolean turretClamped = Math.abs(turretDeg - turretDegBeforeClamp) > 1e-6;
+    Rotation2d turretAngle = Rotation2d.fromDegrees(turretDeg);
+
+    return new Setpoints(
+        targetRPM, hoodAngle, turretAngle, flywheelClamped, hoodClamped, turretClamped);
+  }
+
+  /**
+   * Converts linear exit velocity (m/s) to a flywheel RPM setpoint.
+   *
+   * <p>Currently this is a stub that assumes a 1:1 mapping between linear velocity and flywheel
+   * surface speed. In reality this should be derived from empirical testing that maps "ball exit
+   * velocity" to motor RPM for your specific shooter geometry and wheel type.
+   *
+   * <p>TODO(#aim-shooter): Replace placeholder conversion with a calibrated model or lookup table
+   * based on range testing.
+   */
+  private static double calculateFlywheelRPM(double velocity) {
+    double conversionConstant = 1.0; // placeholder until testing is done
+    return velocity * conversionConstant;
+  }
+
+  private static double calculateMaxHeight(
+      Translation3d currentLocation, Translation3d shooterTarget) {
+    // Placeholder for max height calculation to shape the projectile arc.
+    //
+    // The current implementation scales with horizontal distance so that farther
+    // shots arc higher. This is only a heuristic to get a plausible trajectory.
+    //
+    // TODO(#aim-shooter): Replace with an analytically-derived or experimentally-fit
+    // model that guarantees clearance over field obstacles and optimizes for
+    // consistency / forgiveness at competition distances.
+    double heightScalingFactor = 1.5; // heuristic scaling factor for arc height
+    return heightScalingFactor
+        * Math.hypot(
+            currentLocation.getX() - shooterTarget.getX(),
+            currentLocation.getY() - shooterTarget.getY());
+  }
+
+  // Small helper structs to make execute() readable and testable
+  private static class AimState {
+    final Pose3d robotPose3d;
+    final Pose3d shooterPose3d;
+    final Pose3d targetPose3d;
+    final Translation3d translationToTarget;
+    final Rotation2d turretAngleWorld;
+
+    AimState(
+        Pose3d robotPose3d,
+        Pose3d shooterPose3d,
+        Pose3d targetPose3d,
+        Translation3d translationToTarget,
+        Rotation2d turretAngleWorld) {
+      this.robotPose3d = robotPose3d;
+      this.shooterPose3d = shooterPose3d;
+      this.targetPose3d = targetPose3d;
+      this.translationToTarget = translationToTarget;
+      this.turretAngleWorld = turretAngleWorld;
+    }
+  }
+
+  private static class PhysicsResult {
+    final double initialXVelocity;
+    final double initialYVelocity;
+    final double timeToTarget;
+
+    PhysicsResult(double initialXVelocity, double initialYVelocity, double timeToTarget) {
+      this.initialXVelocity = initialXVelocity;
+      this.initialYVelocity = initialYVelocity;
+      this.timeToTarget = timeToTarget;
+    }
+  }
+
+  private static class Setpoints {
+    final double rpm;
+    final Rotation2d hoodAngle;
+    final Rotation2d turretAngle;
+    final boolean flywheelClamped;
+    final boolean hoodClamped;
+    final boolean turretClamped;
+
+    Setpoints(
+        double rpm,
+        Rotation2d hoodAngle,
+        Rotation2d turretAngle,
+        boolean flywheelClamped,
+        boolean hoodClamped,
+        boolean turretClamped) {
+      this.rpm = rpm;
+      this.hoodAngle = hoodAngle;
+      this.turretAngle = turretAngle;
+      this.flywheelClamped = flywheelClamped;
+      this.hoodClamped = hoodClamped;
+      this.turretClamped = turretClamped;
+    }
+  }
+
+  /** Increment/decrement helpers for operator trimming during testing. */
+  public void bumpFlywheelOffsetRPM(double deltaRPM) {
+    flywheelOffsetRPM += deltaRPM;
+  }
+
+  public void bumpHoodOffsetDeg(double deltaDeg) {
+    hoodOffsetDeg += deltaDeg;
+  }
+
+  public void bumpTurretOffsetDeg(double deltaDeg) {
+    turretOffsetDeg += deltaDeg;
+  }
+
+  public void resetAllOffsets() {
+    flywheelOffsetRPM = 0.0;
+    hoodOffsetDeg = 0.0;
+    turretOffsetDeg = 0.0;
+  }
+
+  /**
+   * Emits detailed telemetry about the current aim computation to AdvantageKit.
+   *
+   * <p>This is intended primarily for tuning and debugging. Values are grouped into distance,
+   * angles, physics (projectile), and setpoint/clamp diagnostics.
+   */
+  private static void logAimShooterStats(AimState state, PhysicsResult physics, Setpoints set) {
+    double horizontalDistanceMeters =
+        Math.hypot(state.translationToTarget.getX(), state.translationToTarget.getY());
+    double distance3dMeters = state.translationToTarget.getNorm();
+    double verticalDeltaMeters = state.translationToTarget.getZ();
+
+    double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
     double calculatedRPM =
         calculateFlywheelRPM(
-            Math.sqrt(Math.pow(initialXVelocity, 2) + Math.pow(initialYVelocity, 2))
-                * 60
-                / (2 * Math.PI * flywheelRadius));
+            launchSpeedMps * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
 
-    AngularVelocity flywheelVelocity = RPM.of(calculatedRPM);
-    // add feedforward/closed-loop params in the Shooter subsystem rather than here.
+    Logger.recordOutput("AimShooter/Distance/HorizontalMeters", horizontalDistanceMeters);
+    Logger.recordOutput("AimShooter/Distance/Distance3dMeters", distance3dMeters);
+    Logger.recordOutput("AimShooter/Distance/VerticalDeltaMeters", verticalDeltaMeters);
 
-    Rotation2d hoodAngle = Rotation2d.fromRadians(Math.atan2(initialYVelocity, initialXVelocity));
+    Logger.recordOutput("AimShooter/Angles/TurretWorldDeg", state.turretAngleWorld.getDegrees());
+    Logger.recordOutput("AimShooter/Angles/HoodSetpointDeg", set.hoodAngle.getDegrees());
+    Logger.recordOutput("AimShooter/Angles/TurretSetpointDeg", set.turretAngle.getDegrees());
 
-    // TODO: Send to constants:
-    Double maxHoodAngle = 45.0;
-    Double minHoodAngle = 24.2238027;
+    Logger.recordOutput("AimShooter/Physics/InitialXVelocityMps", physics.initialXVelocity);
+    Logger.recordOutput("AimShooter/Physics/InitialYVelocityMps", physics.initialYVelocity);
+    Logger.recordOutput("AimShooter/Physics/LaunchSpeedMps", launchSpeedMps);
+    Logger.recordOutput("AimShooter/Physics/TimeToTargetSec", physics.timeToTarget);
+    Logger.recordOutput("AimShooter/Physics/CalculatedRPM", calculatedRPM);
 
-    Double maxTurretAngle = 360.0;
-    Double minTurretAngle = 0.2005;
+    Logger.recordOutput("AimShooter/Setpoints/RPM", set.rpm);
 
-    Double maxFlywheelRPM = 5700.0; // to be tested and tuned
-    Double minFlywheelRPM = 0.0;
-
-    hoodAngle = new Rotation2d(MathUtil.clamp(hoodAngle.getDegrees(), minHoodAngle, maxHoodAngle));
-    turretAngle =
-        new Rotation2d(MathUtil.clamp(turretAngle.getDegrees(), minTurretAngle, maxTurretAngle));
-    flywheelVelocity =
-        RPM.of(MathUtil.clamp(flywheelVelocity.in(RPM), minFlywheelRPM, maxFlywheelRPM));
-    // Send references to the shooter. This method should accept units documented in Shooter.
-    shooter.setPosition(flywheelVelocity, hoodAngle, turretAngle);
-  }
-
-  private double calculateFlywheelRPM(double calculatedRPM) {
-    // Converts the calculated RPM (using physics-based model) to tested value
-    // Requires testing of RPM vs Velocity to determine constants for conversion
-    double conversionConstant = 1.0; // placeholder until testing is done
-    return calculatedRPM * conversionConstant;
-  }
-
-  private double calculateMaxHeight(Translation2d currentLocation, Translation2d shooterTarget) {
-    // Placeholder for max height calculation. Replace with actual implementation.
-    return shooterTarget.getY() + 1.0; // example: 1 meter above the target
+    Logger.recordOutput("AimShooter/Clamp/FlywheelClamped", set.flywheelClamped);
+    Logger.recordOutput("AimShooter/Clamp/HoodClamped", set.hoodClamped);
+    Logger.recordOutput("AimShooter/Clamp/TurretClamped", set.turretClamped);
   }
 }

@@ -8,7 +8,6 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.DriveConstants.fieldWidth;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -20,9 +19,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
+import frc.robot.util.choreo.ChoreoVars;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -85,6 +86,11 @@ public final class Constants {
       public static final int backRightAbsEncoderCanId = 3;
     }
 
+    public static final class Hopper {
+      public static final int spindexerCanId = 6;
+      public static final int feederCanId = 15;
+    }
+
     public static final class Intake {
       public static final int spinnySpinnyCanId = 12;
       public static final int uppyDownyCanId = 11;
@@ -98,43 +104,44 @@ public final class Constants {
 
       public static final int hoodMotorCanId = 7;
 
-      public static final int hopperSpindexerCanId = 6;
-      public static final int hopperFeederCanId = 15;
-
       public static final int turretMotorCanId = 14;
       public static final int turretMagSensorDIO = 0;
     }
 
     public static final class Vision {
       public static final LimelightConstants[] aprilTagLimelights = {
+        // * Left side
         new LimelightConstants(
-            "limelight-barge",
+            "limelight-square",
             new Pose3d(
-                Inches.of(-8.1296),
-                Inches.of(-6.376),
-                Inches.of(27.6),
-                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+                Inches.of(-10.0), // -0.254 m
+                Inches.of(-13.239), // -0.3363 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(90)))),
+        // * Left back
         new LimelightConstants(
-            "limelight-coral",
+            "limelight-kvale",
             new Pose3d(
-                Inches.of(-8.0936),
-                Inches.of(6.376),
-                Inches.of(29.1),
-                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(-90)))),
+                Inches.of(-13.239), // -0.3363 m
+                Inches.of(-8.625), // -0.2191 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(180)))),
+        // * Right side
         new LimelightConstants(
-            "limelight-left",
+            "limelight-cube",
             new Pose3d(
-                Meters.of(-0.2093),
-                Meters.of(-0.2092),
-                Meters.of(0.327),
-                new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90)))),
+                Inches.of(-10.0), // -0.254 m
+                Inches.of(13.239), // 0.3363 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(-90)))),
+        // * Right back
         new LimelightConstants(
-            "limelight-swerve",
+            "limelight-angle",
             new Pose3d(
-                Meters.of(0.2355),
-                Meters.of(-0.2499),
-                Meters.of(0.2267),
-                new Rotation3d(Degrees.of(0), Degrees.of(15), Degrees.of(105))))
+                Inches.of(-13.239), // -0.3363 m
+                Inches.of(8.625), // 0.2191 m
+                Inches.of(8.843), // 0.2246 m
+                new Rotation3d(Degrees.of(180), Degrees.of(20), Degrees.of(180))))
       };
     }
   }
@@ -145,15 +152,23 @@ public final class Constants {
     public static final int rightButtonBoardPort = 2;
 
     public static final double controllerStickDeadband = 0.05;
+    public static final double controllerTriggerDeadband = 0.05;
   }
 
   // ========================= SUBSYSTEMS ========================= //
 
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static final int climberCurrentLimit = 30;
+    public static final int climberCurrentLimit = 50; // !  Was 70
+    // 1:80 ratio is to prevent encoder from looping
+    public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 
-    public static final double climberKp = 0.0;
+    public static final int climberCurrentSensingFilterSize = 10;
+
+    public static final double climberMinPosition = 2.443155;
+    public static final double climberMaxPosition = 0.0;
+
+    public static final double climberKp = 10.0;
     public static final double climberKi = 0.0;
     public static final double climberKd = 0.0;
 
@@ -171,14 +186,12 @@ public final class Constants {
        - Divide max rotation speed when driving by max rotation speed while stationary
     */
 
-    public static final double maxSpeedMetersPerSec = 4.8;
+    public static final double maxSpeedMetersPerSec = 4.56; // 14.961 ft/s
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
-    public static final double maxAngularSpeedFactor = (1 / 1);
+    public static final double maxAngularSpeedFactor = (321.5229038 / 630.028839);
     public static final double odometryFrequency = 100.0; // Hz
-    public static final double trackWidth =
-        Units.inchesToMeters(20.75); // Units.inchesToMeters(26.5);
-    public static final double wheelBase =
-        Units.inchesToMeters(20.75); // Units.inchesToMeters(26.5);
+    public static final double trackWidth = Units.inchesToMeters(21.75);
+    public static final double wheelBase = Units.inchesToMeters(21.75);
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
@@ -189,17 +202,17 @@ public final class Constants {
         };
 
     // Zeroed rotation values for each module, see setup instructions
-    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(2.397);
-    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(6.215);
-    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(3.552);
-    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(5.134);
+    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(5.515);
+    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(3.068);
+    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(0.417);
+    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(1.974);
 
     // Drive motor configuration
-    public static final boolean driveInverted = true;
-    public static final int driveMotorCurrentLimit = 50;
+    public static final boolean driveInverted = false;
+    public static final int driveMotorCurrentLimit = 40;
     public static final double wheelRadiusMeters =
         Units.inchesToMeters(
-            1.99162835); // When using linear characterization: actual linear distance / wheel delta
+            2.19577028); // When using linear characterization: actual linear distance / wheel delta
     public static final double driveMotorReduction =
         (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2 Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -213,11 +226,12 @@ public final class Constants {
     // Wheel Rad/Sec
 
     // Drive PID configuration
-    public static final double driveKp = 0.0000061024;
+    public static final double driveKp = 2.95E-05; // 0.00021829
     public static final double driveKd = 0.0;
-    public static final double driveKs = 0.17311;
-    public static final double driveKv = 0.11345;
-    public static final double driveKa = 0.011064;
+    public static final double driveKs = 0.1619433333; // 0.15812049
+    public static final double driveKv =
+        0.1124575; // 0.1165 // From simple characterization: 0.11106210
+    public static final double driveKa = 0.02673925; // 0.029083
     public static final double driveSimP = 0.05;
     public static final double driveSimD = 0.0;
     public static final double driveSimKs = 0.0;
@@ -226,7 +240,8 @@ public final class Constants {
     // Turn motor configuration
     public static final boolean turnInverted = false;
     public static final int turnMotorCurrentLimit = 20;
-    public static final double turnMotorReduction = ((150.0 / 7.0) / (2.0 * Math.PI)); // Mk4i
+    public static final double turnMotorReduction4i = ((150.0 / 7.0) / (2.0 * Math.PI)); // Mk4i
+    public static final double turnMotorReduction4n = ((18.75) / (2.0 * Math.PI));
     public static final DCMotor turnGearbox = DCMotor.getNeo550(1);
 
     // Turn encoder configuration
@@ -263,7 +278,7 @@ public final class Constants {
     // Pigeon config
     public static final double pigeonGyroTrimXDegPerRot = 0.0;
     public static final double pigeonGyroTrimYDegPerRot = 0.0;
-    public static final double pigeonGyroTrimZDegPerRot = 0.0;
+    public static final double pigeonGyroTrimZDegPerRot = -1.88;
 
     public static final Angle pigeonMountPoseYaw = Degrees.of(-0.032393235713243484);
     public static final Angle pigeonMountPosePitch = Degrees.of(-0.30914029479026794);
@@ -296,23 +311,53 @@ public final class Constants {
       public static final double autoAlignAngularKi = 0.0;
       public static final double autoAlignAngularKd = 0.1;
 
-      public static final Pose2d climbPose =
-          new Pose2d(
-              Meters.of(1.7608400583267212), Meters.of(2.085599899291992), Rotation2d.k180deg);
+      public static final Pose2d climbSetupPoseOutpost = ChoreoVars.Poses.ClimbSetupOutpost;
+      public static final Pose2d climbPoseOutpost =
+          new Pose2d(Inches.of(41.755), Meters.of(2.0), Rotation2d.kCW_90deg);
+      public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
+      public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
     }
   }
 
-  public static final class IntakeConstants {
-    public static final boolean spinnySpinnyInverted = false;
-    public static final int spinnySpinnyCurrentLimit = 30;
+  public static final class HopperConstants {
+    // spindexer constants
+    public static final boolean spindexerInverted = true;
+    public static final int spindexerCurrentLimit = 20;
+    public static final double spindexerGearRatio = 180.0 / 6293.0;
 
-    public static final double spinnySpinnyKp = 0.0;
+    public static final double spindexerKp = 1.0142E-05;
+    public static final double spindexerKi = 0.0;
+    public static final double spindexerKd = 0.0;
+
+    public static final double spindexerKs = 0.019266;
+    public static final double spindexerKv = 0.063796;
+    public static final double spindexerKa = 0.0070154;
+
+    // feeder constants
+    public static final boolean feederInverted = false;
+    public static final int feederCurrentLimit = 50;
+
+    public static final double feederKp = 2.8084E-08;
+    public static final double feederKi = 0.0;
+    public static final double feederKd = 0.0;
+
+    public static final double feederKs = 0.12681;
+    public static final double feederKv = 0.0017874;
+    public static final double feederKa = 0.00010453;
+  }
+
+  public static final class IntakeConstants {
+    public static final boolean spinnySpinnyInverted = true;
+    public static final int spinnySpinnyCurrentLimit = 50;
+    public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
+
+    public static final double spinnySpinnyKp = 1.5158E-07;
     public static final double spinnySpinnyKi = 0.0;
     public static final double spinnySpinnyKd = 0.0;
 
-    public static final double spinnySpinnyKs = 0.0;
-    public static final double spinnySpinnyKv = 0.0;
-    public static final double spinnySpinnyKa = 0.0;
+    public static final double spinnySpinnyKs = 0.19074;
+    public static final double spinnySpinnyKv = 0.0018364;
+    public static final double spinnySpinnyKa = 0.00016227;
 
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 30;
@@ -327,71 +372,60 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final Translation2d hubLocation =
-        new Translation2d(Inches.of(181.90625), Inches.of(158.84375));
+    public static final Translation2d hubLocation = ChoreoVars.Poses.Hub.getTranslation();
     public static final Translation2d outpostBumpLocation =
-        new Translation2d(Inches.of(182.0), Inches.of(90.0));
+        ChoreoVars.Poses.BumpOutpost.getTranslation();
     public static final Translation2d depotBumpLocation =
-        new Translation2d(Inches.of(182.0), fieldWidth.minus(Inches.of(90.0)));
+        ChoreoVars.Poses.BumpDepot.getTranslation();
+
+    public static final double gravity = 9.81;
 
     public static final class FlywheelConstants {
-      public static final boolean flywheelInverted = false;
-      public static final int flywheelCurrentLimit = 20;
+      public static final boolean flywheelInverted = true;
+      public static final int flywheelCurrentLimit = 50;
+      public static final double flywheelRadius = Units.inchesToMeters(4) / 2.0;
 
-      public static final double flywheelKp = 0.0;
+      public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
+      public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
+
+      // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
+      public static final double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
       public static final double flywheelKi = 0.0;
-      public static final double flywheelKd = 0.0;
+      public static final double flywheelKd = 1.84359E-08;
 
-      public static final double flywheelKs = 0.0;
-      public static final double flywheelKv = 0.0;
-      public static final double flywheelKa = 0.0;
+      public static final double flywheelKs = 0.10996;
+      public static final double flywheelKv = 0.0017972; // From SysId: 0.0021194
+      public static final double flywheelKa = 0.00028032; // From SysId: 0.0011572
     }
 
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;
-      public static final int hoodCurrentLimit = 20;
+      public static final int hoodCurrentLimit = 50;
+      public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
+      public static final int hoodCurrentSensingFilterSize = 10;
 
-      public static final double hoodKp = 0.0;
+      public static final double hoodKp = 20.0;
       public static final double hoodKi = 0.0;
       public static final double hoodKd = 0.0;
+
+      public static final double hoodToZeroKp = 5.0;
+      public static final double hoodToZeroKi = 0.0;
+      public static final double hoodToZeroKd = 0.0;
 
       public static final double hoodKs = 0.0;
       public static final double hoodKv = 0.0;
       public static final double hoodKa = 0.0;
 
-      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(0.0);
-      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(0.0);
-    }
-
-    public static final class HopperConstants {
-      // spindexer constants
-      public static final boolean hopperSpindexerInverted = false;
-      public static final int hopperSpindexerCurrentLimit = 20;
-
-      public static final double spindexerKp = 0.0;
-      public static final double spindexerKi = 0.0;
-      public static final double spindexerKd = 0.0;
-
-      public static final double spindexerKs = 0.0;
-      public static final double spindexerKv = 0.0;
-      public static final double spindexerKa = 0.0;
-
-      // feeder constants
-      public static final boolean hopperFeederInverted = true;
-      public static final int hopperFeederCurrentLimit = 20;
-
-      public static final double feederKp = 0.0;
-      public static final double feederKi = 0.0;
-      public static final double feederKd = 0.0;
-
-      public static final double feederKs = 0.0;
-      public static final double feederKv = 0.0;
-      public static final double feederKa = 0.0;
+      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(24.2238027);
+      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
     }
 
     public static final class TurretConstants {
-      public static final boolean turretInverted = false;
+      public static final boolean turretInverted = true;
       public static final int turretCurrentLimit = 20;
+
+      public static final Rotation2d turretMinAngle = Rotation2d.fromDegrees(0.2005);
+      public static final Rotation2d turretMaxAngle = Rotation2d.fromDegrees(360.05);
 
       public static final double turretKp = 0.0;
       public static final double turretKi = 0.0;
@@ -401,10 +435,11 @@ public final class Constants {
       public static final double turretKv = 0.0;
       public static final double turretKa = 0.0;
 
-      public static final double turretGearRatio = 1.0 / 5.0;
+      public static final double turretGearRatio = 115.0 / 16.0;
 
-      public static final double turretAbsEncoderGearRatio = 9.0 / 1.0;
-      public static final double turretAbsEncoderOffset = 0;
+      public static final double turretAbsEncoderGearRatio =
+          (16.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0);
+      public static final double turretAbsEncoderOffset = 0.25458443;
     }
   }
 
@@ -414,7 +449,7 @@ public final class Constants {
     public static final double maxDistanceStdDev = 999999;
     public static final Angle maxAngleStdDev = Degrees.of(999999);
 
-    public static final boolean useMegaTag2 = true;
+    public static final boolean useMegaTag2 = false;
 
     public static record LimelightConstants(String name, Pose3d position) {}
   }

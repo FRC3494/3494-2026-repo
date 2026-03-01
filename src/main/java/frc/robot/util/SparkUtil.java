@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
+import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
@@ -63,12 +64,18 @@ public class SparkUtil {
 
     if (absoluteEncoder) {
       Logger.recordOutput(
-          key + "/AbsPosition", Rotations.of(spark.getAbsoluteEncoder().getPosition()));
+          key + "/AbsPosition", Rotation2d.fromRotations(spark.getAbsoluteEncoder().getPosition()));
       Logger.recordOutput(key + "/AbsVelocity", RPM.of(spark.getAbsoluteEncoder().getVelocity()));
     }
 
     Logger.recordOutput(key + "/AppliedOutput", spark.getAppliedOutput());
     Logger.recordOutput(key + "/BusVoltage", Volts.of(spark.getBusVoltage()));
+    Logger.recordOutput(
+        key + "/AppliedVoltage", Volts.of(spark.getAppliedOutput() * spark.getBusVoltage()));
     Logger.recordOutput(key + "/Temp", Celsius.of(spark.getMotorTemperature()));
+    Logger.recordOutput(key + "/Current", Amps.of(spark.getOutputCurrent()));
+
+    Logger.recordOutput(key + "/Setpoint", spark.getClosedLoopController().getSetpoint());
+    Logger.recordOutput(key + "/AtSetpoint", spark.getClosedLoopController().isAtSetpoint());
   }
 }

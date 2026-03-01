@@ -7,7 +7,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.ClimberConstants.climberMinPosition;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -17,12 +19,18 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
+import frc.robot.OI.ClimberOI;
 import frc.robot.OI.DriveOI;
+import frc.robot.OI.IntakeOI;
+import frc.robot.OI.ShooterOI;
 import frc.robot.autos.Autos;
-import frc.robot.autos.TestAuto;
+import frc.robot.autos.ClimbLeftAuto;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.RezeroClimberCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -31,10 +39,18 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.hopper.Hopper;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterCommand;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.hood.RezeroHoodCommand;
+import frc.robot.subsystems.shooter.turret.RezeroTurretCommand;
+import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
+import frc.robot.util.QuadranglesUtil;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,14 +62,23 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
-  private final Shooter shooter;
+  private final Climber climber;
+  private final Hopper hopper;
+  private final Intake intake;
+  private final Flywheel flywheel;
+  private final Hood hood;
+  private final Turret turret;
 
   // Choreo
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
+  private final RobotCommands robotCommands;
   private final Command joystickDriveCommand;
   private final Command aimShooterCommand;
+
+  private LoggedNetworkBoolean enableTuningAutos =
+      new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -99,9 +124,15 @@ public class RobotContainer {
             OI.DriveOI::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
-    shooter = new Shooter();
+    climber = new Climber();
+    hopper = new Hopper();
+    intake = new Intake();
+    flywheel = new Flywheel();
+    hood = new Hood();
+    turret = new Turret();
 
-    aimShooterCommand = new AimShooterCommand(shooter, drive);
+    robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
+    aimShooterCommand = new AimShooterCommand(flywheel, hood, turret, drive::getPose);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -127,9 +158,23 @@ public class RobotContainer {
 
   private void configureAutos() {
     // Set up autos
-    autoChooser.addRoutine("TestAuto", () -> TestAuto.getRoutine("TestAuto", autoFactory, drive));
+    autoChooser.addRoutine(
+        "ClimbLeft", () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, climber, drive));
+
+    autoChooser.addCmd("=====================", () -> none());
 
     // Set up SysId routines
+    if (enableTuningAutos.get()) {
+      configureTuningAutos();
+    } else {
+      new Trigger(enableTuningAutos::get).onTrue(runOnce(this::configureTuningAutos));
+    }
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+  }
+
+  private void configureTuningAutos() {
     autoChooser.addCmd(
         "Drive Wheel Radius Rotational Characterization",
         () -> DriveCommands.wheelRadiusCharacterization(drive));
@@ -151,8 +196,59 @@ public class RobotContainer {
     autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
+    autoChooser.addCmd(
+        "Flywheel SysId (Quasistatic Forward)",
+        () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Flywheel SysId (Quasistatic Reverse)",
+        () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Flywheel SysId (Dynamic Forward)",
+        () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Flywheel SysId (Dynamic Reverse)",
+        () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Spindexer SysId (Quasistatic Forward)",
+        () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Spindexer SysId (Quasistatic Reverse)",
+        () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Spindexer SysId (Dynamic Forward)",
+        () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Spindexer SysId (Dynamic Reverse)",
+        () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Feeder SysId (Quasistatic Forward)",
+        () -> hopper.feederSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Feeder SysId (Quasistatic Reverse)",
+        () -> hopper.feederSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Feeder SysId (Dynamic Forward)",
+        () -> hopper.feederSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Feeder SysId (Dynamic Reverse)",
+        () -> hopper.feederSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Quasistatic Forward)",
+        () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Quasistatic Reverse)",
+        () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Dynamic Forward)",
+        () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Intake SpinnySpinny SysId (Dynamic Reverse)",
+        () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
   }
 
   /**
@@ -162,6 +258,26 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // ==================== CLIMBER ====================
+    ClimberOI.climberUp().onTrue(robotCommands.climberUp());
+
+    ClimberOI.climberDown()
+        .onTrue(
+            either(
+                robotCommands.climberMid(),
+                robotCommands.climberDown(),
+                () -> climber.getPosition() <= climberMinPosition / 2.0 - 0.05));
+
+    ClimberOI.rezeroClimber().onTrue(RezeroClimberCommand.getCommand(climber));
+
+    ClimberOI.climberManualUp()
+        .onTrue(robotCommands.climberManualUp())
+        .onFalse(robotCommands.stopClimber());
+
+    ClimberOI.climberManualDown()
+        .onTrue(robotCommands.climberManualDown())
+        .onFalse(robotCommands.stopClimber());
+
     // ==================== DRIVE ====================
     // Default command, normal field-relative drive
     drive.setDefaultCommand(joystickDriveCommand);
@@ -169,14 +285,44 @@ public class RobotContainer {
     DriveOI.autoAlignClimb()
         .onTrue(
             runOnce(
-                () ->
+                () -> {
+                  double distanceToOutpostPose =
+                      drive
+                          .getPose()
+                          .getTranslation()
+                          .getDistance(
+                              QuadranglesUtil.toAllianceTranslation(
+                                  AutoAlignConstants.climbSetupPoseOutpost.getTranslation()));
+                  double distanceToDepotPose =
+                      drive
+                          .getPose()
+                          .getTranslation()
+                          .getDistance(
+                              QuadranglesUtil.toAllianceTranslation(
+                                  AutoAlignConstants.climbSetupPoseDepot.getTranslation()));
+
+                  if (distanceToOutpostPose < distanceToDepotPose) {
                     drive.setDefaultCommand(
-                        new AutoAlignCommand(AutoAlignConstants.climbPose, drive)),
+                        sequence(
+                            new AutoAlignCommand(AutoAlignConstants.climbSetupPoseOutpost, drive),
+                            new AutoAlignCommand(AutoAlignConstants.climbPoseOutpost, drive)));
+                  } else {
+                    drive.setDefaultCommand(
+                        sequence(
+                            new AutoAlignCommand(AutoAlignConstants.climbSetupPoseDepot, drive),
+                            new AutoAlignCommand(AutoAlignConstants.climbPoseDepot, drive)));
+                  }
+                },
                 drive))
-        .onFalse(runOnce(() -> drive.setDefaultCommand(joystickDriveCommand), drive));
+        .onFalse(
+            runOnce(
+                () -> {
+                  drive.setDefaultCommand(joystickDriveCommand);
+                },
+                drive));
 
     // Lock to 0° when A button is held
-    DriveOI.lockToForward()
+    DriveOI.lockTo45()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -194,10 +340,79 @@ public class RobotContainer {
     DriveOI.rezeroSwerveTurnEncoders()
         .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
 
-    DriveOI.resetYawPigeon().onTrue(runOnce(drive::resetYawPigeon).ignoringDisable(true));
+    // ==================== HOPPER ====================
+    ShooterOI.runSpindexer()
+        .onTrue(robotCommands.runSpindexerReverse())
+        .onFalse(robotCommands.stopSpindexer());
+
+    ShooterOI.runFeeder().onTrue(robotCommands.runFeeder()).onFalse(robotCommands.stopFeeder());
+
+    // ==================== INTAKE ====================
+    IntakeOI.intake().onTrue(robotCommands.runIntake()).onFalse(robotCommands.stopIntake());
+
+    IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 
     // ==================== SHOOTER ====================
-    shooter.setDefaultCommand(aimShooterCommand);
+    // shooter.setDefaultCommand(aimShooterCommand);
+
+    ShooterOI.setHubShot().onTrue(robotCommands.setHubShot());
+    ShooterOI.setTrenchShot().onTrue(robotCommands.setTrenchShot());
+    ShooterOI.setOutpostShot().onTrue(robotCommands.setOutpostShot());
+    ShooterOI.setNeutralZoneShot().onTrue(robotCommands.setNeutralZoneShot());
+
+    ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
+
+    // ==================== FLYWHEEL ====================
+    ShooterOI.runFlywheel()
+        .onTrue(robotCommands.runFlywheel())
+        .onFalse(robotCommands.stopFlywheel());
+
+    // ==================== HOOD ====================
+    ShooterOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
+
+    ShooterOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
+
+    ShooterOI.rezeroHood().onTrue(RezeroHoodCommand.getCommand(hood));
+
+    // ==================== TURRET ====================
+    ShooterOI.turretManualNegative()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(-1.5));
+                },
+                turret))
+        .onFalse(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(0));
+                },
+                turret));
+    ShooterOI.turretManualPositive()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(1.5));
+                },
+                turret))
+        .onFalse(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(0));
+                },
+                turret));
+    new Trigger(
+            () ->
+                turret.getAbsPosition().getRotations() < 0.20
+                    || turret.getAbsPosition().getRotations() > 0.95)
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setOpenLoop(Volts.of(0));
+                },
+                turret));
+
+    ShooterOI.rezeroTurret().onTrue(RezeroTurretCommand.getCommand(turret).ignoringDisable(true));
   }
 
   /**

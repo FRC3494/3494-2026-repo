@@ -81,6 +81,6 @@ public class AutoAlignCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint();
   }
 }

@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,8 +41,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.OI.DriveOI;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.QuadranglesUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -69,11 +70,7 @@ public class Drive extends SubsystemBase {
         new SwerveModulePosition()
       };
   private SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(
-          kinematics,
-          rawGyroRotation,
-          lastModulePositions,
-          QuadranglesUtil.toAlliancePose(AutoAlignConstants.climbPose));
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
   @Getter @Setter @AutoLogOutput private boolean autoAligning = false;
 
@@ -195,6 +192,10 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
+    Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
+    Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
   }
 
   /**
@@ -367,6 +368,7 @@ public class Drive extends SubsystemBase {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
+    // TODO: try updating pigeon as well?
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
@@ -403,7 +405,8 @@ public class Drive extends SubsystemBase {
           default -> maxSpeedMetersPerSec / driveBaseRadius;
         };
 
-    return speed * maxAngularSpeedFactor;
+    // return speed * maxAngularSpeedFactor;
+    return Units.degreesToRadians(360 + 72);
   }
 
   public void rezeroTurnEncoders() {
@@ -416,18 +419,17 @@ public class Drive extends SubsystemBase {
     return gyroInputs.connected;
   }
 
+  public void setRotation(Rotation2d rotation) {
+    gyroIO.setYaw(rotation);
+    poseEstimator.resetRotation(rotation);
+  }
+
   public void resetYaw() {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == Alliance.Red) {
-      poseEstimator.resetRotation(Rotation2d.k180deg);
-      gyroIO.setYaw(Rotation2d.k180deg);
+      setRotation(Rotation2d.k180deg);
     } else {
-      poseEstimator.resetRotation(Rotation2d.kZero);
-      gyroIO.setYaw(Rotation2d.kZero);
+      setRotation(Rotation2d.kZero);
     }
-  }
-
-  public void resetYawPigeon() {
-    gyroIO.setYaw(Rotation2d.kZero);
   }
 }

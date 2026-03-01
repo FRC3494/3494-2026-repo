@@ -1,57 +1,121 @@
 package frc.robot.subsystems.shooter.flywheel;
 
-import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Flywheel extends SubsystemBase {
-  private SparkMax leftMotor;
-  private SparkMax rightMotor;
+  private SparkFlex leftMotor;
+  private SparkFlex rightMotor;
 
-  @Getter @AutoLogOutput private AngularVelocity flywheelSetpoint = RPM.of(0.0);
+  @Getter
+  @AutoLogOutput(key = "Shooter/Flywheel/FlywheelSetpoint")
+  private AngularVelocity flywheelSetpoint = RPM.of(0.0);
+
+  SysIdRoutine sysId;
+
+  private LoggedNetworkNumber flywheelP =
+      new LoggedNetworkNumber("Tunable/Flywheel/kP", flywheelKp);
+  private LoggedNetworkNumber flywheelI =
+      new LoggedNetworkNumber("Tunable/Flywheel/kI", flywheelKi);
+  private LoggedNetworkNumber flywheelD =
+      new LoggedNetworkNumber("Tunable/Flywheel/kD", flywheelKd);
+
+  private double p = flywheelKp;
+  private double i = flywheelKi;
+  private double d = flywheelKd;
 
   public Flywheel() {
-    leftMotor = new SparkMax(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
-    rightMotor = new SparkMax(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
+    leftMotor = new SparkFlex(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
+    rightMotor = new SparkFlex(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
 
-    SparkMaxConfig leftConfig = new SparkMaxConfig();
+    SparkFlexConfig leftConfig = new SparkFlexConfig();
     leftConfig
         .smartCurrentLimit(flywheelCurrentLimit)
         .idleMode(IdleMode.kCoast)
         .inverted(flywheelInverted);
     leftConfig.closedLoop.pid(flywheelKp, flywheelKi, flywheelKd);
     leftConfig.closedLoop.feedForward.sva(flywheelKs, flywheelKv, flywheelKa);
+    leftConfig.encoder.positionConversionFactor(1.0).velocityConversionFactor(1.0);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    SparkMaxConfig rightConfig = new SparkMaxConfig().apply(leftConfig);
-    rightConfig.inverted(!flywheelInverted).follow(leftMotor);
+    SparkFlexConfig rightConfig = new SparkFlexConfig().apply(leftConfig);
+    rightConfig.follow(leftMotor, true);
     rightMotor.configure(
         rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    sysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Shooter/Flywheel/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setOpenLoop(voltage), null, this));
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
     logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
+
+    if (flywheelP.get() != p || flywheelI.get() != i || flywheelD.get() != d) {
+      setPID(flywheelP.get(), flywheelI.get(), flywheelD.get());
+    }
   }
 
   public void setVelocity(AngularVelocity velocity) {
     flywheelSetpoint = velocity;
-    leftMotor
-        .getClosedLoopController()
-        .setSetpoint(velocity.in(RPM), ControlType.kMAXMotionVelocityControl);
+    if (!velocity.isEquivalent(RPM.of(0))) {
+      leftMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
+    } else {
+      leftMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
+    }
+    // leftMotor.set(velocity.in(RPM));
+  }
+
+  public void setOpenLoop(Voltage voltage) {
+    leftMotor.setVoltage(voltage);
+  }
+
+  private void setPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    config.closedLoop.pid(p, i, d);
+    this.p = p;
+    this.i = i;
+    this.d = d;
+    leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  public AngularVelocity getVelocity() {
+    return RPM.of(leftMotor.getEncoder().getVelocity());
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return run(() -> setOpenLoop(Volts.of(0.0)))
+        .withTimeout(1.0)
+        .andThen(sysId.quasistatic(direction));
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return run(() -> setOpenLoop(Volts.of(0.0))).withTimeout(1.0).andThen(sysId.dynamic(direction));
   }
 }

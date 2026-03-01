@@ -33,7 +33,7 @@ public final class OI {
     }
 
     public static Trigger autoAlignClimb() {
-      return primaryController.y(eventLoop);
+      return primaryController.povLeft();
     }
 
     public static Trigger resetYaw() {
@@ -48,18 +48,107 @@ public final class OI {
       return primaryController.x(eventLoop);
     }
 
-    public static Trigger lockToForward() {
+    public static Trigger lockTo45() {
+      // return primaryController.a(eventLoop);
+      return new Trigger(() -> false);
+    }
+  }
+
+  public static final class ClimberOI {
+    public static Trigger climberDown() {
       return primaryController.a(eventLoop);
     }
 
-    public static Trigger resetYawPigeon() {
-      return primaryController.b(eventLoop);
+    public static Trigger climberUp() {
+      return primaryController.y(eventLoop);
+    }
+
+    public static Trigger rezeroClimber() {
+      return leftButtonBoard.button(1, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger climberManualUp() {
+      return rightButtonBoard
+          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger climberManualDown() {
+      return rightButtonBoard
+          .axisLessThan(1, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+  }
+
+  public static final class IntakeOI {
+    public static Trigger intake() {
+      return primaryController.rightTrigger(controllerTriggerDeadband, eventLoop);
+    }
+
+    public static Trigger outtake() {
+      return primaryController.x(eventLoop);
     }
   }
 
   public static final class ShooterOI {
+    public static Trigger setHubShot() {
+      return rightButtonBoard.button(1, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger setTrenchShot() {
+      return rightButtonBoard.button(2, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger setOutpostShot() {
+      return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger setNeutralZoneShot() {
+      return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger shoot() {
+      return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
+    }
+
+    public static Trigger turretManualPositive() {
+      return leftButtonBoard
+          .axisLessThan(0, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger turretManualNegative() {
+      return leftButtonBoard
+          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger runSpindexer() {
+      return primaryController.b(eventLoop);
+    }
+
+    public static Trigger runFeeder() {
+      return primaryController.leftBumper(eventLoop);
+    }
+
+    public static Trigger increaseHood() {
+      return primaryController.povUp();
+    }
+
+    public static Trigger decreaseHood() {
+      return primaryController.povDown();
+    }
+
+    public static Trigger runFlywheel() {
+      return primaryController.rightBumper(eventLoop);
+    }
+
+    public static Trigger rezeroHood() {
+      return leftButtonBoard.button(2, eventLoop).castTo(Trigger::new);
+    }
+
     public static Trigger rezeroTurret() {
-      return primaryController.povRight();
+      return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
     }
   }
 }

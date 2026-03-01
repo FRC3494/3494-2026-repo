@@ -36,7 +36,7 @@ public class GyroIOPigeon2 implements GyroIO {
         .GyroTrim
         .withGyroScalarX(pigeonGyroTrimXDegPerRot)
         .withGyroScalarY(pigeonGyroTrimYDegPerRot)
-        .withGyroScalarY(pigeonGyroTrimZDegPerRot);
+        .withGyroScalarZ(pigeonGyroTrimZDegPerRot);
     pigeonConfig
         .MountPose
         .withMountPoseYaw(pigeonMountPoseYaw)
