@@ -387,6 +387,8 @@ public final class Constants {
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;
       public static final int hoodCurrentLimit = 50;
+      public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
+      public static final int hoodCurrentSensingFilterSize = 10;
 
       public static final double hoodKp = 20.0;
       public static final double hoodKi = 0.0;
@@ -400,10 +402,8 @@ public final class Constants {
       public static final double hoodKv = 0.0;
       public static final double hoodKa = 0.0;
 
-      public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
-
-      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(0.0);
-      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(36.5);
+      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(24.2238027);
+      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
     }
 
     public static final class TurretConstants {

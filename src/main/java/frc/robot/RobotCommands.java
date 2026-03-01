@@ -6,6 +6,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static frc.robot.Constants.ClimberConstants.climberMaxPosition;
+import static frc.robot.Constants.ClimberConstants.climberMinPosition;
+import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,7 +53,8 @@ public class RobotCommands {
   private LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
 
   // ==================== HOOD ====================
-  private LoggedNetworkNumber hoodAngle = new LoggedNetworkNumber("Tunable/HoodAngle", 0.0);
+  private LoggedNetworkNumber hoodAngle =
+      new LoggedNetworkNumber("Tunable/HoodAngle", 0.0 + hoodMinAngle.getDegrees());
   private LoggedNetworkNumber hoodIncrement =
       new LoggedNetworkNumber("Tunable/HoodIncrementDeg", 2.0);
 
@@ -168,7 +172,7 @@ public class RobotCommands {
         () -> {
           flywheelSpeed.set(3000);
           flywheelThresholdSpeed.set(2900);
-          hoodAngle.set(0);
+          hoodAngle.set(0 + hoodMinAngle.getDegrees());
         });
   }
 
@@ -177,7 +181,7 @@ public class RobotCommands {
         () -> {
           flywheelSpeed.set(3250);
           flywheelThresholdSpeed.set(3200);
-          hoodAngle.set(10);
+          hoodAngle.set(10 + hoodMinAngle.getDegrees());
         });
   }
 
@@ -186,7 +190,7 @@ public class RobotCommands {
         () -> {
           flywheelSpeed.set(4500);
           flywheelThresholdSpeed.set(4400);
-          hoodAngle.set(5);
+          hoodAngle.set(5 + hoodMinAngle.getDegrees());
         });
   }
 
