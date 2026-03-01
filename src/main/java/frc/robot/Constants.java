@@ -348,7 +348,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
     public static final int spinnySpinnyCurrentLimit = 50;
-    public static final double spinnySpinnyGearRatio = 17.0 / 28.0;
+    public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
 
     public static final double spinnySpinnyKp = 1.5158E-07;
     public static final double spinnySpinnyKi = 0.0;
