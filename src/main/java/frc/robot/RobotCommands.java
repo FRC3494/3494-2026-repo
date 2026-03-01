@@ -38,9 +38,9 @@ public class RobotCommands {
 
   // ==================== HOPPER ====================
   private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 100);
-  private LoggedNetworkNumber feederSpeedFactor =
+  private LoggedNetworkNumber kickerSpeedFactor =
       new LoggedNetworkNumber(
-          "Tunable/FeederSpeedFactor", 0.60); // Number to multiply flywheel speed by
+          "Tunable/KickerSpeedFactor", 0.60); // Number to multiply flywheel speed by
   private boolean spindexerInverted = false;
 
   // ==================== INTAKE ====================
@@ -179,18 +179,18 @@ public class RobotCommands {
         hopper);
   }
 
-  public Command runFeeder() {
+  public Command runKicker() {
     return runOnce(
         () -> {
-          hopper.setFeederVelocity(RPM.of(flywheelSpeed.get() * feederSpeedFactor.get()));
+          hopper.setKickerVelocity(RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()));
         },
         hopper);
   }
 
-  public Command stopFeeder() {
+  public Command stopKicker() {
     return runOnce(
         () -> {
-          hopper.setFeederVelocity(RPM.of(0.0));
+          hopper.setKickerVelocity(RPM.of(0.0));
         },
         hopper);
   }
@@ -242,7 +242,7 @@ public class RobotCommands {
               spindexerInverted = !spindexerInverted;
             }),
         runSpindexer(),
-        runFeeder(),
+        runKicker(),
         runIntake());
   }
 
@@ -250,7 +250,7 @@ public class RobotCommands {
     return sequence(
         stopSpindexer(),
         waitSeconds(0.25),
-        stopFeeder(),
+        stopKicker(),
         waitSeconds(0.25),
         stopFlywheel(),
         stopIntake(),

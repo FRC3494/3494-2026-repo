@@ -88,7 +88,7 @@ public final class Constants {
 
     public static final class Hopper {
       public static final int spindexerCanId = 6;
-      public static final int feederCanId = 15;
+      public static final int kickerCanId = 15;
     }
 
     public static final class Intake {
@@ -333,17 +333,17 @@ public final class Constants {
     public static final double spindexerKv = 0.063796;
     public static final double spindexerKa = 0.0070154;
 
-    // feeder constants
-    public static final boolean feederInverted = false;
-    public static final int feederCurrentLimit = 50;
+    // kicker constants
+    public static final boolean kickerInverted = false;
+    public static final int kickerCurrentLimit = 50;
 
-    public static final double feederKp = 2.8084E-08;
-    public static final double feederKi = 0.0;
-    public static final double feederKd = 0.0;
+    public static final double kickerKp = 2.8084E-08;
+    public static final double kickerKi = 0.0;
+    public static final double kickerKd = 0.0;
 
-    public static final double feederKs = 0.12681;
-    public static final double feederKv = 0.0017874;
-    public static final double feederKa = 0.00010453;
+    public static final double kickerKs = 0.12681;
+    public static final double kickerKv = 0.0017874;
+    public static final double kickerKa = 0.00010453;
   }
 
   public static final class IntakeConstants {

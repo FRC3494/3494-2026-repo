@@ -238,14 +238,14 @@
             }
           },
           {
-            "title": "FeederSpeedFactor",
+            "title": "KickerSpeedFactor",
             "x": 630.0,
             "y": 330.0,
             "width": 150.0,
             "height": 90.0,
             "type": "Text Display",
             "properties": {
-              "topic": "Tunable/FeederSpeedFactor",
+              "topic": "Tunable/KickerSpeedFactor",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": true

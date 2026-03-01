@@ -127,7 +127,7 @@ public final class OI {
       return primaryController.b(eventLoop);
     }
 
-    public static Trigger runFeeder() {
+    public static Trigger runKicker() {
       return primaryController.leftBumper(eventLoop);
     }
 

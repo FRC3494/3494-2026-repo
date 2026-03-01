@@ -22,17 +22,17 @@ import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
   private SparkFlex spindexerMotor;
-  private SparkFlex feederMotor;
+  private SparkFlex kickerMotor;
 
   @AutoLogOutput private AngularVelocity spindexerSetpointRPM = RPM.of(0.0);
-  @AutoLogOutput private AngularVelocity feederSetpointRPM = RPM.of(0.0);
+  @AutoLogOutput private AngularVelocity kickerSetpointRPM = RPM.of(0.0);
 
   SysIdRoutine spindexerSysId;
-  SysIdRoutine feederSysId;
+  SysIdRoutine kickerSysId;
 
   public Hopper() {
     spindexerMotor = new SparkFlex(RobotMap.Hopper.spindexerCanId, MotorType.kBrushless);
-    feederMotor = new SparkFlex(RobotMap.Hopper.feederCanId, MotorType.kBrushless);
+    kickerMotor = new SparkFlex(RobotMap.Hopper.kickerCanId, MotorType.kBrushless);
 
     // initialize spindexer motor config
     SparkFlexConfig spindexerConfig = new SparkFlexConfig();
@@ -49,16 +49,16 @@ public class Hopper extends SubsystemBase {
     spindexerMotor.configure(
         spindexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // initialize feeder motor config
-    SparkFlexConfig feederConfig = new SparkFlexConfig();
-    feederConfig
-        .smartCurrentLimit(feederCurrentLimit)
+    // initialize kicker motor config
+    SparkFlexConfig kickerConfig = new SparkFlexConfig();
+    kickerConfig
+        .smartCurrentLimit(kickerCurrentLimit)
         .idleMode(IdleMode.kCoast)
-        .inverted(feederInverted);
-    feederConfig.closedLoop.pid(feederKp, feederKi, feederKd);
-    feederConfig.closedLoop.feedForward.sva(feederKs, feederKv, feederKa);
-    feederMotor.configure(
-        feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        .inverted(kickerInverted);
+    kickerConfig.closedLoop.pid(kickerKp, kickerKi, kickerKd);
+    kickerConfig.closedLoop.feedForward.sva(kickerKs, kickerKv, kickerKa);
+    kickerMotor.configure(
+        kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     spindexerSysId =
         new SysIdRoutine(
@@ -68,20 +68,20 @@ public class Hopper extends SubsystemBase {
                 null,
                 (state) -> Logger.recordOutput("Hopper/SpindexerSysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpindexerOpenLoop(voltage), null, this));
-    feederSysId =
+    kickerSysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Hopper/FeederSysIdState", state.toString())),
-            new SysIdRoutine.Mechanism((voltage) -> setFeederOpenLoop(voltage), null, this));
+                (state) -> Logger.recordOutput("Hopper/KickerSysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setKickerOpenLoop(voltage), null, this));
   }
 
   @Override
   public void periodic() {
     logMotorStats("Hopper/SpindexerMotor", spindexerMotor, false);
-    logMotorStats("Hopper/FeederMotor", feederMotor, false);
+    logMotorStats("Hopper/KickerMotor", kickerMotor, false);
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {
@@ -93,12 +93,12 @@ public class Hopper extends SubsystemBase {
     }
   }
 
-  public void setFeederVelocity(AngularVelocity velocity) {
-    feederSetpointRPM = velocity;
+  public void setKickerVelocity(AngularVelocity velocity) {
+    kickerSetpointRPM = velocity;
     if (!velocity.isEquivalent(RPM.of(0))) {
-      feederMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
+      kickerMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
     } else {
-      feederMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
+      kickerMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
     }
   }
 
@@ -106,20 +106,20 @@ public class Hopper extends SubsystemBase {
     spindexerMotor.setVoltage(voltage);
   }
 
-  public void setFeederOpenLoop(Voltage voltage) {
-    feederMotor.setVoltage(voltage);
+  public void setKickerOpenLoop(Voltage voltage) {
+    kickerMotor.setVoltage(voltage);
   }
 
-  public Command feederSysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> setFeederOpenLoop(Volts.of(0.0)))
+  public Command kickerSysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return run(() -> setKickerOpenLoop(Volts.of(0.0)))
         .withTimeout(1.0)
-        .andThen(feederSysId.quasistatic(direction));
+        .andThen(kickerSysId.quasistatic(direction));
   }
 
-  public Command feederSysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> setFeederOpenLoop(Volts.of(0.0)))
+  public Command kickerSysIdDynamic(SysIdRoutine.Direction direction) {
+    return run(() -> setKickerOpenLoop(Volts.of(0.0)))
         .withTimeout(1.0)
-        .andThen(feederSysId.dynamic(direction));
+        .andThen(kickerSysId.dynamic(direction));
   }
 
   public Command spindexerSysIdQuasistatic(SysIdRoutine.Direction direction) {

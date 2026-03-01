@@ -223,17 +223,17 @@ public class RobotContainer {
         () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     autoChooser.addCmd(
-        "Feeder SysId (Quasistatic Forward)",
-        () -> hopper.feederSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        "Kicker SysId (Quasistatic Forward)",
+        () -> hopper.kickerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
-        "Feeder SysId (Quasistatic Reverse)",
-        () -> hopper.feederSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        "Kicker SysId (Quasistatic Reverse)",
+        () -> hopper.kickerSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     autoChooser.addCmd(
-        "Feeder SysId (Dynamic Forward)",
-        () -> hopper.feederSysIdDynamic(SysIdRoutine.Direction.kForward));
+        "Kicker SysId (Dynamic Forward)",
+        () -> hopper.kickerSysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
-        "Feeder SysId (Dynamic Reverse)",
-        () -> hopper.feederSysIdDynamic(SysIdRoutine.Direction.kReverse));
+        "Kicker SysId (Dynamic Reverse)",
+        () -> hopper.kickerSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     autoChooser.addCmd(
         "Intake SpinnySpinny SysId (Quasistatic Forward)",
@@ -345,7 +345,7 @@ public class RobotContainer {
         .onTrue(robotCommands.runSpindexerReverse())
         .onFalse(robotCommands.stopSpindexer());
 
-    ShooterOI.runFeeder().onTrue(robotCommands.runFeeder()).onFalse(robotCommands.stopFeeder());
+    ShooterOI.runKicker().onTrue(robotCommands.runKicker()).onFalse(robotCommands.stopKicker());
 
     // ==================== INTAKE ====================
     IntakeOI.intake().onTrue(robotCommands.runIntake()).onFalse(robotCommands.stopIntake());
