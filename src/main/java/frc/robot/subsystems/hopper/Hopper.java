@@ -27,6 +27,7 @@ public class Hopper extends SubsystemBase {
   @AutoLogOutput private AngularVelocity spindexerSetpointRPM = RPM.of(0.0);
   @AutoLogOutput private AngularVelocity feederSetpointRPM = RPM.of(0.0);
 
+  SysIdRoutine spindexerSysId;
   SysIdRoutine feederSysId;
 
   public Hopper() {
@@ -59,26 +60,37 @@ public class Hopper extends SubsystemBase {
     feederMotor.configure(
         feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    spindexerSysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                Volts.of(8),
+                null,
+                (state) -> Logger.recordOutput("Hopper/SpindexerSysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setSpindexerOpenLoop(voltage), null, this));
     feederSysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
                 null,
                 null,
-                (state) ->
-                    Logger.recordOutput("Shooter/Hopper/FeederSysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Hopper/FeederSysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setFeederOpenLoop(voltage), null, this));
   }
 
   @Override
   public void periodic() {
-    logMotorStats("Shooter/Hopper/SpindexerMotor", spindexerMotor, false);
-    logMotorStats("Shooter/Hopper/FeederMotor", feederMotor, false);
+    logMotorStats("Hopper/SpindexerMotor", spindexerMotor, false);
+    logMotorStats("Hopper/FeederMotor", feederMotor, false);
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {
     spindexerSetpointRPM = velocity;
-    spindexerMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVoltage);
+    if (!velocity.isEquivalent(RPM.of(0))) {
+      spindexerMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
+    } else {
+      spindexerMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
+    }
   }
 
   public void setFeederVelocity(AngularVelocity velocity) {
@@ -88,6 +100,10 @@ public class Hopper extends SubsystemBase {
     } else {
       feederMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
     }
+  }
+
+  public void setSpindexerOpenLoop(Voltage voltage) {
+    spindexerMotor.setVoltage(voltage);
   }
 
   public void setFeederOpenLoop(Voltage voltage) {
@@ -104,5 +120,17 @@ public class Hopper extends SubsystemBase {
     return run(() -> setFeederOpenLoop(Volts.of(0.0)))
         .withTimeout(1.0)
         .andThen(feederSysId.dynamic(direction));
+  }
+
+  public Command spindexerSysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return run(() -> setSpindexerOpenLoop(Volts.of(0.0)))
+        .withTimeout(1.0)
+        .andThen(spindexerSysId.quasistatic(direction));
+  }
+
+  public Command spindexerSysIdDynamic(SysIdRoutine.Direction direction) {
+    return run(() -> setSpindexerOpenLoop(Volts.of(0.0)))
+        .withTimeout(1.0)
+        .andThen(spindexerSysId.dynamic(direction));
   }
 }
