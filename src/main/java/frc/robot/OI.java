@@ -111,6 +111,18 @@ public final class OI {
       return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
     }
 
+    public static Trigger turretManualPositive() {
+      return leftButtonBoard
+          .axisLessThan(0, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger turretManualNegative() {
+      return leftButtonBoard
+          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
     public static Trigger runSpindexer() {
       return primaryController.b(eventLoop);
     }
@@ -136,8 +148,7 @@ public final class OI {
     }
 
     public static Trigger rezeroTurret() {
-      // return primaryController.povRight();
-      return new Trigger(() -> false);
+      return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
     }
   }
 }

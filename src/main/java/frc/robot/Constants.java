@@ -414,7 +414,7 @@ public final class Constants {
     }
 
     public static final class TurretConstants {
-      public static final boolean turretInverted = false;
+      public static final boolean turretInverted = true;
       public static final int turretCurrentLimit = 20;
 
       public static final double turretKp = 0.0;
@@ -425,10 +425,11 @@ public final class Constants {
       public static final double turretKv = 0.0;
       public static final double turretKa = 0.0;
 
-      public static final double turretGearRatio = 1.0 / 5.0;
+      public static final double turretGearRatio = 115.0 / 16.0;
 
-      public static final double turretAbsEncoderGearRatio = (9.0 / 1.0) * (1.0 / 5.0);
-      public static final double turretAbsEncoderOffset = 0;
+      public static final double turretAbsEncoderGearRatio =
+          (16.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0);
+      public static final double turretAbsEncoderOffset = 0.25458443;
     }
   }
 
