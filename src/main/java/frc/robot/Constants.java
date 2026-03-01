@@ -313,7 +313,7 @@ public final class Constants {
 
   public static final class HopperConstants {
     // spindexer constants
-    public static final boolean spindexerInverted = false;
+    public static final boolean spindexerInverted = true;
     public static final int spindexerCurrentLimit = 20;
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 

@@ -125,7 +125,7 @@ public class RobotCommands {
   public Command runSpindexer() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : 1) * spindexerSpeed.get()));
+          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : 1) * spindexerSpeed.get()));
         },
         hopper);
   }
@@ -133,7 +133,7 @@ public class RobotCommands {
   public Command runSpindexerReverse() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : -1) * spindexerSpeed.get()));
+          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : -1) * spindexerSpeed.get()));
         },
         hopper);
   }
