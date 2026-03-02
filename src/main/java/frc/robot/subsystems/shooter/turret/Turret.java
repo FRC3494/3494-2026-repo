@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Turret extends SubsystemBase {
   private SparkFlex turretMotor;
@@ -26,6 +27,10 @@ public class Turret extends SubsystemBase {
   @Getter
   @AutoLogOutput(key = "Shooter/Turret/TurretSetpoint")
   private Rotation2d turretSetpoint = Rotation2d.kZero;
+
+  private LoggedNetworkNumber turretP = new LoggedNetworkNumber("Tunable/Turret/kP", turretKp);
+  private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
+  private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
 
   private double magSensorStartPosition = 0.0;
 
@@ -48,6 +53,12 @@ public class Turret extends SubsystemBase {
         .zeroOffset(turretAbsEncoderOffset)
         .positionConversionFactor(turretAbsEncoderGearRatio)
         .velocityConversionFactor(turretAbsEncoderGearRatio);
+    turretConfig
+        .softLimit
+        .forwardSoftLimit(turretMaxAngle.getRotations())
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimit(turretMinAngle.getRotations())
+        .reverseSoftLimitEnabled(true);
     turretMotor.configure(
         turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -78,18 +89,26 @@ public class Turret extends SubsystemBase {
     //                       "\tAbsolute Encoder Offset: " + formatter.format(absEncoderOffset));
     //                 })
     //             .ignoringDisable(true));
+
+    setRelativeEncoderPosition(getAbsPosition());
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Turret/Motor", turretMotor, true);
+
+    boolean pidChanged =
+        turretP.get() != turretKp || turretI.get() != turretKi || turretD.get() != turretKd;
+    if (pidChanged) {
+      setPID(turretP.get(), turretI.get(), turretD.get());
+    }
   }
 
   public void setPosition(Rotation2d setpoint) {
     turretSetpoint = setpoint;
     turretMotor
         .getClosedLoopController()
-        .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
+        .setSetpoint(setpoint.getRotations(), ControlType.kPosition);
   }
 
   public void setOpenLoop(Voltage volts) {
@@ -111,5 +130,15 @@ public class Turret extends SubsystemBase {
 
   public Rotation2d getAbsPosition() {
     return Rotation2d.fromRotations(turretMotor.getAbsoluteEncoder().getPosition());
+  }
+
+  private void setPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    turretKp = p;
+    turretKi = i;
+    turretKd = d;
+    config.closedLoop.pid(p, i, d);
+    turretMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

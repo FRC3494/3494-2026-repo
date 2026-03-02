@@ -377,11 +377,18 @@ public class RobotContainer {
     // ==================== TURRET ====================
     ShooterOI.turretManualNegative()
         .onTrue(
-            runOnce(
-                () -> {
-                  turret.setOpenLoop(Volts.of(-1.5));
-                },
-                turret))
+            sequence(
+                runOnce(
+                    () -> {
+                      turret.setOpenLoop(Volts.of(-1.5));
+                    },
+                    turret),
+                waitUntil(() -> turret.getAbsPosition().getDegrees() <= 49.7),
+                runOnce(
+                    () -> {
+                      turret.setOpenLoop(Volts.of(0));
+                    },
+                    turret)))
         .onFalse(
             runOnce(
                 () -> {
@@ -390,28 +397,48 @@ public class RobotContainer {
                 turret));
     ShooterOI.turretManualPositive()
         .onTrue(
-            runOnce(
-                () -> {
-                  turret.setOpenLoop(Volts.of(1.5));
-                },
-                turret))
+            sequence(
+                runOnce(
+                    () -> {
+                      turret.setOpenLoop(Volts.of(1.5));
+                    },
+                    turret),
+                waitUntil(() -> turret.getAbsPosition().getDegrees() >= 430),
+                runOnce(
+                    () -> {
+                      turret.setOpenLoop(Volts.of(0));
+                    },
+                    turret)))
         .onFalse(
             runOnce(
                 () -> {
                   turret.setOpenLoop(Volts.of(0));
                 },
                 turret));
-    new Trigger(
-            () ->
-                turret.getAbsPosition().getRotations() < 0.20
-                    || turret.getAbsPosition().getRotations() > 0.95)
+
+    ShooterOI.turretTo180()
         .onTrue(
             runOnce(
                 () -> {
-                  turret.setOpenLoop(Volts.of(0));
+                  turret.setPosition(Rotation2d.k180deg);
+                },
+                turret));
+    ShooterOI.turretTo90()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setPosition(Rotation2d.kCCW_90deg);
                 },
                 turret));
 
+    ShooterOI.setTurretEncoderTo0()
+        .onTrue(
+            runOnce(
+                    () -> {
+                      turret.setRelativeEncoderPosition(Rotation2d.kZero);
+                    },
+                    turret)
+                .ignoringDisable(true));
     ShooterOI.rezeroTurret().onTrue(RezeroTurretCommand.getCommand(turret).ignoringDisable(true));
   }
 

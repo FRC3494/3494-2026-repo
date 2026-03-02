@@ -123,6 +123,18 @@ public final class OI {
           .castTo(Trigger::new);
     }
 
+    public static Trigger setTurretEncoderTo0() {
+      return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger turretTo180() {
+      return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger turretTo90() {
+      return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+    }
+
     public static Trigger runSpindexer() {
       return primaryController.b(eventLoop);
     }

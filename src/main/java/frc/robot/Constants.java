@@ -428,20 +428,20 @@ public final class Constants {
 
     public static final class TurretConstants {
       public static final boolean turretInverted = true;
-      public static final int turretCurrentLimit = 20;
+      public static final int turretCurrentLimit = 60;
 
-      public static final Rotation2d turretMinAngle = Rotation2d.fromDegrees(0.2005);
-      public static final Rotation2d turretMaxAngle = Rotation2d.fromDegrees(360.05);
+      public static final Rotation2d turretMinAngle = Rotation2d.fromDegrees(49.7); // 0.2005
+      public static final Rotation2d turretMaxAngle = Rotation2d.fromDegrees(430); // 360.05
 
-      public static final double turretKp = 0.0;
-      public static final double turretKi = 0.0;
-      public static final double turretKd = 0.0;
+      public static double turretKp = 0.8;
+      public static double turretKi = 0.0;
+      public static double turretKd = 42.0;
 
       public static final double turretKs = 0.0;
       public static final double turretKv = 0.0;
       public static final double turretKa = 0.0;
 
-      public static final double turretGearRatio = 115.0 / 16.0;
+      public static final double turretGearRatio = 16.0 / 115.0;
 
       public static final double turretAbsEncoderGearRatio =
           (16.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0);
