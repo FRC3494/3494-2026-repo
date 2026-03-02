@@ -55,7 +55,8 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     logMotorStats("Climber/Motor", climberMotor, false);
 
-    boolean pidChanged = climberP.get() != climberKp || climberI.get() != climberKi || climberD.get() != climberKd;
+    boolean pidChanged =
+        climberP.get() != climberKp || climberI.get() != climberKi || climberD.get() != climberKd;
     if (pidChanged) {
       setPID(climberP.get(), climberI.get(), climberD.get());
     }
