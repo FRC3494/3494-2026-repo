@@ -392,9 +392,12 @@ public final class Constants {
       public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
 
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
-      public static final double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
-      public static final double flywheelKi = 0.0;
-      public static final double flywheelKd = 1.84359E-08;
+      public static double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
+      public static double flywheelKi = 1E-07;
+      public static double flywheelKd = 1.84359E-08;
+
+      public static final double flywheelMaxIAccum = 10000;
+      public static final double flywheelIZone = 1000;
 
       public static final double flywheelKs = 0.10996;
       public static final double flywheelKv = 0.0017972; // From SysId: 0.0021194

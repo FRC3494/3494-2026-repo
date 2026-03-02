@@ -39,10 +39,6 @@ public class Flywheel extends SubsystemBase {
   private LoggedNetworkNumber flywheelD =
       new LoggedNetworkNumber("Tunable/Flywheel/kD", flywheelKd);
 
-  private double p = flywheelKp;
-  private double i = flywheelKi;
-  private double d = flywheelKd;
-
   public Flywheel() {
     leftMotor = new SparkFlex(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
     rightMotor = new SparkFlex(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
@@ -52,7 +48,11 @@ public class Flywheel extends SubsystemBase {
         .smartCurrentLimit(flywheelCurrentLimit)
         .idleMode(IdleMode.kCoast)
         .inverted(flywheelInverted);
-    leftConfig.closedLoop.pid(flywheelKp, flywheelKi, flywheelKd);
+    leftConfig
+        .closedLoop
+        .pid(flywheelKp, flywheelKi, flywheelKd)
+        .iMaxAccum(flywheelMaxIAccum)
+        .iZone(flywheelIZone);
     leftConfig.closedLoop.feedForward.sva(flywheelKs, flywheelKv, flywheelKa);
     leftConfig.encoder.positionConversionFactor(1.0).velocityConversionFactor(1.0);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -77,7 +77,11 @@ public class Flywheel extends SubsystemBase {
     logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
     logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
 
-    if (flywheelP.get() != p || flywheelI.get() != i || flywheelD.get() != d) {
+    boolean pidChanged =
+        flywheelP.get() != flywheelKp
+            || flywheelI.get() != flywheelKi
+            || flywheelD.get() != flywheelKd;
+    if (pidChanged) {
       setPID(flywheelP.get(), flywheelI.get(), flywheelD.get());
     }
   }
@@ -98,10 +102,10 @@ public class Flywheel extends SubsystemBase {
 
   private void setPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
+    flywheelKp = p;
+    flywheelKi = i;
+    flywheelKd = d;
     config.closedLoop.pid(p, i, d);
-    this.p = p;
-    this.i = i;
-    this.d = d;
     leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
