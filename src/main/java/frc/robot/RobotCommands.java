@@ -44,7 +44,7 @@ public class RobotCommands {
   private boolean spindexerInverted = false;
 
   // ==================== INTAKE ====================
-  private LoggedNetworkNumber intakeSpeed = new LoggedNetworkNumber("Tunable/IntakeRPM", 3500);
+  private LoggedNetworkNumber intakeSpeed = new LoggedNetworkNumber("Tunable/IntakeRPM", 1100);
 
   // ==================== FLYWHEEL ====================
   private LoggedNetworkNumber flywheelThresholdSpeed =
