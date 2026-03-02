@@ -410,9 +410,9 @@ public final class Constants {
       public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
       public static final int hoodCurrentSensingFilterSize = 10;
 
-      public static final double hoodKp = 20.0;
-      public static final double hoodKi = 0.0;
-      public static final double hoodKd = 0.0;
+      public static double hoodKp = 20.0;
+      public static double hoodKi = 0.0;
+      public static double hoodKd = 0.0;
 
       public static final double hoodToZeroKp = 5.0;
       public static final double hoodToZeroKi = 0.0;

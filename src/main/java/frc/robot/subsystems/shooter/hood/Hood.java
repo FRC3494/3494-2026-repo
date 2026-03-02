@@ -38,10 +38,6 @@ public class Hood extends SubsystemBase {
   private LoggedNetworkNumber hoodI = new LoggedNetworkNumber("Tunable/Hood/kI", hoodKi);
   private LoggedNetworkNumber hoodD = new LoggedNetworkNumber("Tunable/Hood/kD", hoodKd);
 
-  private double p = hoodKp;
-  private double i = hoodKi;
-  private double d = hoodKd;
-
   @Getter
   @AutoLogOutput(key = "Shooter/Hood/FilteredMotorCurrent")
   private Current filteredCurrent = Amps.of(0);
@@ -70,7 +66,8 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
 
-    if (hoodP.get() != p || hoodI.get() != i || hoodD.get() != d) {
+    boolean pidChanged = hoodP.get() != hoodKp || hoodI.get() != hoodKi || hoodD.get() != hoodKd;
+    if (pidChanged) {
       setPID(hoodP.get(), hoodI.get(), hoodD.get());
     }
 
@@ -109,6 +106,9 @@ public class Hood extends SubsystemBase {
 
   private void setPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
+    hoodKp = p;
+    hoodKi = i;
+    hoodKd = d;
     config.closedLoop.pid(p, i, d);
     hoodMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
