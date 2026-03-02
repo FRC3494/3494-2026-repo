@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Hopper extends SubsystemBase {
   private SparkFlex spindexerMotor;
@@ -26,6 +27,13 @@ public class Hopper extends SubsystemBase {
 
   @AutoLogOutput private AngularVelocity spindexerSetpointRPM = RPM.of(0.0);
   @AutoLogOutput private AngularVelocity kickerSetpointRPM = RPM.of(0.0);
+
+  private LoggedNetworkNumber spindexerP =
+      new LoggedNetworkNumber("Tunable/Spindexer/kP", spindexerKp);
+  private LoggedNetworkNumber spindexerI =
+      new LoggedNetworkNumber("Tunable/Spindexer/kI", spindexerKi);
+  private LoggedNetworkNumber spindexerD =
+      new LoggedNetworkNumber("Tunable/Spindexer/kD", spindexerKd);
 
   SysIdRoutine spindexerSysId;
   SysIdRoutine kickerSysId;
@@ -43,8 +51,14 @@ public class Hopper extends SubsystemBase {
     spindexerConfig
         .encoder
         .positionConversionFactor(spindexerGearRatio)
-        .velocityConversionFactor(spindexerGearRatio);
-    spindexerConfig.closedLoop.pid(spindexerKp, spindexerKi, spindexerKd);
+        .velocityConversionFactor(spindexerGearRatio)
+        .quadratureMeasurementPeriod(25)
+        .quadratureAverageDepth(16);
+    spindexerConfig
+        .closedLoop
+        .pid(spindexerKp, spindexerKi, spindexerKd)
+        .iMaxAccum(spindexerIMaxAccum)
+        .iZone(spindexerIZone);
     spindexerConfig.closedLoop.feedForward.sva(spindexerKs, spindexerKv, spindexerKa);
     spindexerMotor.configure(
         spindexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -82,6 +96,14 @@ public class Hopper extends SubsystemBase {
   public void periodic() {
     logMotorStats("Hopper/SpindexerMotor", spindexerMotor, false);
     logMotorStats("Hopper/KickerMotor", kickerMotor, false);
+
+    boolean pidChanged =
+        spindexerP.get() != spindexerKp
+            || spindexerI.get() != spindexerKi
+            || spindexerD.get() != spindexerKd;
+    if (pidChanged) {
+      setPID(spindexerP.get(), spindexerI.get(), spindexerD.get());
+    }
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {
@@ -132,5 +154,15 @@ public class Hopper extends SubsystemBase {
     return run(() -> setSpindexerOpenLoop(Volts.of(0.0)))
         .withTimeout(1.0)
         .andThen(spindexerSysId.dynamic(direction));
+  }
+
+  private void setPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spindexerKp = p;
+    spindexerKi = i;
+    spindexerKd = d;
+    config.closedLoop.pid(p, i, d);
+    spindexerMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

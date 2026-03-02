@@ -325,13 +325,16 @@ public final class Constants {
     public static final int spindexerCurrentLimit = 20;
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
-    public static final double spindexerKp = 1.0142E-05;
-    public static final double spindexerKi = 0.0;
-    public static final double spindexerKd = 0.0;
+    public static double spindexerKp = 0.01; // 5.2634E-05
+    public static double spindexerKi = 1E-06;
+    public static double spindexerKd = 0.0;
+
+    public static final double spindexerIMaxAccum = 1.0;
+    public static final double spindexerIZone = 50;
 
     public static final double spindexerKs = 0.019266;
-    public static final double spindexerKv = 0.063796;
-    public static final double spindexerKa = 0.0070154;
+    public static final double spindexerKv = 0.065; // 0.066119
+    public static final double spindexerKa = 0.010955; // 0.019434
 
     // kicker constants
     public static final boolean kickerInverted = false;
