@@ -168,9 +168,9 @@ public final class Constants {
     public static final double climberMinPosition = 2.443155;
     public static final double climberMaxPosition = 0.0;
 
-    public static final double climberKp = 10.0;
-    public static final double climberKi = 0.0;
-    public static final double climberKd = 0.0;
+    public static double climberKp = 10.0;
+    public static double climberKi = 0.0;
+    public static double climberKd = 0.0;
 
     public static final double climberKs = 0.0;
     public static final double climberKv = 0.0;

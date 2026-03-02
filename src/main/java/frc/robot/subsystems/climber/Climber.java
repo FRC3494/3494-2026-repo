@@ -29,10 +29,6 @@ public class Climber extends SubsystemBase {
   private LoggedNetworkNumber climberI = new LoggedNetworkNumber("Tunable/Climber/kI", climberKi);
   private LoggedNetworkNumber climberD = new LoggedNetworkNumber("Tunable/Climber/kD", climberKd);
 
-  private double p = climberKp;
-  private double i = climberKi;
-  private double d = climberKd;
-
   @Getter @AutoLogOutput private Current filteredCurrent = Amps.of(0);
 
   private final MedianFilter currentFilter = new MedianFilter(climberCurrentSensingFilterSize);
@@ -59,7 +55,8 @@ public class Climber extends SubsystemBase {
   public void periodic() {
     logMotorStats("Climber/Motor", climberMotor, false);
 
-    if (climberP.get() != p || climberI.get() != i || climberD.get() != d) {
+    boolean pidChanged = climberP.get() != climberKp || climberI.get() != climberKi || climberD.get() != climberKd;
+    if (pidChanged) {
       setPID(climberP.get(), climberI.get(), climberD.get());
     }
 
@@ -97,6 +94,9 @@ public class Climber extends SubsystemBase {
 
   private void setPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
+    climberKp = p;
+    climberKi = i;
+    climberKd = d;
     config.closedLoop.pid(p, i, d);
     climberMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
