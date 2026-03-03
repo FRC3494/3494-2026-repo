@@ -348,7 +348,7 @@ public class RobotContainer {
     ShooterOI.runKicker().onTrue(robotCommands.runKicker()).onFalse(robotCommands.stopKicker());
 
     // ==================== INTAKE ====================
-    IntakeOI.intake().onTrue(robotCommands.runIntake()).onFalse(robotCommands.stopIntake());
+    IntakeOI.intake().onTrue(robotCommands.intake()).onFalse(robotCommands.releaseIntake());
 
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 

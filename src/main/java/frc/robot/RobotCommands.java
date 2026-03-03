@@ -130,6 +130,14 @@ public class RobotCommands {
   }
 
   // ==================== INTAKE ====================
+  public Command intake() {
+    return sequence(runIntake(), runSpindexerSlow());
+  }
+
+  public Command releaseIntake() {
+    return sequence(stopIntake(), stopSpindexer());
+  }
+
   public Command runIntake() {
     return runOnce(
         () -> {
@@ -159,6 +167,15 @@ public class RobotCommands {
     return runOnce(
         () -> {
           hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : 1) * spindexerSpeed.get()));
+        },
+        hopper);
+  }
+
+  public Command runSpindexerSlow() {
+    return runOnce(
+        () -> {
+          hopper.setSpindexerVelocity(
+              RPM.of((spindexerInverted ? 1 : 1) * spindexerSpeed.get() / 8.0));
         },
         hopper);
   }
