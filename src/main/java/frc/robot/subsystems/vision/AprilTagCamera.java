@@ -133,13 +133,13 @@ public class AprilTagCamera {
     boolean estimateNotNull = poseEstimate != null;
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/EstimateNotNull", estimateNotNull);
 
-    boolean tagsPresent = poseEstimate.tagCount > 0;
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsPresent", tagsPresent);
+    boolean tagCountValid = poseEstimate.tagCount >= 2;
+    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCountValid", tagCountValid);
 
     boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsWithinRange", tagsWithinRange);
 
-    return estimateNotNull && tagsPresent && tagsWithinRange;
+    return estimateNotNull && tagCountValid && tagsWithinRange;
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
