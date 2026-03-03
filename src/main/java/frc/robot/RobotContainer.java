@@ -159,7 +159,8 @@ public class RobotContainer {
   private void configureAutos() {
     // Set up autos
     autoChooser.addRoutine(
-        "ClimbLeft", () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, climber, drive));
+        "ClimbLeft",
+        () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, robotCommands, climber));
 
     autoChooser.addCmd("=====================", () -> none());
 
