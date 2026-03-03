@@ -430,7 +430,7 @@ public final class Constants {
       public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(24.2238027);
       public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
 
-      public static final double hoodRezeroTimeoutSeconds = 2.0;
+      public static final double hoodRezeroTimeoutSeconds = 10.0;
     }
 
     public static final class TurretConstants {
