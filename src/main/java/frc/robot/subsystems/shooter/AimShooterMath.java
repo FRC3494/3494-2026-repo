@@ -12,11 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -62,11 +58,10 @@ import org.littletonrobotics.junction.Logger;
  *       #calculateFlywheelRPM(double)}.
  * </ul>
  */
-public class AimShooterCommand extends Command {
-  private Flywheel flywheel;
-  private Hood hood;
-  private Turret turret;
-
+public class AimShooterMath {
+  // Supplier for the latest field-relative robot pose (typically from odometry or
+  // a pose estimator). The math class is intentionally decoupled from commands and
+  // subsystems; it only needs the pose and internal tuning state.
   private final Supplier<Pose2d> robotPose;
 
   // Persistent runtime offsets that operators can bump to trim aim during testing.
@@ -88,19 +83,12 @@ public class AimShooterCommand extends Command {
   @Getter @Setter @AutoLogOutput
   Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-  public AimShooterCommand(
-      Flywheel flywheel, Hood hood, Turret turret, Supplier<Pose2d> robotPose) {
-    this.flywheel = flywheel;
-    this.hood = hood;
-    this.turret = turret;
-    addRequirements(flywheel, hood, turret);
-
+  public AimShooterMath(Supplier<Pose2d> robotPose) {
     this.robotPose = robotPose;
   }
 
   /** Main control loop step that recomputes aim and updates shooter setpoints. */
-  @Override
-  public void execute() {
+  public Setpoints calculate() {
     // 1) Read state and build geometry
     AimState state = buildAimState();
 
@@ -114,17 +102,14 @@ public class AimShooterCommand extends Command {
         calculateFlywheelRPM(
             linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
 
-    // 4) Apply offsets and clamp to limits, update clamped flags
-    Setpoints set = applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
+    // 4) Apply operator offsets and clamps to get final setpoints, tracking whether any were clamped for logging
+    Setpoints setpoints =
+        applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
 
-    // 5) Send setpoints to hardware
-    flywheelOffsetClamped = set.flywheelClamped;
-    hoodOffsetClamped = set.hoodClamped;
-    turretOffsetClamped = set.turretClamped;
+    // 5) Log detailed stats for debugging/tuning and return
+    logAimShooterStats(state, physics, setpoints);
 
-    flywheel.setVelocity(RPM.of(set.rpm));
-    hood.setPosition(set.hoodAngle);
-    turret.setPosition(set.turretAngle);
+    return setpoints;
   }
 
   private AimState buildAimState() {

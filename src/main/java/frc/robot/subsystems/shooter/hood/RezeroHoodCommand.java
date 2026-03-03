@@ -11,19 +11,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RezeroHoodCommand {
   public static Command getCommand(Hood hood) {
     return sequence(
-        runOnce(
-            () -> {
-              hood.setCurrentLimit(Amps.of(20));
-              hood.setOpenLoop(Volts.of(-1));
-            },
-            hood),
-        waitUntil(() -> hood.getFilteredCurrent().gte(Amps.of(19))),
-        runOnce(
-            () -> {
-              hood.setOpenLoop(Volts.of(0));
-              hood.setRelativeEncoderPosition(hoodMinAngle);
-              hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
-            },
-            hood)).withTimeout(hoodRezeroTimeoutSeconds);
+            runOnce(
+                () -> {
+                  hood.setCurrentLimit(Amps.of(20));
+                  hood.setOpenLoop(Volts.of(-1));
+                },
+                hood),
+            waitUntil(() -> hood.getFilteredCurrent().gte(Amps.of(19))),
+            runOnce(
+                () -> {
+                  hood.setOpenLoop(Volts.of(0));
+                  hood.setRelativeEncoderPosition(hoodMinAngle);
+                  hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
+                },
+                hood))
+        .withTimeout(hoodRezeroTimeoutSeconds);
   }
 }

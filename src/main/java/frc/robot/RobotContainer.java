@@ -41,7 +41,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.AimShooterCommand;
+import frc.robot.subsystems.shooter.AimShooterMath;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.hood.RezeroHoodCommand;
@@ -75,7 +75,7 @@ public class RobotContainer {
 
   private final RobotCommands robotCommands;
   private final Command joystickDriveCommand;
-  private final Command aimShooterCommand;
+  private final AimShooterMath aimShooterMath;
 
   private LoggedNetworkBoolean enableTuningAutos =
       new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
@@ -132,7 +132,7 @@ public class RobotContainer {
     turret = new Turret();
 
     robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
-    aimShooterCommand = new AimShooterCommand(flywheel, hood, turret, drive::getPose);
+    aimShooterMath = new AimShooterMath(flywheel, hood, turret, drive::getPose);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
