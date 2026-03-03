@@ -4,7 +4,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretMinAngle;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretMinAngleRot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -91,7 +91,7 @@ public class AimShooterMath extends SubsystemBase {
       new Setpoints(
           0,
           hoodMinAngle,
-          turretMinAngle,
+          Rotation2d.fromRotations(turretMinAngleRot),
           turretOffsetClamped,
           hoodOffsetClamped,
           flywheelOffsetClamped);
@@ -222,16 +222,21 @@ public class AimShooterMath extends SubsystemBase {
     // Turret: apply offset to world turret angle, unwrap near current position, then clamp
     double desiredTurretDeg = turretAngleWorld.getDegrees() + turretOffsetDeg;
     double continuousTurretDeg = unwrapToNearest(desiredTurretDeg, currentTurretAngle.getDegrees());
-    double turretDeg =
-        MathUtil.clamp(
-            continuousTurretDeg,
-            TurretConstants.turretMinAngle.getDegrees(),
-            TurretConstants.turretMaxAngle.getDegrees());
-    boolean turretClamped = Math.abs(turretDeg - continuousTurretDeg) > 1e-6;
-    Rotation2d turretAngle = Rotation2d.fromDegrees(turretDeg);
+    // double turretDeg =
+    //     MathUtil.clamp(
+    //         continuousTurretDeg,
+    //         Units.rotationsToDegrees(TurretConstants.turretMinAngleRot),
+    //         Units.rotationsToDegrees(TurretConstants.turretMaxAngleRot));
+    // boolean turretClamped = Math.abs(turretDeg - continuousTurretDeg) > 1e-6;
+    // Rotation2d turretAngle = Rotation2d.fromDegrees(turretDeg);
 
     return new Setpoints(
-        targetRPM, hoodAngle, turretAngle, flywheelClamped, hoodClamped, turretClamped);
+        targetRPM,
+        hoodAngle,
+        Rotation2d.fromDegrees(continuousTurretDeg),
+        flywheelClamped,
+        hoodClamped,
+        false);
   }
 
   /**
