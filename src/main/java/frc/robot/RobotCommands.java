@@ -321,7 +321,7 @@ public class RobotCommands {
   public Command hoodDown() {
     return runOnce(
         () -> {
-          hood.setPosition(Rotation2d.kZero);
+          hood.setPosition(hoodMinAngle);
         },
         hood);
   }
