@@ -471,34 +471,34 @@ public final class Constants {
     // ! Trench AprilTags are currently disabled
     public static final int[] enabledAprilTags =
         new int[] {
-          // 1, // Red Outpost Trench, Facing NZ
+          1, // Red Outpost Trench, Facing NZ
           2, // Red Hub, Facing Outpost Side, Nearer to NZ
           3, // Red Hub, Facing NZ, Nearer to Outpost
           4, // Red Hub, Facing NZ, Nearer to Depot
           5, // Red Hub, Facing Depot Side, Nearer to NZ
-          // 6, // Red Depot Trench, Facing NZ
-          // 7, // Red Depot Trench, Facing AZ
+          6, // Red Depot Trench, Facing NZ
+          7, // Red Depot Trench, Facing AZ
           8, // Red Hub, Facing Depot Side, Nearer to AZ
           9, // Red Hub, Facing Tower, Nearer to Depot
           10, // Red Hub, Facing Tower, Nearer to Outpost
           11, // Red Hub, Facing Outpost Side, Nearer to AZ
-          // 12, // Red Outpost Trench, Facing AZ
+          12, // Red Outpost Trench, Facing AZ
           13, // Red Outpost, Nearer to Human Player
           14, // Red Outpost, Nearer to Tower
           15, // Red Tower, Nearer to Outpost
           16, // Red Tower, Nearer to Depot
-          // 17, // Blue Outpost Trench, Facing NZ
+          17, // Blue Outpost Trench, Facing NZ
           18, // Blue Hub, Facing Outpost Side, Nearer to NZ
           19, // Blue Hub, Facing NZ, Nearer to Outpost
           20, // Blue Hub, Facing NZ, Nearer to Depot
           21, // Blue Hub, Facing Depot Side, Nearer to NZ
-          // 22, // Blue Depot Trench, Facing NZ
-          // 23, // Blue Depot Trench, Facing AZ
+          22, // Blue Depot Trench, Facing NZ
+          23, // Blue Depot Trench, Facing AZ
           24, // Blue Hub, Facing Depot Side, Nearer to AZ
           25, // Blue Hub, Facing Tower, Nearer to Depot
           26, // Blue Hub, Facing Tower, Nearer to Outpost
           27, // Blue Hub, Facing Tower, Nearer to Depot
-          // 28, // Blue Outpost Trench, Facing AZ
+          28, // Blue Outpost Trench, Facing AZ
           29, // Blue Outpost, Nearer to Human Player
           30, // Blue Outpost, Nearer to Tower
           31, // Blue Tower, Nearer to Outpost
