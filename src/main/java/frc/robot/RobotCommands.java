@@ -253,12 +253,12 @@ public class RobotCommands {
     return sequence(
         runFlywheel(),
         hoodUp(),
+        runSpindexer(),
         waitUntil(() -> flywheel.getVelocity().gte(RPM.of(flywheelThresholdSpeed.get()))),
         runOnce(
             () -> {
               spindexerInverted = !spindexerInverted;
             }),
-        runSpindexer(),
         runKicker(),
         runIntake());
   }
