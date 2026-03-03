@@ -1,16 +1,23 @@
 package frc.robot.subsystems.shooter.turret;
 
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import java.util.function.Supplier;
 
-public class SetTurretCommand {
-  public static Command getCommand(Turret turret, double angle) {
-    return runOnce(
-        () -> {
-          turret.setPosition(new Rotation2d(angle));
-        },
-        turret);
+public class SetTurretCommand extends Command {
+  private final Turret turret;
+
+  private final Supplier<Rotation2d> turretAngle;
+
+  public SetTurretCommand(Turret turret, Supplier<Rotation2d> turretAngle) {
+    this.turret = turret;
+    addRequirements(turret);
+
+    this.turretAngle = turretAngle;
+  }
+
+  @Override
+  public void execute() {
+    turret.setPosition(turretAngle.get());
   }
 }

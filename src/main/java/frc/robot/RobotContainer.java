@@ -43,9 +43,12 @@ import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterMath;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.hood.RezeroHoodCommand;
+import frc.robot.subsystems.shooter.hood.SetHoodCommand;
 import frc.robot.subsystems.shooter.turret.RezeroTurretCommand;
+import frc.robot.subsystems.shooter.turret.SetTurretCommand;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
@@ -69,14 +72,17 @@ public class RobotContainer {
   private final Hood hood;
   private final Turret turret;
 
+  private final AimShooterMath aimShooterMath;
+
   // Choreo
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
   private final RobotCommands robotCommands;
   private final Command joystickDriveCommand;
-
-  private final AimShooterMath aimShooterMath;
+  private final SetTurretCommand setTurretCommand;
+  private final SetHoodCommand setHoodCommand;
+  private final SetFlywheelCommand setFlywheelCommand;
 
   private LoggedNetworkBoolean enableTuningAutos =
       new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
@@ -132,8 +138,14 @@ public class RobotContainer {
     hood = new Hood();
     turret = new Turret();
 
-    robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
     aimShooterMath = new AimShooterMath(drive::getPose);
+
+    robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
+    setTurretCommand =
+        new SetTurretCommand(turret, () -> aimShooterMath.getSetpoints().turretAngle);
+    setHoodCommand = new SetHoodCommand(hood, () -> aimShooterMath.getSetpoints().hoodAngle);
+    setFlywheelCommand =
+        new SetFlywheelCommand(flywheel, () -> RPM.of(aimShooterMath.getSetpoints().rpm));
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -260,6 +272,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    flywheel.setDefaultCommand(setFlywheelCommand);
+    hood.setDefaultCommand(setHoodCommand);
+    turret.setDefaultCommand(setTurretCommand);
+
     // ==================== CLIMBER ====================
     ClimberOI.climberUp().onTrue(robotCommands.climberUp());
 

@@ -295,13 +295,13 @@ public class AimShooterMath extends SubsystemBase {
     }
   }
 
-  private static class Setpoints {
-    final double rpm;
-    final Rotation2d hoodAngle;
-    final Rotation2d turretAngle;
-    final boolean flywheelClamped;
-    final boolean hoodClamped;
-    final boolean turretClamped;
+  public class Setpoints {
+    public final double rpm;
+    public final Rotation2d hoodAngle;
+    public final Rotation2d turretAngle;
+    public final boolean flywheelClamped;
+    public final boolean hoodClamped;
+    public final boolean turretClamped;
 
     Setpoints(
         double rpm,
