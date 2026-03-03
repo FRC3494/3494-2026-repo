@@ -18,6 +18,6 @@ public class SetTurretCommand extends Command {
 
   @Override
   public void execute() {
-    turret.setPosition(turretAngle.get());
+    turret.setPosition(turretAngle.get().getRotations());
   }
 }

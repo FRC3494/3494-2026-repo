@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter.turret;
 
-import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
@@ -25,8 +24,8 @@ public class Turret extends SubsystemBase {
   private DigitalInput turretMagSensor;
 
   @Getter
-  @AutoLogOutput(key = "Shooter/Turret/TurretSetpoint")
-  private Rotation2d turretSetpoint = Rotation2d.kZero;
+  @AutoLogOutput(key = "Shooter/Turret/TurretSetpoint", unit = "rotations")
+  private double turretSetpointRot = 0.0;
 
   private LoggedNetworkNumber turretP = new LoggedNetworkNumber("Tunable/Turret/kP", turretKp);
   private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
@@ -53,12 +52,6 @@ public class Turret extends SubsystemBase {
         .zeroOffset(turretAbsEncoderOffset)
         .positionConversionFactor(turretAbsEncoderGearRatio)
         .velocityConversionFactor(turretAbsEncoderGearRatio);
-    turretConfig
-        .softLimit
-        .forwardSoftLimit(turretMaxAngle.getRotations())
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimit(turretMinAngle.getRotations())
-        .reverseSoftLimitEnabled(true);
     turretMotor.configure(
         turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -104,11 +97,16 @@ public class Turret extends SubsystemBase {
     }
   }
 
-  public void setPosition(Rotation2d setpoint) {
-    turretSetpoint = setpoint;
-    turretMotor
-        .getClosedLoopController()
-        .setSetpoint(setpoint.getRotations(), ControlType.kPosition);
+  public void setPosition(double rotations) {
+    while (rotations <= turretMinAngleRot) {
+      rotations += 1;
+    }
+    while (rotations >= turretMaxAngleRot) {
+      rotations -= 1;
+    }
+
+    turretSetpointRot = rotations;
+    turretMotor.getClosedLoopController().setSetpoint(rotations, ControlType.kPosition);
   }
 
   public void setOpenLoop(Voltage volts) {

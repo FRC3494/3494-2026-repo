@@ -11,6 +11,7 @@ import static frc.robot.Constants.ClimberConstants.climberMinPosition;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -324,5 +325,24 @@ public class RobotCommands {
           hood.setPosition(hoodMinAngle);
         },
         hood);
+  }
+
+  // ==================== TURRET ====================
+  public Command turretManualCCW() {
+    return sequence(
+        run(
+            () -> {
+              turret.setPosition(turret.getTurretSetpointRot() + Units.degreesToRotations(1));
+            },
+            turret));
+  }
+
+  public Command turretManualCW() {
+    return sequence(
+        run(
+            () -> {
+              turret.setPosition(turret.getTurretSetpointRot() - Units.degreesToRotations(1));
+            },
+            turret));
   }
 }

@@ -14,6 +14,7 @@ import static frc.robot.Constants.ClimberConstants.climberMinPosition;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -393,59 +394,21 @@ public class RobotContainer {
     ShooterOI.rezeroHood().onTrue(RezeroHoodCommand.getCommand(hood));
 
     // ==================== TURRET ====================
-    ShooterOI.turretManualNegative()
-        .onTrue(
-            sequence(
-                runOnce(
-                    () -> {
-                      turret.setOpenLoop(Volts.of(-1.5));
-                    },
-                    turret),
-                waitUntil(() -> turret.getAbsPosition().getDegrees() <= 49.7),
-                runOnce(
-                    () -> {
-                      turret.setOpenLoop(Volts.of(0));
-                    },
-                    turret)))
-        .onFalse(
-            runOnce(
-                () -> {
-                  turret.setOpenLoop(Volts.of(0));
-                },
-                turret));
-    ShooterOI.turretManualPositive()
-        .onTrue(
-            sequence(
-                runOnce(
-                    () -> {
-                      turret.setOpenLoop(Volts.of(1.5));
-                    },
-                    turret),
-                waitUntil(() -> turret.getAbsPosition().getDegrees() >= 430),
-                runOnce(
-                    () -> {
-                      turret.setOpenLoop(Volts.of(0));
-                    },
-                    turret)))
-        .onFalse(
-            runOnce(
-                () -> {
-                  turret.setOpenLoop(Volts.of(0));
-                },
-                turret));
+    ShooterOI.turretManualNegative().whileTrue(robotCommands.turretManualCW());
+    ShooterOI.turretManualPositive().whileTrue(robotCommands.turretManualCCW());
 
     ShooterOI.turretTo180()
         .onTrue(
             runOnce(
                 () -> {
-                  turret.setPosition(Rotation2d.k180deg);
+                  turret.setPosition(Units.degreesToRotations(180));
                 },
                 turret));
     ShooterOI.turretTo90()
         .onTrue(
             runOnce(
                 () -> {
-                  turret.setPosition(Rotation2d.kCCW_90deg);
+                  turret.setPosition(Units.degreesToRotations(90));
                 },
                 turret));
 
