@@ -147,7 +147,6 @@ public class AimShooterMath extends SubsystemBase {
             new Rotation3d());
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
-    
     Pose3d targetPose3d =
         new Pose3d(hubLocation.getX(), hubLocation.getY(), targetHeight, new Rotation3d());
 
