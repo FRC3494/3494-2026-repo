@@ -110,15 +110,16 @@ public class AimShooterMath extends SubsystemBase {
     PhysicsResult physics =
         computePhysics(state.shooterPose3d, state.targetPose3d, state.translationToTarget);
 
-    // 3) Compute raw RPM from physics
-    double linearVelocity = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
-    double calculatedRPM =
-        calculateFlywheelRPM(
-            linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
+    // 3) Compute launch speed and convert to flywheel RPM
+    double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
+    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
 
     // 4) Apply operator offsets and clamps to get final setpoints, tracking whether any were
-    // clamped for logging
-    setpoints = applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
+    // clamped for logging. Use the current turret angle (from the last setpoint) so we can
+    // unwrap the target angle and avoid snapping across the +/-180 degree discontinuity.
+    setpoints =
+        applyOffsetsAndClamps(
+            calculatedRPM, physics, state.turretAngleWorld, setpoints.turretAngle);
 
     // 5) Log detailed stats for debugging/tuning and return
     logAimShooterStats(state, physics, setpoints);
@@ -192,7 +193,10 @@ public class AimShooterMath extends SubsystemBase {
    * the driver when trims push the system beyond its limits.
    */
   private Setpoints applyOffsetsAndClamps(
-      double calculatedRPM, PhysicsResult physics, Rotation2d turretAngleWorld) {
+      double calculatedRPM,
+      PhysicsResult physics,
+      Rotation2d turretAngleWorld,
+      Rotation2d currentTurretAngle) {
 
     // Flywheel: apply offset then clamp
     double targetRPMBeforeClamp = calculatedRPM + flywheelOffsetRPM;
@@ -215,18 +219,36 @@ public class AimShooterMath extends SubsystemBase {
     boolean hoodClamped = Math.abs(hoodDeg - hoodDegBeforeClamp) > 1e-6;
     Rotation2d hoodAngle = Rotation2d.fromDegrees(hoodDeg);
 
-    // Turret: apply offset to world turret angle then clamp
-    double turretDegBeforeClamp = turretAngleWorld.getDegrees() + turretOffsetDeg;
+    // Turret: apply offset to world turret angle, unwrap near current position, then clamp
+    double desiredTurretDeg = turretAngleWorld.getDegrees() + turretOffsetDeg;
+    double continuousTurretDeg = unwrapToNearest(desiredTurretDeg, currentTurretAngle.getDegrees());
     double turretDeg =
         MathUtil.clamp(
-            turretDegBeforeClamp,
+            continuousTurretDeg,
             TurretConstants.turretMinAngle.getDegrees(),
             TurretConstants.turretMaxAngle.getDegrees());
-    boolean turretClamped = Math.abs(turretDeg - turretDegBeforeClamp) > 1e-6;
+    boolean turretClamped = Math.abs(turretDeg - continuousTurretDeg) > 1e-6;
     Rotation2d turretAngle = Rotation2d.fromDegrees(turretDeg);
 
     return new Setpoints(
         targetRPM, hoodAngle, turretAngle, flywheelClamped, hoodClamped, turretClamped);
+  }
+
+  /**
+   * Unwrap {@code targetDeg} to the equivalent angle (differing by multiples of 360) that is
+   * closest to {@code referenceDeg}. This keeps turret motion continuous instead of snapping across
+   * the -180/180 discontinuity.
+   */
+  private static double unwrapToNearest(double targetDeg, double referenceDeg) {
+    // Normalize to (-180, 180]
+    double t = MathUtil.inputModulus(targetDeg, -180.0, 180.0);
+    double r = MathUtil.inputModulus(referenceDeg, -180.0, 180.0);
+
+    // Smallest signed angle from reference to target in (-180, 180]
+    double delta = MathUtil.inputModulus(t - r, -180.0, 180.0);
+
+    // Apply that delta to the original reference (which may already be outside [-180, 180])
+    return referenceDeg + delta;
   }
 
   /**
@@ -239,9 +261,14 @@ public class AimShooterMath extends SubsystemBase {
    * <p>TODO(#aim-shooter): Replace placeholder conversion with a calibrated model or lookup table
    * based on range testing.
    */
-  private static double calculateFlywheelRPM(double velocity) {
-    double conversionConstant = 1.0; // placeholder until testing is done
-    return velocity * conversionConstant;
+  private static double calculateFlywheelRPM(double launchSpeedMps) {
+    // Base geometric conversion from rim surface speed (m/s) to RPM.
+    double baseRpm = launchSpeedMps * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius);
+
+    // Placeholder correction factor until on-field testing maps ball exit velocity
+    // to motor RPM for this specific shooter.
+    double correctionFactor = 1.0; // TODO(#aim-shooter): Tune from range testing
+    return baseRpm * correctionFactor;
   }
 
   private static double calculateMaxHeight(
@@ -351,9 +378,7 @@ public class AimShooterMath extends SubsystemBase {
     double verticalDeltaMeters = state.translationToTarget.getZ();
 
     double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
-    double calculatedRPM =
-        calculateFlywheelRPM(
-            launchSpeedMps * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
+    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
 
     Logger.recordOutput("AimShooter/Distance/HorizontalMeters", horizontalDistanceMeters);
     Logger.recordOutput("AimShooter/Distance/Distance3dMeters", distance3dMeters);
