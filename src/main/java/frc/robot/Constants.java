@@ -452,8 +452,8 @@ public final class Constants {
   public static final class VisionConstants {
     public static final Distance maxTagDistance = Meters.of(5.0);
 
-    public static final double maxDistanceStdDev = 999999;
-    public static final Angle maxAngleStdDev = Degrees.of(999999);
+    public static final double maxDistanceStdDev = 0.7;
+    public static final double maxAngleStdDev = 999999;
 
     public static final boolean useMegaTag2 = false;
 

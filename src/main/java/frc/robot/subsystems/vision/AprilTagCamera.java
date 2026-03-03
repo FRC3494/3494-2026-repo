@@ -1,7 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.VisionConstants.maxTagDistance;
+import static frc.robot.Constants.VisionConstants.*;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -141,11 +141,11 @@ public class AprilTagCamera {
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
-    double standardDeviationX =
-        .4; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
-    double standardDeviationY =
-        .4; // maxDistanceStdDev * (poseEstimate.avgTagDist / maxTagDistance.in(Meters));
-    double standardDeviationTheta = 99999999; // maxAngleStdDev.in(Radians) *
+    double standardDeviationX = maxDistanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
+    // maxTagDistance.in(Meters));
+    double standardDeviationY = maxDistanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
+    // maxTagDistance.in(Meters));
+    double standardDeviationTheta = maxAngleStdDev; // maxAngleStdDev *
     // Math.abs(poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians() / (2 *
     // Math.PI)));
 
