@@ -23,9 +23,9 @@ public record ChoreoTraj(
       new ChoreoTraj(
           "ClimbLeft",
           OptionalInt.empty(),
-          6.22516,
+          6.37992,
           new Pose2d(3.55, 7.622, Rotation2d.fromRadians(0)),
-          new Pose2d(1.035, 4.569, Rotation2d.fromRadians(1.571)));
+          new Pose2d(1.155, 4.509, Rotation2d.fromRadians(1.571)));
 
   /**
    * A map between trajectory names and their corresponding data. This allows for trajectory data to
