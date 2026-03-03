@@ -62,6 +62,8 @@ public class AprilTagCamera {
         position.getRotation().getMeasureX().in(Degrees),
         position.getRotation().getMeasureY().in(Degrees),
         position.getRotation().getMeasureZ().in(Degrees));
+
+    LimelightHelpers.SetFiducialIDFiltersOverride(name, enabledAprilTags);
   }
 
   // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
