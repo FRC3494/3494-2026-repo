@@ -75,6 +75,7 @@ public class RobotContainer {
 
   private final RobotCommands robotCommands;
   private final Command joystickDriveCommand;
+
   private final AimShooterMath aimShooterMath;
 
   private LoggedNetworkBoolean enableTuningAutos =
@@ -132,7 +133,7 @@ public class RobotContainer {
     turret = new Turret();
 
     robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
-    aimShooterMath = new AimShooterMath(flywheel, hood, turret, drive::getPose);
+    aimShooterMath = new AimShooterMath(drive::getPose);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));

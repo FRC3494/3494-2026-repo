@@ -3,6 +3,8 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretMinAngle;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
@@ -58,7 +61,7 @@ import org.littletonrobotics.junction.Logger;
  *       #calculateFlywheelRPM(double)}.
  * </ul>
  */
-public class AimShooterMath {
+public class AimShooterMath extends SubsystemBase {
   // Supplier for the latest field-relative robot pose (typically from odometry or
   // a pose estimator). The math class is intentionally decoupled from commands and
   // subsystems; it only needs the pose and internal tuning state.
@@ -81,14 +84,25 @@ public class AimShooterMath {
   // AutoLogOutput and used by the aim math below. Keep this simple and documented so
   // other contributors can change the target at runtime.
   @Getter @Setter @AutoLogOutput
-  Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
+  private Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
+
+  @Getter
+  private Setpoints setpoints =
+      new Setpoints(
+          0,
+          hoodMinAngle,
+          turretMinAngle,
+          turretOffsetClamped,
+          hoodOffsetClamped,
+          flywheelOffsetClamped);
 
   public AimShooterMath(Supplier<Pose2d> robotPose) {
     this.robotPose = robotPose;
   }
 
   /** Main control loop step that recomputes aim and updates shooter setpoints. */
-  public Setpoints calculate() {
+  @Override
+  public void periodic() {
     // 1) Read state and build geometry
     AimState state = buildAimState();
 
@@ -102,14 +116,12 @@ public class AimShooterMath {
         calculateFlywheelRPM(
             linearVelocity * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius));
 
-    // 4) Apply operator offsets and clamps to get final setpoints, tracking whether any were clamped for logging
-    Setpoints setpoints =
-        applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
+    // 4) Apply operator offsets and clamps to get final setpoints, tracking whether any were
+    // clamped for logging
+    setpoints = applyOffsetsAndClamps(calculatedRPM, physics, state.turretAngleWorld);
 
     // 5) Log detailed stats for debugging/tuning and return
     logAimShooterStats(state, physics, setpoints);
-
-    return setpoints;
   }
 
   private AimState buildAimState() {
