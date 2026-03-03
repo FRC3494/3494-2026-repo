@@ -148,14 +148,15 @@ public class AimShooterMath extends SubsystemBase {
             new Rotation3d());
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
+    Translation2d target2d = QuadranglesUtil.toAllianceTranslation(hubLocation);
     Pose3d targetPose3d =
-        new Pose3d(hubLocation.getX(), hubLocation.getY(), targetHeight, new Rotation3d());
+        new Pose3d(target2d.getX(), target2d.getY(), targetHeight, new Rotation3d());
 
     Translation3d translationToTarget = targetPose3d.minus(shooterPose3d).getTranslation();
 
     double angleRad = Math.atan2(translationToTarget.getY(), translationToTarget.getX());
     Rotation2d angleToTarget = Rotation2d.fromRadians(angleRad);
-    Rotation2d turretAngleWorld = angleToTarget.rotateBy(robotYaw.times(-1.0));
+    Rotation2d turretAngleWorld = angleToTarget; // .rotateBy(robotYaw.times(-0.5));
 
     return new AimState(
         robotPose3d, shooterPose3d, targetPose3d, translationToTarget, turretAngleWorld);
@@ -221,7 +222,8 @@ public class AimShooterMath extends SubsystemBase {
 
     // Turret: apply offset to world turret angle, unwrap near current position, then clamp
     double desiredTurretDeg = turretAngleWorld.getDegrees() + turretOffsetDeg;
-    double continuousTurretDeg = unwrapToNearest(desiredTurretDeg, currentTurretAngle.getDegrees());
+    // double continuousTurretDeg = unwrapToNearest(desiredTurretDeg,
+    // currentTurretAngle.getDegrees());
     // double turretDeg =
     //     MathUtil.clamp(
     //         continuousTurretDeg,
@@ -233,7 +235,7 @@ public class AimShooterMath extends SubsystemBase {
     return new Setpoints(
         targetRPM,
         hoodAngle,
-        Rotation2d.fromDegrees(continuousTurretDeg),
+        Rotation2d.fromDegrees(desiredTurretDeg),
         flywheelClamped,
         hoodClamped,
         false);
