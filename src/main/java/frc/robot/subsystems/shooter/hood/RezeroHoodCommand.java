@@ -24,6 +24,6 @@ public class RezeroHoodCommand {
               hood.setRelativeEncoderPosition(hoodMinAngle);
               hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
             },
-            hood));
+            hood)).withTimeout(hoodRezeroTimeoutSeconds);
   }
 }
