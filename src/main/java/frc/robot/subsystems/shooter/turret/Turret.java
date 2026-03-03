@@ -27,6 +27,10 @@ public class Turret extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Turret/TurretSetpoint", unit = "rotations")
   private double turretSetpointRot = 0.0;
 
+  @Getter
+  @AutoLogOutput(key = "Shooter/Turret/TurretSetpointClamped", unit = "rotations")
+  private double turretSetpointClampedRot = 0.0;
+
   private LoggedNetworkNumber turretP = new LoggedNetworkNumber("Tunable/Turret/kP", turretKp);
   private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
   private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
@@ -98,6 +102,8 @@ public class Turret extends SubsystemBase {
   }
 
   public void setPosition(double rotations) {
+    turretSetpointRot = rotations;
+
     while (rotations <= turretMinAngleRot) {
       rotations += 1;
     }
@@ -105,7 +111,7 @@ public class Turret extends SubsystemBase {
       rotations -= 1;
     }
 
-    turretSetpointRot = rotations;
+    turretSetpointClampedRot = rotations;
     turretMotor.getClosedLoopController().setSetpoint(rotations, ControlType.kPosition);
   }
 
