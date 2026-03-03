@@ -53,6 +53,10 @@ public class Intake extends SubsystemBase {
         .smartCurrentLimit(uppyDownyCurrentLimit)
         .idleMode(IdleMode.kBrake)
         .inverted(uppyDownyInverted);
+    uppyDownyConfig
+        .encoder
+        .positionConversionFactor(uppyDownyGearRatio)
+        .positionConversionFactor(uppyDownyGearRatio);
     uppyDownyConfig.closedLoop.pid(uppyDownyKp, uppyDownyKi, uppyDownyKd);
     uppyDownyConfig.closedLoop.feedForward.sva(uppyDownyKs, uppyDownyKv, uppyDownyKa);
     uppyDownyMotor.configure(

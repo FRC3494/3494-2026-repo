@@ -365,6 +365,7 @@ public final class Constants {
 
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 30;
+    public static final double uppyDownyGearRatio = 1.0 / 4.0;
 
     public static final double uppyDownyKp = 0.0;
     public static final double uppyDownyKi = 0.0;
