@@ -372,8 +372,6 @@ public class RobotContainer {
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 
     // ==================== SHOOTER ====================
-    // shooter.setDefaultCommand(aimShooterCommand);
-
     ShooterOI.setHubShot().onTrue(robotCommands.setHubShot());
     ShooterOI.setTrenchShot().onTrue(robotCommands.setTrenchShot());
     ShooterOI.setOutpostShot().onTrue(robotCommands.setOutpostShot());
