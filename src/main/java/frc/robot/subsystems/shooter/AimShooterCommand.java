@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -11,8 +12,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
@@ -142,14 +143,13 @@ public class AimShooterCommand extends Command {
     // TODO(#aim-shooter): Move shooter mounting transform into {@link ShooterConstants}
     // or a dedicated geometry/config class so it can be hardware-specific and
     // easier to update between robots.
-    double shooterX = 0.0;
-    double shooterY = Units.inchesToMeters(-2.074);
-    double shooterZ = Units.inchesToMeters(13.72);
     Transform3d shooterTransform =
-        new Transform3d(new Translation3d(shooterX, shooterY, shooterZ), new Rotation3d());
+        new Transform3d(
+            new Translation3d(
+                ShooterConstants.shooterX, ShooterConstants.shooterY, ShooterConstants.shooterZ),
+            new Rotation3d());
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
-    double targetHeight = Units.inchesToMeters(120.36); // hub height
     Pose3d targetPose3d =
         new Pose3d(shooterTarget.getX(), shooterTarget.getY(), targetHeight, new Rotation3d());
 
