@@ -8,7 +8,7 @@ public class RezeroTurretCommand {
   public static Command getCommand(Turret turret) {
     return runOnce(
         () -> {
-          turret.setRelativeEncoderPosition(turret.getAbsPosition());
+          turret.rezeroFromAbsEncoder();
         },
         turret);
   }

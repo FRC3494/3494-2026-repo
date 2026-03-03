@@ -90,7 +90,7 @@ public class Turret extends SubsystemBase {
     //                 })
     //             .ignoringDisable(true));
 
-    setRelativeEncoderPosition(getAbsPosition());
+    rezeroFromAbsEncoder();
   }
 
   @Override
@@ -117,6 +117,10 @@ public class Turret extends SubsystemBase {
 
   public void setRelativeEncoderPosition(Rotation2d position) {
     turretMotor.getEncoder().setPosition(position.getRotations());
+  }
+
+  public void rezeroFromAbsEncoder() {
+    setRelativeEncoderPosition(getAbsPosition().minus(Rotation2d.kCCW_90deg));
   }
 
   @AutoLogOutput(key = "Shooter/Turret/MagSensor")

@@ -71,7 +71,7 @@ public class AimShooterMath extends SubsystemBase {
   // These are annotated for AutoLogOutput so they appear in logs/networktables for tuning.
   @Getter @Setter @AutoLogOutput private double flywheelOffsetRPM = 0.0;
   @Getter @Setter @AutoLogOutput private double hoodOffsetDeg = 0.0;
-  @Getter @Setter @AutoLogOutput private double turretOffsetDeg = -90;
+  @Getter @Setter @AutoLogOutput private double turretOffsetDeg = 0.0;
 
   // Flags that indicate whether the applied offset caused the final setpoint to be clipped by
   // safety clamps. These are updated every execute() and are useful to warn operators that
