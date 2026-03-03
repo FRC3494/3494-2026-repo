@@ -10,7 +10,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -119,12 +119,12 @@ public class Turret extends SubsystemBase {
     turretMotor.setVoltage(volts);
   }
 
-  public void setRelativeEncoderPosition(Rotation2d position) {
-    turretMotor.getEncoder().setPosition(position.getRotations());
+  public void setRelativeEncoderPosition(double rotations) {
+    turretMotor.getEncoder().setPosition(rotations);
   }
 
   public void rezeroFromAbsEncoder() {
-    setRelativeEncoderPosition(getAbsPosition().minus(Rotation2d.kCCW_90deg));
+    setRelativeEncoderPosition(getAbsPositionRot() - Units.degreesToRotations(90));
   }
 
   @AutoLogOutput(key = "Shooter/Turret/MagSensor")
@@ -132,12 +132,12 @@ public class Turret extends SubsystemBase {
     return turretMagSensor.get();
   }
 
-  public Rotation2d getPosition() {
-    return Rotation2d.fromRotations(turretMotor.getEncoder().getPosition());
+  public double getPositionRot() {
+    return turretMotor.getEncoder().getPosition();
   }
 
-  public Rotation2d getAbsPosition() {
-    return Rotation2d.fromRotations(turretMotor.getAbsoluteEncoder().getPosition());
+  public double getAbsPositionRot() {
+    return turretMotor.getAbsoluteEncoder().getPosition();
   }
 
   private void setPID(double p, double i, double d) {

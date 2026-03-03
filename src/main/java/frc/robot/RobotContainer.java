@@ -414,7 +414,7 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                     () -> {
-                      turret.setRelativeEncoderPosition(Rotation2d.kZero);
+                      turret.setRelativeEncoderPosition(0);
                     },
                     turret)
                 .ignoringDisable(true));
