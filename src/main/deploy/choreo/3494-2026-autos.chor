@@ -3,7 +3,43 @@
  "version":2,
  "type":"Swerve",
  "variables":{
-  "expressions":{},
+  "expressions":{
+   "ClimbMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"0.5 m / s",
+     "val":0.5
+    }
+   },
+   "DepotIntakeStop":{
+    "dimension":"Length",
+    "var":{
+     "exp":"8 in",
+     "val":0.2032
+    }
+   },
+   "DropIntakeMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"5 m / s",
+     "val":5.0
+    }
+   },
+   "MaxAcceleration":{
+    "dimension":"LinAcc",
+    "var":{
+     "exp":"2 m / s ^ 2",
+     "val":2.0
+    }
+   },
+   "MaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"1 m / s",
+     "val":1.0
+    }
+   }
+  },
   "poses":{
    "BumpDepot":{
     "x":{
@@ -75,6 +111,20 @@
      "val":-1.5707963267948966
     }
    },
+   "DepotIntake":{
+    "x":{
+     "exp":"16.541 m - 15.506 m + DepotIntakeStop + 6 in",
+     "val":1.3906
+    },
+    "y":{
+     "exp":"8.0692 m - 2.1 m",
+     "val":5.969200000000001
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
    "Hub":{
     "x":{
      "exp":"181.90625 in",
@@ -87,6 +137,20 @@
     "heading":{
      "exp":"0 deg",
      "val":0.0
+    }
+   },
+   "LeftBumpStartingPosition":{
+    "x":{
+     "exp":"3.582040786743164 m",
+     "val":3.582040786743164
+    },
+    "y":{
+     "exp":"6.036491870880127 m",
+     "val":6.036491870880127
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
     }
    },
    "NZDepotShootingTarget":{

@@ -30,6 +30,7 @@ import frc.robot.OI.IntakeOI;
 import frc.robot.OI.ShooterOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.ClimbLeftAuto;
+import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.climber.RezeroClimberCommand;
 import frc.robot.subsystems.drive.Drive;
@@ -176,6 +177,9 @@ public class RobotContainer {
     autoChooser.addRoutine(
         "ClimbLeft",
         () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, robotCommands, climber));
+    autoChooser.addRoutine(
+        "DepotAndClimb",
+        () -> DepotAndClimbAuto.getRoutine("DepotAndClimb", autoFactory, robotCommands));
 
     autoChooser.addCmd("=====================", () -> none());
 
