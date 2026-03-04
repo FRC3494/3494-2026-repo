@@ -349,7 +349,7 @@ public class RobotContainer {
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
-    TurretOI.setTurretEncoderTo0().onTrue(robotCommands.SetTurretEncoderTo0());
+    TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
 
     TurretOI.turretTo180()
         .onTrue(

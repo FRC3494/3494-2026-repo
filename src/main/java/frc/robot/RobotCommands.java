@@ -490,7 +490,7 @@ public class RobotCommands {
         .ignoringDisable(true);
   }
 
-  public Command SetTurretEncoderTo0() {
+  public Command setTurretEncoderTo0() {
     return runOnce(
             () -> {
               turret.setRelativeEncoderPosition(0);
