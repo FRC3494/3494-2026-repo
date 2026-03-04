@@ -128,11 +128,11 @@ public final class OI {
     }
 
     public static final class HoodOI {
-      public static Trigger increaseHood() {
+      public static Trigger hoodManualUp() {
         return primaryController.povUp();
       }
 
-      public static Trigger decreaseHood() {
+      public static Trigger hoodManualDown() {
         return primaryController.povDown();
       }
 
@@ -142,13 +142,13 @@ public final class OI {
     }
 
     public static final class TurretOI {
-      public static Trigger turretManualPositive() {
+      public static Trigger turretManualCCW() {
         return leftButtonBoard
             .axisLessThan(0, -controllerStickDeadband, eventLoop)
             .castTo(Trigger::new);
       }
 
-      public static Trigger turretManualNegative() {
+      public static Trigger turretManualCW() {
         return leftButtonBoard
             .axisGreaterThan(0, controllerStickDeadband, eventLoop)
             .castTo(Trigger::new);

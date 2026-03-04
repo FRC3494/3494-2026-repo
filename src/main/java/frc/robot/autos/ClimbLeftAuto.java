@@ -6,12 +6,11 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import frc.robot.RobotCommands;
-import frc.robot.subsystems.climber.Climber;
 import frc.robot.util.choreo.ChoreoTraj;
 
 public class ClimbLeftAuto {
   public static AutoRoutine getRoutine(
-      String name, AutoFactory autoFactory, RobotCommands robotCommands, Climber climber) {
+      String name, AutoFactory autoFactory, RobotCommands robotCommands) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
     AutoTrajectory driveToTower = ChoreoTraj.ClimbLeft.asAutoTraj(routine);

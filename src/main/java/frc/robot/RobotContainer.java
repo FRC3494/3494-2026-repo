@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
 import frc.robot.OI.ClimberOI;
 import frc.robot.OI.DriveOI;
@@ -35,7 +34,6 @@ import frc.robot.autos.Autos;
 import frc.robot.autos.ClimbLeftAuto;
 import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.RezeroClimberCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.GyroIO;
@@ -43,21 +41,14 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.hood.RezeroHoodCommand;
-import frc.robot.subsystems.shooter.hood.SetHoodCommand;
-import frc.robot.subsystems.shooter.turret.RezeroTurretCommand;
-import frc.robot.subsystems.shooter.turret.SetTurretCommand;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
-import frc.robot.util.QuadranglesUtil;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 /**
@@ -85,10 +76,6 @@ public class RobotContainer {
   private final AutoFactory autoFactory;
 
   private final RobotCommands robotCommands;
-  private final Command joystickDriveCommand;
-  private final SetTurretCommand setTurretCommand;
-  private final SetHoodCommand setHoodCommand;
-  private final SetFlywheelCommand setFlywheelCommand;
 
   private LoggedNetworkBoolean enableTuningAutos =
       new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
@@ -129,12 +116,6 @@ public class RobotContainer {
                 new ModuleIO() {});
         break;
     }
-    joystickDriveCommand =
-        DriveCommands.joystickDrive(
-            drive,
-            OI.DriveOI::joystickDriveX,
-            OI.DriveOI::joystickDriveY,
-            OI.DriveOI::joystickDriveOmega);
 
     aprilTagVision = new AprilTagVision(drive);
     climber = new Climber();
@@ -147,11 +128,9 @@ public class RobotContainer {
     // aimShooterMath = new AimShooterMath(drive::getPose);
     aimShooterMathLinear = new AimShooterMathLinear(drive::getPose);
 
-    robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
-    setTurretCommand = new SetTurretCommand(turret, aimShooterMathLinear::getTurretAngleRot);
-    setHoodCommand = new SetHoodCommand(hood, aimShooterMathLinear::getHoodAngle);
-    setFlywheelCommand =
-        new SetFlywheelCommand(flywheel, () -> aimShooterMathLinear.getFlywheelSpeed());
+    robotCommands =
+        new RobotCommands(
+            climber, drive, hopper, intake, flywheel, hood, turret, aimShooterMathLinear);
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
@@ -178,8 +157,7 @@ public class RobotContainer {
   private void configureAutos() {
     // Set up autos
     autoChooser.addRoutine(
-        "ClimbLeft",
-        () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, robotCommands, climber));
+        "ClimbLeft", () -> ClimbLeftAuto.getRoutine("ClimbLeft", autoFactory, robotCommands));
     autoChooser.addRoutine(
         "DepotAndClimb",
         () -> DepotAndClimbAuto.getRoutine("DepotAndClimb", autoFactory, robotCommands));
@@ -281,9 +259,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    flywheel.setDefaultCommand(setFlywheelCommand);
-    hood.setDefaultCommand(setHoodCommand);
-    turret.setDefaultCommand(setTurretCommand);
 
     // ==================== CLIMBER ====================
     ClimberOI.climberUp().onTrue(robotCommands.climberUp());
@@ -297,18 +272,17 @@ public class RobotContainer {
                     climber.getPosition()
                         <= climberMinPosition * robotCommands.climberMidFactor.get() - 0.05));
 
-    ClimberOI.rezeroClimber().onTrue(RezeroClimberCommand.getCommand(climber));
+    ClimberOI.rezeroClimber().onTrue(robotCommands.rezeroClimber());
 
     ClimberOI.climberManualUp()
         .onTrue(robotCommands.climberManualUp())
         .onFalse(robotCommands.stopClimber());
-
     ClimberOI.climberManualDown()
         .onTrue(robotCommands.climberManualDown())
         .onFalse(robotCommands.stopClimber());
 
     // ==================== DRIVE ====================
-    drive.setDefaultCommand(joystickDriveCommand);
+    drive.setDefaultCommand(robotCommands.joystickDriveCommand);
 
     DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
     DriveOI.rezeroSwerveTurnEncoders()
@@ -316,6 +290,7 @@ public class RobotContainer {
 
     DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
 
+    // ! Currently disabled
     DriveOI.lockTo45()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
@@ -325,41 +300,11 @@ public class RobotContainer {
                 () -> Rotation2d.kPi.div(4)));
 
     DriveOI.autoAlignClimb()
-        .onTrue(
-            runOnce(
-                () -> {
-                  double distanceToOutpostPose =
-                      drive
-                          .getPose()
-                          .getTranslation()
-                          .getDistance(
-                              QuadranglesUtil.toAllianceTranslation(
-                                  AutoAlignConstants.climbSetupPoseOutpost.getTranslation()));
-                  double distanceToDepotPose =
-                      drive
-                          .getPose()
-                          .getTranslation()
-                          .getDistance(
-                              QuadranglesUtil.toAllianceTranslation(
-                                  AutoAlignConstants.climbSetupPoseDepot.getTranslation()));
-
-                  if (distanceToOutpostPose < distanceToDepotPose) {
-                    drive.setDefaultCommand(
-                        sequence(
-                            new AutoAlignCommand(AutoAlignConstants.climbSetupPoseOutpost, drive),
-                            new AutoAlignCommand(AutoAlignConstants.climbPoseOutpost, drive)));
-                  } else {
-                    drive.setDefaultCommand(
-                        sequence(
-                            new AutoAlignCommand(AutoAlignConstants.climbSetupPoseDepot, drive),
-                            new AutoAlignCommand(AutoAlignConstants.climbPoseDepot, drive)));
-                  }
-                },
-                drive))
+        .onTrue(robotCommands.autoAlignClimb())
         .onFalse(
             runOnce(
                 () -> {
-                  drive.setDefaultCommand(joystickDriveCommand);
+                  drive.setDefaultCommand(robotCommands.joystickDriveCommand);
                 },
                 drive));
 
@@ -372,7 +317,6 @@ public class RobotContainer {
 
     // ==================== INTAKE ====================
     IntakeOI.intake().onTrue(robotCommands.intake()).onFalse(robotCommands.releaseIntake());
-
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 
     // ==================== SHOOTER ====================
@@ -384,30 +328,28 @@ public class RobotContainer {
     ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
 
     // ==================== FLYWHEEL ====================
+    flywheel.setDefaultCommand(robotCommands.setFlywheelCommand);
+
     FlywheelOI.runFlywheel()
         .onTrue(robotCommands.runFlywheel())
         .onFalse(robotCommands.stopFlywheel());
 
     // ==================== HOOD ====================
-    HoodOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
+    hood.setDefaultCommand(robotCommands.setHoodCommand);
 
-    HoodOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
+    HoodOI.rezeroHood().onTrue(robotCommands.rezeroHood());
 
-    HoodOI.rezeroHood().onTrue(RezeroHoodCommand.getCommand(hood));
+    HoodOI.hoodManualUp().whileTrue(robotCommands.hoodManualUp());
+    HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
     // ==================== TURRET ====================
-    TurretOI.turretManualPositive().whileTrue(robotCommands.turretManualCCW());
-    TurretOI.turretManualNegative().whileTrue(robotCommands.turretManualCW());
+    turret.setDefaultCommand(robotCommands.setTurretCommand);
 
-    TurretOI.rezeroTurret().onTrue(RezeroTurretCommand.getCommand(turret).ignoringDisable(true));
-    TurretOI.setTurretEncoderTo0()
-        .onTrue(
-            runOnce(
-                    () -> {
-                      turret.setRelativeEncoderPosition(0);
-                    },
-                    turret)
-                .ignoringDisable(true));
+    TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
+    TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
+
+    TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
+    TurretOI.setTurretEncoderTo0().onTrue(robotCommands.SetTurretEncoderTo0());
 
     TurretOI.turretTo180()
         .onTrue(

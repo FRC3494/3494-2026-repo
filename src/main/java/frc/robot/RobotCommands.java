@@ -1,26 +1,29 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.wpilibj2.command.Commands.run;
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
-import static edu.wpi.first.wpilibj2.command.Commands.sequence;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
-import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
-import static frc.robot.Constants.ClimberConstants.climberMaxPosition;
-import static frc.robot.Constants.ClimberConstants.climberMinPosition;
-import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveCommands;
+import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
+import frc.robot.subsystems.shooter.hood.SetHoodCommand;
+import frc.robot.subsystems.shooter.turret.SetTurretCommand;
 import frc.robot.subsystems.shooter.turret.Turret;
+import frc.robot.util.QuadranglesUtil;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class RobotCommands {
@@ -31,6 +34,8 @@ public class RobotCommands {
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turret turret;
+
+  private final AimShooterMathLinear aimShooterMathLinear;
 
   // ==================== CLIMBER ====================
   private LoggedNetworkNumber climberUpPos =
@@ -62,6 +67,13 @@ public class RobotCommands {
   private LoggedNetworkNumber hoodIncrement =
       new LoggedNetworkNumber("Tunable/HoodIncrementDeg", 2.0);
 
+  // ==================== COMMANDS ====================
+  public final Command joystickDriveCommand;
+
+  public final Command setFlywheelCommand;
+  public final Command setHoodCommand;
+  public final Command setTurretCommand;
+
   public RobotCommands(
       Climber climber,
       Drive drive,
@@ -69,7 +81,8 @@ public class RobotCommands {
       Intake intake,
       Flywheel flywheel,
       Hood hood,
-      Turret turret) {
+      Turret turret,
+      AimShooterMathLinear aimShooterMathLinear) {
     this.climber = climber;
     this.drive = drive;
     this.hopper = hopper;
@@ -77,6 +90,20 @@ public class RobotCommands {
     this.flywheel = flywheel;
     this.hood = hood;
     this.turret = turret;
+
+    this.aimShooterMathLinear = aimShooterMathLinear;
+
+    joystickDriveCommand =
+        DriveCommands.joystickDrive(
+            drive,
+            OI.DriveOI::joystickDriveX,
+            OI.DriveOI::joystickDriveY,
+            OI.DriveOI::joystickDriveOmega);
+
+    setFlywheelCommand =
+        new SetFlywheelCommand(flywheel, () -> aimShooterMathLinear.getFlywheelSpeed());
+    setHoodCommand = new SetHoodCommand(hood, aimShooterMathLinear::getHoodAngle);
+    setTurretCommand = new SetTurretCommand(turret, aimShooterMathLinear::getTurretAngleRot);
   }
 
   // ==================== CLIMBER ====================
@@ -102,6 +129,24 @@ public class RobotCommands {
           climber.setPosition(climberDownPos.get());
         },
         climber);
+  }
+
+  public Command rezeroClimber() {
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setCurrentLimit(Amps.of(20));
+              climber.setOpenLoop(Volts.of(2));
+            },
+            climber),
+        waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(19))),
+        runOnce(
+            () -> {
+              climber.setOpenLoop(Volts.of(0));
+              climber.setRelativeEncoderPosition(climberMinPosition);
+              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+            },
+            climber));
   }
 
   public Command stopClimber() {
@@ -157,37 +202,39 @@ public class RobotCommands {
         drive);
   }
 
-  // ==================== INTAKE ====================
-  public Command intake() {
-    return sequence(runIntake(), runSpindexerSlow());
-  }
-
-  public Command releaseIntake() {
-    return sequence(stopIntake(), stopSpindexer());
-  }
-
-  public Command runIntake() {
+  public Command autoAlignClimb() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeed.get()));
-        },
-        intake);
-  }
+          double distanceToOutpostPose =
+              drive
+                  .getPose()
+                  .getTranslation()
+                  .getDistance(
+                      QuadranglesUtil.toAllianceTranslation(
+                          AutoAlignConstants.climbSetupPoseOutpost.getTranslation()));
+          double distanceToDepotPose =
+              drive
+                  .getPose()
+                  .getTranslation()
+                  .getDistance(
+                      QuadranglesUtil.toAllianceTranslation(
+                          AutoAlignConstants.climbSetupPoseDepot.getTranslation()));
 
-  public Command runIntakeReverse() {
-    return runOnce(
-        () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeed.get()));
+          if (distanceToOutpostPose < distanceToDepotPose) {
+            drive.setDefaultCommand(
+                sequence(
+                    new AutoAlignCommand(AutoAlignConstants.climbSetupPoseOutpost, drive),
+                    new AutoAlignCommand(AutoAlignConstants.climbPoseOutpost, drive),
+                    creepBackward()));
+          } else {
+            drive.setDefaultCommand(
+                sequence(
+                    new AutoAlignCommand(AutoAlignConstants.climbSetupPoseDepot, drive),
+                    new AutoAlignCommand(AutoAlignConstants.climbPoseDepot, drive),
+                    creepBackward()));
+          }
         },
-        intake);
-  }
-
-  public Command stopIntake() {
-    return runOnce(
-        () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(0.0));
-        },
-        intake);
+        drive);
   }
 
   // ==================== HOPPER ====================
@@ -238,6 +285,39 @@ public class RobotCommands {
           hopper.setKickerVelocity(RPM.of(0.0));
         },
         hopper);
+  }
+
+  // ==================== INTAKE ====================
+  public Command intake() {
+    return sequence(runIntake(), runSpindexerSlow());
+  }
+
+  public Command releaseIntake() {
+    return sequence(stopIntake(), stopSpindexer());
+  }
+
+  public Command runIntake() {
+    return runOnce(
+        () -> {
+          intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeed.get()));
+        },
+        intake);
+  }
+
+  public Command runIntakeReverse() {
+    return runOnce(
+        () -> {
+          intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeed.get()));
+        },
+        intake);
+  }
+
+  public Command stopIntake() {
+    return runOnce(
+        () -> {
+          intake.setSpinnySpinnyVelocity(RPM.of(0.0));
+        },
+        intake);
   }
 
   // ==================== SHOOTER ====================
@@ -320,23 +400,6 @@ public class RobotCommands {
   }
 
   // ==================== HOOD ====================
-  public Command increaseHoodAngle() {
-    return run(
-        () -> {
-          hood.setPosition(
-              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrement.get())));
-        },
-        hood);
-  }
-
-  public Command decreaseHoodAngle() {
-    return run(
-        () -> {
-          hood.setPosition(
-              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrement.get())));
-        },
-        hood);
-  }
 
   public Command hoodUp() {
     return runOnce(
@@ -350,6 +413,43 @@ public class RobotCommands {
     return runOnce(
         () -> {
           hood.setPosition(hoodMinAngle);
+        },
+        hood);
+  }
+
+  public Command rezeroHood() {
+    return sequence(
+            runOnce(
+                () -> {
+                  hood.setCurrentLimit(Amps.of(20));
+                  hood.setOpenLoop(Volts.of(-1));
+                },
+                hood),
+            waitUntil(() -> hood.getFilteredCurrent().gte(Amps.of(19))),
+            runOnce(
+                () -> {
+                  hood.setOpenLoop(Volts.of(0));
+                  hood.setRelativeEncoderPosition(hoodMinAngle);
+                  hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
+                },
+                hood))
+        .withTimeout(hoodRezeroTimeoutSeconds);
+  }
+
+  public Command hoodManualUp() {
+    return run(
+        () -> {
+          hood.setPosition(
+              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrement.get())));
+        },
+        hood);
+  }
+
+  public Command hoodManualDown() {
+    return run(
+        () -> {
+          hood.setPosition(
+              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrement.get())));
         },
         hood);
   }
@@ -371,5 +471,23 @@ public class RobotCommands {
               turret.setPosition(turret.getTurretSetpointRot() - Units.degreesToRotations(1));
             },
             turret));
+  }
+
+  public Command rezeroTurret() {
+    return runOnce(
+            () -> {
+              turret.rezeroFromAbsEncoder();
+            },
+            turret)
+        .ignoringDisable(true);
+  }
+
+  public Command SetTurretEncoderTo0() {
+    return runOnce(
+            () -> {
+              turret.setRelativeEncoderPosition(0);
+            },
+            turret)
+        .ignoringDisable(true);
   }
 }
