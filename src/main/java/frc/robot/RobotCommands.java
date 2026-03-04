@@ -37,6 +37,9 @@ public class RobotCommands {
       new LoggedNetworkNumber("Tunable/ClimberUpPos", climberMaxPosition);
   private LoggedNetworkNumber climberDownPos =
       new LoggedNetworkNumber("Tunable/ClimberDownPos", climberMinPosition);
+  // How far DOWN the climber is for "mid" position
+  public LoggedNetworkNumber climberMidFactor =
+      new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.6);
 
   // ==================== HOPPER ====================
   private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 75);
@@ -88,7 +91,7 @@ public class RobotCommands {
   public Command climberMid() {
     return runOnce(
         () -> {
-          climber.setPosition(climberDownPos.get() / 2.0);
+          climber.setPosition(climberDownPos.get() * climberMidFactor.get());
         },
         climber);
   }
