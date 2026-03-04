@@ -67,6 +67,10 @@ public class RobotCommands {
   private LoggedNetworkNumber hoodIncrement =
       new LoggedNetworkNumber("Tunable/HoodIncrementDeg", 2.0);
 
+  // ==================== TURRET ====================
+  private LoggedNetworkNumber turretManualSpeed =
+      new LoggedNetworkNumber("Tunable/TurretManualSpeed", 2.0);
+
   // ==================== COMMANDS ====================
   public final Command joystickDriveCommand;
 
@@ -459,7 +463,9 @@ public class RobotCommands {
     return sequence(
         run(
             () -> {
-              turret.setPosition(turret.getTurretSetpointRot() + Units.degreesToRotations(1));
+              turret.setPosition(
+                  turret.getTurretSetpointRot()
+                      + Units.degreesToRotations(turretManualSpeed.get()));
             },
             turret));
   }
@@ -468,7 +474,9 @@ public class RobotCommands {
     return sequence(
         run(
             () -> {
-              turret.setPosition(turret.getTurretSetpointRot() - Units.degreesToRotations(1));
+              turret.setPosition(
+                  turret.getTurretSetpointRot()
+                      - Units.degreesToRotations(turretManualSpeed.get()));
             },
             turret));
   }
