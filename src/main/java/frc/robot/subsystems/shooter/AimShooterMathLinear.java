@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -63,7 +62,7 @@ public class AimShooterMathLinear extends SubsystemBase {
       }
     }
 
-    turretAngleRot = getTurretAngle(shooterTranslation);
+    turretAngleRot = getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation());
 
     double distanceToTarget = shooterTranslation.getDistance(targetLocation);
     hoodAngle = Rotation2d.fromRadians(hoodAngleMapRad.get(distanceToTarget));
@@ -91,10 +90,11 @@ public class AimShooterMathLinear extends SubsystemBase {
     }
   }
 
-  private double getTurretAngle(Translation2d shooterTranslation) {
+  private double getTurretAngleRot(Translation2d shooterTranslation, Rotation2d robotYaw) {
     Translation2d translationToTarget = targetLocation.minus(shooterTranslation);
 
-    double angleRad = Math.atan2(translationToTarget.getY(), translationToTarget.getX());
-    return Units.radiansToRotations(angleRad);
+    Rotation2d angle =
+        Rotation2d.fromRadians(Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
+    return angle.rotateBy(robotYaw.times(-1.0)).getRotations();
   }
 }

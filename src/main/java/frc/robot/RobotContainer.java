@@ -42,7 +42,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.AimShooterMath;
+import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -73,7 +73,8 @@ public class RobotContainer {
   private final Hood hood;
   private final Turret turret;
 
-  private final AimShooterMath aimShooterMath;
+  //   private final AimShooterMath aimShooterMath;
+  private final AimShooterMathLinear aimShooterMathLinear;
 
   // Choreo
   private final AutoChooser autoChooser;
@@ -139,14 +140,14 @@ public class RobotContainer {
     hood = new Hood();
     turret = new Turret();
 
-    aimShooterMath = new AimShooterMath(drive::getPose);
+    // aimShooterMath = new AimShooterMath(drive::getPose);
+    aimShooterMathLinear = new AimShooterMathLinear(drive::getPose);
 
     robotCommands = new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret);
-    setTurretCommand =
-        new SetTurretCommand(turret, () -> aimShooterMath.getSetpoints().turretAngle);
-    setHoodCommand = new SetHoodCommand(hood, () -> aimShooterMath.getSetpoints().hoodAngle);
+    setTurretCommand = new SetTurretCommand(turret, aimShooterMathLinear::getTurretAngleRot);
+    setHoodCommand = new SetHoodCommand(hood, aimShooterMathLinear::getHoodAngle);
     setFlywheelCommand =
-        new SetFlywheelCommand(flywheel, () -> RPM.of(aimShooterMath.getSetpoints().rpm));
+        new SetFlywheelCommand(flywheel, () -> aimShooterMathLinear.getFlywheelSpeed());
 
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
