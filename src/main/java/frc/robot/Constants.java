@@ -378,10 +378,10 @@ public final class Constants {
 
   public static final class ShooterConstants {
     public static final Translation2d hubLocation = ChoreoVars.Poses.Hub.getTranslation();
-    public static final Translation2d outpostBumpLocation =
-        ChoreoVars.Poses.BumpOutpost.getTranslation();
-    public static final Translation2d depotBumpLocation =
-        ChoreoVars.Poses.BumpDepot.getTranslation();
+    public static final Translation2d nzDepotShootingTarget =
+        ChoreoVars.Poses.NZDepotShootingTarget.getTranslation();
+    public static final Translation2d nzOutpostShootingTarget =
+        ChoreoVars.Poses.NZOutpostShootingTarget.getTranslation();
 
     public static final double gravity = 9.81;
 

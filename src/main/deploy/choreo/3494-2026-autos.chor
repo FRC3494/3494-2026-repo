@@ -88,6 +88,34 @@
      "exp":"0 deg",
      "val":0.0
     }
+   },
+   "NZDepotShootingTarget":{
+    "x":{
+     "exp":"1 m",
+     "val":1.0
+    },
+    "y":{
+     "exp":"6.5 m",
+     "val":6.5
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
+    }
+   },
+   "NZOutpostShootingTarget":{
+    "x":{
+     "exp":"1 m",
+     "val":1.0
+    },
+    "y":{
+     "exp":"1.5 m",
+     "val":1.5
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
+    }
    }
   }
  },

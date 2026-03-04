@@ -19,6 +19,8 @@ public final class ChoreoVars {
     public static final Pose2d ClimbSetupOutpost =
         new Pose2d(1.155, 2.65, Rotation2d.fromRadians(-1.571));
     public static final Pose2d Hub = new Pose2d(4.62, 4.035, Rotation2d.kZero);
+    public static final Pose2d NZDepotShootingTarget = new Pose2d(1, 6.5, Rotation2d.kZero);
+    public static final Pose2d NZOutpostShootingTarget = new Pose2d(1, 1.5, Rotation2d.kZero);
 
     private Poses() {}
   }
