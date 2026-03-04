@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.util.choreo.ChoreoVars;
@@ -388,6 +389,18 @@ public final class Constants {
     public static final double shooterX = 0.0;
     public static final double shooterY = Units.inchesToMeters(-2.074);
     public static final double shooterZ = Units.inchesToMeters(13.72);
+
+    public static final LinearInterpolationDataPoint[] linearInterpolationDataPoints =
+        new LinearInterpolationDataPoint[] {
+          new LinearInterpolationDataPoint(
+              Inches.of(0.0), Rotation2d.fromDegrees(0.0), RPM.of(0.0), Seconds.of(0.0))
+        };
+
+    public static record LinearInterpolationDataPoint(
+        Distance distance,
+        Rotation2d hoodAngle,
+        AngularVelocity flywheelSpeed,
+        Time timeOfFlight) {}
 
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;
