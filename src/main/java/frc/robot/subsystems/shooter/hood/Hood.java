@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Current;
@@ -33,6 +34,9 @@ public class Hood extends SubsystemBase {
   @Setter
   @AutoLogOutput(key = "Shooter/Hood/HoodOffset")
   private Rotation2d hoodOffset = Rotation2d.kZero;
+
+  @AutoLogOutput(key = "Shooter/Hood/Shooting")
+  private boolean shooting = false;
 
   private LoggedNetworkNumber hoodP = new LoggedNetworkNumber("Tunable/Hood/kP", hoodKp);
   private LoggedNetworkNumber hoodI = new LoggedNetworkNumber("Tunable/Hood/kI", hoodKi);
@@ -75,18 +79,19 @@ public class Hood extends SubsystemBase {
   }
 
   public void setPosition(Rotation2d setpoint) {
-    if (setpoint.getRadians() >= hoodMinAngle.getRadians()
-        && setpoint.getRadians() <= hoodMaxAngle.getRadians()) {
-      hoodSetpoint = setpoint;
-      if (!setpoint.equals(Rotation2d.kZero)) {
-        hoodMotor
-            .getClosedLoopController()
-            .setSetpoint(setpoint.getRotations(), ControlType.kPosition);
-      } else {
-        hoodMotor
-            .getClosedLoopController()
-            .setSetpoint(setpoint.getRotations(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
-      }
+    double clampedSetpointRot =
+        MathUtil.clamp(
+            setpoint.getRotations(), hoodMinAngle.getRotations(), hoodMaxAngle.getRotations());
+
+    hoodSetpoint = Rotation2d.fromRotations(clampedSetpointRot);
+    if (!setpoint.equals(hoodMinAngle)) {
+      hoodMotor
+          .getClosedLoopController()
+          .setSetpoint(setpoint.getRotations(), ControlType.kPosition);
+    } else {
+      hoodMotor
+          .getClosedLoopController()
+          .setSetpoint(setpoint.getRotations(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
     }
   }
 

@@ -93,7 +93,6 @@ public class Flywheel extends SubsystemBase {
     } else {
       leftMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
     }
-    // leftMotor.set(velocity.in(RPM));
   }
 
   public void setOpenLoop(Voltage voltage) {
