@@ -349,22 +349,11 @@ public class RobotContainer {
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
+    TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
 
-    TurretOI.turretTo180()
-        .onTrue(
-            runOnce(
-                () -> {
-                  turret.setPosition(Units.degreesToRotations(180));
-                },
-                turret));
-    TurretOI.turretTo90()
-        .onTrue(
-            runOnce(
-                () -> {
-                  turret.setPosition(Units.degreesToRotations(90));
-                },
-                turret));
+    TurretOI.turretTo180().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(180)));
+    TurretOI.turretTo90().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(90)));
   }
 
   /**

@@ -463,6 +463,7 @@ public class RobotCommands {
     return sequence(
         run(
             () -> {
+              turret.removeDefaultCommand();
               turret.setPosition(
                   turret.getTurretSetpointRot()
                       + Units.degreesToRotations(turretManualSpeed.get()));
@@ -474,6 +475,7 @@ public class RobotCommands {
     return sequence(
         run(
             () -> {
+              turret.removeDefaultCommand();
               turret.setPosition(
                   turret.getTurretSetpointRot()
                       - Units.degreesToRotations(turretManualSpeed.get()));
@@ -481,10 +483,28 @@ public class RobotCommands {
             turret));
   }
 
+  public Command turretToPosition(double rotations) {
+    return runOnce(
+        () -> {
+          turret.removeDefaultCommand();
+          turret.setPosition(Units.degreesToRotations(180));
+        },
+        turret);
+  }
+
   public Command rezeroTurret() {
     return runOnce(
             () -> {
               turret.rezeroFromAbsEncoder();
+            },
+            turret)
+        .ignoringDisable(true);
+  }
+
+  public Command enableAutoTurret() {
+    return runOnce(
+            () -> {
+              turret.setDefaultCommand(setTurretCommand);
             },
             turret)
         .ignoringDisable(true);
