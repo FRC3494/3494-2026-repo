@@ -11,6 +11,7 @@ import static frc.robot.Constants.ClimberConstants.climberMinPosition;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.climber.Climber;
@@ -128,6 +129,29 @@ public class RobotCommands {
             climber),
         waitUntil(() -> climber.getPosition() >= climberMinPosition - 0.05),
         stopClimber());
+  }
+
+  // ==================== DRIVE ====================
+  public Command stopDrive() {
+    return runOnce(() -> drive.stop(), drive);
+  }
+
+  public Command creepForward() {
+    return run(
+        () -> {
+          drive.runVelocity(
+              new ChassisSpeeds(MetersPerSecond.of(0.75), MetersPerSecond.of(0), RPM.of(0)));
+        },
+        drive);
+  }
+
+  public Command creepBackward() {
+    return run(
+        () -> {
+          drive.runVelocity(
+              new ChassisSpeeds(MetersPerSecond.of(-0.25), MetersPerSecond.of(0), RPM.of(0)));
+        },
+        drive);
   }
 
   // ==================== INTAKE ====================
