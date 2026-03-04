@@ -23,7 +23,7 @@ public class DepotAndClimbAuto {
                 robotCommands.climberUp(),
                 sequence(
                     leftBumpToDepot.resetOdometry(),
-                    robotCommands.setHubShot(),
+                    robotCommands.setCloseShot(),
                     robotCommands.shoot(),
                     waitSeconds(3),
                     robotCommands.spinDownFromShoot(),
@@ -39,7 +39,7 @@ public class DepotAndClimbAuto {
                 robotCommands.stopDrive(),
                 waitSeconds(0.5),
                 robotCommands.releaseIntake(),
-                robotCommands.setTrenchShot(),
+                robotCommands.setMediumShot(),
                 robotCommands.shoot(),
                 waitSeconds(2),
                 robotCommands.spinDownFromShoot(),

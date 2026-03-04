@@ -241,7 +241,7 @@ public class RobotCommands {
   }
 
   // ==================== SHOOTER ====================
-  public Command setHubShot() {
+  public Command setCloseShot() {
     return runOnce(
         () -> {
           flywheelSpeed.set(3000);
@@ -250,7 +250,7 @@ public class RobotCommands {
         });
   }
 
-  public Command setTrenchShot() {
+  public Command setMediumShot() {
     return runOnce(
         () -> {
           flywheelSpeed.set(3250);
@@ -259,7 +259,7 @@ public class RobotCommands {
         });
   }
 
-  public Command setOutpostShot() {
+  public Command setFarShot() {
     return runOnce(
         () -> {
           flywheelSpeed.set(4500);

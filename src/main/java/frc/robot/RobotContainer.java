@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.climberMinPosition;
 
@@ -26,8 +25,12 @@ import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.Constants.ElasticTab;
 import frc.robot.OI.ClimberOI;
 import frc.robot.OI.DriveOI;
+import frc.robot.OI.HopperOI;
 import frc.robot.OI.IntakeOI;
 import frc.robot.OI.ShooterOI;
+import frc.robot.OI.ShooterOI.FlywheelOI;
+import frc.robot.OI.ShooterOI.HoodOI;
+import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.ClimbLeftAuto;
 import frc.robot.autos.DepotAndClimbAuto;
@@ -305,8 +308,21 @@ public class RobotContainer {
         .onFalse(robotCommands.stopClimber());
 
     // ==================== DRIVE ====================
-    // Default command, normal field-relative drive
     drive.setDefaultCommand(joystickDriveCommand);
+
+    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
+    DriveOI.rezeroSwerveTurnEncoders()
+        .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
+
+    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
+
+    DriveOI.lockTo45()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                OI.DriveOI::joystickDriveX,
+                OI.DriveOI::joystickDriveY,
+                () -> Rotation2d.kPi.div(4)));
 
     DriveOI.autoAlignClimb()
         .onTrue(
@@ -347,31 +363,12 @@ public class RobotContainer {
                 },
                 drive));
 
-    // Lock to 0° when A button is held
-    DriveOI.lockTo45()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                OI.DriveOI::joystickDriveX,
-                OI.DriveOI::joystickDriveY,
-                () -> Rotation2d.kPi.div(4)));
-
-    // Switch to X pattern when X button is pressed
-    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when Back button is pressed
-    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
-
-    // Rezero swerve turn relative encoders off of absolute encoders
-    DriveOI.rezeroSwerveTurnEncoders()
-        .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
-
     // ==================== HOPPER ====================
-    ShooterOI.runSpindexer()
+    HopperOI.runSpindexer()
         .onTrue(robotCommands.runSpindexerReverse())
         .onFalse(robotCommands.stopSpindexer());
 
-    ShooterOI.runKicker().onTrue(robotCommands.runKicker()).onFalse(robotCommands.stopKicker());
+    HopperOI.runKicker().onTrue(robotCommands.runKicker()).onFalse(robotCommands.stopKicker());
 
     // ==================== INTAKE ====================
     IntakeOI.intake().onTrue(robotCommands.intake()).onFalse(robotCommands.releaseIntake());
@@ -379,45 +376,31 @@ public class RobotContainer {
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 
     // ==================== SHOOTER ====================
-    ShooterOI.setHubShot().onTrue(robotCommands.setHubShot());
-    ShooterOI.setTrenchShot().onTrue(robotCommands.setTrenchShot());
-    ShooterOI.setOutpostShot().onTrue(robotCommands.setOutpostShot());
+    ShooterOI.setCloseShot().onTrue(robotCommands.setCloseShot());
+    ShooterOI.setMediumShot().onTrue(robotCommands.setMediumShot());
+    ShooterOI.setFarShot().onTrue(robotCommands.setFarShot());
     ShooterOI.setNeutralZoneShot().onTrue(robotCommands.setNeutralZoneShot());
 
     ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
 
     // ==================== FLYWHEEL ====================
-    ShooterOI.runFlywheel()
+    FlywheelOI.runFlywheel()
         .onTrue(robotCommands.runFlywheel())
         .onFalse(robotCommands.stopFlywheel());
 
     // ==================== HOOD ====================
-    ShooterOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
+    HoodOI.increaseHood().whileTrue(robotCommands.increaseHoodAngle());
 
-    ShooterOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
+    HoodOI.decreaseHood().whileTrue(robotCommands.decreaseHoodAngle());
 
-    ShooterOI.rezeroHood().onTrue(RezeroHoodCommand.getCommand(hood));
+    HoodOI.rezeroHood().onTrue(RezeroHoodCommand.getCommand(hood));
 
     // ==================== TURRET ====================
-    ShooterOI.turretManualNegative().whileTrue(robotCommands.turretManualCW());
-    ShooterOI.turretManualPositive().whileTrue(robotCommands.turretManualCCW());
+    TurretOI.turretManualPositive().whileTrue(robotCommands.turretManualCCW());
+    TurretOI.turretManualNegative().whileTrue(robotCommands.turretManualCW());
 
-    ShooterOI.turretTo180()
-        .onTrue(
-            runOnce(
-                () -> {
-                  turret.setPosition(Units.degreesToRotations(180));
-                },
-                turret));
-    ShooterOI.turretTo90()
-        .onTrue(
-            runOnce(
-                () -> {
-                  turret.setPosition(Units.degreesToRotations(90));
-                },
-                turret));
-
-    ShooterOI.setTurretEncoderTo0()
+    TurretOI.rezeroTurret().onTrue(RezeroTurretCommand.getCommand(turret).ignoringDisable(true));
+    TurretOI.setTurretEncoderTo0()
         .onTrue(
             runOnce(
                     () -> {
@@ -425,7 +408,21 @@ public class RobotContainer {
                     },
                     turret)
                 .ignoringDisable(true));
-    ShooterOI.rezeroTurret().onTrue(RezeroTurretCommand.getCommand(turret).ignoringDisable(true));
+
+    TurretOI.turretTo180()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setPosition(Units.degreesToRotations(180));
+                },
+                turret));
+    TurretOI.turretTo90()
+        .onTrue(
+            runOnce(
+                () -> {
+                  turret.setPosition(Units.degreesToRotations(90));
+                },
+                turret));
   }
 
   /**
