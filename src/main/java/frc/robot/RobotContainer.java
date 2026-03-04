@@ -7,8 +7,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.robot.Constants.ClimberConstants.climberMinPosition;
+import static frc.robot.Constants.ClimberConstants.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -318,6 +319,13 @@ public class RobotContainer {
     // ==================== INTAKE ====================
     IntakeOI.intake().onTrue(robotCommands.intake()).onFalse(robotCommands.releaseIntake());
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
+
+    IntakeOI.toggleIntake()
+        .onTrue(
+            either(
+                robotCommands.intake(),
+                robotCommands.releaseIntake(),
+                () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.of(0))));
 
     // ==================== SHOOTER ====================
     ShooterOI.setCloseShot().onTrue(robotCommands.setCloseShot());
