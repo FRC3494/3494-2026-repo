@@ -20,7 +20,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
-import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -31,9 +30,11 @@ public class Hood extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Hood/HoodSetpoint")
   private Rotation2d hoodSetpoint = Rotation2d.kZero;
 
-  @Setter
-  @AutoLogOutput(key = "Shooter/Hood/HoodOffset")
-  private Rotation2d hoodOffset = Rotation2d.kZero;
+  @AutoLogOutput(key = "Shooter/Hood/HoodSetpointClamped")
+  private Rotation2d hoodSetpointClamped = Rotation2d.kZero;
+
+  private final LoggedNetworkNumber hoodTrimDeg =
+      new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg", 0.0);
 
   @AutoLogOutput(key = "Shooter/Hood/Shooting")
   private boolean shooting = false;
@@ -79,19 +80,39 @@ public class Hood extends SubsystemBase {
   }
 
   public void setPosition(Rotation2d setpoint) {
-    double clampedSetpointRot =
-        MathUtil.clamp(
-            setpoint.getRotations(), hoodMinAngle.getRotations(), hoodMaxAngle.getRotations());
+    hoodSetpoint = setpoint.plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
 
-    hoodSetpoint = Rotation2d.fromRotations(clampedSetpointRot);
-    if (!setpoint.equals(hoodMinAngle)) {
+    hoodSetpointClamped =
+        Rotation2d.fromRotations(
+            MathUtil.clamp(
+                hoodSetpoint.getRotations(),
+                hoodMinAngle.getRotations(),
+                hoodMaxAngle.getRotations()));
+
+    if (shooting) {
+      moveToPosition(hoodSetpointClamped);
+    }
+  }
+
+  public void setShooting(boolean hoodShouldMove) {
+    shooting = hoodShouldMove;
+
+    if (hoodShouldMove) {
+      moveToPosition(hoodSetpointClamped);
+    } else {
+      moveToPosition(hoodMinAngle);
+    }
+  }
+
+  private void moveToPosition(Rotation2d position) {
+    if (!position.equals(hoodMinAngle)) {
       hoodMotor
           .getClosedLoopController()
-          .setSetpoint(setpoint.getRotations(), ControlType.kPosition);
+          .setSetpoint(position.getRotations(), ControlType.kPosition);
     } else {
       hoodMotor
           .getClosedLoopController()
-          .setSetpoint(setpoint.getRotations(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
+          .setSetpoint(position.getRotations(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
     }
   }
 

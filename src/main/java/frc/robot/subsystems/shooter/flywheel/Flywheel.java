@@ -95,6 +95,10 @@ public class Flywheel extends SubsystemBase {
     }
   }
 
+  public boolean atVelocity(double threshold) {
+    return getVelocity().gte(flywheelSetpoint.times(threshold));
+  }
+
   public void setOpenLoop(Voltage voltage) {
     leftMotor.setVoltage(voltage);
   }

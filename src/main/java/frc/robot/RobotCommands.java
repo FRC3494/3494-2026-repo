@@ -8,6 +8,7 @@ import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.shooter.hood.SetHoodCommand;
 import frc.robot.subsystems.shooter.turret.SetTurretCommand;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class RobotCommands {
@@ -57,9 +59,9 @@ public class RobotCommands {
   private LoggedNetworkNumber intakeSpeed = new LoggedNetworkNumber("Tunable/IntakeRPM", 1100);
 
   // ==================== FLYWHEEL ====================
-  private LoggedNetworkNumber flywheelThresholdSpeed =
-      new LoggedNetworkNumber("Tunable/FlywheelThresholdRPM", 2900);
-  private LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
+  private LoggedNetworkNumber flywheelThreshold =
+      new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.95);
+  public LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
 
   // ==================== HOOD ====================
   private LoggedNetworkNumber hoodAngle =
@@ -325,54 +327,18 @@ public class RobotCommands {
   }
 
   // ==================== SHOOTER ====================
-  public Command setCloseShot() {
-    return runOnce(
-        () -> {
-          flywheelSpeed.set(3000);
-          flywheelThresholdSpeed.set(2900);
-          hoodAngle.set(0 + hoodMinAngle.getDegrees());
-        });
-  }
-
-  public Command setMediumShot() {
-    return runOnce(
-        () -> {
-          flywheelSpeed.set(3250);
-          flywheelThresholdSpeed.set(3200);
-          hoodAngle.set(10 + hoodMinAngle.getDegrees());
-        });
-  }
-
-  public Command setFarShot() {
-    return runOnce(
-        () -> {
-          flywheelSpeed.set(4500);
-          flywheelThresholdSpeed.set(4400);
-          hoodAngle.set(5 + hoodMinAngle.getDegrees());
-        });
-  }
-
-  public Command setNeutralZoneShot() {
-    return runOnce(
-        () -> {
-          flywheelSpeed.set(4900);
-          flywheelThresholdSpeed.set(5000);
-          hoodAngle.set(30);
-        });
-  }
-
   public Command shoot() {
     return sequence(
-        runFlywheel(),
-        hoodUp(),
-        runSpindexer(),
-        waitUntil(() -> flywheel.getVelocity().gte(RPM.of(flywheelThresholdSpeed.get()))),
-        runOnce(
-            () -> {
-              spindexerInverted = !spindexerInverted;
-            }),
-        runKicker(),
-        runIntake());
+            runSpindexer(),
+            startHood(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+            runOnce(
+                () -> {
+                  spindexerInverted = !spindexerInverted;
+                }),
+            runKicker(),
+            runIntake())
+        .withTimeout(3);
   }
 
   public Command spinDownFromShoot() {
@@ -381,42 +347,89 @@ public class RobotCommands {
         waitSeconds(0.25),
         stopKicker(),
         waitSeconds(0.25),
-        stopFlywheel(),
         stopIntake(),
-        hoodDown());
+        stopHood());
+  }
+
+  public Command enableAutoShooterSettings() {
+    return runOnce(
+        () -> {
+          flywheel.setDefaultCommand(setFlywheelCommand);
+          hood.setDefaultCommand(setHoodCommand);
+        },
+        flywheel,
+        hood);
+  }
+
+  public Command shootClose() {
+    return sequence(
+            runFlywheelManual(RPM.of(3000)), setHoodManual(Rotation2d.fromDegrees(24.5)), shoot())
+        .withTimeout(3);
+  }
+
+  public Command shootMedium() {
+    return sequence(
+        runFlywheelManual(RPM.of(3250)), setHoodManual(Rotation2d.fromDegrees(34.5)), shoot());
+  }
+
+  public Command shootFar() {
+    return sequence(
+        runFlywheelManual(RPM.of(4500)), setHoodManual(Rotation2d.fromDegrees(29.5)), shoot());
+  }
+
+  public Command shootNeutralZone() {
+    return sequence(
+        runFlywheelManual(RPM.of(4500)), setHoodManual(Rotation2d.fromDegrees(30.0)), shoot());
+  }
+
+  public Command shootDashboard() {
+    return sequence(
+        runFlywheelManual(() -> RPM.of(flywheelSpeed.get())),
+        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngle.get())),
+        shoot());
   }
 
   // ==================== FLYWHEEL ====================
-  public Command runFlywheel() {
-    return runOnce(
-        () -> {
-          flywheel.setVelocity(RPM.of(flywheelSpeed.get()));
-        },
-        flywheel);
-  }
-
   public Command stopFlywheel() {
     return runOnce(
         () -> {
+          flywheel.removeDefaultCommand();
           flywheel.setVelocity(RPM.of(0));
         },
         flywheel);
   }
 
-  // ==================== HOOD ====================
-
-  public Command hoodUp() {
+  public Command runFlywheelManual(AngularVelocity speed) {
     return runOnce(
         () -> {
-          hood.setPosition(Rotation2d.fromDegrees(hoodAngle.get()));
+          flywheel.removeDefaultCommand();
+          flywheel.setVelocity(speed);
+        },
+        flywheel);
+  }
+
+  public Command runFlywheelManual(Supplier<AngularVelocity> speed) {
+    return runOnce(
+        () -> {
+          flywheel.removeDefaultCommand();
+          flywheel.setVelocity(speed.get());
+        },
+        flywheel);
+  }
+
+  // ==================== HOOD ====================
+  public Command startHood() {
+    return runOnce(
+        () -> {
+          hood.setShooting(true);
         },
         hood);
   }
 
-  public Command hoodDown() {
+  public Command stopHood() {
     return runOnce(
         () -> {
-          hood.setPosition(hoodMinAngle);
+          hood.setShooting(false);
         },
         hood);
   }
@@ -440,9 +453,28 @@ public class RobotCommands {
         .withTimeout(hoodRezeroTimeoutSeconds);
   }
 
+  public Command setHoodManual(Rotation2d angle) {
+    return runOnce(
+        () -> {
+          hood.removeDefaultCommand();
+          hood.setPosition(angle);
+        },
+        hood);
+  }
+
+  public Command setHoodManual(Supplier<Rotation2d> angle) {
+    return runOnce(
+        () -> {
+          hood.removeDefaultCommand();
+          hood.setPosition(angle.get());
+        },
+        hood);
+  }
+
   public Command hoodManualUp() {
     return run(
         () -> {
+          hood.removeDefaultCommand();
           hood.setPosition(
               hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrement.get())));
         },
@@ -452,6 +484,7 @@ public class RobotCommands {
   public Command hoodManualDown() {
     return run(
         () -> {
+          hood.removeDefaultCommand();
           hood.setPosition(
               hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrement.get())));
         },

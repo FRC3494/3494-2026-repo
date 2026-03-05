@@ -110,24 +110,28 @@ public final class OI {
   }
 
   public static final class ShooterOI {
-    public static Trigger setCloseShot() {
+    public static Trigger shoot() {
+      return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
+    }
+
+    public static Trigger shootClose() {
       return rightButtonBoard.button(1, eventLoop).castTo(Trigger::new);
     }
 
-    public static Trigger setMediumShot() {
+    public static Trigger shootMedium() {
       return rightButtonBoard.button(2, eventLoop).castTo(Trigger::new);
     }
 
-    public static Trigger setFarShot() {
+    public static Trigger shootFar() {
       return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
     }
 
-    public static Trigger setNeutralZoneShot() {
+    public static Trigger shootNeutralZone() {
       return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
     }
 
-    public static Trigger shoot() {
-      return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
+    public static Trigger shootDashboard() {
+      return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
     }
 
     public static final class FlywheelOI {

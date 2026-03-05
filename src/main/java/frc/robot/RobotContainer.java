@@ -328,18 +328,37 @@ public class RobotContainer {
                 () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.of(0))));
 
     // ==================== SHOOTER ====================
-    ShooterOI.setCloseShot().onTrue(robotCommands.setCloseShot());
-    ShooterOI.setMediumShot().onTrue(robotCommands.setMediumShot());
-    ShooterOI.setFarShot().onTrue(robotCommands.setFarShot());
-    ShooterOI.setNeutralZoneShot().onTrue(robotCommands.setNeutralZoneShot());
+    RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoShooterSettings());
 
     ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
+
+    ShooterOI.shootClose()
+        .onTrue(robotCommands.shootClose())
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootMedium()
+        .onTrue(robotCommands.shootMedium())
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootFar()
+        .onTrue(robotCommands.shootFar())
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootNeutralZone()
+        .onTrue(robotCommands.shootNeutralZone())
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+
+    ShooterOI.shootDashboard()
+        .onTrue(robotCommands.shootDashboard())
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
     // ==================== FLYWHEEL ====================
     flywheel.setDefaultCommand(robotCommands.setFlywheelCommand);
 
     FlywheelOI.runFlywheel()
-        .onTrue(robotCommands.runFlywheel())
+        .onTrue(robotCommands.runFlywheelManual(RPM.of(robotCommands.flywheelSpeed.get())))
         .onFalse(robotCommands.stopFlywheel());
 
     // ==================== HOOD ====================
@@ -352,6 +371,7 @@ public class RobotContainer {
 
     // ==================== TURRET ====================
     turret.setDefaultCommand(robotCommands.setTurretCommand);
+    RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoTurret());
 
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
