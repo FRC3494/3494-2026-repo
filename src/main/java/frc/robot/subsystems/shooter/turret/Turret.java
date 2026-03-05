@@ -105,10 +105,10 @@ public class Turret extends SubsystemBase {
     turretSetpointRot = rotations;
 
     while (rotations <= turretMinAngleRot) {
-      rotations += 1;
+      rotations += 1.0;
     }
     while (rotations >= turretMaxAngleRot) {
-      rotations -= 1;
+      rotations -= 1.0;
     }
 
     turretSetpointClampedRot = rotations;
