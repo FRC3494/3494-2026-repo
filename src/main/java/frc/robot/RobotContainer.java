@@ -367,6 +367,21 @@ public class RobotContainer {
 
     HoodOI.rezeroHood().onTrue(robotCommands.rezeroHood());
 
+    HoodOI.increaseHoodTrim()
+        .onTrue(
+            run(
+                () -> {
+                  hood.setHoodTrim(hood.getHoodTrim().plus(Rotation2d.fromDegrees(1)));
+                },
+                hood));
+    HoodOI.decreaseHoodTrim()
+        .onTrue(
+            run(
+                () -> {
+                  hood.setHoodTrim(hood.getHoodTrim().minus(Rotation2d.fromDegrees(1)));
+                },
+                hood));
+
     HoodOI.hoodManualUp().whileTrue(robotCommands.hoodManualUp());
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 

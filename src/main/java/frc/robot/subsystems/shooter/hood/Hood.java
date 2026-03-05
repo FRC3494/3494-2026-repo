@@ -116,6 +116,14 @@ public class Hood extends SubsystemBase {
     }
   }
 
+  public Rotation2d getHoodTrim() {
+    return Rotation2d.fromDegrees(hoodTrimDeg.get());
+  }
+
+  public void setHoodTrim(Rotation2d trim) {
+    hoodTrimDeg.set(trim.getDegrees());
+  }
+
   public void setOpenLoop(Voltage voltage) {
     hoodMotor.setVoltage(voltage);
   }
