@@ -17,6 +17,7 @@ import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class AimShooterMathLinear extends SubsystemBase {
   private final Supplier<Pose2d> robotPose;
@@ -64,6 +65,8 @@ public class AimShooterMathLinear extends SubsystemBase {
     turretAngleRot = getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation());
 
     double distanceToTarget = shooterTranslation.getDistance(targetLocation);
+    Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
+
     hoodAngle = Rotation2d.fromRadians(hoodAngleMapRad.get(distanceToTarget));
     flywheelSpeed = RPM.of(flywheelSpeedMapRPM.get(distanceToTarget));
   }
