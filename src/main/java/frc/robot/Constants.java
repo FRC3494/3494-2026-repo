@@ -280,11 +280,11 @@ public final class Constants {
     // Pigeon config
     public static final double pigeonGyroTrimXDegPerRot = 0.0;
     public static final double pigeonGyroTrimYDegPerRot = 0.0;
-    public static final double pigeonGyroTrimZDegPerRot = -1.88;
+    public static final double pigeonGyroTrimZDegPerRot = -3.543375;
 
-    public static final Angle pigeonMountPoseYaw = Degrees.of(-0.032393235713243484);
-    public static final Angle pigeonMountPosePitch = Degrees.of(-0.30914029479026794);
-    public static final Angle pigeonMountPoseRoll = Degrees.of(-179.479736328125);
+    public static final Angle pigeonMountPoseYaw = Degrees.of(-0.03239322453737259);
+    public static final Angle pigeonMountPosePitch = Degrees.of(-0.30914023518562317);
+    public static final Angle pigeonMountPoseRoll = Degrees.of(-179.48013305664062);
 
     // Auto config
     public static final boolean mirrorForRedAlliance = true;
