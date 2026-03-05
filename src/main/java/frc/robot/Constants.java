@@ -314,8 +314,7 @@ public final class Constants {
       public static final double autoAlignAngularKd = 0.1;
 
       public static final Pose2d climbSetupPoseOutpost = ChoreoVars.Poses.ClimbSetupOutpost;
-      public static final Pose2d climbPoseOutpost =
-          new Pose2d(Inches.of(41.755), Meters.of(2.0), Rotation2d.kCW_90deg);
+      public static final Pose2d climbPoseOutpost = ChoreoVars.Poses.ClimbOutpost;
       public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
       public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
     }

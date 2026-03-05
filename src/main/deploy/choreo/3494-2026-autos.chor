@@ -83,6 +83,20 @@
      "val":1.5707963267948966
     }
    },
+   "ClimbOutpost":{
+    "x":{
+     "exp":"16.541 m - 15.432 m",
+     "val":1.109
+    },
+    "y":{
+     "exp":"8.0692 m - 5.112 m",
+     "val":2.9572000000000003
+    },
+    "heading":{
+     "exp":"-90 deg",
+     "val":-1.5707963267948966
+    }
+   },
    "ClimbSetupDepot":{
     "x":{
      "exp":"1.155 m",
@@ -99,8 +113,8 @@
    },
    "ClimbSetupOutpost":{
     "x":{
-     "exp":"1.155 m",
-     "val":1.155
+     "exp":"ClimbOutpost.x",
+     "val":1.109
     },
     "y":{
      "exp":"2.65 m",
