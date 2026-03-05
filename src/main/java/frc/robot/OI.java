@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.littletonrobotics.junction.Logger;
 
 public final class OI {
   private static EventLoop eventLoop = new EventLoop();
@@ -17,6 +18,10 @@ public final class OI {
 
   public static void update() {
     eventLoop.poll();
+
+    Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
+    Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
+    Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
   }
 
   public static final class ClimberOI {
