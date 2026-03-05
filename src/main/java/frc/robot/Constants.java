@@ -393,8 +393,25 @@ public final class Constants {
 
     public static final LinearInterpolationDataPoint[] linearInterpolationDataPoints =
         new LinearInterpolationDataPoint[] {
+          // TODO: need NZ shot time of flight
           new LinearInterpolationDataPoint(
-              Inches.of(0.0), Rotation2d.fromDegrees(0.0), RPM.of(0.0), Seconds.of(0.0))
+              Meters.of(9.170), Rotation2d.fromDegrees(45.0), RPM.of(4500.0), Seconds.of(0.0)),
+          new LinearInterpolationDataPoint(
+              Meters.of(5.530), Rotation2d.fromDegrees(45.0), RPM.of(3750.0), Seconds.of(1.26)),
+          new LinearInterpolationDataPoint(
+              Meters.of(3.315), Rotation2d.fromDegrees(35.0), RPM.of(3200.0), Seconds.of(1.25)),
+          new LinearInterpolationDataPoint(
+              Meters.of(2.157), Rotation2d.fromDegrees(30.0), RPM.of(3000.0), Seconds.of(1.2)),
+          new LinearInterpolationDataPoint(
+              Meters.of(1.492),
+              Rotation2d.fromDegrees(24.2238027),
+              RPM.of(2800.0),
+              Seconds.of(1.16)),
+          new LinearInterpolationDataPoint(
+              Meters.of(1.053),
+              Rotation2d.fromDegrees(24.2238027),
+              RPM.of(2800.0),
+              Seconds.of(1.16))
         };
 
     public static record LinearInterpolationDataPoint(
