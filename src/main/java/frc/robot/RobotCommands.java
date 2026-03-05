@@ -208,6 +208,24 @@ public class RobotCommands {
         drive);
   }
 
+  public Command sprintForward() {
+    return run(
+        () -> {
+          drive.runVelocity(
+              new ChassisSpeeds(MetersPerSecond.of(10.0), MetersPerSecond.of(0), RPM.of(0)));
+        },
+        drive);
+  }
+
+  public Command sprintBackward() {
+    return run(
+        () -> {
+          drive.runVelocity(
+              new ChassisSpeeds(MetersPerSecond.of(-10.0), MetersPerSecond.of(0), RPM.of(0)));
+        },
+        drive);
+  }
+
   public Command autoAlignClimb() {
     return runOnce(
         () -> {
@@ -324,6 +342,11 @@ public class RobotCommands {
           intake.setSpinnySpinnyVelocity(RPM.of(0.0));
         },
         intake);
+  }
+
+  public Command dropIntake() {
+    return sequence(
+        sprintForward().withTimeout(1.0), sprintBackward().withTimeout(0.5), stopDrive());
   }
 
   // ==================== SHOOTER ====================
