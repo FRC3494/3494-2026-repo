@@ -467,7 +467,7 @@ public final class Constants {
 
     public static final class TurretConstants {
       public static final boolean turretInverted = true;
-      public static final int turretCurrentLimit = 60;
+      public static final int turretCurrentLimit = 30;
 
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
