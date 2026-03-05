@@ -13,8 +13,7 @@ public final class QuadranglesUtil {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == Alliance.Red) {
       return new Pose2d(
-          fieldLength.minus(bluePose.getMeasureX()),
-          fieldWidth.minus(bluePose.getMeasureY()),
+          toAllianceTranslation(bluePose.getTranslation()),
           bluePose.getRotation().rotateBy(Rotation2d.k180deg));
     } else {
       return bluePose;
@@ -24,9 +23,7 @@ public final class QuadranglesUtil {
   public static Translation2d toAllianceTranslation(Translation2d blueTranslation) {
     if (DriverStation.getAlliance().isPresent()
         && DriverStation.getAlliance().get() == Alliance.Red) {
-      return new Translation2d(
-          fieldLength.minus(blueTranslation.getMeasureX()),
-          fieldWidth.minus(blueTranslation.getMeasureY()));
+      return fieldSize.minus(blueTranslation);
     } else {
       return blueTranslation;
     }

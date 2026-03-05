@@ -300,6 +300,8 @@ public final class Constants {
     public static final Distance fieldWidth = Meters.of(8.0692);
     public static final Distance fieldLength = Meters.of(16.541);
 
+    public static final Translation2d fieldSize = new Translation2d(fieldLength, fieldWidth);
+
     public static class AutoAlignConstants {
       // Tuned with Ziegler-Nichols for classic PID
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
