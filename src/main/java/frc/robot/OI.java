@@ -152,6 +152,15 @@ public final class OI {
       public static Trigger rezeroHood() {
         return leftButtonBoard.button(2, eventLoop).castTo(Trigger::new);
       }
+
+      // TODO: bind buttons
+      public static Trigger increaseHoodTrim() {
+        return new Trigger(() -> false);
+      }
+
+      public static Trigger decreaseHoodTrim() {
+        return new Trigger(() -> false);
+      }
     }
 
     public static final class TurretOI {
