@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,8 +28,6 @@ public class AimShooterMathLinear extends SubsystemBase {
   @AutoLogOutput
   private Translation2d targetLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-  @AutoLogOutput private Distance azNZBoundary = targetLocation.getMeasureX();
-
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
 
@@ -48,18 +45,20 @@ public class AimShooterMathLinear extends SubsystemBase {
     Pose2d currentRobotPose = robotPose.get();
     Translation2d shooterTranslation = getRobotShooterTranslation(currentRobotPose);
 
+    Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
+
+    boolean inAllianceZone;
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      if (shooterTranslation.getMeasureX().lte(azNZBoundary)) {
-        targetLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
-      } else {
-        targetLocation = getNZShootingTarget(shooterTranslation);
-      }
+      inAllianceZone = shooterTranslation.getMeasureX().lte(allianceHubLocation.getMeasureX());
     } else {
-      if (shooterTranslation.getMeasureX().gte(azNZBoundary)) {
-        targetLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
-      } else {
-        targetLocation = getNZShootingTarget(shooterTranslation);
-      }
+      inAllianceZone = shooterTranslation.getMeasureX().gte(allianceHubLocation.getMeasureX());
+    }
+    Logger.recordOutput("AimShooterMathLinear/InAllianceZone", inAllianceZone);
+
+    if (inAllianceZone) {
+      targetLocation = allianceHubLocation;
+    } else {
+      targetLocation = getNZShootingTarget(shooterTranslation);
     }
 
     turretAngleRot = getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation());
