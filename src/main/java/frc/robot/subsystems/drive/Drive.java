@@ -363,8 +363,9 @@ public class Drive extends SubsystemBase {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    // TODO: try updating pigeon as well?
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+
+    setRotation(pose.getRotation());
   }
 
   /** Adds a new timestamped vision measurement. */
