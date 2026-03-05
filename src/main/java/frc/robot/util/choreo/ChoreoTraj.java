@@ -19,27 +19,34 @@ public record ChoreoTraj(
     double totalTimeSecs,
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue) {
-  public static final ChoreoTraj ClimbLeft =
-      new ChoreoTraj(
-          "ClimbLeft",
-          OptionalInt.empty(),
-          6.37992,
-          new Pose2d(3.55, 7.622, Rotation2d.fromRadians(0)),
-          new Pose2d(1.155, 4.509, Rotation2d.fromRadians(1.571)));
-  public static final ChoreoTraj LeftBumpToDepot =
-      new ChoreoTraj(
-          "LeftBumpToDepot",
-          OptionalInt.empty(),
-          1.48101,
-          new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
-          new Pose2d(1.391, 5.969, Rotation2d.fromRadians(3.142)));
   public static final ChoreoTraj DepotToLeftClimb =
       new ChoreoTraj(
           "DepotToLeftClimb",
           OptionalInt.empty(),
-          2.61762,
-          new Pose2d(1.187, 5.969, Rotation2d.fromRadians(1.571)),
-          new Pose2d(1.155, 4.509, Rotation2d.fromRadians(1.571)));
+          3.00234,
+          new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
+          new Pose2d(1.13, 4.509, Rotation2d.fromRadians(1.571)));
+  public static final ChoreoTraj LeftBumpToDepot =
+      new ChoreoTraj(
+          "LeftBumpToDepot",
+          OptionalInt.empty(),
+          2.39204,
+          new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
+          new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142)));
+  public static final ChoreoTraj LeftBumpToDepotPartial =
+      new ChoreoTraj(
+          "LeftBumpToDepotPartial",
+          OptionalInt.empty(),
+          2.4277,
+          new Pose2d(2.668, 6.036, Rotation2d.fromRadians(3.142)),
+          new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142)));
+  public static final ChoreoTraj RightClimb =
+      new ChoreoTraj(
+          "RightClimb",
+          OptionalInt.empty(),
+          3.90103,
+          new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
+          new Pose2d(1.109, 2.957, Rotation2d.fromRadians(-1.571)));
 
   /**
    * A map between trajectory names and their corresponding data. This allows for trajectory data to
@@ -47,9 +54,10 @@ public record ChoreoTraj(
    */
   public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES =
       Map.ofEntries(
-          Map.entry("ClimbLeft", ClimbLeft),
+          Map.entry("DepotToLeftClimb", DepotToLeftClimb),
           Map.entry("LeftBumpToDepot", LeftBumpToDepot),
-          Map.entry("DepotToLeftClimb", DepotToLeftClimb));
+          Map.entry("LeftBumpToDepotPartial", LeftBumpToDepotPartial),
+          Map.entry("RightClimb", RightClimb));
 
   /**
    * Looks up the ChoreoTraj segment of the given overall ChoreoTraj. WARNING: will raise an

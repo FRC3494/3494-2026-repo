@@ -11,32 +11,18 @@
      "val":0.5
     }
    },
-   "DepotIntakeStop":{
-    "dimension":"Length",
-    "var":{
-     "exp":"8 in",
-     "val":0.2032
-    }
-   },
-   "DropIntakeMaxVelocity":{
-    "dimension":"LinVel",
-    "var":{
-     "exp":"5 m / s",
-     "val":5.0
-    }
-   },
    "MaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"2 m / s ^ 2",
-     "val":2.0
+     "exp":"1.75 m / s ^ 2",
+     "val":1.75
     }
    },
    "MaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"1 m / s",
-     "val":1.0
+     "exp":"2 m / s",
+     "val":2.0
     }
    }
   },
@@ -71,7 +57,7 @@
    },
    "ClimbDepot":{
     "x":{
-     "exp":"1.155 m",
+     "exp":"1.155 m - 0 in",
      "val":1.155
     },
     "y":{
@@ -99,7 +85,7 @@
    },
    "ClimbSetupDepot":{
     "x":{
-     "exp":"1.155 m",
+     "exp":"ClimbDepot.x",
      "val":1.155
     },
     "y":{
@@ -127,8 +113,8 @@
    },
    "DepotIntake":{
     "x":{
-     "exp":"16.541 m - 15.506 m + DepotIntakeStop + 6 in",
-     "val":1.3906
+     "exp":"16.541 m - 15.506 m + 2 in",
+     "val":1.0858
     },
     "y":{
      "exp":"8.0692 m - 2.1 m",
@@ -193,6 +179,20 @@
     "heading":{
      "exp":"0 deg",
      "val":0.0
+    }
+   },
+   "RightBumpStartingPosition":{
+    "x":{
+     "exp":"LeftBumpStartingPosition.x",
+     "val":3.582040786743164
+    },
+    "y":{
+     "exp":"8.0692 m - LeftBumpStartingPosition.y",
+     "val":2.0327081291198734
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
     }
    }
   }

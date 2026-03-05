@@ -1,47 +1,42 @@
 package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDepot;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import frc.robot.RobotCommands;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.util.choreo.ChoreoTraj;
 
 public class DepotAndClimbAuto {
   public static AutoRoutine getRoutine(
-      String name, AutoFactory autoFactory, RobotCommands robotCommands) {
+      String name, AutoFactory autoFactory, RobotCommands robotCommands, Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
     AutoTrajectory leftBumpToDepot = ChoreoTraj.LeftBumpToDepot.asAutoTraj(routine);
+    AutoTrajectory leftBumpToDepotPartial = ChoreoTraj.LeftBumpToDepotPartial.asAutoTraj(routine);
     AutoTrajectory depotToLeftClimb = ChoreoTraj.DepotToLeftClimb.asAutoTraj(routine);
 
     routine
         .active()
         .onTrue(
-            parallel(
+            sequence(
+                leftBumpToDepot.resetOdometry(),
                 robotCommands.climberUp(),
-                sequence(
-                    leftBumpToDepot.resetOdometry(),
-                    robotCommands.setCloseShot(),
-                    robotCommands.shoot(),
-                    waitSeconds(3),
-                    robotCommands.spinDownFromShoot(),
-                    parallel(robotCommands.intake(), leftBumpToDepot.cmd()))));
+                robotCommands.shoot(),
+                waitSeconds(3),
+                parallel(robotCommands.spinDownFromShoot(), robotCommands.dropIntake()),
+                parallel(robotCommands.intake(), leftBumpToDepotPartial.cmd())));
 
-    leftBumpToDepot
+    leftBumpToDepotPartial
         .done()
         .onTrue(
             sequence(
-                robotCommands.stopDrive(),
-                print("done with left bump to depot"),
-                robotCommands.creepForward().withTimeout(0.4),
-                robotCommands.stopDrive(),
-                waitSeconds(0.5),
-                robotCommands.releaseIntake(),
-                robotCommands.setMediumShot(),
                 robotCommands.shoot(),
-                waitSeconds(2),
+                waitSeconds(3),
                 robotCommands.spinDownFromShoot(),
                 depotToLeftClimb.cmd()));
 
@@ -49,9 +44,9 @@ public class DepotAndClimbAuto {
         .done()
         .onTrue(
             sequence(
-                print("done with depot to left climb"),
                 parallel(
-                    robotCommands.creepBackward(),
+                    sequence(
+                        new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
                     sequence(waitSeconds(1), robotCommands.climberMid()))));
 
     return routine;
