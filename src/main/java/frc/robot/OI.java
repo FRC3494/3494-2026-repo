@@ -158,6 +158,10 @@ public final class OI {
       return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
     }
 
+    public static Trigger resetShooterTrims() {
+      return primaryController.povRight();
+    }
+
     public static Trigger increaseDistanceTrim() {
       return new Trigger(() -> false);
     }
@@ -218,6 +222,10 @@ public final class OI {
 
       public static Trigger enableAutoTurret() {
         return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+      }
+
+      public static Trigger resetTurretTrim() {
+        return primaryController.povDown();
       }
 
       public static Trigger increaseTurretTrim() {

@@ -383,6 +383,17 @@ public class RobotContainer {
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
+    ShooterOI.resetShooterTrims()
+        .onTrue(
+            runOnce(
+                    () -> {
+                      aimShooterMathLinear.setDistanceTrim(Inches.of(0));
+                      aimShooterMathLinear.setFlywheelTrim(RPM.of(0));
+                      aimShooterMathLinear.setHoodTrim(Rotation2d.kZero);
+                    },
+                    aimShooterMathLinear)
+                .ignoringDisable(true));
+
     ShooterOI.increaseDistanceTrim()
         .onTrue(
             run(
@@ -457,6 +468,15 @@ public class RobotContainer {
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 
     TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
+
+    TurretOI.resetTurretTrim()
+        .onTrue(
+            runOnce(
+                    () -> {
+                      aimShooterMathLinear.setTurretTrim(0);
+                    },
+                    aimShooterMathLinear)
+                .ignoringDisable(true));
 
     TurretOI.increaseTurretTrim()
         .onTrue(
