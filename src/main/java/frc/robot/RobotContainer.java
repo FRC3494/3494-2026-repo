@@ -334,24 +334,43 @@ public class RobotContainer {
     ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
 
     ShooterOI.shootClose()
-        .onTrue(robotCommands.shootClose())
+        .onTrue(sequence(robotCommands.setCloseShot(false), robotCommands.shoot()))
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootCloseWithTrim()
+        .onTrue(sequence(robotCommands.setCloseShot(true), robotCommands.shoot()))
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+
     ShooterOI.shootMedium()
-        .onTrue(robotCommands.shootMedium())
+        .onTrue(sequence(robotCommands.setMediumShot(false), robotCommands.shoot()))
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootMediumWithTrim()
+        .onTrue(sequence(robotCommands.setMediumShot(true), robotCommands.shoot()))
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+
     ShooterOI.shootFar()
-        .onTrue(robotCommands.shootFar())
+        .onTrue(sequence(robotCommands.setFarShot(false), robotCommands.shoot()))
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootFarWithTrim()
+        .onTrue(sequence(robotCommands.setFarShot(true), robotCommands.shoot()))
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+
     ShooterOI.shootNeutralZone()
-        .onTrue(robotCommands.shootNeutralZone())
+        .onTrue(sequence(robotCommands.setNeutralZoneShot(false), robotCommands.shoot()))
+        .onFalse(
+            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+    ShooterOI.shootNeutralZoneWithTrim()
+        .onTrue(sequence(robotCommands.setNeutralZoneShot(true), robotCommands.shoot()))
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
     ShooterOI.shootDashboard()
-        .onTrue(robotCommands.shootDashboard())
+        .onTrue(sequence(robotCommands.setDashboardShot(), robotCommands.shoot()))
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 

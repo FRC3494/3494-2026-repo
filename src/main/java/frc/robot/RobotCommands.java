@@ -384,32 +384,61 @@ public class RobotCommands {
         hood);
   }
 
-  public Command shootClose() {
-    return sequence(
-            runFlywheelManual(RPM.of(3000)), setHoodManual(Rotation2d.fromDegrees(24.5)), shoot())
-        .withTimeout(3);
+  public Command setManualShooterSettings(Rotation2d hoodAngle, AngularVelocity flywheelSpeed) {
+    return sequence(runFlywheelManual(flywheelSpeed), setHoodManual(hoodAngle));
   }
 
-  public Command shootMedium() {
+  public Command setManualShooterSettingsWithTrim(
+      Rotation2d hoodAngle, AngularVelocity flywheelSpeed) {
     return sequence(
-        runFlywheelManual(RPM.of(3250)), setHoodManual(Rotation2d.fromDegrees(34.5)), shoot());
+        runFlywheelManual(() -> flywheelSpeed.plus(aimShooterMathLinear.getFlywheelTrim())),
+        setHoodManual(() -> hoodAngle.plus(aimShooterMathLinear.getHoodTrim())));
   }
 
-  public Command shootFar() {
-    return sequence(
-        runFlywheelManual(RPM.of(4500)), setHoodManual(Rotation2d.fromDegrees(29.5)), shoot());
+  public Command setCloseShot(boolean withTrim) {
+    Rotation2d angle = Rotation2d.fromDegrees(24.2238027);
+    AngularVelocity speed = RPM.of(2800);
+    if (!withTrim) {
+      return setManualShooterSettings(angle, speed);
+    } else {
+      return setManualShooterSettingsWithTrim(angle, speed);
+    }
   }
 
-  public Command shootNeutralZone() {
-    return sequence(
-        runFlywheelManual(RPM.of(4500)), setHoodManual(Rotation2d.fromDegrees(30.0)), shoot());
+  public Command setMediumShot(boolean withTrim) {
+    Rotation2d angle = Rotation2d.fromDegrees(35);
+    AngularVelocity speed = RPM.of(3200);
+    if (!withTrim) {
+      return setManualShooterSettings(angle, speed);
+    } else {
+      return setManualShooterSettingsWithTrim(angle, speed);
+    }
   }
 
-  public Command shootDashboard() {
+  public Command setFarShot(boolean withTrim) {
+    Rotation2d angle = Rotation2d.fromDegrees(45);
+    AngularVelocity speed = RPM.of(3750);
+    if (!withTrim) {
+      return setManualShooterSettings(angle, speed);
+    } else {
+      return setManualShooterSettingsWithTrim(angle, speed);
+    }
+  }
+
+  public Command setNeutralZoneShot(boolean withTrim) {
+    Rotation2d angle = Rotation2d.fromDegrees(45);
+    AngularVelocity speed = RPM.of(4500);
+    if (!withTrim) {
+      return setManualShooterSettings(angle, speed);
+    } else {
+      return setManualShooterSettingsWithTrim(angle, speed);
+    }
+  }
+
+  public Command setDashboardShot() {
     return sequence(
         runFlywheelManual(() -> RPM.of(flywheelSpeed.get())),
-        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngle.get())),
-        shoot());
+        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngle.get())));
   }
 
   // ==================== FLYWHEEL ====================

@@ -118,16 +118,32 @@ public final class OI {
       return rightButtonBoard.button(1, eventLoop).castTo(Trigger::new);
     }
 
+    public static Trigger shootCloseWithTrim() {
+      return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
+    }
+
     public static Trigger shootMedium() {
       return rightButtonBoard.button(2, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger shootMediumWithTrim() {
+      return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootFar() {
       return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
     }
 
+    public static Trigger shootFarWithTrim() {
+      return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+    }
+
     public static Trigger shootNeutralZone() {
       return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger shootNeutralZoneWithTrim() {
+      return new Trigger(() -> false);
     }
 
     public static Trigger shootDashboard() {
