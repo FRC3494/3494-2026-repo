@@ -23,9 +23,9 @@ public record ChoreoTraj(
       new ChoreoTraj(
           "DepotToLeftClimb",
           OptionalInt.empty(),
-          3.00234,
+          3.00395,
           new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
-          new Pose2d(1.13, 4.509, Rotation2d.fromRadians(1.571)));
+          new Pose2d(1.155, 4.509, Rotation2d.fromRadians(1.571)));
   public static final ChoreoTraj LeftBumpToDepot =
       new ChoreoTraj(
           "LeftBumpToDepot",
