@@ -395,7 +395,7 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     ShooterOI.increaseDistanceTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setDistanceTrim(
@@ -403,7 +403,7 @@ public class RobotContainer {
                 },
                 aimShooterMathLinear));
     ShooterOI.decreaseDistanceTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setDistanceTrim(
@@ -419,7 +419,7 @@ public class RobotContainer {
         .onFalse(robotCommands.stopFlywheel());
 
     FlywheelOI.increaseFlywheelTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setFlywheelTrim(
@@ -427,7 +427,7 @@ public class RobotContainer {
                 },
                 aimShooterMathLinear));
     FlywheelOI.decreaseFlywheelTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setFlywheelTrim(
@@ -441,7 +441,7 @@ public class RobotContainer {
     HoodOI.rezeroHood().onTrue(robotCommands.rezeroHood());
 
     HoodOI.increaseHoodTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setHoodTrim(
@@ -449,7 +449,7 @@ public class RobotContainer {
                 },
                 aimShooterMathLinear));
     HoodOI.decreaseHoodTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setHoodTrim(
@@ -479,19 +479,19 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     TurretOI.increaseTurretTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setTurretTrim(
-                      aimShooterMathLinear.getTurretTrimRot() + Units.degreesToRotations(1));
+                      aimShooterMathLinear.getTurretTrimRot() + Units.degreesToRotations(0.5));
                 },
                 aimShooterMathLinear));
     TurretOI.decreaseTurretTrim()
-        .onTrue(
+        .whileTrue(
             run(
                 () -> {
                   aimShooterMathLinear.setTurretTrim(
-                      aimShooterMathLinear.getTurretTrimRot() - Units.degreesToRotations(1));
+                      aimShooterMathLinear.getTurretTrimRot() - Units.degreesToRotations(0.5));
                 },
                 aimShooterMathLinear));
 
