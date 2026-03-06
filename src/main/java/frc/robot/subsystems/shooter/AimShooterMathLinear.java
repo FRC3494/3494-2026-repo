@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -34,10 +35,12 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
 
+  private final LoggedNetworkNumber turretTrimDeg =
+      new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg");
   private final LoggedNetworkNumber hoodTrimDeg =
-      new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg", 0.0);
+      new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg");
   private final LoggedNetworkNumber flywheelTrimRPM =
-      new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM", 0.0);
+      new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM");
 
   public AimShooterMathLinear(Supplier<Pose2d> robotPose) {
     this.robotPose = robotPose;
@@ -69,7 +72,8 @@ public class AimShooterMathLinear extends SubsystemBase {
       targetLocation = getNZShootingTarget(shooterTranslation);
     }
 
-    turretAngleRot = getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation());
+    turretAngleRot =
+        getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation()) + turretTrimDeg.get();
 
     double distanceToTarget = shooterTranslation.getDistance(targetLocation);
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
@@ -108,6 +112,14 @@ public class AimShooterMathLinear extends SubsystemBase {
     Rotation2d angle =
         Rotation2d.fromRadians(Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
     return angle.rotateBy(robotYaw.times(-1.0)).getRotations();
+  }
+
+  public double getTurretTrimRot() {
+    return Units.degreesToRotations(turretTrimDeg.get());
+  }
+
+  public void setTurretTrim(double trimRot) {
+    turretTrimDeg.set(Units.rotationsToDegrees(trimRot));
   }
 
   public Rotation2d getHoodTrim() {

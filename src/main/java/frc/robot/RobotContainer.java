@@ -411,8 +411,26 @@ public class RobotContainer {
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 
-    TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
     TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
+
+    TurretOI.increaseTurretTrim()
+        .onTrue(
+            run(
+                () -> {
+                  aimShooterMathLinear.setTurretTrim(
+                      aimShooterMathLinear.getTurretTrimRot() + Units.degreesToRotations(1));
+                },
+                aimShooterMathLinear));
+    TurretOI.decreaseTurretTrim()
+        .onTrue(
+            run(
+                () -> {
+                  aimShooterMathLinear.setTurretTrim(
+                      aimShooterMathLinear.getTurretTrimRot() - Units.degreesToRotations(1));
+                },
+                aimShooterMathLinear));
+
+    TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
 
     TurretOI.turretTo180().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(180)));

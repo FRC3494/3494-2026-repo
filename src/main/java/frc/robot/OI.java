@@ -184,12 +184,20 @@ public final class OI {
             .castTo(Trigger::new);
       }
 
-      public static Trigger rezeroTurret() {
-        return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
-      }
-
       public static Trigger enableAutoTurret() {
         return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+      }
+
+      public static Trigger increaseTurretTrim() {
+        return new Trigger(() -> false);
+      }
+
+      public static Trigger decreaseTurretTrim() {
+        return new Trigger(() -> false);
+      }
+
+      public static Trigger rezeroTurret() {
+        return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger setTurretEncoderTo0() {
