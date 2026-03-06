@@ -33,9 +33,6 @@ public class Hood extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Hood/HoodSetpointClamped")
   private Rotation2d hoodSetpointClamped = Rotation2d.kZero;
 
-  private final LoggedNetworkNumber hoodTrimDeg =
-      new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg", 0.0);
-
   @AutoLogOutput(key = "Shooter/Hood/Shooting")
   private boolean shooting = false;
 
@@ -80,14 +77,12 @@ public class Hood extends SubsystemBase {
   }
 
   public void setPosition(Rotation2d setpoint) {
-    hoodSetpoint = setpoint.plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
+    hoodSetpoint = setpoint;
 
     hoodSetpointClamped =
         Rotation2d.fromRotations(
             MathUtil.clamp(
-                hoodSetpoint.getRotations(),
-                hoodMinAngle.getRotations(),
-                hoodMaxAngle.getRotations()));
+                setpoint.getRotations(), hoodMinAngle.getRotations(), hoodMaxAngle.getRotations()));
 
     if (shooting) {
       moveToPosition(hoodSetpointClamped);
@@ -114,14 +109,6 @@ public class Hood extends SubsystemBase {
           .getClosedLoopController()
           .setSetpoint(position.getRotations(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
     }
-  }
-
-  public Rotation2d getHoodTrim() {
-    return Rotation2d.fromDegrees(hoodTrimDeg.get());
-  }
-
-  public void setHoodTrim(Rotation2d trim) {
-    hoodTrimDeg.set(trim.getDegrees());
   }
 
   public void setOpenLoop(Voltage voltage) {

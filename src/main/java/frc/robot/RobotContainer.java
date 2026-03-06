@@ -388,16 +388,18 @@ public class RobotContainer {
         .onTrue(
             run(
                 () -> {
-                  hood.setHoodTrim(hood.getHoodTrim().plus(Rotation2d.fromDegrees(1)));
+                  aimShooterMathLinear.setHoodTrim(
+                      aimShooterMathLinear.getHoodTrim().plus(Rotation2d.fromDegrees(1)));
                 },
-                hood));
+                aimShooterMathLinear));
     HoodOI.decreaseHoodTrim()
         .onTrue(
             run(
                 () -> {
-                  hood.setHoodTrim(hood.getHoodTrim().minus(Rotation2d.fromDegrees(1)));
+                  aimShooterMathLinear.setHoodTrim(
+                      aimShooterMathLinear.getHoodTrim().minus(Rotation2d.fromDegrees(1)));
                 },
-                hood));
+                aimShooterMathLinear));
 
     HoodOI.hoodManualUp().whileTrue(robotCommands.hoodManualUp());
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());

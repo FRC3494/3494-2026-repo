@@ -34,6 +34,8 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
 
+  private final LoggedNetworkNumber hoodTrimDeg =
+      new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg", 0.0);
   private final LoggedNetworkNumber flywheelTrimRPM =
       new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM", 0.0);
 
@@ -72,7 +74,9 @@ public class AimShooterMathLinear extends SubsystemBase {
     double distanceToTarget = shooterTranslation.getDistance(targetLocation);
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
 
-    hoodAngle = Rotation2d.fromRadians(hoodAngleMapRad.get(distanceToTarget));
+    hoodAngle =
+        Rotation2d.fromRadians(hoodAngleMapRad.get(distanceToTarget))
+            .plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
     flywheelSpeed =
         RPM.of(flywheelSpeedMapRPM.get(distanceToTarget)).plus(RPM.of(flywheelTrimRPM.get()));
   }
@@ -104,6 +108,14 @@ public class AimShooterMathLinear extends SubsystemBase {
     Rotation2d angle =
         Rotation2d.fromRadians(Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
     return angle.rotateBy(robotYaw.times(-1.0)).getRotations();
+  }
+
+  public Rotation2d getHoodTrim() {
+    return Rotation2d.fromDegrees(hoodTrimDeg.get());
+  }
+
+  public void setHoodTrim(Rotation2d trim) {
+    hoodTrimDeg.set(trim.getDegrees());
   }
 
   public AngularVelocity getFlywheelTrim() {
