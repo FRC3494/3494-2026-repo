@@ -75,7 +75,7 @@ public class Climber extends SubsystemBase {
     // Min position is ~2.4 and Max position is 0, since positive is "climb" direction -> climber
     // moves down
     climberSetpoint = setpoint;
-    climberSetpointClamped = MathUtil.clamp(setpoint, climberMinPosition, climberMaxPosition);
+    climberSetpointClamped = MathUtil.clamp(setpoint, climberMaxPosition, climberMinPosition);
 
     climberMotor
         .getClosedLoopController()
