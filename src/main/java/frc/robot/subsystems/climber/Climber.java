@@ -77,7 +77,9 @@ public class Climber extends SubsystemBase {
     climberSetpoint = setpoint;
     climberSetpointClamped = MathUtil.clamp(setpoint, climberMinPosition, climberMaxPosition);
 
-    climberMotor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
+    climberMotor
+        .getClosedLoopController()
+        .setSetpoint(climberSetpointClamped, ControlType.kPosition);
   }
 
   public void setOpenLoop(Voltage voltage) {
