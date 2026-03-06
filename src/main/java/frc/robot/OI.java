@@ -237,11 +237,11 @@ public final class OI {
       }
 
       public static Trigger turretTo180() {
-        return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+        return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger turretTo90() {
-        return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+        return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
       }
     }
   }
