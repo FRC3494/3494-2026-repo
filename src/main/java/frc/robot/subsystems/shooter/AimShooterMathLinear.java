@@ -76,7 +76,8 @@ public class AimShooterMathLinear extends SubsystemBase {
     }
 
     turretAngleRot =
-        getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation()) + turretTrimDeg.get();
+        getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation())
+            + Units.degreesToRotations(turretTrimDeg.get());
 
     double distanceToTarget =
         shooterTranslation.getDistance(targetLocation)
