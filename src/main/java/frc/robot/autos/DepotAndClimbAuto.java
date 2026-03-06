@@ -33,18 +33,14 @@ public class DepotAndClimbAuto {
 
     leftBumpToDepotPartial
         .done()
-        .onTrue(
-            sequence(
-                robotCommands.shoot(),
-                waitSeconds(3),
-                robotCommands.spinDownFromShoot(),
-                depotToLeftClimb.cmd()));
+        .onTrue(sequence(robotCommands.shoot(), waitSeconds(1.75), depotToLeftClimb.cmd()));
 
     depotToLeftClimb
         .done()
         .onTrue(
             sequence(
                 parallel(
+                    robotCommands.spinDownFromShoot(),
                     sequence(
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
                     sequence(waitSeconds(1), robotCommands.climberMid()))));
