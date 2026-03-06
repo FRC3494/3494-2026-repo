@@ -261,6 +261,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // ==================== WHOLE ROBOT ====================
+    OI.rezeroMechanisms()
+        .onTrue(
+            parallel(
+                robotCommands.rezeroClimber(),
+                robotCommands.rezeroHood(),
+                robotCommands.rezeroTurret()));
 
     // ==================== CLIMBER ====================
     ClimberOI.climberUp().onTrue(robotCommands.climberUp());

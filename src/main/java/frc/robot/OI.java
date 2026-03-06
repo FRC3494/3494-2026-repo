@@ -24,6 +24,10 @@ public final class OI {
     Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
   }
 
+  public static Trigger rezeroMechanisms() {
+    return new Trigger(() -> false);
+  }
+
   public static final class ClimberOI {
     public static Trigger climberUp() {
       return primaryController.y(eventLoop);
