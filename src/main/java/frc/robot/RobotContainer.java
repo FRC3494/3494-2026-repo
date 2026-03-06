@@ -267,7 +267,6 @@ public class RobotContainer {
             parallel(
                 robotCommands.rezeroClimber(),
                 robotCommands.rezeroHood(),
-                robotCommands.rezeroTurret(),
                 robotCommands.rezeroIntakeUppyDowny()));
 
     // ==================== CLIMBER ====================
