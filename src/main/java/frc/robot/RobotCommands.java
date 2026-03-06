@@ -114,6 +114,12 @@ public class RobotCommands {
     setTurretCommand = new SetTurretCommand(turret, aimShooterMathLinear::getTurretAngleRot);
   }
 
+  // ==================== WHOLE ROBOT ====================
+  public Command rezeroMechanisms() {
+    return parallel(rezeroClimber(), rezeroHood());
+    // TODO: intake uppy downy
+  }
+
   // ==================== CLIMBER ====================
   public Command climberUp() {
     return runOnce(

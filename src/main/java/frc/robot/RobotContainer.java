@@ -262,12 +262,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // ==================== WHOLE ROBOT ====================
-    OI.rezeroMechanisms()
-        .onTrue(
-            parallel(
-                robotCommands.rezeroClimber(),
-                robotCommands.rezeroHood(),
-                robotCommands.rezeroIntakeUppyDowny()));
+    OI.rezeroMechanisms().onTrue(robotCommands.rezeroMechanisms());
 
     // ==================== CLIMBER ====================
     ClimberOI.climberUp().onTrue(robotCommands.climberUp());
