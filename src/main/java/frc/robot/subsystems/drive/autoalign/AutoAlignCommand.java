@@ -34,6 +34,7 @@ public class AutoAlignCommand extends Command {
 
     xController.setTolerance(autoAlignLinearTolerance.in(Meters));
     yController.setTolerance(autoAlignLinearTolerance.in(Meters));
+    headingController.setTolerance(autoAlignAngularTolerance.getRadians());
     headingController.enableContinuousInput(-Math.PI, Math.PI);
   }
 

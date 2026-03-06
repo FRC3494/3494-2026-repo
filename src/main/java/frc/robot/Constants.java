@@ -310,6 +310,7 @@ public final class Constants {
       public static final double autoAlignLinearKi = 0;
       public static final double autoAlignLinearKd = 0.1;
       public static final Distance autoAlignLinearTolerance = Centimeters.of(1.0);
+      public static final Rotation2d autoAlignAngularTolerance = Rotation2d.fromDegrees(1.0);
 
       public static final double autoAlignAngularKp = 5.0;
       public static final double autoAlignAngularKi = 0.0;
