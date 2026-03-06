@@ -3,6 +3,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
+import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -347,6 +349,25 @@ public class RobotCommands {
   public Command dropIntake() {
     return sequence(
         sprintForward().withTimeout(1.0), sprintBackward().withTimeout(0.5), stopDrive());
+  }
+
+  public Command rezeroIntakeUppyDowny() {
+    return sequence(
+        runOnce(
+            () -> {
+              intake.setUppyDownyCurrentLimit(Amps.of(20));
+              intake.setUppyDownyOpenLoop(Volts.of(2));
+            },
+            intake),
+        waitUntil(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(19))),
+        runOnce(
+            () -> {
+              intake.setUppyDownyOpenLoop(Volts.of(0));
+              // TODO: min or max?
+              intake.setUppyDownyRelativeEncoderPosition(uppyDownyMinPosition);
+              intake.setUppyDownyCurrentLimit(Amps.of(uppyDownyCurrentLimit));
+            },
+            intake));
   }
 
   // ==================== SHOOTER ====================

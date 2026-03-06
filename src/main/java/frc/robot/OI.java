@@ -111,6 +111,10 @@ public final class OI {
     public static Trigger toggleIntake() {
       return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
     }
+
+    public static Trigger rezeroIntakeUppyDowny() {
+      return new Trigger(() -> false);
+    }
   }
 
   public static final class ShooterOI {

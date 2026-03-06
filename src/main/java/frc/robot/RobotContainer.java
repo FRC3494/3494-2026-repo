@@ -267,7 +267,8 @@ public class RobotContainer {
             parallel(
                 robotCommands.rezeroClimber(),
                 robotCommands.rezeroHood(),
-                robotCommands.rezeroTurret()));
+                robotCommands.rezeroTurret(),
+                robotCommands.rezeroIntakeUppyDowny()));
 
     // ==================== CLIMBER ====================
     ClimberOI.climberUp().onTrue(robotCommands.climberUp());
@@ -334,6 +335,8 @@ public class RobotContainer {
                 robotCommands.intake(),
                 robotCommands.releaseIntake(),
                 () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.of(0))));
+
+    IntakeOI.rezeroIntakeUppyDowny().onTrue(robotCommands.rezeroIntakeUppyDowny());
 
     // ==================== SHOOTER ====================
     RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoShooterSettings());

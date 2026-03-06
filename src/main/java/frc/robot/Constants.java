@@ -368,10 +368,14 @@ public final class Constants {
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 30;
     public static final double uppyDownyGearRatio = 1.0 / 4.0;
+    public static final int uppyDownCurrentSensingFilterSize = 10;
 
-    public static final double uppyDownyKp = 0.0;
-    public static final double uppyDownyKi = 0.0;
-    public static final double uppyDownyKd = 0.0;
+    public static final double uppyDownyMinPosition = 0.0;
+    public static final double uppyDownyMaxPosition = 0.0;
+
+    public static double uppyDownyKp = 0.0;
+    public static double uppyDownyKi = 0.0;
+    public static double uppyDownyKd = 0.0;
 
     public static final double uppyDownyKs = 0.0;
     public static final double uppyDownyKv = 0.0;

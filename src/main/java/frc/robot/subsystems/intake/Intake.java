@@ -11,8 +11,10 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,13 +23,28 @@ import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Intake extends SubsystemBase {
   SparkFlex spinnySpinnyMotor;
   SparkFlex uppyDownyMotor;
 
   @Getter @AutoLogOutput AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
-  @Getter @AutoLogOutput Rotation2d uppyDownySetpoint = Rotation2d.kZero;
+
+  @Getter @AutoLogOutput double uppyDownySetpoint = 0.0;
+  @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
+
+  private LoggedNetworkNumber uppyDownyP =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kP", uppyDownyKp);
+  private LoggedNetworkNumber uppyDownyI =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kI", uppyDownyKi);
+  private LoggedNetworkNumber uppyDownyD =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kD", uppyDownyKd);
+
+  @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
+
+  private final MedianFilter uppyDownyCurrentFilter =
+      new MedianFilter(uppyDownCurrentSensingFilterSize);
 
   SysIdRoutine spinnySpinnySysId;
 
@@ -76,6 +93,17 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyMotor, false);
     logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
+
+    boolean uppyDownyPidChanged =
+        uppyDownyP.get() != uppyDownyKp
+            || uppyDownyI.get() != uppyDownyKi
+            || uppyDownyD.get() != uppyDownyKd;
+    if (uppyDownyPidChanged) {
+      setUppyDownyPID(uppyDownyP.get(), uppyDownyI.get(), uppyDownyD.get());
+    }
+
+    uppyDownyFilteredCurrent =
+        Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));
   }
 
   public void setSpinnySpinnyVelocity(AngularVelocity velocity) {
@@ -87,13 +115,6 @@ public class Intake extends SubsystemBase {
     } else {
       spinnySpinnyMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
     }
-  }
-
-  public void setUppyDownyPosition(Rotation2d setpoint) {
-    uppyDownySetpoint = setpoint;
-    uppyDownyMotor
-        .getClosedLoopController()
-        .setSetpoint(setpoint.getRotations(), ControlType.kMAXMotionPositionControl);
   }
 
   public void setSpinnySpinnyOpenLoop(Voltage voltage) {
@@ -110,5 +131,39 @@ public class Intake extends SubsystemBase {
     return run(() -> setSpinnySpinnyOpenLoop(Volts.of(0.0)))
         .withTimeout(1.0)
         .andThen(spinnySpinnySysId.dynamic(direction));
+  }
+
+  public void setUppyDownyPosition(double setpoint) {
+    uppyDownySetpoint = setpoint;
+    uppyDownySetpointClamped = MathUtil.clamp(setpoint, uppyDownyMinPosition, uppyDownyMaxPosition);
+
+    uppyDownyMotor
+        .getClosedLoopController()
+        .setSetpoint(uppyDownySetpointClamped, ControlType.kPosition);
+  }
+
+  public void setUppyDownyOpenLoop(Voltage voltage) {
+    uppyDownyMotor.setVoltage(voltage);
+  }
+
+  public void setUppyDownyCurrentLimit(Current limit) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    config.smartCurrentLimit((int) limit.in(Amps));
+    uppyDownyMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  public void setUppyDownyRelativeEncoderPosition(double position) {
+    uppyDownyMotor.getEncoder().setPosition(position);
+  }
+
+  private void setUppyDownyPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    uppyDownyKp = p;
+    uppyDownyKi = i;
+    uppyDownyKd = d;
+    config.closedLoop.pid(p, i, d);
+    uppyDownyMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }
