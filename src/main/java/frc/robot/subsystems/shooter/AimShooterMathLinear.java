@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class AimShooterMathLinear extends SubsystemBase {
   private final Supplier<Pose2d> robotPose;
@@ -32,6 +33,9 @@ public class AimShooterMathLinear extends SubsystemBase {
 
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
+
+  private final LoggedNetworkNumber flywheelTrimRPM =
+      new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM", 0.0);
 
   public AimShooterMathLinear(Supplier<Pose2d> robotPose) {
     this.robotPose = robotPose;
@@ -69,7 +73,8 @@ public class AimShooterMathLinear extends SubsystemBase {
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
 
     hoodAngle = Rotation2d.fromRadians(hoodAngleMapRad.get(distanceToTarget));
-    flywheelSpeed = RPM.of(flywheelSpeedMapRPM.get(distanceToTarget));
+    flywheelSpeed =
+        RPM.of(flywheelSpeedMapRPM.get(distanceToTarget)).plus(RPM.of(flywheelTrimRPM.get()));
   }
 
   private Translation2d getRobotShooterTranslation(Pose2d currentRobotPose) {
@@ -99,5 +104,13 @@ public class AimShooterMathLinear extends SubsystemBase {
     Rotation2d angle =
         Rotation2d.fromRadians(Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
     return angle.rotateBy(robotYaw.times(-1.0)).getRotations();
+  }
+
+  public AngularVelocity getFlywheelTrim() {
+    return RPM.of(flywheelTrimRPM.get());
+  }
+
+  public void setFlywheelTrim(AngularVelocity trim) {
+    flywheelTrimRPM.set(trim.in(RPM));
   }
 }

@@ -138,6 +138,14 @@ public final class OI {
       public static Trigger runFlywheel() {
         return primaryController.rightBumper(eventLoop);
       }
+
+      public static Trigger increaseFlywheelTrim() {
+        return new Trigger(() -> false);
+      }
+
+      public static Trigger decreaseFlywheelTrim() {
+        return new Trigger(() -> false);
+      }
     }
 
     public static final class HoodOI {

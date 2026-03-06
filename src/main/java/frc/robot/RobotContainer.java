@@ -362,6 +362,23 @@ public class RobotContainer {
         .onTrue(robotCommands.runFlywheelManual(RPM.of(robotCommands.flywheelSpeed.get())))
         .onFalse(robotCommands.stopFlywheel());
 
+    FlywheelOI.increaseFlywheelTrim()
+        .onTrue(
+            run(
+                () -> {
+                  aimShooterMathLinear.setFlywheelTrim(
+                      aimShooterMathLinear.getFlywheelTrim().plus(RPM.of(10)));
+                },
+                aimShooterMathLinear));
+    FlywheelOI.decreaseFlywheelTrim()
+        .onTrue(
+            run(
+                () -> {
+                  aimShooterMathLinear.setFlywheelTrim(
+                      aimShooterMathLinear.getFlywheelTrim().minus(RPM.of(10)));
+                },
+                aimShooterMathLinear));
+
     // ==================== HOOD ====================
     hood.setDefaultCommand(robotCommands.setHoodCommand);
 
