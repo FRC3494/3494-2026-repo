@@ -354,7 +354,7 @@ public class RobotCommands {
 
   public Command dropIntake() {
     return sequence(
-        sprintForward().withTimeout(1.0), sprintBackward().withTimeout(0.5), stopDrive());
+        sprintForward().withTimeout(0.88), sprintBackward().withTimeout(0.75), stopDrive());
   }
 
   public Command rezeroIntakeUppyDowny() {
