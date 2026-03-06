@@ -355,6 +355,23 @@ public class RobotContainer {
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
+    ShooterOI.increaseDistanceTrim()
+        .onTrue(
+            run(
+                () -> {
+                  aimShooterMathLinear.setDistanceTrim(
+                      aimShooterMathLinear.getDistanceTrim().plus(Inches.of(2)));
+                },
+                aimShooterMathLinear));
+    ShooterOI.decreaseDistanceTrim()
+        .onTrue(
+            run(
+                () -> {
+                  aimShooterMathLinear.setDistanceTrim(
+                      aimShooterMathLinear.getDistanceTrim().minus(Inches.of(2)));
+                },
+                aimShooterMathLinear));
+
     // ==================== FLYWHEEL ====================
     flywheel.setDefaultCommand(robotCommands.setFlywheelCommand);
 

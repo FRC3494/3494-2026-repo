@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,6 +42,8 @@ public class AimShooterMathLinear extends SubsystemBase {
       new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg");
   private final LoggedNetworkNumber flywheelTrimRPM =
       new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM");
+  private final LoggedNetworkNumber distanceTrimInches =
+      new LoggedNetworkNumber("Tunable/Trim/DistanceTrimInches");
 
   public AimShooterMathLinear(Supplier<Pose2d> robotPose) {
     this.robotPose = robotPose;
@@ -75,7 +78,9 @@ public class AimShooterMathLinear extends SubsystemBase {
     turretAngleRot =
         getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation()) + turretTrimDeg.get();
 
-    double distanceToTarget = shooterTranslation.getDistance(targetLocation);
+    double distanceToTarget =
+        shooterTranslation.getDistance(targetLocation)
+            + Units.inchesToMeters(distanceTrimInches.get());
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
 
     hoodAngle =
@@ -136,5 +141,13 @@ public class AimShooterMathLinear extends SubsystemBase {
 
   public void setFlywheelTrim(AngularVelocity trim) {
     flywheelTrimRPM.set(trim.in(RPM));
+  }
+
+  public Distance getDistanceTrim() {
+    return Inches.of(distanceTrimInches.get());
+  }
+
+  public void setDistanceTrim(Distance trim) {
+    distanceTrimInches.set(trim.in(Inches));
   }
 }

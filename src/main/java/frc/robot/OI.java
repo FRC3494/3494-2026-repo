@@ -134,6 +134,14 @@ public final class OI {
       return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
     }
 
+    public static Trigger increaseDistanceTrim() {
+      return new Trigger(() -> false);
+    }
+
+    public static Trigger decreaseDistanceTrim() {
+      return new Trigger(() -> false);
+    }
+
     public static final class FlywheelOI {
       public static Trigger runFlywheel() {
         return primaryController.rightBumper(eventLoop);
