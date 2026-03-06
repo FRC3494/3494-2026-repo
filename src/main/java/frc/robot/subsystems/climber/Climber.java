@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -23,7 +24,8 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class Climber extends SubsystemBase {
   private SparkFlex climberMotor;
 
-  @Getter @AutoLogOutput private double climberSetpoint = 0;
+  @Getter @AutoLogOutput private double climberSetpoint = 0.0;
+  @Getter @AutoLogOutput private double climberSetpointClamped = 0.0;
 
   private LoggedNetworkNumber climberP = new LoggedNetworkNumber("Tunable/Climber/kP", climberKp);
   private LoggedNetworkNumber climberI = new LoggedNetworkNumber("Tunable/Climber/kI", climberKi);
@@ -72,10 +74,10 @@ public class Climber extends SubsystemBase {
   public void setPosition(double setpoint) {
     // Min position is ~2.4 and Max position is 0, since positive is "climb" direction -> climber
     // moves down
-    if (setpoint <= climberMinPosition && setpoint >= climberMaxPosition) {
-      climberSetpoint = setpoint;
-      climberMotor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
-    }
+    climberSetpoint = setpoint;
+    climberSetpointClamped = MathUtil.clamp(setpoint, climberMinPosition, climberMaxPosition);
+
+    climberMotor.getClosedLoopController().setSetpoint(setpoint, ControlType.kPosition);
   }
 
   public void setOpenLoop(Voltage voltage) {
