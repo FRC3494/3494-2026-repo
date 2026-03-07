@@ -381,6 +381,7 @@ public class RobotCommands {
     return sequence(
             runSpindexer(),
             startHood(),
+            startFlywheel(),
             waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
             runOnce(
                 () -> {
@@ -398,7 +399,8 @@ public class RobotCommands {
         stopKicker(),
         waitSeconds(0.25),
         stopIntake(),
-        stopHood());
+        stopHood(),
+        ceaseFlywheel());
   }
 
   public Command enableAutoShooterSettings() {
@@ -474,6 +476,22 @@ public class RobotCommands {
         () -> {
           flywheel.removeDefaultCommand();
           flywheel.setVelocity(RPM.of(0));
+        },
+        flywheel);
+  }
+
+  public Command startFlywheel() {
+    return runOnce(
+        () -> {
+          flywheel.setShooting(true);
+        },
+        flywheel);
+  }
+
+  public Command ceaseFlywheel() {
+    return runOnce(
+        () -> {
+          flywheel.setShooting(false);
         },
         flywheel);
   }

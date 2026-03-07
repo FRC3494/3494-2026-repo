@@ -39,6 +39,9 @@ public class Flywheel extends SubsystemBase {
   private LoggedNetworkNumber flywheelD =
       new LoggedNetworkNumber("Tunable/Flywheel/kD", flywheelKd);
 
+  @AutoLogOutput(key = "Shooter/Hood/Shooting")
+  private boolean shooting = false;
+
   public Flywheel() {
     leftMotor = new SparkFlex(RobotMap.Shooter.flywheelLeftCanId, MotorType.kBrushless);
     rightMotor = new SparkFlex(RobotMap.Shooter.flywheelRightCanId, MotorType.kBrushless);
@@ -88,6 +91,25 @@ public class Flywheel extends SubsystemBase {
 
   public void setVelocity(AngularVelocity velocity) {
     flywheelSetpoint = velocity;
+
+    if (shooting) {
+      goToSetpoint(velocity);
+    } else {
+      goToSetpoint(RPM.of(0));
+    }
+  }
+
+  public void setShooting(boolean flywheelShouldRun) {
+    shooting = flywheelShouldRun;
+
+    if (flywheelShouldRun) {
+      goToSetpoint(flywheelSetpoint);
+    } else {
+      goToSetpoint(RPM.of(0));
+    }
+  }
+
+  private void goToSetpoint(AngularVelocity velocity) {
     if (!velocity.isEquivalent(RPM.of(0))) {
       leftMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
     } else {
