@@ -143,7 +143,6 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new AutoChooser();
-    // TODO: add another argument at the end for TrajectoryLogger
     autoFactory =
         new AutoFactory(
             drive::getPose,
