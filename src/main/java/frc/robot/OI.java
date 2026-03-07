@@ -168,25 +168,25 @@ public final class OI {
 
     public static Trigger increaseDistanceTrim() {
       return leftButtonBoard
-          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
+          .axisLessThan(1, -controllerStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
 
     public static Trigger decreaseDistanceTrim() {
       return leftButtonBoard
-          .axisLessThan(1, -controllerStickDeadband, eventLoop)
+          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
 
     public static Trigger trimRight() {
       return rightButtonBoard
-          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+          .axisLessThan(0, -controllerStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
 
     public static Trigger trimLeft() {
       return rightButtonBoard
-          .axisLessThan(0, -controllerStickDeadband, eventLoop)
+          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
 
