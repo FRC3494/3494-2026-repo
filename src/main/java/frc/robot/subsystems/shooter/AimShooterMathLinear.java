@@ -81,7 +81,10 @@ public class AimShooterMathLinear extends SubsystemBase {
 
     turretAngleRot =
         getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation())
-            + Units.degreesToRotations(turretTrimDeg.get());
+            + Units.degreesToRotations(turretTrimDeg.get())
+            // ! Auto adjustment; bandaid
+            // TODO: fix turret aiming properly
+            + (DriverStation.isAutonomous() ? Units.degreesToRotations(3) : 0);
 
     double distanceToTarget =
         shooterTranslation.getDistance(targetLocation)
