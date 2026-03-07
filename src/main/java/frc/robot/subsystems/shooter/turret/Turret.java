@@ -45,7 +45,11 @@ public class Turret extends SubsystemBase {
         .smartCurrentLimit(turretCurrentLimit)
         .idleMode(IdleMode.kBrake)
         .inverted(turretInverted);
-    turretConfig.closedLoop.pid(turretKp, turretKi, turretKd);
+    turretConfig
+        .closedLoop
+        .pid(turretKp, turretKi, turretKd)
+        .iMaxAccum(turretIMaxAccum)
+        .iZone(turretIZone);
     turretConfig.closedLoop.feedForward.sva(turretKs, turretKv, turretKa);
     turretConfig
         .encoder

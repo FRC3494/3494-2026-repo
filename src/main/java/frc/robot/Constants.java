@@ -481,6 +481,9 @@ public final class Constants {
       public static double turretKi = 0.0;
       public static double turretKd = 42.0;
 
+      public static double turretIMaxAccum = 0.01;
+      public static double turretIZone = 0.01;
+
       public static final double turretKs = 0.0;
       public static final double turretKv = 0.0;
       public static final double turretKa = 0.0;
