@@ -568,7 +568,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setTurretTrim(
-                      aimShooterMathLinear.getTurretTrimRot() + Units.degreesToRotations(0.5));
+                      aimShooterMathLinear.getTurretTrimRot() + Units.degreesToRotations(1));
                 },
                 aimShooterMathLinear));
     TurretOI.decreaseTurretTrim()
@@ -576,7 +576,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setTurretTrim(
-                      aimShooterMathLinear.getTurretTrimRot() - Units.degreesToRotations(0.5));
+                      aimShooterMathLinear.getTurretTrimRot() - Units.degreesToRotations(1));
                 },
                 aimShooterMathLinear));
 
