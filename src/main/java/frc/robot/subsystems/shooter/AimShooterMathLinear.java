@@ -44,6 +44,10 @@ public class AimShooterMathLinear extends SubsystemBase {
       new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM");
   private final LoggedNetworkNumber distanceTrimInches =
       new LoggedNetworkNumber("Tunable/Trim/DistanceTrimInches");
+  private final LoggedNetworkNumber xTrimInches =
+      new LoggedNetworkNumber("Tunable/Trim/XTrimInches");
+  private final LoggedNetworkNumber yTrimInches =
+      new LoggedNetworkNumber("Tunable/Trim/YTrimInches");
 
   public AimShooterMathLinear(Supplier<Pose2d> robotPose) {
     this.robotPose = robotPose;
@@ -70,7 +74,7 @@ public class AimShooterMathLinear extends SubsystemBase {
     Logger.recordOutput("AimShooterMathLinear/InAllianceZone", inAllianceZone);
 
     if (inAllianceZone) {
-      targetLocation = allianceHubLocation;
+      targetLocation = allianceHubLocation.plus(new Translation2d(getXTrim(), getYTrim()));
     } else {
       targetLocation = getNZShootingTarget(shooterTranslation);
     }
@@ -150,5 +154,21 @@ public class AimShooterMathLinear extends SubsystemBase {
 
   public void setDistanceTrim(Distance trim) {
     distanceTrimInches.set(trim.in(Inches));
+  }
+
+  public Distance getXTrim() {
+    return Inches.of(xTrimInches.get());
+  }
+
+  public void setXTrim(Distance trim) {
+    xTrimInches.set(trim.in(Inches));
+  }
+
+  public Distance getYTrim() {
+    return Inches.of(yTrimInches.get());
+  }
+
+  public void setYTrim(Distance trim) {
+    yTrimInches.set(trim.in(Inches));
   }
 }

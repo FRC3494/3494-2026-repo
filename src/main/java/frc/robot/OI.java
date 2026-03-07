@@ -167,7 +167,37 @@ public final class OI {
     }
 
     public static Trigger decreaseDistanceTrim() {
-      return new Trigger(() -> false);
+      return leftButtonBoard
+          .axisLessThan(1, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger trimRight() {
+      return rightButtonBoard
+          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger trimLeft() {
+      return rightButtonBoard
+          .axisLessThan(0, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger trimForward() {
+      return rightButtonBoard
+          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger trimBack() {
+      return rightButtonBoard
+          .axisLessThan(1, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
+    }
+
+    public static Trigger resetXYTrim() {
+      return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
     }
 
     public static final class FlywheelOI {

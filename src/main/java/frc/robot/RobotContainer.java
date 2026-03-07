@@ -15,6 +15,9 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -403,6 +406,69 @@ public class RobotContainer {
                 () -> {
                   aimShooterMathLinear.setDistanceTrim(
                       aimShooterMathLinear.getDistanceTrim().minus(Inches.of(2)));
+                },
+                aimShooterMathLinear));
+
+    Distance xyTrimSensitivity = Inches.of(2.0);
+    ShooterOI.trimRight()
+        .whileTrue(
+            run(
+                () -> {
+                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+                    aimShooterMathLinear.setYTrim(
+                        aimShooterMathLinear.getYTrim().minus(xyTrimSensitivity));
+                  } else {
+                    aimShooterMathLinear.setYTrim(
+                        aimShooterMathLinear.getYTrim().plus(xyTrimSensitivity));
+                  }
+                },
+                aimShooterMathLinear));
+    ShooterOI.trimLeft()
+        .whileTrue(
+            run(
+                () -> {
+                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+                    aimShooterMathLinear.setYTrim(
+                        aimShooterMathLinear.getYTrim().plus(xyTrimSensitivity));
+                  } else {
+                    aimShooterMathLinear.setYTrim(
+                        aimShooterMathLinear.getYTrim().minus(xyTrimSensitivity));
+                  }
+                },
+                aimShooterMathLinear));
+    ShooterOI.trimForward()
+        .whileTrue(
+            run(
+                () -> {
+                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+                    aimShooterMathLinear.setXTrim(
+                        aimShooterMathLinear.getXTrim().plus(xyTrimSensitivity));
+                  } else {
+                    aimShooterMathLinear.setXTrim(
+                        aimShooterMathLinear.getXTrim().minus(xyTrimSensitivity));
+                  }
+                },
+                aimShooterMathLinear));
+    ShooterOI.trimBack()
+        .whileTrue(
+            run(
+                () -> {
+                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+                    aimShooterMathLinear.setXTrim(
+                        aimShooterMathLinear.getXTrim().minus(xyTrimSensitivity));
+                  } else {
+                    aimShooterMathLinear.setXTrim(
+                        aimShooterMathLinear.getXTrim().plus(xyTrimSensitivity));
+                  }
+                },
+                aimShooterMathLinear));
+
+    ShooterOI.resetXYTrim()
+        .onTrue(
+            runOnce(
+                () -> {
+                  aimShooterMathLinear.setXTrim(Inches.of(0));
+                  aimShooterMathLinear.setYTrim(Inches.of(0));
                 },
                 aimShooterMathLinear));
 
