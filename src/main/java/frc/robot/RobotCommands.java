@@ -43,9 +43,9 @@ public class RobotCommands {
 
   // ==================== CLIMBER ====================
   private LoggedNetworkNumber climberUpPos =
-      new LoggedNetworkNumber("Tunable/ClimberUpPos", climberMaxPosition);
+      new LoggedNetworkNumber("Tunable/ClimberUpPos", climberUpPosition);
   private LoggedNetworkNumber climberDownPos =
-      new LoggedNetworkNumber("Tunable/ClimberDownPos", climberMinPosition);
+      new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
   // How far DOWN the climber is for "mid" position
   public LoggedNetworkNumber climberMidFactor =
       new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.6);
@@ -157,7 +157,7 @@ public class RobotCommands {
         runOnce(
             () -> {
               climber.setOpenLoop(Volts.of(0));
-              climber.setRelativeEncoderPosition(climberMinPosition);
+              climber.setRelativeEncoderPosition(climberDownPosition);
               climber.setCurrentLimit(Amps.of(climberCurrentLimit));
             },
             climber));
@@ -178,7 +178,7 @@ public class RobotCommands {
               climber.setOpenLoop(Volts.of(-2));
             },
             climber),
-        waitUntil(() -> climber.getPosition() <= climberMaxPosition + 0.05),
+        waitUntil(() -> climber.getPosition() <= climberUpPosition + 0.05),
         stopClimber());
   }
 
@@ -189,7 +189,7 @@ public class RobotCommands {
               climber.setOpenLoop(Volts.of(2));
             },
             climber),
-        waitUntil(() -> climber.getPosition() >= climberMinPosition - 0.05),
+        waitUntil(() -> climber.getPosition() >= climberDownPosition - 0.05),
         stopClimber());
   }
 

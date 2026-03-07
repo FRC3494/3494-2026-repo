@@ -62,6 +62,8 @@ public class Hood extends SubsystemBase {
     hoodConfig.closedLoop.feedForward.sva(hoodKs, hoodKv, hoodKa);
     hoodMotor.configure(
         hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    setRelativeEncoderPosition(hoodMinAngle);
   }
 
   @Override

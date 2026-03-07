@@ -167,8 +167,8 @@ public final class Constants {
 
     public static final int climberCurrentSensingFilterSize = 10;
 
-    public static final double climberMinPosition = 2.443155;
-    public static final double climberMaxPosition = 0.0;
+    public static final double climberDownPosition = 2.443155;
+    public static final double climberUpPosition = 0.0;
 
     public static double climberKp = 10.0;
     public static double climberKi = 0.0;

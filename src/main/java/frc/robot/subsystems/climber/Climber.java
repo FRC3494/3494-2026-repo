@@ -51,6 +51,8 @@ public class Climber extends SubsystemBase {
     climberConfig.closedLoop.feedForward.sva(climberKs, climberKv, climberKa);
     climberMotor.configure(
         climberConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    setRelativeEncoderPosition(climberDownPosition);
   }
 
   @Override
@@ -75,7 +77,7 @@ public class Climber extends SubsystemBase {
     // Min position is ~2.4 and Max position is 0, since positive is "climb" direction -> climber
     // moves down
     climberSetpoint = setpoint;
-    climberSetpointClamped = MathUtil.clamp(setpoint, climberMaxPosition, climberMinPosition);
+    climberSetpointClamped = MathUtil.clamp(setpoint, climberUpPosition, climberDownPosition);
 
     climberMotor
         .getClosedLoopController()

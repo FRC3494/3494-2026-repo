@@ -276,7 +276,7 @@ public class RobotContainer {
                 robotCommands.climberDown(),
                 () ->
                     climber.getPosition()
-                        <= climberMinPosition * robotCommands.climberMidFactor.get() - 0.05));
+                        <= climberDownPosition * robotCommands.climberMidFactor.get() - 0.05));
 
     ClimberOI.rezeroClimber().onTrue(robotCommands.rezeroClimber());
 
