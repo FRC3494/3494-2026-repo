@@ -565,6 +565,7 @@ public class RobotContainer {
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
     TurretOI.unmurderTurret().onTrue(robotCommands.unmurderTurret());
     TurretOI.lockTurret().onTrue(robotCommands.lockTurret());
+    SmartDashboard.putData("Buttons/EnableAutoTurret", robotCommands.enableAutoTurret());
 
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
 
