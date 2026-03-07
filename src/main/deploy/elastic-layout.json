@@ -168,14 +168,14 @@
             }
           },
           {
-            "title": "FlywheelThresholdRPM",
+            "title": "FlywheelThreshold",
             "x": 180.0,
             "y": 330.0,
             "width": 150.0,
             "height": 90.0,
             "type": "Text Display",
             "properties": {
-              "topic": "Tunable/FlywheelThresholdRPM",
+              "topic": "Tunable/FlywheelThreshold",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": true
@@ -252,7 +252,7 @@
             }
           },
           {
-            "title": "kP",
+            "title": "Climber - kP",
             "x": 810.0,
             "y": 240.0,
             "width": 150.0,
@@ -288,6 +288,202 @@
             "type": "Text Display",
             "properties": {
               "topic": "Tunable/Climber/kD",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Turret - kP",
+            "x": 810.0,
+            "y": 150.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Turret/kP",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kI",
+            "x": 960.0,
+            "y": 150.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Turret/kI",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kD",
+            "x": 1110.0,
+            "y": 150.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Turret/kD",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Spindexer - kP",
+            "x": 810.0,
+            "y": 60.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Spindexer/kP",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kI",
+            "x": 960.0,
+            "y": 60.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Spindexer/kI",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "kD",
+            "x": 1110.0,
+            "y": 60.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Spindexer/kD",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "ClimberMidFactor",
+            "x": 630.0,
+            "y": 420.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/ClimberMidFactor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "TurretManualSpeed",
+            "x": 30.0,
+            "y": 240.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/TurretManualSpeed",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "AngleStdDev",
+            "x": 330.0,
+            "y": 240.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Vision/AngleStdDev",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "DistanceStdDev",
+            "x": 180.0,
+            "y": 240.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Tunable/Vision/DistanceStdDev",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "TurretTrimDeg",
+            "x": 630.0,
+            "y": 0.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/TurretTrimDeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "HoodTrimDeg",
+            "x": 480.0,
+            "y": 0.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/HoodTrimDeg",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "FlywheelTrimRPM",
+            "x": 330.0,
+            "y": 0.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/FlywheelTrimRPM",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "DistanceTrimInches",
+            "x": 180.0,
+            "y": 0.0,
+            "width": 150.0,
+            "height": 90.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/DistanceTrimInches",
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": true
