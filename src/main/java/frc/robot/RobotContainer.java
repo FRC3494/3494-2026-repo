@@ -180,6 +180,7 @@ public class RobotContainer {
   }
 
   private void configureTuningAutos() {
+    // ==================== Drive ====================
     autoChooser.addCmd(
         "Drive Wheel Radius Rotational Characterization",
         () -> DriveCommands.wheelRadiusCharacterization(drive));
@@ -201,6 +202,7 @@ public class RobotContainer {
     autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
+    // ==================== Flywheel ====================
     autoChooser.addCmd(
         "Flywheel SysId (Quasistatic Forward)",
         () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -214,6 +216,7 @@ public class RobotContainer {
         "Flywheel SysId (Dynamic Reverse)",
         () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    // ==================== Hopper ====================
     autoChooser.addCmd(
         "Spindexer SysId (Quasistatic Forward)",
         () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -240,6 +243,7 @@ public class RobotContainer {
         "Kicker SysId (Dynamic Reverse)",
         () -> hopper.kickerSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    // ==================== Intake ====================
     autoChooser.addCmd(
         "Intake SpinnySpinny SysId (Quasistatic Forward)",
         () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -252,6 +256,20 @@ public class RobotContainer {
     autoChooser.addCmd(
         "Intake SpinnySpinny SysId (Dynamic Reverse)",
         () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // ==================== Turret ====================
+    autoChooser.addCmd(
+        "Turret SysId (Quasistatic Forward)",
+        () -> turret.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Turret SysId (Quasistatic Reverse)",
+        () -> turret.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Turret SysId (Dynamic Forward)",
+        () -> turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Turret SysId (Dynamic Reverse)",
+        () -> turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }

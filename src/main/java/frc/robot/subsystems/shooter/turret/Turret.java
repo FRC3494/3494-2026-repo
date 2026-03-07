@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter.turret;
 
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 import static frc.robot.util.SparkUtil.logMotorStats;
 
@@ -13,10 +14,13 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Turret extends SubsystemBase {
@@ -36,6 +40,8 @@ public class Turret extends SubsystemBase {
   private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
 
   private double magSensorStartPosition = 0.0;
+
+  SysIdRoutine turretSysId;
 
   public Turret() {
     turretMotor = new SparkFlex(RobotMap.Shooter.turretMotorCanId, MotorType.kBrushless);
@@ -64,6 +70,15 @@ public class Turret extends SubsystemBase {
         turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     turretMagSensor = new DigitalInput(RobotMap.Shooter.turretMagSensorDIO);
+
+    turretSysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                Volts.per(Seconds).of(0.1),
+                Volts.of(2),
+                null,
+                (state) -> Logger.recordOutput("Turret/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> setOpenLoop(voltage), null, this));
 
     // new Trigger(this::isMagSensorTripped)
     //     .and(ShooterOI.rezeroTurret())
@@ -121,6 +136,18 @@ public class Turret extends SubsystemBase {
 
   public void setOpenLoop(Voltage volts) {
     turretMotor.setVoltage(volts);
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return run(() -> setOpenLoop(Volts.of(0.0)))
+        .withTimeout(1.0)
+        .andThen(turretSysId.quasistatic(direction));
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return run(() -> setOpenLoop(Volts.of(0.0)))
+        .withTimeout(1.0)
+        .andThen(turretSysId.dynamic(direction));
   }
 
   public void setRelativeEncoderPosition(double rotations) {
