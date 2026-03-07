@@ -557,6 +557,7 @@ public class RobotContainer {
 
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
     TurretOI.unmurderTurret().onTrue(robotCommands.unmurderTurret());
+    TurretOI.lockTurret().onTrue(robotCommands.lockTurret());
 
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
 

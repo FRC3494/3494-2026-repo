@@ -643,6 +643,15 @@ public class RobotCommands {
         enableAutoTurret());
   }
 
+  public Command lockTurret() {
+    return runOnce(
+        () -> {
+          turret.removeDefaultCommand();
+          turret.setOpenLoop(Volts.of(0));
+        },
+        turret);
+  }
+
   public Command enableAutoTurret() {
     return runOnce(
             () -> {

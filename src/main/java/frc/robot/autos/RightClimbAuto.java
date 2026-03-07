@@ -29,10 +29,7 @@ public class RightClimbAuto {
                 robotCommands.climberUp(),
                 robotCommands.shoot(),
                 waitSeconds(3),
-                parallel(
-                    rightClimb.cmd(),
-                    robotCommands.spinDownFromShoot(),
-                    robotCommands.stopFlywheel())));
+                parallel(rightClimb.cmd(), robotCommands.spinDownFromShoot())));
 
     rightClimb
         .done()

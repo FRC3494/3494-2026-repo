@@ -291,6 +291,10 @@ public final class OI {
         return leftButtonBoard.button(5, eventLoop).castTo(Trigger::new);
       }
 
+      public static Trigger lockTurret() {
+        return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+      }
+
       public static Trigger setTurretEncoderTo0() {
         return new Trigger(() -> false);
         // return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
