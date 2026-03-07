@@ -491,6 +491,8 @@ public class RobotContainer {
                 aimShooterMathLinear));
 
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
+    TurretOI.unmurderTurret().onTrue(robotCommands.unmurderTurret());
+
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
 
     TurretOI.turretTo180().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(180)));

@@ -240,6 +240,10 @@ public final class OI {
         return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
       }
 
+      public static Trigger unmurderTurret() {
+        return leftButtonBoard.button(5, eventLoop).castTo(Trigger::new);
+      }
+
       public static Trigger setTurretEncoderTo0() {
         return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
       }

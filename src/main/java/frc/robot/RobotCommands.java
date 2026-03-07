@@ -613,6 +613,18 @@ public class RobotCommands {
         .ignoringDisable(true);
   }
 
+  public Command unmurderTurret() {
+    return sequence(
+        runOnce(
+            () -> {
+              turret.setOpenLoop(Volts.of(-1.5));
+            },
+            turret),
+        waitSeconds(1),
+        rezeroTurret(),
+        enableAutoTurret());
+  }
+
   public Command enableAutoTurret() {
     return runOnce(
             () -> {
