@@ -617,7 +617,7 @@ public class RobotCommands {
     return runOnce(
         () -> {
           turret.removeDefaultCommand();
-          turret.setPosition(Units.degreesToRotations(180));
+          turret.setPosition(rotations);
         },
         turret);
   }
@@ -647,7 +647,7 @@ public class RobotCommands {
     return runOnce(
         () -> {
           turret.removeDefaultCommand();
-          turret.setOpenLoop(Volts.of(0));
+          turretToPosition(0);
         },
         turret);
   }

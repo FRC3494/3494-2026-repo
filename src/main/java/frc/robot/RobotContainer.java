@@ -396,7 +396,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setDistanceTrim(
-                      aimShooterMathLinear.getDistanceTrim().plus(Inches.of(2)));
+                      aimShooterMathLinear.getDistanceTrim().plus(Inches.of(1)));
                 },
                 aimShooterMathLinear));
     ShooterOI.decreaseDistanceTrim()
@@ -404,11 +404,18 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setDistanceTrim(
-                      aimShooterMathLinear.getDistanceTrim().minus(Inches.of(2)));
+                      aimShooterMathLinear.getDistanceTrim().minus(Inches.of(1)));
+                },
+                aimShooterMathLinear));
+    ShooterOI.resetDistanceTrim()
+        .onTrue(
+            runOnce(
+                () -> {
+                  aimShooterMathLinear.setDistanceTrim(Inches.of(0));
                 },
                 aimShooterMathLinear));
 
-    Distance xyTrimSensitivity = Inches.of(2.0);
+    Distance xyTrimSensitivity = Inches.of(1.0);
     ShooterOI.trimRight()
         .whileTrue(
             run(

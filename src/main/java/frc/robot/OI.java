@@ -163,7 +163,8 @@ public final class OI {
     }
 
     public static Trigger resetShooterTrims() {
-      return primaryController.povRight();
+      return new Trigger(() -> false);
+      // return primaryController.povRight();
     }
 
     public static Trigger increaseDistanceTrim() {
@@ -176,6 +177,10 @@ public final class OI {
       return leftButtonBoard
           .axisGreaterThan(1, controllerStickDeadband, eventLoop)
           .castTo(Trigger::new);
+    }
+
+    public static Trigger resetDistanceTrim() {
+      return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger trimRight() {
