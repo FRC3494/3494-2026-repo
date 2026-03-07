@@ -25,6 +25,7 @@ public class DepotAndClimbAuto {
         .onTrue(
             sequence(
                 leftBumpToDepot.resetOdometry(),
+                robotCommands.enableAutoShooterSettings(),
                 robotCommands.climberUp(),
                 robotCommands.shoot(),
                 waitSeconds(3),

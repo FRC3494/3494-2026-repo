@@ -25,6 +25,7 @@ public class RightClimbAuto {
         .onTrue(
             sequence(
                 rightClimb.resetOdometry(),
+                robotCommands.enableAutoShooterSettings(),
                 robotCommands.climberUp(),
                 robotCommands.shoot(),
                 waitSeconds(3),
