@@ -25,6 +25,7 @@ public final class OI {
   }
 
   public static Trigger rezeroMechanisms() {
+    // Just hit individual buttons lol
     return new Trigger(() -> false);
   }
 
@@ -42,15 +43,12 @@ public final class OI {
     }
 
     public static Trigger climberManualUp() {
-      return rightButtonBoard
-          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      // Just use climber rezero
+      return new Trigger(() -> false);
     }
 
     public static Trigger climberManualDown() {
-      return rightButtonBoard
-          .axisLessThan(1, -controllerStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      return new Trigger(() -> false);
     }
   }
 
@@ -76,7 +74,7 @@ public final class OI {
     }
 
     public static Trigger stopWithX() {
-      return primaryController.x(eventLoop);
+      return primaryController.rightBumper(eventLoop);
     }
 
     public static Trigger lockTo45() {
@@ -85,23 +83,26 @@ public final class OI {
     }
 
     public static Trigger autoAlignClimb() {
-      return primaryController.povLeft();
+      return primaryController.leftBumper(eventLoop);
     }
   }
 
   public static final class HopperOI {
-    public static Trigger runSpindexer() {
-      return primaryController.b(eventLoop);
+    public static Trigger runSpindexerBackwards() {
+      return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger runKicker() {
-      return primaryController.leftBumper(eventLoop);
+      return new Trigger(() -> false);
+      // return primaryController.leftBumper(eventLoop);
     }
   }
 
   public static final class IntakeOI {
     public static Trigger intake() {
-      return primaryController.rightTrigger(controllerTriggerDeadband, eventLoop);
+      return primaryController
+          .rightTrigger(controllerTriggerDeadband, eventLoop)
+          .or(rightButtonBoard.button(10, eventLoop));
     }
 
     public static Trigger outtake() {
@@ -109,7 +110,8 @@ public final class OI {
     }
 
     public static Trigger toggleIntake() {
-      return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger rezeroIntakeUppyDowny() {
@@ -119,7 +121,9 @@ public final class OI {
 
   public static final class ShooterOI {
     public static Trigger shoot() {
-      return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
+      return primaryController
+          .leftTrigger(controllerTriggerDeadband, eventLoop)
+          .or(rightButtonBoard.button(8, eventLoop));
     }
 
     public static Trigger shootClose() {
@@ -155,7 +159,7 @@ public final class OI {
     }
 
     public static Trigger shootDashboard() {
-      return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+      return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger resetShooterTrims() {
@@ -163,7 +167,9 @@ public final class OI {
     }
 
     public static Trigger increaseDistanceTrim() {
-      return new Trigger(() -> false);
+      return leftButtonBoard
+          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
     }
 
     public static Trigger decreaseDistanceTrim() {
@@ -202,7 +208,8 @@ public final class OI {
 
     public static final class FlywheelOI {
       public static Trigger runFlywheel() {
-        return primaryController.rightBumper(eventLoop);
+        return new Trigger(() -> false);
+        // return primaryController.rightBumper(eventLoop);
       }
 
       public static Trigger increaseFlywheelTrim() {
@@ -216,19 +223,22 @@ public final class OI {
 
     public static final class HoodOI {
       public static Trigger hoodManualUp() {
-        return primaryController.povUp();
+        // Just use hood rezero
+        return new Trigger(() -> false);
+        // return primaryController.povUp();
       }
 
       public static Trigger hoodManualDown() {
-        return primaryController.povDown();
+        return new Trigger(() -> false);
+        // return primaryController.povDown();
       }
 
       public static Trigger rezeroHood() {
         return leftButtonBoard.button(2, eventLoop).castTo(Trigger::new);
       }
 
-      // TODO: bind buttons
       public static Trigger increaseHoodTrim() {
+        // Just use distance trim
         return new Trigger(() -> false);
       }
 
@@ -239,31 +249,38 @@ public final class OI {
 
     public static final class TurretOI {
       public static Trigger turretManualCCW() {
+        return new Trigger(() -> false);
+        // return leftButtonBoard
+        //     .axisLessThan(0, -controllerStickDeadband, eventLoop)
+        //     .castTo(Trigger::new);
+      }
+
+      public static Trigger turretManualCW() {
+        return new Trigger(() -> false);
+        // return leftButtonBoard
+        //     .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+        //     .castTo(Trigger::new);
+      }
+
+      public static Trigger enableAutoTurret() {
+        return new Trigger(() -> false);
+        // return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+      }
+
+      public static Trigger resetTurretTrim() {
+        return leftButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+      }
+
+      public static Trigger increaseTurretTrim() {
         return leftButtonBoard
             .axisLessThan(0, -controllerStickDeadband, eventLoop)
             .castTo(Trigger::new);
       }
 
-      public static Trigger turretManualCW() {
+      public static Trigger decreaseTurretTrim() {
         return leftButtonBoard
             .axisGreaterThan(0, controllerStickDeadband, eventLoop)
             .castTo(Trigger::new);
-      }
-
-      public static Trigger enableAutoTurret() {
-        return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
-      }
-
-      public static Trigger resetTurretTrim() {
-        return primaryController.povDown();
-      }
-
-      public static Trigger increaseTurretTrim() {
-        return new Trigger(() -> false);
-      }
-
-      public static Trigger decreaseTurretTrim() {
-        return new Trigger(() -> false);
       }
 
       public static Trigger rezeroTurret() {
@@ -275,15 +292,18 @@ public final class OI {
       }
 
       public static Trigger setTurretEncoderTo0() {
-        return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
+        return new Trigger(() -> false);
+        // return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger turretTo180() {
-        return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+        return new Trigger(() -> false);
+        // return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger turretTo90() {
-        return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+        return new Trigger(() -> false);
+        // return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
       }
     }
   }

@@ -315,7 +315,7 @@ public class RobotContainer {
                 drive));
 
     // ==================== HOPPER ====================
-    HopperOI.runSpindexer()
+    HopperOI.runSpindexerBackwards()
         .onTrue(robotCommands.runSpindexerReverse())
         .onFalse(robotCommands.stopSpindexer());
 
@@ -483,7 +483,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setFlywheelTrim(
-                      aimShooterMathLinear.getFlywheelTrim().plus(RPM.of(10)));
+                      aimShooterMathLinear.getFlywheelTrim().plus(RPM.of(5)));
                 },
                 aimShooterMathLinear));
     FlywheelOI.decreaseFlywheelTrim()
@@ -491,7 +491,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setFlywheelTrim(
-                      aimShooterMathLinear.getFlywheelTrim().minus(RPM.of(10)));
+                      aimShooterMathLinear.getFlywheelTrim().minus(RPM.of(5)));
                 },
                 aimShooterMathLinear));
 
@@ -505,7 +505,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setHoodTrim(
-                      aimShooterMathLinear.getHoodTrim().plus(Rotation2d.fromDegrees(1)));
+                      aimShooterMathLinear.getHoodTrim().plus(Rotation2d.fromDegrees(0.5)));
                 },
                 aimShooterMathLinear));
     HoodOI.decreaseHoodTrim()
@@ -513,7 +513,7 @@ public class RobotContainer {
             run(
                 () -> {
                   aimShooterMathLinear.setHoodTrim(
-                      aimShooterMathLinear.getHoodTrim().minus(Rotation2d.fromDegrees(1)));
+                      aimShooterMathLinear.getHoodTrim().minus(Rotation2d.fromDegrees(0.5)));
                 },
                 aimShooterMathLinear));
 
