@@ -644,12 +644,7 @@ public class RobotCommands {
   }
 
   public Command lockTurret() {
-    return runOnce(
-        () -> {
-          turret.removeDefaultCommand();
-          turretToPosition(0);
-        },
-        turret);
+    return turretToPosition(0);
   }
 
   public Command enableAutoTurret() {
