@@ -558,7 +558,7 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                     () -> {
-                      aimShooterMathLinear.setTurretTrim(0);
+                      aimShooterMathLinear.setTurretTrim(Units.degreesToRotations(1.5));
                     },
                     aimShooterMathLinear)
                 .ignoringDisable(true));

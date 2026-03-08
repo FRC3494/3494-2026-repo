@@ -37,7 +37,7 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
 
   private final LoggedNetworkNumber turretTrimDeg =
-      new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg");
+      new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg", 1.5);
   private final LoggedNetworkNumber hoodTrimDeg =
       new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg");
   private final LoggedNetworkNumber flywheelTrimRPM =
@@ -81,10 +81,9 @@ public class AimShooterMathLinear extends SubsystemBase {
 
     turretAngleRot =
         getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation())
-            + Units.degreesToRotations(turretTrimDeg.get())
-            // ! Auto adjustment; bandaid
-            // TODO: fix turret aiming properly
-            + (DriverStation.isAutonomous() ? Units.degreesToRotations(1.5) : 0);
+            + Units.degreesToRotations(turretTrimDeg.get());
+    // ! Auto adjustment; bandaid; turretTrimDeg starts at 1.5deg
+    // TODO: fix turret aiming properly
 
     double distanceToTarget =
         shooterTranslation.getDistance(targetLocation)
