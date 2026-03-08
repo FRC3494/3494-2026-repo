@@ -241,7 +241,7 @@ public final class Constants {
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {false, false, true, true};
-    public static final int turnMotorCurrentLimit = 20;
+    public static final int[] turnMotorCurrentLimit = new int[] {25, 25, 20, 20};
     public static final double turnMotorReduction4i = ((150.0 / 7.0) / (2.0 * Math.PI)); // Mk4i
     public static final double turnMotorReduction4n = ((18.75) / (2.0 * Math.PI));
     public static final DCMotor turnGearbox = DCMotor.getNeo550(1);
