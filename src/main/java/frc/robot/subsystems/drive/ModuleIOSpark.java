@@ -290,7 +290,9 @@ public class ModuleIOSpark implements ModuleIO {
   }
 
   public Rotation2d getAbsoluteTurnPosition() {
-    return getRawAbsoluteTurnPosition().minus(zeroRotation).times(turnAbsEncoderInverted ? -1 : 1);
+    return getRawAbsoluteTurnPosition()
+        .minus(zeroRotation)
+        .times(turnAbsEncoderInverted[moduleNumber] ? -1 : 1);
   }
 
   public Rotation2d getRawRelativeTurnPosition() {
