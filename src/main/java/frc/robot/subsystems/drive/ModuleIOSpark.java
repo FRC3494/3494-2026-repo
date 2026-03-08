@@ -116,7 +116,7 @@ public class ModuleIOSpark implements ModuleIO {
           case 1 -> turnMotorReduction4i;
           case 2 -> turnMotorReduction4n;
           case 3 -> turnMotorReduction4n;
-          default -> turnMotorReduction4i;
+          default -> 0;
         };
 
     // Configure drive motor
