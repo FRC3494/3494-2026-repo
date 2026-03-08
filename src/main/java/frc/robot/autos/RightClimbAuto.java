@@ -39,7 +39,7 @@ public class RightClimbAuto {
             parallel(
                 sequence(
                     new AutoAlignCommand(climbPoseOutpost, drive), robotCommands.creepBackward()),
-                sequence(waitSeconds(1), robotCommands.climberMid())));
+                sequence(waitSeconds(1), robotCommands.climberMidWithCurrent())));
 
     return routine;
   }
