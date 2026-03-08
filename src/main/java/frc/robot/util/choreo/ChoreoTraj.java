@@ -23,9 +23,9 @@ public record ChoreoTraj(
       new ChoreoTraj(
           "DepotToLeftClimb",
           OptionalInt.empty(),
-          3.40916,
+          3.40996,
           new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
-          new Pose2d(1.13, 4.306, Rotation2d.fromRadians(1.571)));
+          new Pose2d(1.028, 4.306, Rotation2d.fromRadians(1.571)));
   public static final ChoreoTraj LeftBumpToDepot =
       new ChoreoTraj(
           "LeftBumpToDepot",
@@ -44,9 +44,9 @@ public record ChoreoTraj(
       new ChoreoTraj(
           "RightClimb",
           OptionalInt.empty(),
-          3.90103,
+          3.94124,
           new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-          new Pose2d(1.109, 2.957, Rotation2d.fromRadians(-1.571)));
+          new Pose2d(1.028, 2.957, Rotation2d.fromRadians(-1.571)));
 
   /**
    * A map between trajectory names and their corresponding data. This allows for trajectory data to
