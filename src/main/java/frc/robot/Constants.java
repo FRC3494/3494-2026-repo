@@ -204,10 +204,10 @@ public final class Constants {
         };
 
     // Zeroed rotation values for each module, see setup instructions
-    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(5.515);
-    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(3.068);
-    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(0.417);
-    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(1.974);
+    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(5.525);
+    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(3.065);
+    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(5.239);
+    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(2.458);
 
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {false, false, true, true};
@@ -240,7 +240,7 @@ public final class Constants {
     public static final double driveSimKv = 0.0789;
 
     // Turn motor configuration
-    public static final boolean[] turnInverted = new boolean[] {false, false, true, true};
+    public static final boolean[] turnInverted = new boolean[] {false, false, false, false};
     public static final int turnMotorCurrentLimit = 20;
     public static final double turnMotorReduction4i = ((150.0 / 7.0) / (2.0 * Math.PI)); // Mk4i
     public static final double turnMotorReduction4n = ((18.75) / (2.0 * Math.PI));
