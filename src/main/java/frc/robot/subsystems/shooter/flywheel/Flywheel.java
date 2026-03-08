@@ -39,7 +39,7 @@ public class Flywheel extends SubsystemBase {
   private LoggedNetworkNumber flywheelD =
       new LoggedNetworkNumber("Tunable/Flywheel/kD", flywheelKd);
 
-  @AutoLogOutput(key = "Shooter/Hood/Shooting")
+  @AutoLogOutput(key = "Shooter/Flywheel/Shooting")
   private boolean shooting = false;
 
   public Flywheel() {
