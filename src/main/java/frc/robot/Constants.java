@@ -417,12 +417,7 @@ public final class Constants {
               Meters.of(1.053),
               Rotation2d.fromDegrees(24.2238027),
               RPM.of(2800.0),
-              Seconds.of(1.16)),
-          new LinearInterpolationDataPoint(
-              Feet.of(11).plus(Inches.of(1)),
-              Rotation2d.fromDegrees(30),
-              RPM.of(3500),
-              Seconds.of(0))
+              Seconds.of(1.16))
         };
 
     public static record LinearInterpolationDataPoint(
