@@ -37,7 +37,7 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
 
   private final LoggedNetworkNumber turretTrimDeg =
-      new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg", 1.5);
+      new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg", 1.0);
   private final LoggedNetworkNumber hoodTrimDeg =
       new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg");
   private final LoggedNetworkNumber flywheelTrimRPM =
