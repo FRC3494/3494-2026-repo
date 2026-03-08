@@ -57,8 +57,8 @@
    },
    "ClimbDepot":{
     "x":{
-     "exp":"1.155 m - 5 in",
-     "val":1.028
+     "exp":"1.155 m - 4 in",
+     "val":1.0534
     },
     "y":{
      "exp":"8.0692 m - 3.56 m - 8 in",
@@ -72,7 +72,7 @@
    "ClimbOutpost":{
     "x":{
      "exp":"ClimbDepot.x",
-     "val":1.028
+     "val":1.0534
     },
     "y":{
      "exp":"8.0692 m - 5.112 m",
@@ -86,7 +86,7 @@
    "ClimbSetupDepot":{
     "x":{
      "exp":"ClimbDepot.x",
-     "val":1.028
+     "val":1.0534
     },
     "y":{
      "exp":"4.9 m",
@@ -100,7 +100,7 @@
    "ClimbSetupOutpost":{
     "x":{
      "exp":"ClimbOutpost.x",
-     "val":1.028
+     "val":1.0534
     },
     "y":{
      "exp":"2.65 m",
