@@ -478,9 +478,9 @@ public final class Constants {
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
-      public static double turretKp = 0.8;
+      public static double turretKp = 0.6;
       public static double turretKi = 0.01;
-      public static double turretKd = 10.0;
+      public static double turretKd = 20.0;
 
       public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
       public static double turretIZone = Units.degreesToRotations(10);
