@@ -62,8 +62,11 @@ public class ModuleIOSpark implements ModuleIO {
 
   private final double turnMotorReduction;
 
+  private final int moduleNumber;
+
   // @codescene(disable: "Complex Method", disable: "Large Method")
   public ModuleIOSpark(int module) {
+    this.moduleNumber = module;
 
     zeroRotation =
         switch (module) {
@@ -119,7 +122,7 @@ public class ModuleIOSpark implements ModuleIO {
     // Configure drive motor
     var driveConfig = new SparkFlexConfig();
     driveConfig
-        .inverted(driveInverted)
+        .inverted(driveInverted[module])
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(driveMotorCurrentLimit)
         .voltageCompensation(12.0);
@@ -154,13 +157,13 @@ public class ModuleIOSpark implements ModuleIO {
     // Configure turn motor
     var turnConfig = new SparkFlexConfig();
     turnConfig
-        .inverted(turnInverted)
+        .inverted(turnInverted[module])
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(turnMotorCurrentLimit)
         .voltageCompensation(12.0);
     turnConfig
         .absoluteEncoder
-        .inverted(turnRelEncoderInverted)
+        .inverted(turnRelEncoderInverted[module])
         .positionConversionFactor(turnEncoderPositionFactor)
         .velocityConversionFactor(turnEncoderVelocityFactor)
         .averageDepth(2);
@@ -269,7 +272,7 @@ public class ModuleIOSpark implements ModuleIO {
             * MathUtil.inputModulus(
                 rotation
                     .plus(relativeEncoderOffset)
-                    .times(turnRelEncoderInverted ? -1 : 1)
+                    .times(turnRelEncoderInverted[moduleNumber] ? -1 : 1)
                     .getRadians(),
                 turnPIDMinInput,
                 turnPIDMaxInput);
@@ -293,7 +296,7 @@ public class ModuleIOSpark implements ModuleIO {
   public Rotation2d getRawRelativeTurnPosition() {
     return Rotation2d.fromRadians(
             MathUtil.angleModulus(turnRelativeEncoder.getPosition() / turnMotorReduction))
-        .times(turnRelEncoderInverted ? -1 : 1);
+        .times(turnRelEncoderInverted[moduleNumber] ? -1 : 1);
   }
 
   public Rotation2d getTurnPosition() {
