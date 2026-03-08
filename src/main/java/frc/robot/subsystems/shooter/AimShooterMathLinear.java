@@ -67,9 +67,17 @@ public class AimShooterMathLinear extends SubsystemBase {
 
     boolean inAllianceZone;
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      inAllianceZone = shooterTranslation.getMeasureX().lte(allianceHubLocation.getMeasureX());
+      inAllianceZone =
+          shooterTranslation
+              .getMeasureX()
+              .plus(Inches.of(12))
+              .lte(allianceHubLocation.getMeasureX());
     } else {
-      inAllianceZone = shooterTranslation.getMeasureX().gte(allianceHubLocation.getMeasureX());
+      inAllianceZone =
+          shooterTranslation
+              .getMeasureX()
+              .minus(Inches.of(12))
+              .gte(allianceHubLocation.getMeasureX());
     }
     Logger.recordOutput("AimShooterMathLinear/InAllianceZone", inAllianceZone);
 
