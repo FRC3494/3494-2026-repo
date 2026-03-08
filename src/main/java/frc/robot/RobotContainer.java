@@ -339,6 +339,8 @@ public class RobotContainer {
 
     HopperOI.runKicker().onTrue(robotCommands.runKicker()).onFalse(robotCommands.stopKicker());
 
+    HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
+
     // ==================== INTAKE ====================
     IntakeOI.intake().onTrue(robotCommands.intake()).onFalse(robotCommands.releaseIntake());
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());

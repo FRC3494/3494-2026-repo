@@ -319,6 +319,10 @@ public class RobotCommands {
         hopper);
   }
 
+  public Command jiggleRobot() {
+    return repeatingSequence(sprintForward().withTimeout(0.5), sprintBackward().withTimeout(0.5));
+  }
+
   // ==================== INTAKE ====================
   public Command intake() {
     return sequence(runIntake(), runSpindexerSlow());

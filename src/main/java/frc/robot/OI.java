@@ -96,6 +96,10 @@ public final class OI {
       return new Trigger(() -> false);
       // return primaryController.leftBumper(eventLoop);
     }
+
+    public static Trigger jiggleRobot() {
+      return primaryController.povLeft();
+    }
   }
 
   public static final class IntakeOI {
