@@ -240,7 +240,7 @@ public final class Constants {
     public static final double driveSimKv = 0.0789;
 
     // Turn motor configuration
-    public static final boolean[] turnInverted = new boolean[] {false, false, false, false};
+    public static final boolean[] turnInverted = new boolean[] {false, false, true, true};
     public static final int turnMotorCurrentLimit = 20;
     public static final double turnMotorReduction4i = ((150.0 / 7.0) / (2.0 * Math.PI)); // Mk4i
     public static final double turnMotorReduction4n = ((18.75) / (2.0 * Math.PI));
@@ -248,7 +248,7 @@ public final class Constants {
 
     // Turn encoder configuration
     public static final boolean turnAbsEncoderInverted = false;
-    public static final boolean[] turnRelEncoderInverted = new boolean[] {true, true, false, false};
+    public static final boolean[] turnRelEncoderInverted = new boolean[] {true, true, true, true};
     public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
