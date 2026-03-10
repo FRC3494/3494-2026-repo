@@ -47,6 +47,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.AimShooterMath;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -72,7 +73,7 @@ public class RobotContainer {
   private final Hood hood;
   private final Turret turret;
 
-  //   private final AimShooterMath aimShooterMath;
+  private final AimShooterMath aimShooterMath;
   private final AimShooterMathLinear aimShooterMathLinear;
 
   // Choreo
@@ -129,7 +130,7 @@ public class RobotContainer {
     hood = new Hood();
     turret = new Turret();
 
-    // aimShooterMath = new AimShooterMath(drive::getPose);
+    aimShooterMath = new AimShooterMath(drive::getPose, drive::getChassisSpeeds);
     aimShooterMathLinear = new AimShooterMathLinear(drive::getPose);
 
     robotCommands =
