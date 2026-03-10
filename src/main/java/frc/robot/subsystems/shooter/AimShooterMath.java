@@ -14,8 +14,13 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.RobotMap.Shooter;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterConstants.FlywheelConstants;
+import frc.robot.Constants.ShooterConstants.HoodConstants;
+import frc.robot.Constants.ShooterConstants.TurretConstants;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
@@ -66,6 +71,7 @@ public class AimShooterMath extends SubsystemBase {
   // a pose estimator). The math class is intentionally decoupled from commands and
   // subsystems; it only needs the pose and internal tuning state.
   private final Supplier<Pose2d> robotPose;
+  private final Supplier<ChassisSpeeds> chassisSpeeds;
 
   // Persistent runtime offsets that operators can bump to trim aim during testing.
   // These are annotated for AutoLogOutput so they appear in logs/networktables for tuning.
@@ -96,8 +102,9 @@ public class AimShooterMath extends SubsystemBase {
           hoodOffsetClamped,
           flywheelOffsetClamped);
 
-  public AimShooterMath(Supplier<Pose2d> robotPose) {
+  public AimShooterMath(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> chassisSpeeds) {
     this.robotPose = robotPose;
+    this.chassisSpeeds = chassisSpeeds;
   }
 
   /** Main control loop step that recomputes aim and updates shooter setpoints. */
@@ -107,8 +114,7 @@ public class AimShooterMath extends SubsystemBase {
     AimState state = buildAimState();
 
     // 2) Compute projectile/velocity physics
-    PhysicsResult physics =
-        computePhysics(state.shooterPose3d, state.targetPose3d, state.translationToTarget);
+    PhysicsResult physics = computePhysics(state);
 
     // 3) Compute launch speed and convert to flywheel RPM
     double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
@@ -130,6 +136,9 @@ public class AimShooterMath extends SubsystemBase {
     Translation2d robotLocation = robot2d.getTranslation();
     Rotation2d robotYaw = robot2d.getRotation();
 
+    // Current chassis speeds (field-relative)
+    ChassisSpeeds speeds = chassisSpeeds.get();
+
     Pose3d robotPose3d =
         new Pose3d(
             robotLocation.getX(),
@@ -137,29 +146,48 @@ public class AimShooterMath extends SubsystemBase {
             0.0,
             new Rotation3d(0.0, 0.0, robotYaw.getRadians()));
 
-    // shooter offset relative to robot frame.
-    // TODO(#aim-shooter): Move shooter mounting transform into {@link ShooterConstants}
-    // or a dedicated geometry/config class so it can be hardware-specific and
-    // easier to update between robots.
+    // The Shooter's position relative to the robot
     Transform3d shooterTransform =
         new Transform3d(
             new Translation3d(
                 ShooterConstants.shooterX, ShooterConstants.shooterY, ShooterConstants.shooterZ),
             new Rotation3d());
+    // The Shooter's position in field coordinates
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
     Translation2d target2d = QuadranglesUtil.toAllianceTranslation(hubLocation);
-    Pose3d targetPose3d =
+    Pose3d rawTargetPose3d =
         new Pose3d(target2d.getX(), target2d.getY(), targetHeight, new Rotation3d());
 
-    Translation3d translationToTarget = targetPose3d.minus(shooterPose3d).getTranslation();
+    // First-pass translation & physics to estimate time of flight without motion compensation
+    Translation3d initialTranslation = rawTargetPose3d.minus(shooterPose3d).getTranslation();
+    PhysicsResult firstPassPhysics =
+        computePhysicsInternal(shooterPose3d, rawTargetPose3d, initialTranslation);
+    double t = firstPassPhysics.timeToTarget;
 
+    // Compensate target for robot motion: p_t' = p_t - v * t
+    double compensatedX = target2d.getX() - speeds.vxMetersPerSecond * t;
+    double compensatedY = target2d.getY() - speeds.vyMetersPerSecond * t;
+
+    Pose3d compensatedTargetPose3d =
+        new Pose3d(compensatedX, compensatedY, targetHeight, new Rotation3d());
+
+    // The vector from the shooter to the compensated target in field coordinates
+    Translation3d translationToTarget =
+        compensatedTargetPose3d.minus(shooterPose3d).getTranslation();
+
+    // Azimuth angle to compensated target in world coordinates
     double angleRad = Math.atan2(translationToTarget.getY(), translationToTarget.getX());
     Rotation2d angleToTarget = Rotation2d.fromRadians(angleRad);
     Rotation2d turretAngleWorld = angleToTarget; // .rotateBy(robotYaw.times(-0.5));
 
     return new AimState(
-        robotPose3d, shooterPose3d, targetPose3d, translationToTarget, turretAngleWorld);
+        robotPose3d,
+        shooterPose3d,
+        compensatedTargetPose3d,
+        translationToTarget,
+        turretAngleWorld,
+        speeds);
   }
 
   /**
@@ -169,7 +197,14 @@ public class AimShooterMath extends SubsystemBase {
    * travel from the shooter to the target, assuming constant gravity and no air resistance or spin
    * effects.
    */
-  private static PhysicsResult computePhysics(
+  private PhysicsResult computePhysics(AimState state) {
+    Pose3d shooterPose3d = state.shooterPose3d;
+    Pose3d targetPose3d = state.targetPose3d;
+    Translation3d translationToTarget = state.translationToTarget;
+    return computePhysicsInternal(shooterPose3d, targetPose3d, translationToTarget);
+  }
+
+  private static PhysicsResult computePhysicsInternal(
       Pose3d shooterPose3d, Pose3d targetPose3d, Translation3d translationToTarget) {
     double maxHeight =
         calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
@@ -242,23 +277,6 @@ public class AimShooterMath extends SubsystemBase {
   }
 
   /**
-   * Unwrap {@code targetDeg} to the equivalent angle (differing by multiples of 360) that is
-   * closest to {@code referenceDeg}. This keeps turret motion continuous instead of snapping across
-   * the -180/180 discontinuity.
-   */
-  private static double unwrapToNearest(double targetDeg, double referenceDeg) {
-    // Normalize to (-180, 180]
-    double t = MathUtil.inputModulus(targetDeg, -180.0, 180.0);
-    double r = MathUtil.inputModulus(referenceDeg, -180.0, 180.0);
-
-    // Smallest signed angle from reference to target in (-180, 180]
-    double delta = MathUtil.inputModulus(t - r, -180.0, 180.0);
-
-    // Apply that delta to the original reference (which may already be outside [-180, 180])
-    return referenceDeg + delta;
-  }
-
-  /**
    * Converts linear exit velocity (m/s) to a flywheel RPM setpoint.
    *
    * <p>Currently this is a stub that assumes a 1:1 mapping between linear velocity and flywheel
@@ -302,18 +320,21 @@ public class AimShooterMath extends SubsystemBase {
     final Pose3d targetPose3d;
     final Translation3d translationToTarget;
     final Rotation2d turretAngleWorld;
+    final ChassisSpeeds fieldRelativeSpeeds;
 
     AimState(
         Pose3d robotPose3d,
         Pose3d shooterPose3d,
         Pose3d targetPose3d,
         Translation3d translationToTarget,
-        Rotation2d turretAngleWorld) {
+        Rotation2d turretAngleWorld,
+        ChassisSpeeds fieldRelativeSpeeds) {
       this.robotPose3d = robotPose3d;
       this.shooterPose3d = shooterPose3d;
       this.targetPose3d = targetPose3d;
       this.translationToTarget = translationToTarget;
       this.turretAngleWorld = turretAngleWorld;
+      this.fieldRelativeSpeeds = fieldRelativeSpeeds;
     }
   }
 
