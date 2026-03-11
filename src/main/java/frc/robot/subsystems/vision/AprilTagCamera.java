@@ -5,6 +5,8 @@ import static frc.robot.Constants.VisionConstants.*;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,8 +27,12 @@ public class AprilTagCamera {
   @Getter private final Pose3d position;
 
   private double heartbeat;
+  private final Debouncer connectedDebouncer = new Debouncer(0.5, DebounceType.kFalling);
 
-  @Getter @Setter @AutoLogOutput private boolean megaTag2Enabled;
+  @Getter
+  @Setter
+  @AutoLogOutput(key = "Vision/{name}/MegaTag2Enabled")
+  private boolean megaTag2Enabled;
 
   @Setter
   @AutoLogOutput(key = "Vision/{name}/RobotYaw")
@@ -70,7 +76,8 @@ public class AprilTagCamera {
   public void periodic() {
     // Determine whether Limelight is connected
     double newHeartbeat = LimelightHelpers.getHeartbeat(name);
-    Logger.recordOutput("Vision/" + name + "/Connected", newHeartbeat != heartbeat);
+    Logger.recordOutput(
+        "Vision/" + name + "/Connected", connectedDebouncer.calculate(newHeartbeat != heartbeat));
     heartbeat = newHeartbeat;
 
     // Give robot yaw info to Limelight
