@@ -500,7 +500,7 @@ public final class Constants {
       public static final double turretGearRatio = 16.0 / 115.0;
 
       public static final double turretAbsEncoderGearRatio =
-          (16.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0);
+          turretGearRatio * (60.0 / 20.0) * (60.0 / 20.0);
       public static final double turretAbsEncoderOffset = 0.25458443;
     }
   }
