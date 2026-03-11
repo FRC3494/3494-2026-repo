@@ -90,6 +90,7 @@ public class AimShooterMathLinear extends SubsystemBase {
 
     turretAngleRot =
         getTurretAngleRot(virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
+            // - Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)
             + Units.degreesToRotations(turretTrimDeg.get());
     hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
     flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);
