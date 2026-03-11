@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -25,16 +26,15 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class AimShooterMathLinear extends SubsystemBase {
   private final Supplier<Pose2d> robotPose;
+  private final Supplier<ChassisSpeeds> robotSpeeds;
 
   @Getter @AutoLogOutput private double turretAngleRot = 0.0;
   @Getter @AutoLogOutput private Rotation2d hoodAngle = Rotation2d.kZero;
   @Getter @AutoLogOutput private AngularVelocity flywheelSpeed = RPM.of(0);
 
-  @AutoLogOutput
-  private Translation2d targetLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
-
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
   private final LoggedNetworkNumber turretTrimDeg =
       new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg");
@@ -49,62 +49,53 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final LoggedNetworkNumber yTrimInches =
       new LoggedNetworkNumber("Tunable/Trim/YTrimInches");
 
-  public AimShooterMathLinear(Supplier<Pose2d> robotPose) {
+  public AimShooterMathLinear(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> robotSpeeds) {
     this.robotPose = robotPose;
+    this.robotSpeeds = robotSpeeds;
 
     for (LinearInterpolationDataPoint dataPoint : linearInterpolationDataPoints) {
       hoodAngleMapRad.put(dataPoint.distance().in(Meters), dataPoint.hoodAngle().getRadians());
       flywheelSpeedMapRPM.put(dataPoint.distance().in(Meters), dataPoint.flywheelSpeed().in(RPM));
+      timeOfFlightMap.put(dataPoint.distance().in(Meters), dataPoint.timeOfFlight().in(Seconds));
     }
   }
 
   @Override
   public void periodic() {
     Pose2d currentRobotPose = robotPose.get();
+    ChassisSpeeds robotSpeed = robotSpeeds.get();
+
     Translation2d shooterTranslation = getRobotShooterTranslation(currentRobotPose);
 
     Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-    boolean inAllianceZone;
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      inAllianceZone =
-          shooterTranslation
-              .getMeasureX()
-              .plus(Inches.of(12))
-              .lte(allianceHubLocation.getMeasureX());
-    } else {
-      inAllianceZone =
-          shooterTranslation
-              .getMeasureX()
-              .minus(Inches.of(12))
-              .gte(allianceHubLocation.getMeasureX());
-    }
+    boolean inAllianceZone = isInAllianceZone(shooterTranslation, azLineOffset);
     Logger.recordOutput("AimShooterMathLinear/InAllianceZone", inAllianceZone);
 
-    if (inAllianceZone) {
-      targetLocation = allianceHubLocation.plus(new Translation2d(getXTrim(), getYTrim()));
-    } else {
-      targetLocation = getNZShootingTarget(shooterTranslation);
-    }
+    Translation2d targetLocation =
+        getTargetLocation(shooterTranslation, inAllianceZone, allianceHubLocation);
+    Logger.recordOutput(
+        "AimShooterMathLinear/TargetLocation", new Pose2d(targetLocation, Rotation2d.kZero));
+
+    Translation2d virtualTargetLocation =
+        getVirtualGoal(shooterTranslation, robotSpeed, targetLocation);
+    Logger.recordOutput(
+        "AimShooterMathLinear/VirtualTargetLocation",
+        new Pose2d(virtualTargetLocation, Rotation2d.kZero));
+
+    double virtualDistanceToTarget =
+        shooterTranslation.getDistance(virtualTargetLocation)
+            + Units.inchesToMeters(distanceTrimInches.get());
+    Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
     turretAngleRot =
-        getTurretAngleRot(shooterTranslation, currentRobotPose.getRotation())
+        getTurretAngleRot(virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
             + Units.degreesToRotations(turretTrimDeg.get());
-    // ! Auto adjustment; bandaid; turretTrimDeg starts at 1.5deg
-    // TODO: fix turret aiming properly
-
-    double distanceToTarget =
-        shooterTranslation.getDistance(targetLocation)
-            + Units.inchesToMeters(distanceTrimInches.get());
-    Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
-
-    hoodAngle =
-        Rotation2d.fromRadians(hoodAngleMapRad.get(distanceToTarget))
-            .plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
-    flywheelSpeed =
-        RPM.of(flywheelSpeedMapRPM.get(distanceToTarget)).plus(RPM.of(flywheelTrimRPM.get()));
+    hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
+    flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);
   }
 
+  // ==================== CALCULATIONS ====================
   private Translation2d getRobotShooterTranslation(Pose2d currentRobotPose) {
     Transform2d shooterTransform =
         new Transform2d(
@@ -112,6 +103,24 @@ public class AimShooterMathLinear extends SubsystemBase {
             new Rotation2d());
 
     return currentRobotPose.transformBy(shooterTransform).getTranslation();
+  }
+
+  // azLine is the X coordinate of the line between NZ and AZ
+  private boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLine) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return shooterTranslation.getMeasureX().plus(azLineOffset).lte(azLine);
+    } else {
+      return shooterTranslation.getMeasureX().minus(azLineOffset).gte(azLine);
+    }
+  }
+
+  private Translation2d getTargetLocation(
+      Translation2d shooterTranslation, boolean inAllianceZone, Translation2d allianceHubLocation) {
+    if (inAllianceZone) {
+      return allianceHubLocation.plus(new Translation2d(getXTrim(), getYTrim()));
+    } else {
+      return getNZShootingTarget(shooterTranslation);
+    }
   }
 
   private Translation2d getNZShootingTarget(Translation2d robotTranslation) {
@@ -126,14 +135,39 @@ public class AimShooterMathLinear extends SubsystemBase {
     }
   }
 
-  private double getTurretAngleRot(Translation2d shooterTranslation, Rotation2d robotYaw) {
-    Translation2d translationToTarget = targetLocation.minus(shooterTranslation);
+  private Translation2d getVirtualGoal(
+      Translation2d shooterTranslation, ChassisSpeeds robotSpeed, Translation2d targetLocation) {
+    double distanceToTarget =
+        shooterTranslation.getDistance(targetLocation)
+            + Units.inchesToMeters(distanceTrimInches.get());
+    Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
+
+    double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
+
+    return targetLocation.minus(
+        new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond)
+            .times(timeOfFlight));
+  }
+
+  private double getTurretAngleRot(
+      Translation2d targetTranslation, Translation2d shooterTranslation, Rotation2d robotYaw) {
+    Translation2d translationToTarget = targetTranslation.minus(shooterTranslation);
 
     Rotation2d angle =
         Rotation2d.fromRadians(Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
     return angle.rotateBy(robotYaw.times(-1.0)).getRotations();
   }
 
+  private Rotation2d getHoodAngle(boolean inAllianceZone, double distanceMeters) {
+    return Rotation2d.fromRadians(hoodAngleMapRad.get(distanceMeters))
+        .plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
+  }
+
+  private AngularVelocity getFlywheelSpeed(boolean inAllianceZone, double distanceMeters) {
+    return RPM.of(flywheelSpeedMapRPM.get(distanceMeters)).plus(RPM.of(flywheelTrimRPM.get()));
+  }
+
+  // ==================== TRIM ====================
   public double getTurretTrimRot() {
     return Units.degreesToRotations(turretTrimDeg.get());
   }

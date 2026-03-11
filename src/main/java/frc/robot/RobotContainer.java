@@ -131,7 +131,7 @@ public class RobotContainer {
     turret = new Turret();
 
     aimShooterMath = new AimShooterMath(drive::getPose, drive::getChassisSpeeds);
-    aimShooterMathLinear = new AimShooterMathLinear(drive::getPose);
+    aimShooterMathLinear = new AimShooterMathLinear(drive::getPose, drive::getChassisSpeeds);
 
     robotCommands =
         new RobotCommands(
@@ -549,13 +549,10 @@ public class RobotContainer {
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
     // ==================== TURRET ====================
-    turret.setDefaultCommand(robotCommands.setTurretCommand);
     RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoTurret());
 
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
-
-    TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
 
     TurretOI.resetTurretTrim()
         .onTrue(
@@ -586,6 +583,7 @@ public class RobotContainer {
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
     TurretOI.unmurderTurret().onTrue(robotCommands.unmurderTurret());
     TurretOI.lockTurret().onTrue(robotCommands.lockTurret());
+    TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
     SmartDashboard.putData("Buttons/EnableAutoTurret", robotCommands.enableAutoTurret());
 
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());

@@ -391,6 +391,9 @@ public final class Constants {
     public static final Translation2d nzOutpostShootingTarget =
         ChoreoVars.Poses.NZOutpostShootingTarget.getTranslation();
 
+    // The distance into the NZ beyond which shooter targets middle of AZ rather than Hub
+    public static final Distance azLineOffset = Inches.of(12);
+
     public static final double gravity = 9.81;
 
     public static final double shooterX = 0.0;
