@@ -549,8 +549,6 @@ public class RobotContainer {
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
     // ==================== TURRET ====================
-    RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoTurret());
-
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 
