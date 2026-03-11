@@ -272,8 +272,8 @@ public final class OI {
       }
 
       public static Trigger enableAutoTurret() {
-        return new Trigger(() -> false);
-        // return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+        // return new Trigger(() -> false);
+        return rightButtonBoard.button(9, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger resetTurretTrim() {
