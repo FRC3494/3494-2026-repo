@@ -205,9 +205,9 @@ public final class Constants {
 
     // Zeroed rotation values for each module, see setup instructions
     public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(2.378);
-    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(3.057);
-    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(2.175);
-    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(5.585);
+    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(6.226);
+    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(2.156);
+    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(5.606);
 
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, false, false};
