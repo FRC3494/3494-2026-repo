@@ -497,7 +497,7 @@ public final class Constants {
       public static final double turretKv = 0.0;
       public static final double turretKa = 0.0;
 
-      public static final double turretGearRatio = 16.0 / 115.0;
+      public static final double turretGearRatio = 17.0 / 115.0;
 
       public static final double turretAbsEncoderGearRatio =
           turretGearRatio * (60.0 / 20.0) * (60.0 / 20.0);
