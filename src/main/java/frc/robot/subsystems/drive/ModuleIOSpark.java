@@ -60,8 +60,6 @@ public class ModuleIOSpark implements ModuleIO {
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-  private final double turnMotorReduction;
-
   private final int moduleNumber;
 
   // @codescene(disable: "Complex Method", disable: "Large Method")
@@ -109,15 +107,6 @@ public class ModuleIOSpark implements ModuleIO {
             });
     driveController = driveSpark.getClosedLoopController();
     turnController = turnSpark.getClosedLoopController();
-
-    turnMotorReduction =
-        switch (module) {
-          case 0 -> turnMotorReduction4i;
-          case 1 -> turnMotorReduction4i;
-          case 2 -> turnMotorReduction4n;
-          case 3 -> turnMotorReduction4n;
-          default -> 0;
-        };
 
     // Configure drive motor
     var driveConfig = new SparkFlexConfig();
@@ -173,7 +162,8 @@ public class ModuleIOSpark implements ModuleIO {
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(
-            turnPIDMinInput * turnMotorReduction, turnPIDMaxInput * turnMotorReduction)
+            turnPIDMinInput * turnMotorReduction[module],
+            turnPIDMaxInput * turnMotorReduction[module])
         .pid(turnKp, 0.0, turnKd);
     turnConfig
         .signals
@@ -268,7 +258,7 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void setTurnPosition(Rotation2d rotation) {
     double setpoint =
-        turnMotorReduction
+        turnMotorReduction[moduleNumber]
             * MathUtil.inputModulus(
                 rotation
                     .plus(relativeEncoderOffset)
@@ -297,7 +287,8 @@ public class ModuleIOSpark implements ModuleIO {
 
   public Rotation2d getRawRelativeTurnPosition() {
     return Rotation2d.fromRadians(
-            MathUtil.angleModulus(turnRelativeEncoder.getPosition() / turnMotorReduction))
+            MathUtil.angleModulus(
+                turnRelativeEncoder.getPosition() / turnMotorReduction[moduleNumber]))
         .times(turnRelEncoderInverted[moduleNumber] ? -1 : 1);
   }
 
