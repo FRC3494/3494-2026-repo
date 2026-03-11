@@ -507,7 +507,7 @@ public final class Constants {
     public static final double maxDistanceStdDev = 1.2;
     public static final double maxAngleStdDev = 999999;
 
-    public static final boolean useMegaTag2 = false;
+    public static final boolean useMegaTag2 = true;
 
     // * AprilTag Locations:
     // *
