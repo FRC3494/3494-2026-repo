@@ -518,7 +518,6 @@ public final class Constants {
     // * AprilTag Locations:
     // *
     // https://firstfrc.blob.core.windows.net/frc2026/Manual/2026GameManual.pdf#%5B%7B%22num%22%3A78%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C33%2C565%2C0%5D
-    // ! Trench AprilTags are currently disabled
     public static final int[] enabledAprilTags =
         new int[] {
           1, // Red Outpost Trench, Facing NZ
