@@ -108,8 +108,7 @@ public class RobotCommands {
             OI.DriveOI::joystickDriveY,
             OI.DriveOI::joystickDriveOmega);
 
-    setFlywheelCommand =
-        new SetFlywheelCommand(flywheel, () -> aimShooterMathLinear.getFlywheelSpeed());
+    setFlywheelCommand = new SetFlywheelCommand(flywheel, aimShooterMathLinear::getFlywheelSpeed);
     setHoodCommand = new SetHoodCommand(hood, aimShooterMathLinear::getHoodAngle);
     setTurretCommand = new SetTurretCommand(turret, aimShooterMathLinear::getTurretAngleRot);
   }
