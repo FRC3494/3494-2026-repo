@@ -491,7 +491,10 @@ public final class Constants {
       public static final double turretPositionTolerance = Units.degreesToRotations(0.4);
       // Retractor kicks in when CW from (less than) this position
       public static final double turretCableRetractorStart = Units.degreesToRotations(115);
-      public static Voltage turretCableRetractorFF = Volts.of(-0.3);
+      public static Voltage turretCableRetractorFFCW = Volts.of(-0.3);
+      public static Voltage turretCableRetractorFFCCW = Volts.of(-0.1);
+
+      public static final double turretYawVelocityFactor = 0.05;
 
       public static double turretKp = 0.5;
       public static double turretKi = 0.002;
@@ -500,11 +503,9 @@ public final class Constants {
       public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
       public static double turretIZone = Units.degreesToRotations(20);
 
-      public static final double turretKs = 0.28642;
-      public static final double turretKv = 0.0017377;
-      public static final double turretKa = 0.013128;
-      public static double turretKcos = 0.17048;
-      public static double turretKg = 0.06081;
+      public static double turretKs = 0.28642;
+      public static double turretKv = 0.1;
+      public static double turretKa = 0.013128;
 
       public static final int turretSetpointFilterSize = 30;
 

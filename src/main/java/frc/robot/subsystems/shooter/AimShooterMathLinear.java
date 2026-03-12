@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.turretSetpointFilterSize;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretYawVelocityFactor;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -96,7 +97,8 @@ public class AimShooterMathLinear extends SubsystemBase {
         turretSetpointFilter.calculate(
             getTurretAngleRot(
                     virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
-                // - Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)
+                - Units.radiansToRotations(
+                    robotSpeed.omegaRadiansPerSecond * turretYawVelocityFactor)
                 + Units.degreesToRotations(turretTrimDeg.get()));
     hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
     flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);

@@ -41,8 +41,13 @@ public class Turret extends SubsystemBase {
   private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
   private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
 
-  private LoggedNetworkNumber turretCableRetractorFFVolts =
-      new LoggedNetworkNumber("Tunable/Turret/CableRetractorFF", turretCableRetractorFF.in(Volts));
+  private LoggedNetworkNumber turretS = new LoggedNetworkNumber("Tunable/Turret/kS", turretKs);
+  private LoggedNetworkNumber turretV = new LoggedNetworkNumber("Tunable/Turret/kV", turretKv);
+  private LoggedNetworkNumber turretA = new LoggedNetworkNumber("Tunable/Turret/kA", turretKa);
+
+  private LoggedNetworkNumber turretCableRetractorFFCWVolts =
+      new LoggedNetworkNumber(
+          "Tunable/Turret/CableRetractorFF", turretCableRetractorFFCW.in(Volts));
 
   private double magSensorStartPosition = 0.0;
 
@@ -120,9 +125,16 @@ public class Turret extends SubsystemBase {
     logMotorStats("Shooter/Turret/Motor", turretMotor, true);
 
     boolean pidChanged =
-        turretP.get() != turretKp || turretI.get() != turretKi || turretD.get() != turretKd;
+        false
+            || turretP.get() != turretKp
+            || turretI.get() != turretKi
+            || turretD.get() != turretKd
+            || turretS.get() != turretKs
+            || turretV.get() != turretKv
+            || turretA.get() != turretKa;
     if (pidChanged) {
-      setPID(turretP.get(), turretI.get(), turretD.get());
+      setPID(
+          turretP.get(), turretI.get(), turretD.get(), turretS.get(), turretV.get(), turretA.get());
     }
 
     runTurret();
@@ -139,16 +151,34 @@ public class Turret extends SubsystemBase {
     }
 
     turretSetpointClampedRot = rotations;
+
+    runTurret();
   }
 
   private void runTurret() {
+    double currentPositionRot = getPositionRot();
+    double arbFFVolts = 0.0;
+    if (turretSetpointClampedRot < currentPositionRot) {
+      // Clockwise
+      arbFFVolts =
+          currentPositionRot < turretCableRetractorStart
+              ? turretCableRetractorFFCWVolts.get()
+              : 0.0;
+    } else {
+      // Counterclockwise
+      arbFFVolts =
+          currentPositionRot < turretCableRetractorStart
+              ? turretCableRetractorFFCCW.in(Volts)
+              : 0.0;
+    }
+
     turretMotor
         .getClosedLoopController()
         .setSetpoint(
             turretSetpointClampedRot,
             ControlType.kPosition,
             ClosedLoopSlot.kSlot0,
-            getPositionRot() < turretCableRetractorStart ? turretCableRetractorFFVolts.get() : 0.0,
+            arbFFVolts,
             ArbFFUnits.kVoltage);
   }
 
@@ -190,12 +220,19 @@ public class Turret extends SubsystemBase {
     return turretMotor.getAbsoluteEncoder().getPosition();
   }
 
-  private void setPID(double p, double i, double d) {
+  private void setPID(double p, double i, double d, double s, double v, double a) {
     SparkFlexConfig config = new SparkFlexConfig();
+
     turretKp = p;
     turretKi = i;
     turretKd = d;
     config.closedLoop.pid(p, i, d);
+
+    turretKs = s;
+    turretKv = v;
+    turretKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+
     turretMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
