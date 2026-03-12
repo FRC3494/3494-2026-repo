@@ -254,7 +254,7 @@ public final class Constants {
 
     // Turn encoder configuration
     public static final boolean[] turnAbsEncoderInverted =
-        new boolean[] {false, false, true, false};
+        new boolean[] {false, false, false, false};
     public static final boolean[] turnRelEncoderInverted = new boolean[] {true, true, true, true};
     public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
