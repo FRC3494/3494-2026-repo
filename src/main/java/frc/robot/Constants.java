@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.util.choreo.ChoreoVars;
@@ -482,23 +483,27 @@ public final class Constants {
 
     public static final class TurretConstants {
       public static final boolean turretInverted = true;
-      public static final int turretCurrentLimit = 40;
+      public static final int turretCurrentLimit = 50;
 
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
-      public static double turretKp = 0.62059;
-      public static double turretKi = 0.0;
-      public static double turretKd = 7.2757;
+      public static final double turretPositionTolerance = Units.degreesToRotations(0.4);
+      // Retractor kicks in when CW from (less than) this position
+      public static final double turretCableRetractorStart = Units.degreesToRotations(115);
+      public static Voltage turretCableRetractorFF = Volts.of(-0.3);
+
+      public static double turretKp = 0.5;
+      public static double turretKi = 0.002;
+      public static double turretKd = 10;
 
       public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
-      public static double turretIZone = Units.degreesToRotations(10);
+      public static double turretIZone = Units.degreesToRotations(20);
 
       public static final double turretKs = 0.28642;
       public static final double turretKv = 0.0017377;
       public static final double turretKa = 0.013128;
       public static double turretKcos = 0.17048;
-      public static final double turretKcosOffset = 0.36049;
       public static double turretKg = 0.06081;
 
       public static final int turretSetpointFilterSize = 30;

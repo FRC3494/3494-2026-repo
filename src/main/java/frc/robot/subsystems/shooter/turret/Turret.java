@@ -6,7 +6,9 @@ import static frc.robot.util.SparkUtil.logMotorStats;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -38,8 +40,9 @@ public class Turret extends SubsystemBase {
   private LoggedNetworkNumber turretP = new LoggedNetworkNumber("Tunable/Turret/kP", turretKp);
   private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
   private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
-  private LoggedNetworkNumber turretCos =
-      new LoggedNetworkNumber("Tunable/Turret/kCos", turretKcos);
+
+  private LoggedNetworkNumber turretCableRetractorFFVolts =
+      new LoggedNetworkNumber("Tunable/Turret/CableRetractorFF", turretCableRetractorFF.in(Volts));
 
   private double magSensorStartPosition = 0.0;
 
@@ -57,8 +60,9 @@ public class Turret extends SubsystemBase {
         .closedLoop
         .pid(turretKp, turretKi, turretKd)
         .iMaxAccum(turretIMaxAccum)
-        .iZone(turretIZone);
-    turretConfig.closedLoop.feedForward.sva(turretKs, turretKv, turretKa).kCos(turretKcos);
+        .iZone(turretIZone)
+        .allowedClosedLoopError(turretPositionTolerance, ClosedLoopSlot.kSlot0);
+    turretConfig.closedLoop.feedForward.sva(turretKs, turretKv, turretKa);
     turretConfig
         .encoder
         .positionConversionFactor(turretGearRatio)
@@ -116,13 +120,12 @@ public class Turret extends SubsystemBase {
     logMotorStats("Shooter/Turret/Motor", turretMotor, true);
 
     boolean pidChanged =
-        turretP.get() != turretKp
-            || turretI.get() != turretKi
-            || turretD.get() != turretKd
-            || turretCos.get() != turretKcos;
+        turretP.get() != turretKp || turretI.get() != turretKi || turretD.get() != turretKd;
     if (pidChanged) {
-      setPID(turretP.get(), turretI.get(), turretD.get(), turretCos.get());
+      setPID(turretP.get(), turretI.get(), turretD.get());
     }
+
+    runTurret();
   }
 
   public void setPosition(double rotations) {
@@ -136,9 +139,17 @@ public class Turret extends SubsystemBase {
     }
 
     turretSetpointClampedRot = rotations;
+  }
+
+  private void runTurret() {
     turretMotor
         .getClosedLoopController()
-        .setSetpoint(rotations - turretKcosOffset, ControlType.kPosition);
+        .setSetpoint(
+            turretSetpointClampedRot,
+            ControlType.kPosition,
+            ClosedLoopSlot.kSlot0,
+            getPositionRot() < turretCableRetractorStart ? turretCableRetractorFFVolts.get() : 0.0,
+            ArbFFUnits.kVoltage);
   }
 
   public void setOpenLoop(Voltage volts) {
@@ -158,7 +169,7 @@ public class Turret extends SubsystemBase {
   }
 
   public void setRelativeEncoderPosition(double rotations) {
-    turretMotor.getEncoder().setPosition(rotations - turretKcosOffset);
+    turretMotor.getEncoder().setPosition(rotations);
   }
 
   public void rezeroFromAbsEncoder() {
@@ -172,21 +183,19 @@ public class Turret extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/Turret/RelPosition", unit = "Rotations")
   public double getPositionRot() {
-    return turretMotor.getEncoder().getPosition() + turretKcosOffset;
+    return turretMotor.getEncoder().getPosition();
   }
 
   public double getAbsPositionRot() {
     return turretMotor.getAbsoluteEncoder().getPosition();
   }
 
-  private void setPID(double p, double i, double d, double cos) {
+  private void setPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
     turretKp = p;
     turretKi = i;
     turretKd = d;
-    turretKcos = cos;
     config.closedLoop.pid(p, i, d);
-    config.closedLoop.feedForward.kCos(cos);
     turretMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
