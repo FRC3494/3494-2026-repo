@@ -494,7 +494,7 @@ public final class Constants {
       public static Voltage turretCableRetractorFFCW = Volts.of(-0.3);
       public static Voltage turretCableRetractorFFCCW = Volts.of(-0.1);
 
-      public static final double turretYawVelocityFactor = 0.05;
+      public static final double turretYawVelocityFactor = 0.5;
 
       public static double turretKp = 0.5;
       public static double turretKi = 0.002;
