@@ -162,9 +162,10 @@ public class AimShooterMathLinear extends SubsystemBase {
       Translation2d targetTranslation, Translation2d shooterTranslation, Rotation2d robotYaw) {
     Translation2d translationToTarget = targetTranslation.minus(shooterTranslation);
 
-    Rotation2d angle =
-        Rotation2d.fromRadians(Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
-    return angle.rotateBy(robotYaw.times(-1.0)).getRotations();
+    double angle =
+        Units.radiansToRotations(
+            Math.atan2(translationToTarget.getY(), translationToTarget.getX()));
+    return angle - robotYaw.getRotations();
   }
 
   private Rotation2d getHoodAngle(boolean inAllianceZone, double distanceMeters) {
