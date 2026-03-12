@@ -52,7 +52,7 @@ public class Turret extends SubsystemBase {
     turretConfig
         .smartCurrentLimit(turretCurrentLimit)
         .idleMode(IdleMode.kBrake)
-        .inverted(!turretInverted);
+        .inverted(turretInverted);
     turretConfig
         .closedLoop
         .pid(turretKp, turretKi, turretKd)
