@@ -75,9 +75,9 @@ public class Turret extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 Volts.per(Seconds).of(0.1),
-                Volts.of(2),
+                Volts.of(1),
                 null,
-                (state) -> Logger.recordOutput("Turret/SysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Shooter/Turret/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setOpenLoop(voltage), null, this));
 
     // new Trigger(this::isMagSensorTripped)
