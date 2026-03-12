@@ -501,6 +501,8 @@ public final class Constants {
       public static final double turretKcosOffset = 0.36049;
       public static double turretKg = 0.06081;
 
+      public static final int turretSetpointFilterSize = 30;
+
       public static final double turretGearRatio = 17.0 / 115.0;
 
       public static final double turretAbsEncoderGearRatio =

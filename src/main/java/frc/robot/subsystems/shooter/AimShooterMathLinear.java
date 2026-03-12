@@ -2,7 +2,9 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretSetpointFilterSize;
 
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -31,6 +33,8 @@ public class AimShooterMathLinear extends SubsystemBase {
   @Getter @AutoLogOutput private double turretAngleRot = 0.0;
   @Getter @AutoLogOutput private Rotation2d hoodAngle = Rotation2d.kZero;
   @Getter @AutoLogOutput private AngularVelocity flywheelSpeed = RPM.of(0);
+
+  private final MedianFilter turretSetpointFilter = new MedianFilter(turretSetpointFilterSize);
 
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
@@ -89,9 +93,11 @@ public class AimShooterMathLinear extends SubsystemBase {
     Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
     turretAngleRot =
-        getTurretAngleRot(virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
-            // - Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)
-            + Units.degreesToRotations(turretTrimDeg.get());
+        turretSetpointFilter.calculate(
+            getTurretAngleRot(
+                    virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
+                // - Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)
+                + Units.degreesToRotations(turretTrimDeg.get()));
     hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
     flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);
   }
