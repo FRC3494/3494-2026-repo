@@ -641,7 +641,7 @@ public class RobotCommands {
               turret.setOpenLoop(Volts.of(-1.5));
             },
             turret),
-        waitSeconds(1),
+        waitSeconds(0.5),
         rezeroTurret(),
         enableAutoTurret());
   }
