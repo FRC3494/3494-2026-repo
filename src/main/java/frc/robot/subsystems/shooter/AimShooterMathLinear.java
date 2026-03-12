@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.LinearInterpolationDataPoint;
@@ -57,6 +58,10 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final LoggedNetworkNumber yTrimInches =
       new LoggedNetworkNumber("Tunable/Trim/YTrimInches");
 
+  private double lastLoopTimestamp;
+  private double previousTOF = 0.0;
+  private Translation2d previousRobotSpeed = new Translation2d();
+
   public AimShooterMathLinear(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> robotSpeeds) {
     this.robotPose = robotPose;
     this.robotSpeeds = robotSpeeds;
@@ -66,6 +71,8 @@ public class AimShooterMathLinear extends SubsystemBase {
       flywheelSpeedMapRPM.put(dataPoint.distance().in(Meters), dataPoint.flywheelSpeed().in(RPM));
       timeOfFlightMap.put(dataPoint.distance().in(Meters), dataPoint.timeOfFlight().in(Seconds));
     }
+
+    lastLoopTimestamp = Timer.getTimestamp();
   }
 
   @Override
@@ -96,12 +103,39 @@ public class AimShooterMathLinear extends SubsystemBase {
             + Units.inchesToMeters(distanceTrimInches.get());
     Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
+    // TODO: refactor so this code isn't duplicated with getVirtualGoal
+    double distanceToTarget =
+        shooterTranslation.getDistance(targetLocation)
+            + Units.inchesToMeters(distanceTrimInches.get());
+    double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
+
+    double timeSinceLastLoop = Timer.getTimestamp() - lastLoopTimestamp;
+    double rateOfChangeOfTOF = timeOfFlight - previousTOF;
+    lastLoopTimestamp = Timer.getTimestamp();
+    previousTOF = timeOfFlight;
+
+    Translation2d robotSpeedTranslation =
+        new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
+    Translation2d robotAcceleration =
+        robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
+    Translation2d virtualGoalVelocity =
+        robotAcceleration
+            .times(-timeOfFlight)
+            .minus(robotSpeedTranslation.times(rateOfChangeOfTOF));
+    Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
+    Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
+
     turretAngleRot =
         turretSetpointFilter.calculate(
             getTurretAngleRot(
                     virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
                 - Units.radiansToRotations(
                     robotSpeed.omegaRadiansPerSecond * turretOmegaFactor.get())
+                + Units.radiansToRotations(
+                    (translationToVirtualGoal.getX() * correctedVelocity.getY()
+                            - translationToVirtualGoal.getY() * correctedVelocity.getX())
+                        / translationToVirtualGoal.getSquaredNorm()
+                        / 50.0)
                 + Units.degreesToRotations(turretTrimDeg.get()));
     hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
     flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);
