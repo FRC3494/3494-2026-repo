@@ -487,16 +487,19 @@ public final class Constants {
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
-      public static double turretKp = 0.6;
-      public static double turretKi = 0.01;
-      public static double turretKd = 20.0;
+      public static double turretKp = 0.62059;
+      public static double turretKi = 0.0;
+      public static double turretKd = 7.2757;
 
       public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
       public static double turretIZone = Units.degreesToRotations(10);
 
-      public static final double turretKs = 0.0;
-      public static final double turretKv = 0.0;
-      public static final double turretKa = 0.0;
+      public static final double turretKs = 0.28642;
+      public static final double turretKv = 0.0017377;
+      public static final double turretKa = 0.013128;
+      public static double turretKcos = 0.17048;
+      public static final double turretKcosOffset = 0.36049;
+      public static double turretKg = 0.06081;
 
       public static final double turretGearRatio = 17.0 / 115.0;
 
