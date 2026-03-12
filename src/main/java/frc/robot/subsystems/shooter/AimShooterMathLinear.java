@@ -37,6 +37,9 @@ public class AimShooterMathLinear extends SubsystemBase {
 
   private final MedianFilter turretSetpointFilter = new MedianFilter(turretSetpointFilterSize);
 
+  private final LoggedNetworkNumber turretOmegaFactor =
+      new LoggedNetworkNumber("Tunable/TurretYawVelocityFactor", turretYawVelocityFactor);
+
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
@@ -98,7 +101,7 @@ public class AimShooterMathLinear extends SubsystemBase {
             getTurretAngleRot(
                     virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
                 - Units.radiansToRotations(
-                    robotSpeed.omegaRadiansPerSecond * turretYawVelocityFactor)
+                    robotSpeed.omegaRadiansPerSecond * turretOmegaFactor.get())
                 + Units.degreesToRotations(turretTrimDeg.get()));
     hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
     flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);
