@@ -242,7 +242,7 @@ public final class Constants {
     public static final double driveSimKv = 0.0789;
 
     // Turn motor configuration
-    public static final boolean[] turnInverted = new boolean[] {false, false, true, true};
+    public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
     public static final int[] turnMotorCurrentLimit = new int[] {25, 25, 20, 20};
     public static final double[] turnMotorReduction =
         new double[] {

@@ -39,5 +39,3 @@ real outputs shooter > turret > sysidstate
 find logs for the motor Turret > motor
 
 - drag velocity/position/ appplied voltage to voltage
-
-
