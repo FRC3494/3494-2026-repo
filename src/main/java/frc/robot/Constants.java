@@ -491,8 +491,8 @@ public final class Constants {
       public static final double turretPositionTolerance = Units.degreesToRotations(0.4);
       // Retractor kicks in when CW from (less than) this position
       public static final double turretCableRetractorStart = Units.degreesToRotations(115);
-      public static Voltage turretCableRetractorFFCW = Volts.of(-0.3);
-      public static Voltage turretCableRetractorFFCCW = Volts.of(-0.1);
+      public static final Voltage turretCableRetractorFFCW = Volts.of(-0.3);
+      public static final Voltage turretCableRetractorFFCCW = Volts.of(-0.1);
 
       public static final double turretYawVelocityFactor = 0.5;
 

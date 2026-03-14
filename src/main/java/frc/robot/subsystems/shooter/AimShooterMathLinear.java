@@ -2,8 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretSetpointFilterSize;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretYawVelocityFactor;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -33,13 +33,11 @@ public class AimShooterMathLinear extends SubsystemBase {
   private final Supplier<ChassisSpeeds> robotSpeeds;
 
   @Getter @AutoLogOutput private double turretAngleRot = 0.0;
+  @Getter @AutoLogOutput private Voltage turretFF = Volts.of(0.0);
   @Getter @AutoLogOutput private Rotation2d hoodAngle = Rotation2d.kZero;
   @Getter @AutoLogOutput private AngularVelocity flywheelSpeed = RPM.of(0);
 
   private final MedianFilter turretSetpointFilter = new MedianFilter(turretSetpointFilterSize);
-
-  private final LoggedNetworkNumber turretOmegaFactor =
-      new LoggedNetworkNumber("Tunable/TurretYawVelocityFactor", turretYawVelocityFactor);
 
   private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
@@ -92,8 +90,13 @@ public class AimShooterMathLinear extends SubsystemBase {
     Logger.recordOutput(
         "AimShooterMathLinear/TargetLocation", new Pose2d(targetLocation, Rotation2d.kZero));
 
-    Translation2d virtualTargetLocation =
-        getVirtualGoal(shooterTranslation, robotSpeed, targetLocation);
+    double distanceToTarget =
+        shooterTranslation.getDistance(targetLocation)
+            + Units.inchesToMeters(distanceTrimInches.get());
+    Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
+    double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
+
+    Translation2d virtualTargetLocation = getVirtualGoal(timeOfFlight, robotSpeed, targetLocation);
     Logger.recordOutput(
         "AimShooterMathLinear/VirtualTargetLocation",
         new Pose2d(virtualTargetLocation, Rotation2d.kZero));
@@ -103,42 +106,19 @@ public class AimShooterMathLinear extends SubsystemBase {
             + Units.inchesToMeters(distanceTrimInches.get());
     Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
-    // TODO: refactor so this code isn't duplicated with getVirtualGoal
-    double distanceToTarget =
-        shooterTranslation.getDistance(targetLocation)
-            + Units.inchesToMeters(distanceTrimInches.get());
-    double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
-
-    double timeSinceLastLoop = Timer.getTimestamp() - lastLoopTimestamp;
-    double rateOfChangeOfTOF = timeOfFlight - previousTOF;
-    lastLoopTimestamp = Timer.getTimestamp();
-    previousTOF = timeOfFlight;
-
-    Translation2d robotSpeedTranslation =
-        new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
-    Translation2d robotAcceleration =
-        robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
-    Translation2d virtualGoalVelocity =
-        robotAcceleration
-            .times(-timeOfFlight)
-            .minus(robotSpeedTranslation.times(rateOfChangeOfTOF));
-    Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
-    Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
-
     turretAngleRot =
         turretSetpointFilter.calculate(
             getTurretAngleRot(
                     virtualTargetLocation, shooterTranslation, currentRobotPose.getRotation())
-                - Units.radiansToRotations(
-                    robotSpeed.omegaRadiansPerSecond * turretOmegaFactor.get())
-                + Units.radiansToRotations(
-                    (translationToVirtualGoal.getX() * correctedVelocity.getY()
-                            - translationToVirtualGoal.getY() * correctedVelocity.getX())
-                        / translationToVirtualGoal.getSquaredNorm()
-                        / 50.0)
                 + Units.degreesToRotations(turretTrimDeg.get()));
-    hoodAngle = getHoodAngle(inAllianceZone, virtualDistanceToTarget);
-    flywheelSpeed = getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget);
+    turretFF = getTurretFF(shooterTranslation, virtualTargetLocation, timeOfFlight, robotSpeed);
+
+    hoodAngle =
+        getHoodAngle(inAllianceZone, virtualDistanceToTarget)
+            .plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
+    flywheelSpeed =
+        getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget)
+            .plus(RPM.of(flywheelTrimRPM.get()));
   }
 
   // ==================== CALCULATIONS ====================
@@ -182,14 +162,7 @@ public class AimShooterMathLinear extends SubsystemBase {
   }
 
   private Translation2d getVirtualGoal(
-      Translation2d shooterTranslation, ChassisSpeeds robotSpeed, Translation2d targetLocation) {
-    double distanceToTarget =
-        shooterTranslation.getDistance(targetLocation)
-            + Units.inchesToMeters(distanceTrimInches.get());
-    Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
-
-    double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
-
+      double timeOfFlight, ChassisSpeeds robotSpeed, Translation2d targetLocation) {
     return targetLocation.minus(
         new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond)
             .times(timeOfFlight));
@@ -205,13 +178,57 @@ public class AimShooterMathLinear extends SubsystemBase {
     return angle - robotYaw.getRotations();
   }
 
+  private Voltage getTurretFF(
+      Translation2d shooterTranslation,
+      Translation2d virtualTargetLocation,
+      double timeOfFlight,
+      ChassisSpeeds robotSpeed) {
+    // ! Copied from FTC code, I don't understand how this works at all lol
+    double timeSinceLastLoop = Timer.getTimestamp() - lastLoopTimestamp;
+    double rateOfChangeOfTOF = timeOfFlight - previousTOF;
+    lastLoopTimestamp = Timer.getTimestamp();
+    previousTOF = timeOfFlight;
+
+    Translation2d robotSpeedTranslation =
+        new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
+    Translation2d robotAcceleration =
+        robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
+    Translation2d virtualGoalVelocity =
+        robotAcceleration
+            .times(-timeOfFlight)
+            .minus(robotSpeedTranslation.times(rateOfChangeOfTOF));
+    Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
+    Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
+
+    double turretVelocity =
+        (translationToVirtualGoal.getX() * correctedVelocity.getY()
+                - translationToVirtualGoal.getY() * correctedVelocity.getX())
+            / translationToVirtualGoal.getSquaredNorm();
+    double turretAcceleration =
+        ((translationToVirtualGoal.getX() * robotAcceleration.getY()
+                    - translationToVirtualGoal.getY() * robotAcceleration.getX())
+                / translationToVirtualGoal.getSquaredNorm())
+            - (2.0
+                * turretVelocity
+                * ((translationToVirtualGoal.getX() * correctedVelocity.getX()
+                        + translationToVirtualGoal.getY() * correctedVelocity.getY())
+                    / translationToVirtualGoal.getSquaredNorm()));
+    // TODO: might need to be different units for yaw velocity
+    Voltage robotYawVelocityFF =
+        Volts.of(
+            turretKv
+                * (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
+
+    return robotYawVelocityFF.plus(
+        Volts.of(turretKv * turretVelocity + turretKa * turretAcceleration));
+  }
+
   private Rotation2d getHoodAngle(boolean inAllianceZone, double distanceMeters) {
-    return Rotation2d.fromRadians(hoodAngleMapRad.get(distanceMeters))
-        .plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
+    return Rotation2d.fromRadians(hoodAngleMapRad.get(distanceMeters));
   }
 
   private AngularVelocity getFlywheelSpeed(boolean inAllianceZone, double distanceMeters) {
-    return RPM.of(flywheelSpeedMapRPM.get(distanceMeters)).plus(RPM.of(flywheelTrimRPM.get()));
+    return RPM.of(flywheelSpeedMapRPM.get(distanceMeters));
   }
 
   // ==================== TRIM ====================

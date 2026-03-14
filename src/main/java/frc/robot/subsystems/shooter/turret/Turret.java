@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -37,6 +38,10 @@ public class Turret extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Turret/TurretSetpointClamped", unit = "rotations")
   private double turretSetpointClampedRot = 0.0;
 
+  @Setter
+  @AutoLogOutput(key = "Shooter/Turret/ArbFF")
+  private Voltage turretArbFF = Volts.of(0.0);
+
   private LoggedNetworkNumber turretP = new LoggedNetworkNumber("Tunable/Turret/kP", turretKp);
   private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
   private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
@@ -47,7 +52,10 @@ public class Turret extends SubsystemBase {
 
   private LoggedNetworkNumber turretCableRetractorFFCWVolts =
       new LoggedNetworkNumber(
-          "Tunable/Turret/CableRetractorFF", turretCableRetractorFFCW.in(Volts));
+          "Tunable/Turret/CableRetractorFFCW", turretCableRetractorFFCW.in(Volts));
+  private LoggedNetworkNumber turretCableRetractorFFCCWVolts =
+      new LoggedNetworkNumber(
+          "Tunable/Turret/CableRetractorFFCCW", turretCableRetractorFFCCW.in(Volts));
 
   private double magSensorStartPosition = 0.0;
 
@@ -157,7 +165,7 @@ public class Turret extends SubsystemBase {
 
   private void runTurret() {
     double currentPositionRot = getPositionRot();
-    double arbFFVolts = 0.0;
+    double arbFFVolts = turretArbFF.in(Volts);
     if (turretSetpointClampedRot < currentPositionRot) {
       // Clockwise
       arbFFVolts =
@@ -168,7 +176,7 @@ public class Turret extends SubsystemBase {
       // Counterclockwise
       arbFFVolts =
           currentPositionRot < turretCableRetractorStart
-              ? turretCableRetractorFFCCW.in(Volts)
+              ? turretCableRetractorFFCCWVolts.get()
               : 0.0;
     }
 

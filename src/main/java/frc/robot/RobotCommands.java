@@ -110,7 +110,9 @@ public class RobotCommands {
 
     setFlywheelCommand = new SetFlywheelCommand(flywheel, aimShooterMathLinear::getFlywheelSpeed);
     setHoodCommand = new SetHoodCommand(hood, aimShooterMathLinear::getHoodAngle);
-    setTurretCommand = new SetTurretCommand(turret, aimShooterMathLinear::getTurretAngleRot);
+    setTurretCommand =
+        new SetTurretCommand(
+            turret, aimShooterMathLinear::getTurretAngleRot, aimShooterMathLinear::getTurretFF);
   }
 
   // ==================== WHOLE ROBOT ====================
