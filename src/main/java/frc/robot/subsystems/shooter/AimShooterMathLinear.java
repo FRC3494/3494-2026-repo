@@ -213,11 +213,17 @@ public class AimShooterMathLinear extends SubsystemBase {
                 * ((translationToVirtualGoal.getX() * correctedVelocity.getX()
                         + translationToVirtualGoal.getY() * correctedVelocity.getY())
                     / translationToVirtualGoal.getSquaredNorm()));
+
     // TODO: might need to be different units for yaw velocity
+    // Voltage robotYawVelocityFF =
+    //     Volts.of(
+    //         turretKv
+    //             * (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
     Voltage robotYawVelocityFF =
         Volts.of(
-            turretKv
-                * (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
+            turretKv * (-Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)));
+
+    previousRobotSpeed = robotSpeedTranslation;
 
     return robotYawVelocityFF.plus(
         Volts.of(turretKv * turretVelocity + turretKa * turretAcceleration));

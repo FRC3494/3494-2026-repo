@@ -166,17 +166,19 @@ public class Turret extends SubsystemBase {
   private void runTurret() {
     double currentPositionRot = getPositionRot();
     double arbFFVolts = turretArbFF.in(Volts);
+    double totalFF = 0.0;
+
     if (turretSetpointClampedRot < currentPositionRot) {
       // Clockwise
-      arbFFVolts =
+      totalFF =
           currentPositionRot < turretCableRetractorStart
-              ? turretCableRetractorFFCWVolts.get()
+              ? turretCableRetractorFFCWVolts.get() + arbFFVolts
               : 0.0;
     } else {
       // Counterclockwise
-      arbFFVolts =
+      totalFF =
           currentPositionRot < turretCableRetractorStart
-              ? turretCableRetractorFFCCWVolts.get()
+              ? turretCableRetractorFFCCWVolts.get() + arbFFVolts
               : 0.0;
     }
 
@@ -186,7 +188,7 @@ public class Turret extends SubsystemBase {
             turretSetpointClampedRot,
             ControlType.kPosition,
             ClosedLoopSlot.kSlot0,
-            arbFFVolts,
+            totalFF,
             ArbFFUnits.kVoltage);
   }
 
