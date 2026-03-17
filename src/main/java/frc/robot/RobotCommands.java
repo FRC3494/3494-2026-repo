@@ -19,7 +19,7 @@ import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.AimShooterMathLinear;
+import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -39,7 +39,7 @@ public class RobotCommands {
   private final Hood hood;
   private final Turret turret;
 
-  private final AimShooterMathLinear aimShooterMathLinear;
+  private ShooterAimModel shooterAimModel;
 
   // ==================== CLIMBER ====================
   private LoggedNetworkNumber climberUpPos =
@@ -90,7 +90,7 @@ public class RobotCommands {
       Flywheel flywheel,
       Hood hood,
       Turret turret,
-      AimShooterMathLinear aimShooterMathLinear) {
+      ShooterAimModel shooterAimModel) {
     this.climber = climber;
     this.drive = drive;
     this.hopper = hopper;
@@ -99,7 +99,7 @@ public class RobotCommands {
     this.hood = hood;
     this.turret = turret;
 
-    this.aimShooterMathLinear = aimShooterMathLinear;
+    this.shooterAimModel = shooterAimModel;
 
     joystickDriveCommand =
         DriveCommands.joystickDrive(
@@ -108,11 +108,11 @@ public class RobotCommands {
             OI.DriveOI::joystickDriveY,
             OI.DriveOI::joystickDriveOmega);
 
-    setFlywheelCommand = new SetFlywheelCommand(flywheel, aimShooterMathLinear::getFlywheelSpeed);
-    setHoodCommand = new SetHoodCommand(hood, aimShooterMathLinear::getHoodAngle);
+    setFlywheelCommand = new SetFlywheelCommand(flywheel, shooterAimModel::getFlywheelSpeed);
+    setHoodCommand = new SetHoodCommand(hood, shooterAimModel::getHoodAngle);
     setTurretCommand =
         new SetTurretCommand(
-            turret, aimShooterMathLinear::getTurretAngleRot, aimShooterMathLinear::getTurretFF);
+            turret, shooterAimModel::getTurretAngleRot, shooterAimModel::getTurretFF);
   }
 
   // ==================== WHOLE ROBOT ====================
@@ -425,8 +425,8 @@ public class RobotCommands {
   public Command setManualShooterSettingsWithTrim(
       Rotation2d hoodAngle, AngularVelocity flywheelSpeed) {
     return sequence(
-        runFlywheelManual(() -> flywheelSpeed.plus(aimShooterMathLinear.getFlywheelTrim())),
-        setHoodManual(() -> hoodAngle.plus(aimShooterMathLinear.getHoodTrim())));
+        runFlywheelManual(() -> shooterAimModel.applyFlywheelTrim(flywheelSpeed)),
+        setHoodManual(() -> shooterAimModel.applyHoodTrim(hoodAngle)));
   }
 
   public Command setCloseShot(boolean withTrim) {
@@ -473,6 +473,10 @@ public class RobotCommands {
     return sequence(
         runFlywheelManual(() -> RPM.of(flywheelSpeed.get())),
         setHoodManual(() -> Rotation2d.fromDegrees(hoodAngle.get())));
+  }
+
+  public void setShooterAimModel(ShooterAimModel shooterAimModel) {
+    this.shooterAimModel = shooterAimModel;
   }
 
   // ==================== FLYWHEEL ====================

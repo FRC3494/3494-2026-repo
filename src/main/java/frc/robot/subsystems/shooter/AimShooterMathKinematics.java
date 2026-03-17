@@ -15,6 +15,13 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap.Shooter;
 import frc.robot.Constants.ShooterConstants;
@@ -29,20 +36,26 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Closed-loop aiming command for the shooter.
+ * Closed-loop ballistic aiming model for the shooter.
  *
  * <p>On every {@link #execute()} call this command:
  *
  * <ol>
  *   <li>Samples the current {@link Pose2d} of the robot from the supplied pose source.
  *   <li>Builds a {@link Pose3d} for the shooter using a fixed transform from the robot frame.
- *   <li>Builds a 3D target pose from {@link #shooterTarget}, which is expected to be the
- *       alliance-relative hub location.
+ *   <li>Selects a 2D field target using the same zone logic as {@link AimShooterMathLinear}:
+ *       alliance-zone shots aim at the alliance hub (with X/Y trim), otherwise the model picks the
+ *       nearest neutral-zone shooting target.
+ *   <li>Builds a 3D target pose from that selected target.
  *   <li>Solves a simple ballistic model to estimate the required launch velocity.
  *   <li>Converts that launch velocity into a flywheel RPM setpoint.
- *   <li>Applies operator-trim offsets for flywheel, hood, and turret and clamps them to the safe
- *       ranges defined in {@link FlywheelConstants}, {@link HoodConstants}, and {@link
- *       TurretConstants}.
+ *   <li>Applies operator trims:
+ *       <ul>
+ *         <li>target-space trims: X trim, Y trim, and distance trim
+ *         <li>setpoint trims: flywheel RPM, hood angle, and turret angle offsets
+ *       </ul>
+ *   <li>Clamps the resulting flywheel and hood setpoints to the safe ranges defined in {@link
+ *       FlywheelConstants}, {@link HoodConstants}, and {@link TurretConstants}.
  *   <li>Commands the {@link Shooter} subsystem to those setpoints and logs key telemetry via
  *       AdvantageKit.
  * </ol>
@@ -50,10 +63,12 @@ import org.littletonrobotics.junction.Logger;
  * <p>Runtime configuration / tuning hooks:
  *
  * <ul>
- *   <li>{@link #shooterTarget} can be changed at runtime (e.g. to aim at a different field location
- *       or a moving target).
- *   <li>{@link #flywheelOffsetRPM}, {@link #hoodOffsetDeg}, and {@link #turretOffsetDeg} may be
- *       adjusted (or "bumped") by the operator to trim aim without changing the underlying model.
+ *   <li>{@link #shooterTarget} remains available as a configurable target concept, but the current
+ *       implementation selects between alliance-zone and neutral-zone targets internally.
+ *   <li>{@link #flywheelOffsetRPM}, {@link #hoodOffsetDeg}, and {@link #turretOffsetDeg} adjust the
+ *       final commanded setpoints.
+ *   <li>{@link #distanceTrimInches}, {@link #xTrimInches}, and {@link #yTrimInches} adjust the
+ *       selected target before or during the ballistic solve.
  * </ul>
  *
  * <p>Limitations / known work-in-progress:
@@ -64,20 +79,27 @@ import org.littletonrobotics.junction.Logger;
  *   <li>Max-height and RPM conversion are currently approximations; see the {@code TODO} items in
  *       {@link #calculateMaxHeight(Translation3d, Translation3d)} and {@link
  *       #calculateFlywheelRPM(double)}.
+ *   <li>Distance trim is applied by shifting the motion-compensated target along the shooter-to-
+ *       target ray, which is a practical geometric approximation rather than a full re-solve of a
+ *       richer guidance model.
  * </ul>
  */
-public class AimShooterMath extends SubsystemBase {
+public class AimShooterMathKinematics extends SubsystemBase implements ShooterAimModel {
   // Supplier for the latest field-relative robot pose (typically from odometry or
   // a pose estimator). The math class is intentionally decoupled from commands and
   // subsystems; it only needs the pose and internal tuning state.
-  private final Supplier<Pose2d> robotPose;
-  private final Supplier<ChassisSpeeds> chassisSpeeds;
+  private final Supplier<Pose2d> robotPoseSupplier;
+  private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
   // Persistent runtime offsets that operators can bump to trim aim during testing.
   // These are annotated for AutoLogOutput so they appear in logs/networktables for tuning.
   @Getter @Setter @AutoLogOutput private double flywheelOffsetRPM = 0.0;
   @Getter @Setter @AutoLogOutput private double hoodOffsetDeg = 0.0;
   @Getter @Setter @AutoLogOutput private double turretOffsetDeg = 0.0;
+  @Getter @Setter @AutoLogOutput private double distanceTrimInches = 0.0;
+  @Getter @Setter @AutoLogOutput private double xTrimInches = 0.0;
+  @Getter @Setter @AutoLogOutput private double yTrimInches = 0.0;
+  @AutoLogOutput private Voltage turretFF = Volts.of(0.0);
 
   // Flags that indicate whether the applied offset caused the final setpoint to be clipped by
   // safety clamps. These are updated every execute() and are useful to warn operators that
@@ -102,16 +124,24 @@ public class AimShooterMath extends SubsystemBase {
           hoodOffsetClamped,
           flywheelOffsetClamped);
 
-  public AimShooterMath(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> chassisSpeeds) {
-    this.robotPose = robotPose;
-    this.chassisSpeeds = chassisSpeeds;
+  private double lastLoopTimestamp = Timer.getTimestamp();
+  private double previousTOF = 0.0;
+  private Translation2d previousRobotSpeed = new Translation2d();
+
+  public AimShooterMathKinematics(
+      Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> chassisSpeeds) {
+    this.robotPoseSupplier = robotPose;
+    this.chassisSpeedsSupplier = chassisSpeeds;
   }
 
   /** Main control loop step that recomputes aim and updates shooter setpoints. */
   @Override
   public void periodic() {
+    Pose2d currentRobotPose = robotPoseSupplier.get();
+    ChassisSpeeds currentSpeeds = chassisSpeedsSupplier.get();
+
     // 1) Read state and build geometry
-    AimState state = buildAimState();
+    AimState state = buildAimState(currentRobotPose, currentSpeeds);
 
     // 2) Compute projectile/velocity physics
     PhysicsResult physics = computePhysics(state);
@@ -125,19 +155,40 @@ public class AimShooterMath extends SubsystemBase {
     // unwrap the target angle and avoid snapping across the +/-180 degree discontinuity.
     setpoints =
         applyOffsetsAndClamps(
-            calculatedRPM, physics, state.turretAngleWorld, setpoints.turretAngle);
+            calculatedRPM,
+            physics,
+            state.turretAngleWorld,
+            setpoints.turretAngle,
+            flywheelOffsetRPM,
+            hoodOffsetDeg,
+            turretOffsetDeg);
+
+    turretFF = getTurretFF(state, physics.timeToTarget);
 
     // 5) Log detailed stats for debugging/tuning and return
     logAimShooterStats(state, physics, setpoints);
   }
 
-  private AimState buildAimState() {
-    Pose2d robot2d = robotPose.get();
-    Translation2d robotLocation = robot2d.getTranslation();
-    Rotation2d robotYaw = robot2d.getRotation();
+  /**
+   * Builds the geometric state used by the ballistic aim calculation.
+   *
+   * <p>This method:
+   *
+   * <ol>
+   *   <li>Creates 3D robot and shooter poses from the current robot pose.
+   *   <li>Selects the target using alliance-zone vs neutral-zone logic.
+   *   <li>Applies X/Y trim directly to alliance-zone hub targeting.
+   *   <li>Estimates a first-pass time of flight for motion compensation.
+   *   <li>Applies distance trim by moving the motion-compensated target along the current line of
+   *       fire.
+   * </ol>
+   */
+  private AimState buildAimState(Pose2d robotPose, ChassisSpeeds chassisSpeeds) {
+    Translation2d robotLocation = robotPose.getTranslation();
+    Rotation2d robotYaw = robotPose.getRotation();
 
     // Current chassis speeds (field-relative)
-    ChassisSpeeds speeds = chassisSpeeds.get();
+    ChassisSpeeds speeds = chassisSpeeds;
 
     Pose3d robotPose3d =
         new Pose3d(
@@ -155,7 +206,12 @@ public class AimShooterMath extends SubsystemBase {
     // The Shooter's position in field coordinates
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
-    Translation2d target2d = QuadranglesUtil.toAllianceTranslation(hubLocation);
+    Translation2d shooterTranslation = shooterPose3d.getTranslation().toTranslation2d();
+    Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
+    boolean inAllianceZone = isInAllianceZone(shooterTranslation, azLineOffset);
+    Translation2d target2d =
+        getTargetLocation(shooterTranslation, inAllianceZone, allianceHubLocation);
+    double distanceTrimMeters = Inches.of(distanceTrimInches).in(Meters);
     Pose3d rawTargetPose3d =
         new Pose3d(target2d.getX(), target2d.getY(), targetHeight, new Rotation3d());
 
@@ -166,11 +222,22 @@ public class AimShooterMath extends SubsystemBase {
     double t = firstPassPhysics.timeToTarget;
 
     // Compensate target for robot motion: p_t' = p_t - v * t
-    double compensatedX = target2d.getX() - speeds.vxMetersPerSecond * t;
-    double compensatedY = target2d.getY() - speeds.vyMetersPerSecond * t;
+    Translation2d compensatedTarget2d =
+        target2d.minus(
+            new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).times(t));
+
+    if (Math.abs(distanceTrimMeters) > 1e-9) {
+      Translation2d shooterToTarget = compensatedTarget2d.minus(shooterTranslation);
+      double norm = shooterToTarget.getNorm();
+      if (norm > 1e-9) {
+        compensatedTarget2d =
+            compensatedTarget2d.plus(shooterToTarget.div(norm).times(distanceTrimMeters));
+      }
+    }
 
     Pose3d compensatedTargetPose3d =
-        new Pose3d(compensatedX, compensatedY, targetHeight, new Rotation3d());
+        new Pose3d(
+            compensatedTarget2d.getX(), compensatedTarget2d.getY(), targetHeight, new Rotation3d());
 
     // The vector from the shooter to the compensated target in field coordinates
     Translation3d translationToTarget =
@@ -197,7 +264,7 @@ public class AimShooterMath extends SubsystemBase {
    * travel from the shooter to the target, assuming constant gravity and no air resistance or spin
    * effects.
    */
-  private PhysicsResult computePhysics(AimState state) {
+  private static PhysicsResult computePhysics(AimState state) {
     Pose3d shooterPose3d = state.shooterPose3d;
     Pose3d targetPose3d = state.targetPose3d;
     Translation3d translationToTarget = state.translationToTarget;
@@ -228,11 +295,14 @@ public class AimShooterMath extends SubsystemBase {
    * <p>Also tracks whether any of the resulting setpoints were clamped so the dashboard can warn
    * the driver when trims push the system beyond its limits.
    */
-  private Setpoints applyOffsetsAndClamps(
+  private static Setpoints applyOffsetsAndClamps(
       double calculatedRPM,
       PhysicsResult physics,
       Rotation2d turretAngleWorld,
-      Rotation2d currentTurretAngle) {
+      Rotation2d currentTurretAngle,
+      double flywheelOffsetRPM,
+      double hoodOffsetDeg,
+      double turretOffsetDeg) {
 
     // Flywheel: apply offset then clamp
     double targetRPMBeforeClamp = calculatedRPM + flywheelOffsetRPM;
@@ -338,6 +408,105 @@ public class AimShooterMath extends SubsystemBase {
     }
   }
 
+  /**
+   * Computes turret feedforward for tracking the motion-compensated ballistic target.
+   *
+   * <p>This mirrors the line-of-sight feedforward used in {@link AimShooterMathLinear}. The
+   * ballistic model already computes a motion-compensated target, so this method converts the
+   * relative target motion into turret angular velocity/acceleration and then into volts using the
+   * identified turret gains.
+   */
+  private Voltage getTurretFF(AimState state, double timeOfFlight) {
+    double currentTimestamp = Timer.getTimestamp();
+    double timeSinceLastLoop = currentTimestamp - lastLoopTimestamp;
+    double deltaTimeOfFlight = timeOfFlight - previousTOF;
+    lastLoopTimestamp = currentTimestamp;
+    previousTOF = timeOfFlight;
+
+    Translation2d robotSpeedTranslation =
+        new Translation2d(
+            state.fieldRelativeSpeeds.vxMetersPerSecond,
+            state.fieldRelativeSpeeds.vyMetersPerSecond);
+    Translation2d robotAcceleration =
+        robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
+
+    Translation2d virtualGoalVelocity =
+        robotAcceleration
+            .times(-timeOfFlight)
+            .minus(robotSpeedTranslation.times(deltaTimeOfFlight));
+
+    Translation2d shooterTranslation = state.shooterPose3d.getTranslation().toTranslation2d();
+    Translation2d virtualTargetLocation = state.targetPose3d.getTranslation().toTranslation2d();
+    Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
+    Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
+    double translationNormSquared = translationToVirtualGoal.getSquaredNorm();
+
+    double turretVelocity =
+        (translationToVirtualGoal.getX() * correctedVelocity.getY()
+                - translationToVirtualGoal.getY() * correctedVelocity.getX())
+            / translationNormSquared;
+
+    double angularAccelerationNumerator =
+        (translationToVirtualGoal.getX() * robotAcceleration.getY()
+                - translationToVirtualGoal.getY() * robotAcceleration.getX())
+            / translationNormSquared;
+    double radialVelocityComponent =
+        (translationToVirtualGoal.getX() * correctedVelocity.getX()
+                + translationToVirtualGoal.getY() * correctedVelocity.getY())
+            / translationNormSquared;
+    double turretAcceleration =
+        angularAccelerationNumerator - (2.0 * turretVelocity * radialVelocityComponent);
+
+    Voltage robotYawVelocityFF =
+        Volts.of(
+            TurretConstants.turretKv
+                * (-Units.radiansToRotations(state.fieldRelativeSpeeds.omegaRadiansPerSecond)));
+
+    previousRobotSpeed = robotSpeedTranslation;
+
+    return robotYawVelocityFF.plus(
+        Volts.of(
+            TurretConstants.turretKv * turretVelocity
+                + TurretConstants.turretKa * turretAcceleration));
+  }
+
+  /** Returns whether the shooter is currently considered inside the alliance zone. */
+  private static boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLine) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return shooterTranslation.getMeasureX().plus(azLineOffset).lte(azLine);
+    } else {
+      return shooterTranslation.getMeasureX().minus(azLineOffset).gte(azLine);
+    }
+  }
+
+  /**
+   * Returns the 2D target used by the ballistic model.
+   *
+   * <p>Inside the alliance zone, the hub is used and X/Y trims are applied in field space. Outside
+   * the alliance zone, the closer of the predefined neutral-zone targets is selected.
+   */
+  private Translation2d getTargetLocation(
+      Translation2d shooterTranslation, boolean inAllianceZone, Translation2d allianceHubLocation) {
+    if (inAllianceZone) {
+      return allianceHubLocation.plus(new Translation2d(getXTrim(), getYTrim()));
+    } else {
+      return getNZShootingTarget(shooterTranslation);
+    }
+  }
+
+  /** Chooses the closer of the two predefined neutral-zone shooting targets. */
+  private static Translation2d getNZShootingTarget(Translation2d robotTranslation) {
+    boolean closerToDepot =
+        robotTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget))
+            < robotTranslation.getDistance(
+                QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget));
+    if (closerToDepot) {
+      return QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget);
+    } else {
+      return QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget);
+    }
+  }
+
   private static class PhysicsResult {
     final double initialXVelocity;
     final double initialYVelocity;
@@ -350,7 +519,7 @@ public class AimShooterMath extends SubsystemBase {
     }
   }
 
-  public class Setpoints {
+  public static class Setpoints {
     public final double rpm;
     public final Rotation2d hoodAngle;
     public final Rotation2d turretAngle;
@@ -372,6 +541,97 @@ public class AimShooterMath extends SubsystemBase {
       this.hoodClamped = hoodClamped;
       this.turretClamped = turretClamped;
     }
+  }
+
+  // ========== ShooterAimModel interface implementation ==========
+  @Override
+  public double getTurretAngleRot() {
+    return setpoints.turretAngle.getRotations();
+  }
+
+  @Override
+  public Voltage getTurretFF() {
+    return turretFF;
+  }
+
+  @Override
+  public Rotation2d getHoodAngle() {
+    return setpoints.hoodAngle;
+  }
+
+  @Override
+  public AngularVelocity getFlywheelSpeed() {
+    return RPM.of(setpoints.rpm);
+  }
+
+  @Override
+  public double getTurretTrimRot() {
+    return Units.degreesToRotations(turretOffsetDeg);
+  }
+
+  @Override
+  public void setTurretTrim(double trimRot) {
+    turretOffsetDeg = Units.rotationsToDegrees(trimRot);
+  }
+
+  @Override
+  public Rotation2d getHoodTrim() {
+    return Rotation2d.fromDegrees(hoodOffsetDeg);
+  }
+
+  @Override
+  public void setHoodTrim(Rotation2d trim) {
+    hoodOffsetDeg = trim.getDegrees();
+  }
+
+  @Override
+  public AngularVelocity getFlywheelTrim() {
+    return RPM.of(flywheelOffsetRPM);
+  }
+
+  @Override
+  public void setFlywheelTrim(AngularVelocity trim) {
+    flywheelOffsetRPM = trim.in(RPM);
+  }
+
+  @Override
+  public Distance getDistanceTrim() {
+    return Inches.of(distanceTrimInches);
+  }
+
+  @Override
+  public void setDistanceTrim(Distance trim) {
+    distanceTrimInches = trim.in(Inches);
+  }
+
+  @Override
+  public Distance getXTrim() {
+    return Inches.of(xTrimInches);
+  }
+
+  @Override
+  public void setXTrim(Distance trim) {
+    xTrimInches = trim.in(Inches);
+  }
+
+  @Override
+  public Distance getYTrim() {
+    return Inches.of(yTrimInches);
+  }
+
+  @Override
+  public void setYTrim(Distance trim) {
+    yTrimInches = trim.in(Inches);
+  }
+
+  @Override
+  public AngularVelocity applyFlywheelTrim(AngularVelocity baseSpeed) {
+    return baseSpeed.plus(getFlywheelTrim());
+  }
+
+  @Override
+  public Rotation2d applyHoodTrim(Rotation2d baseAngle) {
+    return baseAngle.plus(getHoodTrim());
   }
 
   /** Increment/decrement helpers for operator trimming during testing. */

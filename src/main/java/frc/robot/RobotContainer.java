@@ -47,8 +47,9 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.AimShooterMath;
+import frc.robot.subsystems.shooter.AimShooterMathKinematics;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
+import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
@@ -73,8 +74,9 @@ public class RobotContainer {
   private final Hood hood;
   private final Turret turret;
 
-  private final AimShooterMath aimShooterMath;
+  private final AimShooterMathKinematics aimShooterMath;
   private final AimShooterMathLinear aimShooterMathLinear;
+  private final ShooterAimModel shooterAimModel;
 
   // Choreo
   private final AutoChooser autoChooser;
@@ -130,13 +132,13 @@ public class RobotContainer {
     hood = new Hood();
     turret = new Turret();
 
-    aimShooterMath = new AimShooterMath(drive::getPose, drive::getChassisSpeeds);
+    aimShooterMath = new AimShooterMathKinematics(drive::getPose, drive::getChassisSpeeds);
     aimShooterMathLinear = new AimShooterMathLinear(drive::getPose, drive::getChassisSpeeds);
 
-    robotCommands =
-        new RobotCommands(
-            climber, drive, hopper, intake, flywheel, hood, turret, aimShooterMathLinear);
+    shooterAimModel = aimShooterMathLinear;
 
+    robotCommands =
+        new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret, shooterAimModel);
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
     RobotModeTriggers.teleop()
@@ -405,36 +407,36 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                     () -> {
-                      aimShooterMathLinear.setDistanceTrim(Inches.of(0));
-                      aimShooterMathLinear.setFlywheelTrim(RPM.of(0));
-                      aimShooterMathLinear.setHoodTrim(Rotation2d.kZero);
+                      shooterAimModel.setDistanceTrim(Inches.of(0));
+                      shooterAimModel.setFlywheelTrim(RPM.of(0));
+                      shooterAimModel.setHoodTrim(Rotation2d.kZero);
                     },
-                    aimShooterMathLinear)
+                    shooterAimModel)
                 .ignoringDisable(true));
 
     ShooterOI.increaseDistanceTrim()
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setDistanceTrim(
-                      aimShooterMathLinear.getDistanceTrim().plus(Inches.of(1)));
+                  shooterAimModel.setDistanceTrim(
+                      shooterAimModel.getDistanceTrim().plus(Inches.of(1)));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     ShooterOI.decreaseDistanceTrim()
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setDistanceTrim(
-                      aimShooterMathLinear.getDistanceTrim().minus(Inches.of(1)));
+                  shooterAimModel.setDistanceTrim(
+                      shooterAimModel.getDistanceTrim().minus(Inches.of(1)));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     ShooterOI.resetDistanceTrim()
         .onTrue(
             runOnce(
                 () -> {
-                  aimShooterMathLinear.setDistanceTrim(Inches.of(0));
+                  shooterAimModel.setDistanceTrim(Inches.of(0));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
 
     Distance xyTrimSensitivity = Inches.of(1.0);
     ShooterOI.trimRight()
@@ -442,62 +444,54 @@ public class RobotContainer {
             run(
                 () -> {
                   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    aimShooterMathLinear.setYTrim(
-                        aimShooterMathLinear.getYTrim().minus(xyTrimSensitivity));
+                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().minus(xyTrimSensitivity));
                   } else {
-                    aimShooterMathLinear.setYTrim(
-                        aimShooterMathLinear.getYTrim().plus(xyTrimSensitivity));
+                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().plus(xyTrimSensitivity));
                   }
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     ShooterOI.trimLeft()
         .whileTrue(
             run(
                 () -> {
                   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    aimShooterMathLinear.setYTrim(
-                        aimShooterMathLinear.getYTrim().plus(xyTrimSensitivity));
+                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().plus(xyTrimSensitivity));
                   } else {
-                    aimShooterMathLinear.setYTrim(
-                        aimShooterMathLinear.getYTrim().minus(xyTrimSensitivity));
+                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().minus(xyTrimSensitivity));
                   }
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     ShooterOI.trimForward()
         .whileTrue(
             run(
                 () -> {
                   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    aimShooterMathLinear.setXTrim(
-                        aimShooterMathLinear.getXTrim().plus(xyTrimSensitivity));
+                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().plus(xyTrimSensitivity));
                   } else {
-                    aimShooterMathLinear.setXTrim(
-                        aimShooterMathLinear.getXTrim().minus(xyTrimSensitivity));
+                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().minus(xyTrimSensitivity));
                   }
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     ShooterOI.trimBack()
         .whileTrue(
             run(
                 () -> {
                   if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    aimShooterMathLinear.setXTrim(
-                        aimShooterMathLinear.getXTrim().minus(xyTrimSensitivity));
+                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().minus(xyTrimSensitivity));
                   } else {
-                    aimShooterMathLinear.setXTrim(
-                        aimShooterMathLinear.getXTrim().plus(xyTrimSensitivity));
+                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().plus(xyTrimSensitivity));
                   }
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
 
     ShooterOI.resetXYTrim()
         .onTrue(
             runOnce(
                 () -> {
-                  aimShooterMathLinear.setXTrim(Inches.of(0));
-                  aimShooterMathLinear.setYTrim(Inches.of(0));
+                  shooterAimModel.setXTrim(Inches.of(0));
+                  shooterAimModel.setYTrim(Inches.of(0));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
 
     // ==================== FLYWHEEL ====================
     flywheel.setDefaultCommand(robotCommands.setFlywheelCommand);
@@ -510,18 +504,18 @@ public class RobotContainer {
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setFlywheelTrim(
-                      aimShooterMathLinear.getFlywheelTrim().plus(RPM.of(5)));
+                  shooterAimModel.setFlywheelTrim(
+                      shooterAimModel.getFlywheelTrim().plus(RPM.of(5)));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     FlywheelOI.decreaseFlywheelTrim()
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setFlywheelTrim(
-                      aimShooterMathLinear.getFlywheelTrim().minus(RPM.of(5)));
+                  shooterAimModel.setFlywheelTrim(
+                      shooterAimModel.getFlywheelTrim().minus(RPM.of(5)));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
 
     // ==================== HOOD ====================
     hood.setDefaultCommand(robotCommands.setHoodCommand);
@@ -532,18 +526,18 @@ public class RobotContainer {
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setHoodTrim(
-                      aimShooterMathLinear.getHoodTrim().plus(Rotation2d.fromDegrees(0.5)));
+                  shooterAimModel.setHoodTrim(
+                      shooterAimModel.getHoodTrim().plus(Rotation2d.fromDegrees(0.5)));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     HoodOI.decreaseHoodTrim()
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setHoodTrim(
-                      aimShooterMathLinear.getHoodTrim().minus(Rotation2d.fromDegrees(0.5)));
+                  shooterAimModel.setHoodTrim(
+                      shooterAimModel.getHoodTrim().minus(Rotation2d.fromDegrees(0.5)));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
 
     HoodOI.hoodManualUp().whileTrue(robotCommands.hoodManualUp());
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
@@ -556,27 +550,27 @@ public class RobotContainer {
         .onTrue(
             runOnce(
                     () -> {
-                      aimShooterMathLinear.setTurretTrim(Units.degreesToRotations(0.0));
+                      shooterAimModel.setTurretTrim(Units.degreesToRotations(0.0));
                     },
-                    aimShooterMathLinear)
+                    shooterAimModel)
                 .ignoringDisable(true));
 
     TurretOI.increaseTurretTrim()
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setTurretTrim(
-                      aimShooterMathLinear.getTurretTrimRot() + Units.degreesToRotations(1));
+                  shooterAimModel.setTurretTrim(
+                      shooterAimModel.getTurretTrimRot() + Units.degreesToRotations(1));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
     TurretOI.decreaseTurretTrim()
         .whileTrue(
             run(
                 () -> {
-                  aimShooterMathLinear.setTurretTrim(
-                      aimShooterMathLinear.getTurretTrimRot() - Units.degreesToRotations(1));
+                  shooterAimModel.setTurretTrim(
+                      shooterAimModel.getTurretTrimRot() - Units.degreesToRotations(1));
                 },
-                aimShooterMathLinear));
+                shooterAimModel));
 
     TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
     TurretOI.unmurderTurret().onTrue(robotCommands.unmurderTurret());
