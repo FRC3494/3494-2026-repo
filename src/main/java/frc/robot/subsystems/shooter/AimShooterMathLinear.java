@@ -84,7 +84,7 @@ public class AimShooterMathLinear extends SubsystemBase {
 
     Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
-    boolean inAllianceZone = isInAllianceZone(shooterTranslation, azLineOffset);
+    boolean inAllianceZone = isInAllianceZone(shooterTranslation, azLine);
     Logger.recordOutput("AimShooterMathLinear/InAllianceZone", inAllianceZone);
 
     Translation2d targetLocation =
