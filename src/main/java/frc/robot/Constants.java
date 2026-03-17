@@ -213,7 +213,7 @@ public final class Constants {
 
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
-    public static final int driveMotorCurrentLimit = 60;
+    public static final int driveMotorCurrentLimit = 50;
     public static final double wheelRadiusMeters =
         Units.inchesToMeters(
             2.29793665); // When using linear characterization: actual linear distance / wheel delta
