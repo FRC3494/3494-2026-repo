@@ -172,15 +172,17 @@ public class Turret extends SubsystemBase {
       // Clockwise
       totalFF =
           currentPositionRot < turretCableRetractorStart
-              ? turretCableRetractorFFCWVolts.get() + arbFFVolts
+              ? turretCableRetractorFFCWVolts.get()
               : 0.0;
     } else {
       // Counterclockwise
       totalFF =
           currentPositionRot < turretCableRetractorStart
-              ? turretCableRetractorFFCCWVolts.get() + arbFFVolts
+              ? turretCableRetractorFFCCWVolts.get()
               : 0.0;
     }
+
+    totalFF += arbFFVolts;
 
     turretMotor
         .getClosedLoopController()
