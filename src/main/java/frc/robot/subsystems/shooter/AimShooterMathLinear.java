@@ -60,6 +60,8 @@ public class AimShooterMathLinear extends SubsystemBase {
   private double previousTOF = 0.0;
   private Translation2d previousRobotSpeed = new Translation2d();
 
+  private String currentTarget;
+
   public AimShooterMathLinear(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> robotSpeeds) {
     this.robotPose = robotPose;
     this.robotSpeeds = robotSpeeds;
@@ -119,6 +121,8 @@ public class AimShooterMathLinear extends SubsystemBase {
     flywheelSpeed =
         getFlywheelSpeed(inAllianceZone, virtualDistanceToTarget)
             .plus(RPM.of(flywheelTrimRPM.get()));
+
+    debugLogging();
   }
 
   // ==================== CALCULATIONS ====================
@@ -155,8 +159,10 @@ public class AimShooterMathLinear extends SubsystemBase {
             < robotTranslation.getDistance(
                 QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget));
     if (closerToDepot) {
+      currentTarget = "Depot";
       return QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget);
     } else {
+      currentTarget = "Outpost";
       return QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget);
     }
   }
@@ -218,10 +224,10 @@ public class AimShooterMathLinear extends SubsystemBase {
     // Voltage robotYawVelocityFF =
     //     Volts.of(
     //         turretKv
-    //             * (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
+    //             *
+    // (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
     Voltage robotYawVelocityFF =
-        Volts.of(
-            turretKv * (-Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)));
+        Volts.of(turretKv * (-Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)));
 
     previousRobotSpeed = robotSpeedTranslation;
 
@@ -284,5 +290,9 @@ public class AimShooterMathLinear extends SubsystemBase {
 
   public void setYTrim(Distance trim) {
     yTrimInches.set(trim.in(Inches));
+  }
+
+  public void debugLogging() {
+    Logger.recordOutput("AimShooterLinear/Debug/Target", currentTarget);
   }
 }

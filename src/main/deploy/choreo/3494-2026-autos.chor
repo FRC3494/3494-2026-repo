@@ -155,8 +155,8 @@
    },
    "NZDepotShootingTarget":{
     "x":{
-     "exp":"1 m",
-     "val":1.0
+     "exp":"3 m",
+     "val":3.0
     },
     "y":{
      "exp":"6.5 m",
@@ -169,8 +169,8 @@
    },
    "NZOutpostShootingTarget":{
     "x":{
-     "exp":"1 m",
-     "val":1.0
+     "exp":"3 m",
+     "val":3.0
     },
     "y":{
      "exp":"1.5 m",
