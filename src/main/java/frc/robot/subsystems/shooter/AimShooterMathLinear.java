@@ -81,6 +81,7 @@ public class AimShooterMathLinear extends SubsystemBase {
     ChassisSpeeds robotSpeed = robotSpeeds.get();
 
     Translation2d shooterTranslation = getRobotShooterTranslation(currentRobotPose);
+    Logger.recordOutput("AimShooterMathLinear/shooterTranslation", shooterTranslation);
 
     Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
@@ -138,9 +139,12 @@ public class AimShooterMathLinear extends SubsystemBase {
   // azLine is the X coordinate of the line between NZ and AZ
   private boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLine) {
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      return shooterTranslation.getMeasureX().plus(azLineOffset).lte(azLine);
+      return shooterTranslation.getMeasureX().minus(azLineOffset).lte(azLine);
     } else {
-      return shooterTranslation.getMeasureX().minus(azLineOffset).gte(azLine);
+      return QuadranglesUtil.toAllianceTranslation(shooterTranslation)
+          .getMeasureX()
+          .minus(azLineOffset)
+          .lte(azLine);
     }
   }
 
