@@ -360,7 +360,7 @@ public class RobotContainer {
     // ==================== SHOOTER ====================
     RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoShooterSettings());
 
-    ShooterOI.shoot().onTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
+    ShooterOI.shoot().whileTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
 
     ShooterOI.shootClose()
         .onTrue(sequence(robotCommands.setCloseShot(false), robotCommands.shoot()))
