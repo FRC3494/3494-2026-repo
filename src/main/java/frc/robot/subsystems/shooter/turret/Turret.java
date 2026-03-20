@@ -228,6 +228,7 @@ public class Turret extends SubsystemBase {
     return turretMotor.getEncoder().getPosition();
   }
 
+  @AutoLogOutput(key = "Shooter/Turret/AbsPositionRot", unit = "Rotations")
   public double getAbsPositionRot() {
     return turretMotor.getAbsoluteEncoder().getPosition();
   }

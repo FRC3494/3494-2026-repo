@@ -64,7 +64,8 @@ public class SparkUtil {
 
     if (absoluteEncoder) {
       Logger.recordOutput(
-          key + "/AbsPosition", Rotation2d.fromRotations(spark.getAbsoluteEncoder().getPosition()));
+          key + "/AbsPositionRad",
+          Rotation2d.fromRotations(spark.getAbsoluteEncoder().getPosition()));
       Logger.recordOutput(key + "/AbsVelocity", RPM.of(spark.getAbsoluteEncoder().getVelocity()));
     }
 

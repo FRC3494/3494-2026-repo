@@ -511,11 +511,13 @@ public final class Constants {
 
       public static final int turretSetpointFilterSize = 30;
 
-      public static final double turretGearRatio = 17.0 / 115.0;
+      public static final double turretGearRatio = (17.0 / 115.0) * (1.0 / 3.0);
 
       public static final double turretAbsEncoderGearRatio =
-          turretGearRatio * (60.0 / 20.0) * (60.0 / 20.0);
-      public static final double turretAbsEncoderOffset = 0.25458443;
+          (17.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0);
+
+      public static final double turretAbsEncoderOffset =
+          0.59 - Units.degreesToRotations(90) / turretAbsEncoderGearRatio;
     }
   }
 
