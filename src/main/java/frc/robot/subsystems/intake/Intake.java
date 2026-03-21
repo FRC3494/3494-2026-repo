@@ -47,6 +47,9 @@ public class Intake extends SubsystemBase {
   private LoggedNetworkNumber uppyDownyLowerRPMTunable =
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/LowerRPM", uppyDownyLowerRPM);
 
+  private LoggedNetworkNumber jostleIntakeUpTimeTunable = new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleUpTime", jostleIntakeUpTime);
+  private LoggedNetworkNumber jostleIntakeDownTimeTunable = new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleDownTime", jostleIntakeDownTime);
+
   @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
 
   private final MedianFilter uppyDownyCurrentFilter =
@@ -178,6 +181,14 @@ public class Intake extends SubsystemBase {
 
   public AngularVelocity getUppyDownyLowerRPM() {
     return RPM.of(uppyDownyLowerRPMTunable.get());
+  }
+
+  public double getInstakeUpTime() {
+    return jostleIntakeUpTimeTunable.get();
+  }
+
+  public double getInstakeDownTime() {
+    return jostleIntakeDownTimeTunable.get();
   }
 
   public void setUppyDownyRelativeEncoderPosition(double position) {

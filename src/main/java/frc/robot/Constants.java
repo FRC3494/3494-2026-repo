@@ -392,6 +392,9 @@ public final class Constants {
 
     public static final double uppyDownyRaiseRPM = -1000.0;
     public static final double uppyDownyLowerRPM = 500.0;
+
+    public static final double jostleIntakeUpTime = 0.15;
+    public static final double jostleIntakeDownTime = 0.25;
   }
 
   public static final class ShooterConstants {
