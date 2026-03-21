@@ -42,13 +42,36 @@ public class Intake extends SubsystemBase {
   private LoggedNetworkNumber uppyDownyD =
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kD", uppyDownyKd);
 
+  private LoggedNetworkNumber spinnySpinnyP =
+      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kP", spinnySpinnyKp);
+  private LoggedNetworkNumber spinnySpinnyI =
+      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kI", spinnySpinnyKi);
+  private LoggedNetworkNumber spinnySpinnyD =
+      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kD", spinnySpinnyKd);
+
+  private LoggedNetworkNumber spinnySpinnyS =
+      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kS", spinnySpinnyKs);
+  private LoggedNetworkNumber spinnySpinnyV =
+      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kV", spinnySpinnyKv);
+  private LoggedNetworkNumber spinnySpinnyA =
+      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kA", spinnySpinnyKa);
+
+  private LoggedNetworkNumber uppyDownyS =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kS", uppyDownyKs);
+  private LoggedNetworkNumber uppyDownyV =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kV", uppyDownyKv);
+  private LoggedNetworkNumber uppyDownyA =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kA", uppyDownyKa);
+
   private LoggedNetworkNumber uppyDownyRaiseRPMTunable =
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/RaiseRPM", uppyDownyRaiseRPM);
   private LoggedNetworkNumber uppyDownyLowerRPMTunable =
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/LowerRPM", uppyDownyLowerRPM);
 
-  private LoggedNetworkNumber jostleIntakeUpTimeTunable = new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleUpTime", jostleIntakeUpTime);
-  private LoggedNetworkNumber jostleIntakeDownTimeTunable = new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleDownTime", jostleIntakeDownTime);
+  private LoggedNetworkNumber jostleIntakeUpTimeTunable =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleUpTime", jostleIntakeUpTime);
+  private LoggedNetworkNumber jostleIntakeDownTimeTunable =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleDownTime", jostleIntakeDownTime);
 
   @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
 
@@ -109,6 +132,30 @@ public class Intake extends SubsystemBase {
             || uppyDownyD.get() != uppyDownyKd;
     if (uppyDownyPidChanged) {
       setUppyDownyPID(uppyDownyP.get(), uppyDownyI.get(), uppyDownyD.get());
+    }
+
+    boolean uppyDownySvaChanged =
+        uppyDownyS.get() != uppyDownyKs
+            || uppyDownyV.get() != uppyDownyKv
+            || uppyDownyA.get() != uppyDownyKa;
+    if (uppyDownySvaChanged) {
+      setUppyDownySVA(uppyDownyS.get(), uppyDownyV.get(), uppyDownyA.get());
+    }
+
+    boolean spinnySpinnyPidChanged =
+        spinnySpinnyP.get() != spinnySpinnyKp
+            || spinnySpinnyI.get() != spinnySpinnyKi
+            || spinnySpinnyD.get() != spinnySpinnyKd;
+    if (spinnySpinnyPidChanged) {
+      setSpinnySpinnyPID(spinnySpinnyP.get(), spinnySpinnyI.get(), spinnySpinnyD.get());
+    }
+
+    boolean spinnySpinnySvaChanged =
+        spinnySpinnyS.get() != spinnySpinnyKs
+            || spinnySpinnyV.get() != spinnySpinnyKv
+            || spinnySpinnyA.get() != spinnySpinnyKa;
+    if (spinnySpinnySvaChanged) {
+      setSpinnySpinnySVA(spinnySpinnyS.get(), spinnySpinnyV.get(), spinnySpinnyA.get());
     }
 
     uppyDownyFilteredCurrent =
@@ -202,6 +249,36 @@ public class Intake extends SubsystemBase {
     uppyDownyKd = d;
     config.closedLoop.pid(p, i, d);
     uppyDownyMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setUppyDownySVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    uppyDownyKs = s;
+    uppyDownyKv = v;
+    uppyDownyKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+    uppyDownyMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSpinnySpinnyPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spinnySpinnyKp = p;
+    spinnySpinnyKi = i;
+    spinnySpinnyKd = d;
+    config.closedLoop.pid(p, i, d);
+    spinnySpinnyMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSpinnySpinnySVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spinnySpinnyKs = s;
+    spinnySpinnyKv = v;
+    spinnySpinnyKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+    spinnySpinnyMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

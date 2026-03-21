@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.RobotMap;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * Module IO implementation for Spark Flex drive motor controller, Spark Max turn motor controller,
@@ -59,6 +60,26 @@ public class ModuleIOSpark implements ModuleIO {
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
   private final Debouncer turnConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+
+  private final LoggedNetworkNumber driveP =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kP", driveKp);
+  private final LoggedNetworkNumber driveI =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kI", driveKi);
+  private final LoggedNetworkNumber driveD =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kD", driveKd);
+  private final LoggedNetworkNumber driveS =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kS", driveKs);
+  private final LoggedNetworkNumber driveV =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kV", driveKv);
+  private final LoggedNetworkNumber driveA =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kA", driveKa);
+
+  private final LoggedNetworkNumber turnP =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleTurn/kP", turnKp);
+  private final LoggedNetworkNumber turnI =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleTurn/kI", turnKi);
+  private final LoggedNetworkNumber turnD =
+      new LoggedNetworkNumber("Tunable/Drive/ModuleTurn/kD", turnKd);
 
   private final int moduleNumber;
 
@@ -194,6 +215,24 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
+    boolean drivePidChanged =
+        driveP.get() != driveKp || driveI.get() != driveKi || driveD.get() != driveKd;
+    if (drivePidChanged) {
+      setDrivePID(driveP.get(), driveI.get(), driveD.get());
+    }
+
+    boolean driveSvaChanged =
+        driveS.get() != driveKs || driveV.get() != driveKv || driveA.get() != driveKa;
+    if (driveSvaChanged) {
+      setDriveSVA(driveS.get(), driveV.get(), driveA.get());
+    }
+
+    boolean turnPidChanged =
+        turnP.get() != turnKp || turnI.get() != turnKi || turnD.get() != turnKd;
+    if (turnPidChanged) {
+      setTurnPID(turnP.get(), turnI.get(), turnD.get());
+    }
+
     // Update drive inputs
     sparkStickyFault = false;
     ifOk(driveSpark, driveEncoder::getPosition, (value) -> inputs.drivePositionRad = value);
@@ -277,6 +316,48 @@ public class ModuleIOSpark implements ModuleIO {
   public Rotation2d getRawAbsoluteTurnPosition() {
     return new Rotation2d(
         turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * (2.0 * Math.PI));
+  }
+
+  private void setDrivePID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    driveKp = p;
+    driveKi = i;
+    driveKd = d;
+    config.closedLoop.pid(p, i, d);
+    tryUntilOk(
+        driveSpark,
+        5,
+        () ->
+            driveSpark.configure(
+                config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
+
+  private void setDriveSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    driveKs = s;
+    driveKv = v;
+    driveKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+    tryUntilOk(
+        driveSpark,
+        5,
+        () ->
+            driveSpark.configure(
+                config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
+  }
+
+  private void setTurnPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    turnKp = p;
+    turnKi = i;
+    turnKd = d;
+    config.closedLoop.pid(p, i, d);
+    tryUntilOk(
+        turnSpark,
+        5,
+        () ->
+            turnSpark.configure(
+                config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
   }
 
   public Rotation2d getAbsoluteTurnPosition() {

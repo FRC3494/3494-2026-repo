@@ -39,6 +39,13 @@ public class Flywheel extends SubsystemBase {
   private LoggedNetworkNumber flywheelD =
       new LoggedNetworkNumber("Tunable/Flywheel/kD", flywheelKd);
 
+  private LoggedNetworkNumber flywheelS =
+      new LoggedNetworkNumber("Tunable/Flywheel/kS", flywheelKs);
+  private LoggedNetworkNumber flywheelV =
+      new LoggedNetworkNumber("Tunable/Flywheel/kV", flywheelKv);
+  private LoggedNetworkNumber flywheelA =
+      new LoggedNetworkNumber("Tunable/Flywheel/kA", flywheelKa);
+
   @AutoLogOutput(key = "Shooter/Flywheel/Shooting")
   private boolean shooting = false;
 
@@ -87,6 +94,14 @@ public class Flywheel extends SubsystemBase {
     if (pidChanged) {
       setPID(flywheelP.get(), flywheelI.get(), flywheelD.get());
     }
+
+    boolean svaChanged =
+        flywheelS.get() != flywheelKs
+            || flywheelV.get() != flywheelKv
+            || flywheelA.get() != flywheelKa;
+    if (svaChanged) {
+      setSVA(flywheelS.get(), flywheelV.get(), flywheelA.get());
+    }
   }
 
   public void setVelocity(AngularVelocity velocity) {
@@ -131,6 +146,15 @@ public class Flywheel extends SubsystemBase {
     flywheelKi = i;
     flywheelKd = d;
     config.closedLoop.pid(p, i, d);
+    leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    flywheelKs = s;
+    flywheelKv = v;
+    flywheelKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
     leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 

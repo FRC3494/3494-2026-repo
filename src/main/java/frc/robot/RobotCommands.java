@@ -400,8 +400,10 @@ public class RobotCommands {
             runOnce(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake),
             waitSeconds(0.15),
             repeatingSequence(
-                run(() -> intake.setUppyDownyOpenLoop(Volts.of(2)), intake).withTimeout(intake.getInstakeUpTime()),
-                run(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake).withTimeout(intake.getInstakeDownTime())))
+                run(() -> intake.setUppyDownyOpenLoop(Volts.of(2)), intake)
+                    .withTimeout(intake.getInstakeUpTime()),
+                run(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake)
+                    .withTimeout(intake.getInstakeDownTime())))
         .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
   }
 

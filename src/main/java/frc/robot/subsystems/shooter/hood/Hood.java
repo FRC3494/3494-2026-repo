@@ -40,6 +40,17 @@ public class Hood extends SubsystemBase {
   private LoggedNetworkNumber hoodI = new LoggedNetworkNumber("Tunable/Hood/kI", hoodKi);
   private LoggedNetworkNumber hoodD = new LoggedNetworkNumber("Tunable/Hood/kD", hoodKd);
 
+  private LoggedNetworkNumber hoodS = new LoggedNetworkNumber("Tunable/Hood/kS", hoodKs);
+  private LoggedNetworkNumber hoodV = new LoggedNetworkNumber("Tunable/Hood/kV", hoodKv);
+  private LoggedNetworkNumber hoodA = new LoggedNetworkNumber("Tunable/Hood/kA", hoodKa);
+
+  private LoggedNetworkNumber hoodToZeroP =
+      new LoggedNetworkNumber("Tunable/Hood/ToZerokP", hoodToZeroKp);
+  private LoggedNetworkNumber hoodToZeroI =
+      new LoggedNetworkNumber("Tunable/Hood/ToZerokI", hoodToZeroKi);
+  private LoggedNetworkNumber hoodToZeroD =
+      new LoggedNetworkNumber("Tunable/Hood/ToZerokD", hoodToZeroKd);
+
   @Getter
   @AutoLogOutput(key = "Shooter/Hood/FilteredMotorCurrent")
   private Current filteredCurrent = Amps.of(0);
@@ -73,6 +84,19 @@ public class Hood extends SubsystemBase {
     boolean pidChanged = hoodP.get() != hoodKp || hoodI.get() != hoodKi || hoodD.get() != hoodKd;
     if (pidChanged) {
       setPID(hoodP.get(), hoodI.get(), hoodD.get());
+    }
+
+    boolean zeroPidChanged =
+        hoodToZeroP.get() != hoodToZeroKp
+            || hoodToZeroI.get() != hoodToZeroKi
+            || hoodToZeroD.get() != hoodToZeroKd;
+    if (zeroPidChanged) {
+      setZeroPID(hoodToZeroP.get(), hoodToZeroI.get(), hoodToZeroD.get());
+    }
+
+    boolean svaChanged = hoodS.get() != hoodKs || hoodV.get() != hoodKv || hoodA.get() != hoodKa;
+    if (svaChanged) {
+      setSVA(hoodS.get(), hoodV.get(), hoodA.get());
     }
 
     filteredCurrent = Amps.of(currentFilter.calculate(hoodMotor.getOutputCurrent()));
@@ -133,6 +157,24 @@ public class Hood extends SubsystemBase {
     hoodKi = i;
     hoodKd = d;
     config.closedLoop.pid(p, i, d);
+    hoodMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setZeroPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    hoodToZeroKp = p;
+    hoodToZeroKi = i;
+    hoodToZeroKd = d;
+    config.closedLoop.pid(p, i, d, ClosedLoopSlot.kSlot1);
+    hoodMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    hoodKs = s;
+    hoodKv = v;
+    hoodKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
     hoodMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }
