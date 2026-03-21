@@ -36,20 +36,26 @@ public class Hood extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Hood/Shooting")
   private boolean shooting = false;
 
-  private LoggedNetworkNumber hoodP = new LoggedNetworkNumber("Tunable/Hood/kP", hoodKp);
-  private LoggedNetworkNumber hoodI = new LoggedNetworkNumber("Tunable/Hood/kI", hoodKi);
-  private LoggedNetworkNumber hoodD = new LoggedNetworkNumber("Tunable/Hood/kD", hoodKd);
+  private LoggedNetworkNumber hoodP =
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kP", hoodKp);
+  private LoggedNetworkNumber hoodI =
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kI", hoodKi);
+  private LoggedNetworkNumber hoodD =
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kD", hoodKd);
 
-  private LoggedNetworkNumber hoodS = new LoggedNetworkNumber("Tunable/Hood/kS", hoodKs);
-  private LoggedNetworkNumber hoodV = new LoggedNetworkNumber("Tunable/Hood/kV", hoodKv);
-  private LoggedNetworkNumber hoodA = new LoggedNetworkNumber("Tunable/Hood/kA", hoodKa);
+  private LoggedNetworkNumber hoodS =
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kS", hoodKs);
+  private LoggedNetworkNumber hoodV =
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kV", hoodKv);
+  private LoggedNetworkNumber hoodA =
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kA", hoodKa);
 
   private LoggedNetworkNumber hoodToZeroP =
-      new LoggedNetworkNumber("Tunable/Hood/ToZerokP", hoodToZeroKp);
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Zeroing/kP", hoodToZeroKp);
   private LoggedNetworkNumber hoodToZeroI =
-      new LoggedNetworkNumber("Tunable/Hood/ToZerokI", hoodToZeroKi);
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Zeroing/kI", hoodToZeroKi);
   private LoggedNetworkNumber hoodToZeroD =
-      new LoggedNetworkNumber("Tunable/Hood/ToZerokD", hoodToZeroKd);
+      new LoggedNetworkNumber("Tunable/Shooter/Hood/Zeroing/kD", hoodToZeroKd);
 
   @Getter
   @AutoLogOutput(key = "Shooter/Hood/FilteredMotorCurrent")

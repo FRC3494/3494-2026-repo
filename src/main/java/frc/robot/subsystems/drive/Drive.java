@@ -86,18 +86,18 @@ public class Drive extends SubsystemBase {
       new PIDController(autoAngularKp, autoAngularKi, autoAngularKd);
 
   private final LoggedNetworkNumber autoLinearP =
-      new LoggedNetworkNumber("Tunable/Drive/AutoLinear/kP", autoLinearKp);
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kP", autoLinearKp);
   private final LoggedNetworkNumber autoLinearI =
-      new LoggedNetworkNumber("Tunable/Drive/AutoLinear/kI", autoLinearKi);
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kI", autoLinearKi);
   private final LoggedNetworkNumber autoLinearD =
-      new LoggedNetworkNumber("Tunable/Drive/AutoLinear/kD", autoLinearKd);
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kD", autoLinearKd);
 
   private final LoggedNetworkNumber autoAngularP =
-      new LoggedNetworkNumber("Tunable/Drive/AutoAngular/kP", autoAngularKp);
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kP", autoAngularKp);
   private final LoggedNetworkNumber autoAngularI =
-      new LoggedNetworkNumber("Tunable/Drive/AutoAngular/kI", autoAngularKi);
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kI", autoAngularKi);
   private final LoggedNetworkNumber autoAngularD =
-      new LoggedNetworkNumber("Tunable/Drive/AutoAngular/kD", autoAngularKd);
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kD", autoAngularKd);
 
   public Drive(
       GyroIO gyroIO,

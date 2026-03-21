@@ -62,24 +62,24 @@ public class ModuleIOSpark implements ModuleIO {
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   private final LoggedNetworkNumber driveP =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kP", driveKp);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Drive/kP", driveKp);
   private final LoggedNetworkNumber driveI =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kI", driveKi);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Drive/kI", driveKi);
   private final LoggedNetworkNumber driveD =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kD", driveKd);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Drive/kD", driveKd);
   private final LoggedNetworkNumber driveS =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kS", driveKs);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Drive/kS", driveKs);
   private final LoggedNetworkNumber driveV =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kV", driveKv);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Drive/kV", driveKv);
   private final LoggedNetworkNumber driveA =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleDrive/kA", driveKa);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Drive/kA", driveKa);
 
   private final LoggedNetworkNumber turnP =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleTurn/kP", turnKp);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Turn/kP", turnKp);
   private final LoggedNetworkNumber turnI =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleTurn/kI", turnKi);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Turn/kI", turnKi);
   private final LoggedNetworkNumber turnD =
-      new LoggedNetworkNumber("Tunable/Drive/ModuleTurn/kD", turnKd);
+      new LoggedNetworkNumber("Tunable/Drive/Module/Turn/kD", turnKd);
 
   private final int moduleNumber;
 

@@ -29,26 +29,32 @@ public class Hopper extends SubsystemBase {
   @AutoLogOutput private AngularVelocity kickerSetpointRPM = RPM.of(0.0);
 
   private LoggedNetworkNumber spindexerP =
-      new LoggedNetworkNumber("Tunable/Spindexer/kP", spindexerKp);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kP", spindexerKp);
   private LoggedNetworkNumber spindexerI =
-      new LoggedNetworkNumber("Tunable/Spindexer/kI", spindexerKi);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kI", spindexerKi);
   private LoggedNetworkNumber spindexerD =
-      new LoggedNetworkNumber("Tunable/Spindexer/kD", spindexerKd);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kD", spindexerKd);
 
   private LoggedNetworkNumber spindexerS =
-      new LoggedNetworkNumber("Tunable/Spindexer/kS", spindexerKs);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kS", spindexerKs);
   private LoggedNetworkNumber spindexerV =
-      new LoggedNetworkNumber("Tunable/Spindexer/kV", spindexerKv);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kV", spindexerKv);
   private LoggedNetworkNumber spindexerA =
-      new LoggedNetworkNumber("Tunable/Spindexer/kA", spindexerKa);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kA", spindexerKa);
 
-  private LoggedNetworkNumber kickerP = new LoggedNetworkNumber("Tunable/Kicker/kP", kickerKp);
-  private LoggedNetworkNumber kickerI = new LoggedNetworkNumber("Tunable/Kicker/kI", kickerKi);
-  private LoggedNetworkNumber kickerD = new LoggedNetworkNumber("Tunable/Kicker/kD", kickerKd);
+  private LoggedNetworkNumber kickerP =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kP", kickerKp);
+  private LoggedNetworkNumber kickerI =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kI", kickerKi);
+  private LoggedNetworkNumber kickerD =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kD", kickerKd);
 
-  private LoggedNetworkNumber kickerS = new LoggedNetworkNumber("Tunable/Kicker/kS", kickerKs);
-  private LoggedNetworkNumber kickerV = new LoggedNetworkNumber("Tunable/Kicker/kV", kickerKv);
-  private LoggedNetworkNumber kickerA = new LoggedNetworkNumber("Tunable/Kicker/kA", kickerKa);
+  private LoggedNetworkNumber kickerS =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kS", kickerKs);
+  private LoggedNetworkNumber kickerV =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kV", kickerKv);
+  private LoggedNetworkNumber kickerA =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kA", kickerKa);
 
   SysIdRoutine spindexerSysId;
   SysIdRoutine kickerSysId;

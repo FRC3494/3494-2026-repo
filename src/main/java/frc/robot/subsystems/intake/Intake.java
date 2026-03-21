@@ -36,42 +36,42 @@ public class Intake extends SubsystemBase {
   @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
 
   private LoggedNetworkNumber uppyDownyP =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kP", uppyDownyKp);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kP", uppyDownyKp);
   private LoggedNetworkNumber uppyDownyI =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kI", uppyDownyKi);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kI", uppyDownyKi);
   private LoggedNetworkNumber uppyDownyD =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kD", uppyDownyKd);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kD", uppyDownyKd);
 
   private LoggedNetworkNumber spinnySpinnyP =
-      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kP", spinnySpinnyKp);
+      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kP", spinnySpinnyKp);
   private LoggedNetworkNumber spinnySpinnyI =
-      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kI", spinnySpinnyKi);
+      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kI", spinnySpinnyKi);
   private LoggedNetworkNumber spinnySpinnyD =
-      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kD", spinnySpinnyKd);
+      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kD", spinnySpinnyKd);
 
   private LoggedNetworkNumber spinnySpinnyS =
-      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kS", spinnySpinnyKs);
+      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kS", spinnySpinnyKs);
   private LoggedNetworkNumber spinnySpinnyV =
-      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kV", spinnySpinnyKv);
+      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kV", spinnySpinnyKv);
   private LoggedNetworkNumber spinnySpinnyA =
-      new LoggedNetworkNumber("Tunable/IntakeSpinnySpinny/kA", spinnySpinnyKa);
+      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kA", spinnySpinnyKa);
 
   private LoggedNetworkNumber uppyDownyS =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kS", uppyDownyKs);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kS", uppyDownyKs);
   private LoggedNetworkNumber uppyDownyV =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kV", uppyDownyKv);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kV", uppyDownyKv);
   private LoggedNetworkNumber uppyDownyA =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kA", uppyDownyKa);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kA", uppyDownyKa);
 
   private LoggedNetworkNumber uppyDownyRaiseRPMTunable =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/RaiseRPM", uppyDownyRaiseRPM);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/RaiseRPM", uppyDownyRaiseRPM);
   private LoggedNetworkNumber uppyDownyLowerRPMTunable =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/LowerRPM", uppyDownyLowerRPM);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/LowerRPM", uppyDownyLowerRPM);
 
   private LoggedNetworkNumber jostleIntakeUpTimeTunable =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleUpTime", jostleIntakeUpTime);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/JostleUpTime", jostleIntakeUpTime);
   private LoggedNetworkNumber jostleIntakeDownTimeTunable =
-      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleDownTime", jostleIntakeDownTime);
+      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/JostleDownTime", jostleIntakeDownTime);
 
   @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
 
