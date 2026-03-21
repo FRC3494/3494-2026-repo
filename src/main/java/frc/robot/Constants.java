@@ -382,13 +382,16 @@ public final class Constants {
     public static final double uppyDownyMinPosition = 0.0;
     public static final double uppyDownyMaxPosition = 0.0;
 
-    public static double uppyDownyKp = 0.0;
+    public static double uppyDownyKp = 0.0001;
     public static double uppyDownyKi = 0.0;
     public static double uppyDownyKd = 0.0;
 
     public static final double uppyDownyKs = 0.0;
-    public static final double uppyDownyKv = 0.0;
+    public static final double uppyDownyKv = 0.007;
     public static final double uppyDownyKa = 0.0;
+
+    public static final double uppyDownyRaiseRPM = -1000.0;
+    public static final double uppyDownyLowerRPM = 500.0;
   }
 
   public static final class ShooterConstants {

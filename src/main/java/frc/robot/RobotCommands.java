@@ -405,15 +405,13 @@ public class RobotCommands {
   }
 
   public Command raiseIntake() {
-    return run(() -> intake.setUppyDownyOpenLoop(Volts.of(-4)), intake)
-        // .until(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(uppyDownyCurrentLimit)))
-        .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
+    return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
 
   public Command lowerIntake() {
-    return run(() -> intake.setUppyDownyOpenLoop(Volts.of(4)), intake)
-        // .until(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(uppyDownyCurrentLimit)))
-        .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
+    return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
 
   // #endregion

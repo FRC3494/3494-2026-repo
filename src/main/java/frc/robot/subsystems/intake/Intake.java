@@ -30,6 +30,7 @@ public class Intake extends SubsystemBase {
   SparkFlex uppyDownyMotor;
 
   @Getter @AutoLogOutput AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
+  @Getter @AutoLogOutput AngularVelocity uppyDownyVelocitySetpoint = RPM.of(0.0);
 
   @Getter @AutoLogOutput double uppyDownySetpoint = 0.0;
   @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
@@ -40,6 +41,11 @@ public class Intake extends SubsystemBase {
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kI", uppyDownyKi);
   private LoggedNetworkNumber uppyDownyD =
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/kD", uppyDownyKd);
+
+  private LoggedNetworkNumber uppyDownyRaiseRPMTunable =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/RaiseRPM", uppyDownyRaiseRPM);
+  private LoggedNetworkNumber uppyDownyLowerRPMTunable =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/LowerRPM", uppyDownyLowerRPM);
 
   @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
 
@@ -146,6 +152,15 @@ public class Intake extends SubsystemBase {
     return uppyDownyMotor.getEncoder().getPosition();
   }
 
+  public void setUppyDownyVelocity(AngularVelocity velocity) {
+    uppyDownyVelocitySetpoint = velocity;
+    if (!velocity.isEquivalent(RPM.of(0))) {
+      uppyDownyMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
+    } else {
+      uppyDownyMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
+    }
+  }
+
   public void setUppyDownyOpenLoop(Voltage voltage) {
     uppyDownyMotor.setVoltage(voltage);
   }
@@ -155,6 +170,14 @@ public class Intake extends SubsystemBase {
     config.smartCurrentLimit((int) limit.in(Amps));
     uppyDownyMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  public AngularVelocity getUppyDownyRaiseRPM() {
+    return RPM.of(uppyDownyRaiseRPMTunable.get());
+  }
+
+  public AngularVelocity getUppyDownyLowerRPM() {
+    return RPM.of(uppyDownyLowerRPMTunable.get());
   }
 
   public void setUppyDownyRelativeEncoderPosition(double position) {
