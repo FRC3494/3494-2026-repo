@@ -175,9 +175,9 @@ public final class Constants {
     public static double climberKi = 0.0;
     public static double climberKd = 0.0;
 
-    public static final double climberKs = 0.0;
-    public static final double climberKv = 0.0;
-    public static final double climberKa = 0.0;
+    public static double climberKs = 0.0;
+    public static double climberKv = 0.0;
+    public static double climberKa = 0.0;
   }
 
   public static class DriveConstants {
@@ -230,16 +230,18 @@ public final class Constants {
     // Wheel Rad/Sec
 
     // Drive PID configuration
-    public static final double driveKp = 2.95E-05; // 0.00021829
-    public static final double driveKd = 0.0;
-    public static final double driveKs = 0.1619433333; // 0.15812049
-    public static final double driveKv =
-        0.1124575; // 0.1165 // From simple characterization: 0.11106210
-    public static final double driveKa = 0.02673925; // 0.029083
-    public static final double driveSimP = 0.05;
-    public static final double driveSimD = 0.0;
-    public static final double driveSimKs = 0.0;
-    public static final double driveSimKv = 0.0789;
+    public static double driveKp = 2.95E-05; // 0.00021829
+    public static double driveKi = 0.0;
+    public static double driveKd = 0.0;
+    public static double driveKs = 0.1619433333; // 0.15812049
+    public static double driveKv = 0.1124575; // 0.1165 // From simple characterization: 0.11106210
+    public static double driveKa = 0.02673925; // 0.029083
+    public static double driveSimP = 0.05;
+    public static double driveSimI = 0.0;
+    public static double driveSimD = 0.0;
+    public static double driveSimKs = 0.0;
+    public static double driveSimKv = 0.0789;
+    public static double driveSimKa = 0.0;
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
@@ -261,10 +263,12 @@ public final class Constants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static final double turnKp = 2.0;
-    public static final double turnKd = 0.0;
-    public static final double turnSimP = 8.0;
-    public static final double turnSimD = 0.0;
+    public static double turnKp = 2.0;
+    public static double turnKi = 0.0;
+    public static double turnKd = 0.0;
+    public static double turnSimP = 8.0;
+    public static double turnSimI = 0.0;
+    public static double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
@@ -297,13 +301,13 @@ public final class Constants {
     // Auto config
     public static final boolean mirrorForRedAlliance = true;
 
-    public static final double autoLinearKp = 10.0;
-    public static final double autoLinearKi = 0.0;
-    public static final double autoLinearKd = 0.0;
+    public static double autoLinearKp = 10.0;
+    public static double autoLinearKi = 0.0;
+    public static double autoLinearKd = 0.0;
 
-    public static final double autoAngularKp = 7.5;
-    public static final double autoAngularKi = 0.0;
-    public static final double autoAngularKd = 0.0;
+    public static double autoAngularKp = 7.5;
+    public static double autoAngularKi = 0.0;
+    public static double autoAngularKd = 0.0;
 
     public static final Distance fieldWidth = Meters.of(8.0692);
     public static final Distance fieldLength = Meters.of(16.541);
@@ -314,15 +318,15 @@ public final class Constants {
       // Tuned with Ziegler-Nichols for classic PID
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       // kU is 0.5, tU is 0.193s (9.65 robot loops)
-      public static final double autoAlignLinearKp = 4.0;
-      public static final double autoAlignLinearKi = 0;
-      public static final double autoAlignLinearKd = 0.1;
+      public static double autoAlignLinearKp = 4.0;
+      public static double autoAlignLinearKi = 0;
+      public static double autoAlignLinearKd = 0.1;
       public static final Distance autoAlignLinearTolerance = Centimeters.of(1.0);
       public static final Rotation2d autoAlignAngularTolerance = Rotation2d.fromDegrees(1.0);
 
-      public static final double autoAlignAngularKp = 5.0;
-      public static final double autoAlignAngularKi = 0.0;
-      public static final double autoAlignAngularKd = 0.1;
+      public static double autoAlignAngularKp = 5.0;
+      public static double autoAlignAngularKi = 0.0;
+      public static double autoAlignAngularKd = 0.1;
 
       public static final Pose2d climbSetupPoseOutpost = ChoreoVars.Poses.ClimbSetupOutpost;
       public static final Pose2d climbPoseOutpost = ChoreoVars.Poses.ClimbOutpost;
@@ -341,24 +345,24 @@ public final class Constants {
     public static double spindexerKi = 1E-06;
     public static double spindexerKd = 0.0;
 
-    public static final double spindexerIMaxAccum = 1.0;
-    public static final double spindexerIZone = 50;
+    public static double spindexerIMaxAccum = 1.0;
+    public static double spindexerIZone = 50;
 
-    public static final double spindexerKs = 0.019266;
-    public static final double spindexerKv = 0.065; // 0.066119
-    public static final double spindexerKa = 0.010955; // 0.019434
+    public static double spindexerKs = 0.019266;
+    public static double spindexerKv = 0.065; // 0.066119
+    public static double spindexerKa = 0.010955; // 0.019434
 
     // kicker constants
     public static final boolean kickerInverted = false;
     public static final int kickerCurrentLimit = 50;
 
-    public static final double kickerKp = 2.8084E-08;
-    public static final double kickerKi = 0.0;
-    public static final double kickerKd = 0.0;
+    public static double kickerKp = 2.8084E-08;
+    public static double kickerKi = 0.0;
+    public static double kickerKd = 0.0;
 
-    public static final double kickerKs = 0.12681;
-    public static final double kickerKv = 0.0017874;
-    public static final double kickerKa = 0.00010453;
+    public static double kickerKs = 0.12681;
+    public static double kickerKv = 0.0017874;
+    public static double kickerKa = 0.00010453;
   }
 
   public static final class IntakeConstants {
@@ -366,13 +370,13 @@ public final class Constants {
     public static final int spinnySpinnyCurrentLimit = 50;
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
 
-    public static final double spinnySpinnyKp = 3.1048E-05;
-    public static final double spinnySpinnyKi = 0.0;
-    public static final double spinnySpinnyKd = 0.0;
+    public static double spinnySpinnyKp = 3.1048E-05;
+    public static double spinnySpinnyKi = 0.0;
+    public static double spinnySpinnyKd = 0.0;
 
-    public static final double spinnySpinnyKs = 0.099025;
-    public static final double spinnySpinnyKv = 0.0058905;
-    public static final double spinnySpinnyKa = 0.00033752;
+    public static double spinnySpinnyKs = 0.099025;
+    public static double spinnySpinnyKv = 0.0058905;
+    public static double spinnySpinnyKa = 0.00033752;
 
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 50;
@@ -386,9 +390,9 @@ public final class Constants {
     public static double uppyDownyKi = 0.0;
     public static double uppyDownyKd = 0.0;
 
-    public static final double uppyDownyKs = 0.0;
-    public static final double uppyDownyKv = 0.007;
-    public static final double uppyDownyKa = 0.0;
+    public static double uppyDownyKs = 0.0;
+    public static double uppyDownyKv = 0.007;
+    public static double uppyDownyKa = 0.0;
 
     public static final double uppyDownyRaiseRPM = -1000.0;
     public static final double uppyDownyLowerRPM = 500.0;
@@ -457,12 +461,12 @@ public final class Constants {
       public static double flywheelKi = 1E-07;
       public static double flywheelKd = 1.84359E-08;
 
-      public static final double flywheelMaxIAccum = 10000;
-      public static final double flywheelIZone = 1000;
+      public static double flywheelMaxIAccum = 10000;
+      public static double flywheelIZone = 1000;
 
-      public static final double flywheelKs = 0.10996;
-      public static final double flywheelKv = 0.0017972; // From SysId: 0.0021194
-      public static final double flywheelKa = 0.00028032; // From SysId: 0.0011572
+      public static double flywheelKs = 0.10996;
+      public static double flywheelKv = 0.0017972; // From SysId: 0.0021194
+      public static double flywheelKa = 0.00028032; // From SysId: 0.0011572
     }
 
     public static final class HoodConstants {
@@ -475,13 +479,13 @@ public final class Constants {
       public static double hoodKi = 0.0;
       public static double hoodKd = 0.0;
 
-      public static final double hoodToZeroKp = 5.0;
-      public static final double hoodToZeroKi = 0.0;
-      public static final double hoodToZeroKd = 0.0;
+      public static double hoodToZeroKp = 5.0;
+      public static double hoodToZeroKi = 0.0;
+      public static double hoodToZeroKd = 0.0;
 
-      public static final double hoodKs = 0.0;
-      public static final double hoodKv = 0.0;
-      public static final double hoodKa = 0.0;
+      public static double hoodKs = 0.0;
+      public static double hoodKv = 0.0;
+      public static double hoodKa = 0.0;
 
       public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(24.2238027);
       public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
@@ -496,7 +500,7 @@ public final class Constants {
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
-      public static final double turretPositionTolerance = Units.degreesToRotations(0.4);
+      public static double turretPositionTolerance = Units.degreesToRotations(0.4);
       // Retractor kicks in when CW from (less than) this position
       public static final double turretCableRetractorStart = Units.degreesToRotations(115);
       public static final Voltage turretCableRetractorFFCW = Volts.of(-0.3);

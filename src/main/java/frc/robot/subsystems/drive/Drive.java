@@ -50,6 +50,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -83,6 +84,20 @@ public class Drive extends SubsystemBase {
       new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);
   private final PIDController headingController =
       new PIDController(autoAngularKp, autoAngularKi, autoAngularKd);
+
+  private final LoggedNetworkNumber autoLinearP =
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kP", autoLinearKp);
+  private final LoggedNetworkNumber autoLinearI =
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kI", autoLinearKi);
+  private final LoggedNetworkNumber autoLinearD =
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kD", autoLinearKd);
+
+  private final LoggedNetworkNumber autoAngularP =
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kP", autoAngularKp);
+  private final LoggedNetworkNumber autoAngularI =
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kI", autoAngularKi);
+  private final LoggedNetworkNumber autoAngularD =
+      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kD", autoAngularKd);
 
   public Drive(
       GyroIO gyroIO,
@@ -197,6 +212,22 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    boolean autoLinearChanged =
+        autoLinearP.get() != autoLinearKp
+            || autoLinearI.get() != autoLinearKi
+            || autoLinearD.get() != autoLinearKd;
+    if (autoLinearChanged) {
+      setAutoLinearPID(autoLinearP.get(), autoLinearI.get(), autoLinearD.get());
+    }
+
+    boolean autoAngularChanged =
+        autoAngularP.get() != autoAngularKp
+            || autoAngularI.get() != autoAngularKi
+            || autoAngularD.get() != autoAngularKd;
+    if (autoAngularChanged) {
+      setAutoAngularPID(autoAngularP.get(), autoAngularI.get(), autoAngularD.get());
+    }
   }
 
   /**
@@ -315,6 +346,21 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
+  private void setAutoLinearPID(double p, double i, double d) {
+    autoLinearKp = p;
+    autoLinearKi = i;
+    autoLinearKd = d;
+    xController.setPID(p, i, d);
+    yController.setPID(p, i, d);
+  }
+
+  private void setAutoAngularPID(double p, double i, double d) {
+    autoAngularKp = p;
+    autoAngularKi = i;
+    autoAngularKd = d;
+    headingController.setPID(p, i, d);
+  }
+
   /** Returns the module positions (turn angles and drive positions) for all of the modules. */
   private SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] states = new SwerveModulePosition[4];
@@ -403,12 +449,6 @@ public class Drive extends SubsystemBase {
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    double speed =
-        switch (Constants.driveMode) {
-          case DEMO -> (maxSpeedMetersPerSec / driveBaseRadius) * 0.15;
-          default -> maxSpeedMetersPerSec / driveBaseRadius;
-        };
-
     // return speed * maxAngularSpeedFactor;
     return Units.degreesToRadians(360 + 72);
   }

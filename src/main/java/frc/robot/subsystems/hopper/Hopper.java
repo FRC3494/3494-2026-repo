@@ -29,11 +29,32 @@ public class Hopper extends SubsystemBase {
   @AutoLogOutput private AngularVelocity kickerSetpointRPM = RPM.of(0.0);
 
   private LoggedNetworkNumber spindexerP =
-      new LoggedNetworkNumber("Tunable/Spindexer/kP", spindexerKp);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kP", spindexerKp);
   private LoggedNetworkNumber spindexerI =
-      new LoggedNetworkNumber("Tunable/Spindexer/kI", spindexerKi);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kI", spindexerKi);
   private LoggedNetworkNumber spindexerD =
-      new LoggedNetworkNumber("Tunable/Spindexer/kD", spindexerKd);
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kD", spindexerKd);
+
+  private LoggedNetworkNumber spindexerS =
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kS", spindexerKs);
+  private LoggedNetworkNumber spindexerV =
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kV", spindexerKv);
+  private LoggedNetworkNumber spindexerA =
+      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kA", spindexerKa);
+
+  private LoggedNetworkNumber kickerP =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kP", kickerKp);
+  private LoggedNetworkNumber kickerI =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kI", kickerKi);
+  private LoggedNetworkNumber kickerD =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kD", kickerKd);
+
+  private LoggedNetworkNumber kickerS =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kS", kickerKs);
+  private LoggedNetworkNumber kickerV =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kV", kickerKv);
+  private LoggedNetworkNumber kickerA =
+      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kA", kickerKa);
 
   SysIdRoutine spindexerSysId;
   SysIdRoutine kickerSysId;
@@ -104,6 +125,26 @@ public class Hopper extends SubsystemBase {
     if (pidChanged) {
       setPID(spindexerP.get(), spindexerI.get(), spindexerD.get());
     }
+
+    boolean spindexerSvaChanged =
+        spindexerS.get() != spindexerKs
+            || spindexerV.get() != spindexerKv
+            || spindexerA.get() != spindexerKa;
+    if (spindexerSvaChanged) {
+      setSpindexerSVA(spindexerS.get(), spindexerV.get(), spindexerA.get());
+    }
+
+    boolean kickerPidChanged =
+        kickerP.get() != kickerKp || kickerI.get() != kickerKi || kickerD.get() != kickerKd;
+    if (kickerPidChanged) {
+      setKickerPID(kickerP.get(), kickerI.get(), kickerD.get());
+    }
+
+    boolean kickerSvaChanged =
+        kickerS.get() != kickerKs || kickerV.get() != kickerKv || kickerA.get() != kickerKa;
+    if (kickerSvaChanged) {
+      setKickerSVA(kickerS.get(), kickerV.get(), kickerA.get());
+    }
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {
@@ -163,6 +204,36 @@ public class Hopper extends SubsystemBase {
     spindexerKd = d;
     config.closedLoop.pid(p, i, d);
     spindexerMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSpindexerSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spindexerKs = s;
+    spindexerKv = v;
+    spindexerKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+    spindexerMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setKickerPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    kickerKp = p;
+    kickerKi = i;
+    kickerKd = d;
+    config.closedLoop.pid(p, i, d);
+    kickerMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setKickerSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    kickerKs = s;
+    kickerKv = v;
+    kickerKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+    kickerMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

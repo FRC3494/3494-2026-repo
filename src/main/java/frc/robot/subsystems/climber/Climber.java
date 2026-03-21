@@ -31,6 +31,10 @@ public class Climber extends SubsystemBase {
   private LoggedNetworkNumber climberI = new LoggedNetworkNumber("Tunable/Climber/kI", climberKi);
   private LoggedNetworkNumber climberD = new LoggedNetworkNumber("Tunable/Climber/kD", climberKd);
 
+  private LoggedNetworkNumber climberS = new LoggedNetworkNumber("Tunable/Climber/kS", climberKs);
+  private LoggedNetworkNumber climberV = new LoggedNetworkNumber("Tunable/Climber/kV", climberKv);
+  private LoggedNetworkNumber climberA = new LoggedNetworkNumber("Tunable/Climber/kA", climberKa);
+
   @Getter @AutoLogOutput private Current filteredCurrent = Amps.of(0);
 
   private final MedianFilter currentFilter = new MedianFilter(climberCurrentSensingFilterSize);
@@ -63,6 +67,12 @@ public class Climber extends SubsystemBase {
         climberP.get() != climberKp || climberI.get() != climberKi || climberD.get() != climberKd;
     if (pidChanged) {
       setPID(climberP.get(), climberI.get(), climberD.get());
+    }
+
+    boolean svaChanged =
+        climberS.get() != climberKs || climberV.get() != climberKv || climberA.get() != climberKa;
+    if (svaChanged) {
+      setSVA(climberS.get(), climberV.get(), climberA.get());
     }
 
     filteredCurrent = Amps.of(currentFilter.calculate(climberMotor.getOutputCurrent()));
@@ -105,6 +115,16 @@ public class Climber extends SubsystemBase {
     climberKi = i;
     climberKd = d;
     config.closedLoop.pid(p, i, d);
+    climberMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    climberKs = s;
+    climberKv = v;
+    climberKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
     climberMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
