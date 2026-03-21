@@ -142,6 +142,10 @@ public class Intake extends SubsystemBase {
         .setSetpoint(uppyDownySetpointClamped, ControlType.kPosition);
   }
 
+  public double getUppyDownyPosition() {
+    return uppyDownyMotor.getEncoder().getPosition();
+  }
+
   public void setUppyDownyOpenLoop(Voltage voltage) {
     uppyDownyMotor.setVoltage(voltage);
   }

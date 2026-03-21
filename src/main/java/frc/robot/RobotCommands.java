@@ -115,13 +115,16 @@ public class RobotCommands {
             turret, shooterAimModel::getTurretAngleRot, shooterAimModel::getTurretFF);
   }
 
-  // ==================== WHOLE ROBOT ====================
+  // #region ==================== WHOLE ROBOT ====================
+
   public Command rezeroMechanisms() {
     return parallel(rezeroClimber(), rezeroHood());
     // TODO: intake uppy downy
   }
 
-  // ==================== CLIMBER ====================
+  // #endregion
+
+  // #region ==================== CLIMBER ====================
   public Command climberUp() {
     return runOnce(
         () -> {
@@ -194,7 +197,10 @@ public class RobotCommands {
         stopClimber());
   }
 
-  // ==================== DRIVE ====================
+  // #endregion
+
+  // #region ==================== DRIVE ====================
+
   public Command stopDrive() {
     return runOnce(() -> drive.stop(), drive);
   }
@@ -270,7 +276,10 @@ public class RobotCommands {
         drive);
   }
 
-  // ==================== HOPPER ====================
+  // #endregion
+
+  // #region ==================== HOPPER ====================
+
   public Command runSpindexer() {
     return runOnce(
         () -> {
@@ -324,7 +333,10 @@ public class RobotCommands {
     return repeatingSequence(sprintForward().withTimeout(0.5), sprintBackward().withTimeout(0.5));
   }
 
-  // ==================== INTAKE ====================
+  // #endregion
+
+  // #region ==================== INTAKE ====================
+
   public Command intake() {
     return sequence(runIntake(), runSpindexerSlow());
   }
@@ -381,20 +393,46 @@ public class RobotCommands {
             intake));
   }
 
-  // ==================== SHOOTER ====================
+  public Command jostleIntake() {
+    // Start by moving up (-V) first so we move away from the bottom hard stop
+    return sequence(
+            runOnce(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake),
+            waitSeconds(0.15),
+            repeatingSequence(
+                run(() -> intake.setUppyDownyOpenLoop(Volts.of(2)), intake).withTimeout(0.15),
+                run(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake).withTimeout(0.25)))
+        .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
+  }
+
+  public Command raiseIntake() {
+    return run(() -> intake.setUppyDownyOpenLoop(Volts.of(-4)), intake)
+        // .until(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(uppyDownyCurrentLimit)))
+        .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
+  }
+
+  public Command lowerIntake() {
+    return run(() -> intake.setUppyDownyOpenLoop(Volts.of(4)), intake)
+        // .until(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(uppyDownyCurrentLimit)))
+        .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
+  }
+
+  // #endregion
+
+  // #region ==================== SHOOTER ====================
+
   public Command shoot() {
     return sequence(
-            runSpindexer(),
-            startHood(),
-            startFlywheel(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
-            runOnce(
-                () -> {
-                  spindexerInverted = !spindexerInverted;
-                }),
-            runKicker(),
-            runIntake())
-        .withTimeout(3);
+        runSpindexer(),
+        startHood(),
+        startFlywheel(),
+        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+        runOnce(
+            () -> {
+              spindexerInverted = !spindexerInverted;
+            }),
+        runKicker(),
+        runIntake(),
+        jostleIntake());
   }
 
   public Command spinDownFromShoot() {
@@ -479,7 +517,10 @@ public class RobotCommands {
     this.shooterAimModel = shooterAimModel;
   }
 
-  // ==================== FLYWHEEL ====================
+  // #endregion
+
+  // #region ==================== FLYWHEEL ====================
+
   public Command stopFlywheel() {
     return runOnce(
         () -> {
@@ -523,7 +564,9 @@ public class RobotCommands {
         flywheel);
   }
 
-  // ==================== HOOD ====================
+  // #endregion
+
+  // #region ==================== HOOD ====================
   public Command startHood() {
     return runOnce(
         () -> {
@@ -597,7 +640,10 @@ public class RobotCommands {
         hood);
   }
 
-  // ==================== TURRET ====================
+  // #endregion
+
+  // #region ==================== TURRET ====================
+
   public Command turretManualCCW() {
     return sequence(
         run(
@@ -673,4 +719,7 @@ public class RobotCommands {
             turret)
         .ignoringDisable(true);
   }
+
+  // #endregion
+
 }

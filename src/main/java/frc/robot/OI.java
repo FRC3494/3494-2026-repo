@@ -121,6 +121,20 @@ public final class OI {
     public static Trigger rezeroIntakeUppyDowny() {
       return new Trigger(() -> false);
     }
+
+    public static Trigger jostleIntake() {
+      return primaryController.b(eventLoop);
+    }
+
+    // L3
+    public static Trigger raiseIntake() {
+      return primaryController.button(9, eventLoop);
+    }
+
+    // R3
+    public static Trigger lowerIntake() {
+      return primaryController.button(10, eventLoop);
+    }
   }
 
   public static final class ShooterOI {

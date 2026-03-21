@@ -375,7 +375,7 @@ public final class Constants {
     public static final double spinnySpinnyKa = 0.00033752;
 
     public static final boolean uppyDownyInverted = false;
-    public static final int uppyDownyCurrentLimit = 30;
+    public static final int uppyDownyCurrentLimit = 50;
     public static final double uppyDownyGearRatio = 1.0 / 4.0;
     public static final int uppyDownCurrentSensingFilterSize = 10;
 
@@ -498,7 +498,7 @@ public final class Constants {
 
       public static final double turretYawVelocityFactor = 0.5;
 
-      public static double turretKp = 0.5;
+      public static double turretKp = 0.55;
       public static double turretKi = 0.002;
       public static double turretKd = 10;
 
