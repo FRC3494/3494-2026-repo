@@ -386,7 +386,7 @@ public final class Constants {
     public static final double uppyDownyMinPosition = 0.0;
     public static final double uppyDownyMaxPosition = 0.0;
 
-    public static double uppyDownyKp = 0.0001;
+    public static double uppyDownyKp = 0.01;
     public static double uppyDownyKi = 0.0;
     public static double uppyDownyKd = 0.0;
 
@@ -394,11 +394,11 @@ public final class Constants {
     public static double uppyDownyKv = 0.007;
     public static double uppyDownyKa = 0.0;
 
-    public static final double uppyDownyRaiseRPM = -1000.0;
-    public static final double uppyDownyLowerRPM = 500.0;
+    public static final double uppyDownyRaiseRPM = -500.0;
+    public static final double uppyDownyLowerRPM = 150.0;
 
-    public static final double jostleIntakeUpTime = 0.15;
-    public static final double jostleIntakeDownTime = 0.25;
+    public static final double jostleIntakeUpTime = 0.75;
+    public static final double jostleIntakeDownTime = 0.5;
   }
 
   public static final class ShooterConstants {
