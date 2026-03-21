@@ -395,14 +395,16 @@ public class RobotCommands {
   }
 
   public Command jostleIntake() {
-    // Start by moving up (-V) first so we move away from the bottom hard stop
+    // Start by moving up (-RPM) first so we move away from the bottom hard stop
     return sequence(
-            runOnce(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake),
+            runOnce(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake),
             waitSeconds(0.15),
             repeatingSequence(
-                run(() -> intake.setUppyDownyOpenLoop(Volts.of(2)), intake).withTimeout(intake.getInstakeUpTime()),
-                run(() -> intake.setUppyDownyOpenLoop(Volts.of(-10)), intake).withTimeout(intake.getInstakeDownTime())))
-        .finallyDo(() -> intake.setUppyDownyOpenLoop(Volts.of(0)));
+                run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
+                    .withTimeout(intake.getInstakeDownTime()),
+                run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
+                    .withTimeout(intake.getInstakeUpTime())))
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
 
   public Command raiseIntake() {

@@ -47,8 +47,10 @@ public class Intake extends SubsystemBase {
   private LoggedNetworkNumber uppyDownyLowerRPMTunable =
       new LoggedNetworkNumber("Tunable/IntakeUppyDowny/LowerRPM", uppyDownyLowerRPM);
 
-  private LoggedNetworkNumber jostleIntakeUpTimeTunable = new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleUpTime", jostleIntakeUpTime);
-  private LoggedNetworkNumber jostleIntakeDownTimeTunable = new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleDownTime", jostleIntakeDownTime);
+  private LoggedNetworkNumber jostleIntakeUpTimeTunable =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleUpTime", jostleIntakeUpTime);
+  private LoggedNetworkNumber jostleIntakeDownTimeTunable =
+      new LoggedNetworkNumber("Tunable/IntakeUppyDowny/JostleDownTime", jostleIntakeDownTime);
 
   @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
 
