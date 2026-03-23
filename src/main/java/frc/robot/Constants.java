@@ -411,7 +411,7 @@ public final class Constants {
     // The distance into the NZ beyond which shooter targets middle of AZ rather than Hub
     public static final Distance azLineOffset = Inches.of(12);
     // TODO: Move to a more appropriate place
-    public static final Distance azLine = Inches.of(182.11);
+    public static final Distance azLine = Inches.of(182.11).plus(Inches.of(12));
 
     public static final double gravity = 9.81;
 
