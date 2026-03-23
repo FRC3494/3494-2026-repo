@@ -11,6 +11,20 @@
      "val":0.5
     }
    },
+   "FieldLength":{
+    "dimension":"Length",
+    "var":{
+     "exp":"16.541 m",
+     "val":16.541
+    }
+   },
+   "FieldWidth":{
+    "dimension":"Length",
+    "var":{
+     "exp":"8.0692 m",
+     "val":8.0692
+    }
+   },
    "MaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
@@ -33,7 +47,7 @@
      "val":4.6228
     },
     "y":{
-     "exp":"8.0692 m - 90 in",
+     "exp":"FieldWidth - 90 in",
      "val":5.783200000000001
     },
     "heading":{
@@ -61,7 +75,7 @@
      "val":1.0534
     },
     "y":{
-     "exp":"8.0692 m - 3.56 m - 8 in",
+     "exp":"FieldWidth - 3.56 m - 8 in",
      "val":4.306
     },
     "heading":{
@@ -75,7 +89,7 @@
      "val":1.0534
     },
     "y":{
-     "exp":"8.0692 m - 5.112 m",
+     "exp":"FieldWidth - 5.112 m",
      "val":2.9572000000000003
     },
     "heading":{
@@ -113,11 +127,11 @@
    },
    "DepotIntake":{
     "x":{
-     "exp":"16.541 m - 15.506 m + 2 in",
+     "exp":"FieldLength - 15.506 m + 2 in",
      "val":1.0858
     },
     "y":{
-     "exp":"8.0692 m - 2.1 m",
+     "exp":"FieldWidth - 2.1 m",
      "val":5.969200000000001
     },
     "heading":{
@@ -187,7 +201,7 @@
      "val":3.582040786743164
     },
     "y":{
-     "exp":"8.0692 m - LeftBumpStartingPosition.y",
+     "exp":"FieldWidth - LeftBumpStartingPosition.y",
      "val":2.0327081291198734
     },
     "heading":{

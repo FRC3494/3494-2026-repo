@@ -309,8 +309,8 @@ public final class Constants {
     public static double autoAngularKi = 0.0;
     public static double autoAngularKd = 0.0;
 
-    public static final Distance fieldWidth = Meters.of(8.0692);
-    public static final Distance fieldLength = Meters.of(16.541);
+    public static final Distance fieldWidth = ChoreoVars.FieldWidth;
+    public static final Distance fieldLength = ChoreoVars.FieldLength;
 
     public static final Translation2d fieldSize = new Translation2d(fieldLength, fieldWidth);
 
