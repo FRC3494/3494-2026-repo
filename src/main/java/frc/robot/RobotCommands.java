@@ -142,6 +142,24 @@ public class RobotCommands {
         climber);
   }
 
+  public Command climberMidWithCurrent() {
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setCurrentLimit(Amps.of(30));
+              climber.setOpenLoop(Volts.of(5));
+            },
+            climber),
+        waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
+        runOnce(
+            () -> {
+              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+            },
+            climber),
+        waitSeconds(0.5),
+        climberMid());
+  }
+
   public Command climberDown() {
     return runOnce(
         () -> {
