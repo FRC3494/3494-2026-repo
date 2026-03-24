@@ -149,7 +149,8 @@ public final class OI {
     }
 
     public static Trigger shootCloseWithTrim() {
-      return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootMedium() {
@@ -157,7 +158,8 @@ public final class OI {
     }
 
     public static Trigger shootMediumWithTrim() {
-      return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootFar() {
@@ -165,10 +167,16 @@ public final class OI {
     }
 
     public static Trigger shootFarWithTrim() {
-      return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootNeutralZone() {
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger switchMathModel() {
       return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
     }
 

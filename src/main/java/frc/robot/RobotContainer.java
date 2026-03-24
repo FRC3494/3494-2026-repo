@@ -50,6 +50,7 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterMathKinematics;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.subsystems.shooter.SwitchableShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
@@ -134,8 +135,7 @@ public class RobotContainer {
 
     aimShooterMath = new AimShooterMathKinematics(drive::getPose, drive::getChassisSpeeds);
     aimShooterMathLinear = new AimShooterMathLinear(drive::getPose, drive::getChassisSpeeds);
-
-    shooterAimModel = aimShooterMathLinear;
+    shooterAimModel = new SwitchableShooterAimModel(aimShooterMathLinear, aimShooterMath);
 
     robotCommands =
         new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret, shooterAimModel);
@@ -417,6 +417,8 @@ public class RobotContainer {
                     },
                     shooterAimModel)
                 .ignoringDisable(true));
+
+    ShooterOI.switchMathModel().onTrue(robotCommands.switchShooterAimModel());
 
     ShooterOI.increaseDistanceTrim()
         .whileTrue(

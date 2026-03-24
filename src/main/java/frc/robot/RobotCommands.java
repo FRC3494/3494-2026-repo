@@ -21,6 +21,7 @@ import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.subsystems.shooter.SwitchableShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -516,6 +517,15 @@ public class RobotCommands {
 
   public void setShooterAimModel(ShooterAimModel shooterAimModel) {
     this.shooterAimModel = shooterAimModel;
+  }
+
+  public Command switchShooterAimModel() {
+    return runOnce(
+        () -> {
+          if (shooterAimModel instanceof SwitchableShooterAimModel switchableModel) {
+            switchableModel.setUseKinematicsModel(!switchableModel.isUsingKinematicsModel());
+          }
+        });
   }
 
   // #endregion

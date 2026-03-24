@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
@@ -86,6 +87,10 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
       new LoggedNetworkNumber("Tunable/Trim/XTrimInches");
   private final LoggedNetworkNumber yTrimInches =
       new LoggedNetworkNumber("Tunable/Trim/YTrimInches");
+  private final LoggedNetworkBoolean compensationEnabled =
+      new LoggedNetworkBoolean("Tunable/Shooter/CompensationEnabled", true);
+  private final LoggedNetworkNumber compensationScale =
+      new LoggedNetworkNumber("Tunable/Shooter/CompensationScale", 1.0);
 
   private double lastLoopTimestamp;
   private double previousTOF = 0.0;
@@ -167,9 +172,20 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         shooterTranslation.getDistance(targetLocation)
             + Units.inchesToMeters(distanceTrimInches.get());
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
+    ChassisSpeeds fieldRelativeRobotSpeed =
+        ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeed, currentRobotPose.getRotation());
+    Logger.recordOutput(
+        "AimShooterMathLinear/RobotSpeed/FieldRelative",
+        new double[] {
+          fieldRelativeRobotSpeed.vxMetersPerSecond,
+          fieldRelativeRobotSpeed.vyMetersPerSecond,
+          fieldRelativeRobotSpeed.omegaRadiansPerSecond
+        });
+
     double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
 
-    Translation2d virtualTargetLocation = getVirtualGoal(timeOfFlight, robotSpeed, targetLocation);
+    Translation2d virtualTargetLocation =
+        getVirtualGoal(timeOfFlight, fieldRelativeRobotSpeed, targetLocation);
     Logger.recordOutput(
         "AimShooterMathLinear/VirtualTargetLocation",
         new Pose2d(virtualTargetLocation, Rotation2d.kZero));
@@ -179,15 +195,31 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
             + Units.inchesToMeters(distanceTrimInches.get());
     Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
+    double refinedTimeOfFlight = timeOfFlightMap.get(virtualDistanceToTarget);
+    Logger.recordOutput("AimShooterMathLinear/TimeOfFlight/InitialSec", timeOfFlight);
+    Logger.recordOutput("AimShooterMathLinear/TimeOfFlight/RefinedSec", refinedTimeOfFlight);
+
+    virtualTargetLocation =
+        getVirtualGoal(refinedTimeOfFlight, fieldRelativeRobotSpeed, targetLocation);
+    Logger.recordOutput(
+        "AimShooterMathLinear/VirtualTargetLocationRefined",
+        new Pose2d(virtualTargetLocation, Rotation2d.kZero));
+
+    virtualDistanceToTarget =
+        shooterTranslation.getDistance(virtualTargetLocation)
+            + Units.inchesToMeters(distanceTrimInches.get());
+    Logger.recordOutput(
+        "AimShooterMathLinear/VirtualDistanceRefined", Meters.of(virtualDistanceToTarget));
+
     return new AimState(
         currentRobotPose,
-        robotSpeed,
+        fieldRelativeRobotSpeed,
         shooterTranslation,
         targetLocation,
         virtualTargetLocation,
         distanceToTarget,
         virtualDistanceToTarget,
-        timeOfFlight,
+        refinedTimeOfFlight,
         inAllianceZone);
   }
 
@@ -306,9 +338,13 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   /** Returns the motion-compensated target using the interpolated time of flight. */
   private Translation2d getVirtualGoal(
       double timeOfFlight, ChassisSpeeds robotSpeed, Translation2d targetLocation) {
+    if (!isCompensationEnabled()) {
+      return targetLocation;
+    }
+
     return targetLocation.minus(
         new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond)
-            .times(timeOfFlight));
+            .times(timeOfFlight * getCompensationScale()));
   }
 
   /** Returns the turret setpoint in rotations relative to robot yaw. */
@@ -463,6 +499,24 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   public void debugLogging() {
     Logger.recordOutput("AimShooterLinear/Debug/Target", currentTarget);
+    Logger.recordOutput("AimShooterLinear/Debug/CompensationEnabled", isCompensationEnabled());
+    Logger.recordOutput("AimShooterLinear/Debug/CompensationScale", getCompensationScale());
+  }
+
+  public boolean isCompensationEnabled() {
+    return compensationEnabled.get();
+  }
+
+  public void setCompensationEnabled(boolean enabled) {
+    compensationEnabled.set(enabled);
+  }
+
+  public double getCompensationScale() {
+    return compensationScale.get();
+  }
+
+  public void setCompensationScale(double scale) {
+    compensationScale.set(scale);
   }
 
   @Override
