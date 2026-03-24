@@ -552,6 +552,8 @@ public class RobotContainer {
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
     // ==================== TURRET ====================
+    turret.setDefaultCommand(robotCommands.setTurretCommand);
+
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 
