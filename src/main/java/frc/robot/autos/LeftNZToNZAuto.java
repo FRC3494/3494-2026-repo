@@ -39,12 +39,11 @@ public class LeftNZToNZAuto {
 
     middleNZToShoot
         .done()
-        .onTrue(
-            sequence(
-                robotCommands.shoot().withTimeout(10),
-                parallel(robotCommands.spinDownFromShoot(), leftShootToNZ.cmd())));
+        .onTrue(sequence(robotCommands.shoot().withTimeout(10), leftShootToNZ.cmd()));
 
-    leftShootToNZ.atTime("LeftNZIntake").onTrue(robotCommands.intake());
+    leftShootToNZ
+        .atTime("LeftNZIntake")
+        .onTrue(sequence(robotCommands.spinDownFromShoot(), robotCommands.intake()));
 
     return routine;
   }
