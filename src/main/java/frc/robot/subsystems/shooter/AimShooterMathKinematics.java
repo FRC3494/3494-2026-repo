@@ -85,6 +85,7 @@ import org.littletonrobotics.junction.Logger;
  * </ul>
  */
 public class AimShooterMathKinematics extends SubsystemBase implements ShooterAimModel {
+  // #region State and configuration
   // Supplier for the latest field-relative robot pose (typically from odometry or
   // a pose estimator). The math class is intentionally decoupled from commands and
   // subsystems; it only needs the pose and internal tuning state.
@@ -127,13 +128,17 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   private double lastLoopTimestamp = Timer.getTimestamp();
   private double previousTOF = 0.0;
   private Translation2d previousRobotSpeed = new Translation2d();
+  // #endregion
 
+  // #region Construction
   public AimShooterMathKinematics(
       Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> chassisSpeeds) {
     this.robotPoseSupplier = robotPose;
     this.chassisSpeedsSupplier = chassisSpeeds;
   }
+  // #endregion
 
+  // #region Periodic update
   /** Main control loop step that recomputes aim and updates shooter setpoints. */
   @Override
   public void periodic() {
@@ -144,8 +149,8 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     AimState state = buildAimState(currentRobotPose, currentSpeeds);
 
     // 2) Compute projectile/velocity physics
-    PhysicsResult physics = computePhysics(state);
-
+    PhysicsResult physics =
+        computePhysics(state.robotPose3d, state.targetPose3d, state.translationToTarget);
     // 3) Compute launch speed and convert to flywheel RPM
     double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
     double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
@@ -168,7 +173,9 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     // 5) Log detailed stats for debugging/tuning and return
     logAimShooterStats(state, physics, setpoints);
   }
+  // #endregion
 
+  // #region Ballistic state construction and solve
   /**
    * Builds the geometric state used by the ballistic aim calculation.
    *
@@ -188,7 +195,12 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     Rotation2d robotYaw = robotPose.getRotation();
 
     // Current chassis speeds (field-relative)
-    ChassisSpeeds speeds = chassisSpeeds;
+    ChassisSpeeds speeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            chassisSpeeds.vxMetersPerSecond,
+            chassisSpeeds.vyMetersPerSecond,
+            chassisSpeeds.omegaRadiansPerSecond,
+            robotYaw);
 
     Pose3d robotPose3d =
         new Pose3d(
@@ -212,26 +224,28 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     Translation2d target2d =
         getTargetLocation(shooterTranslation, inAllianceZone, allianceHubLocation);
     double distanceTrimMeters = Inches.of(distanceTrimInches).in(Meters);
+    Translation2d motionCompensationOffset = new Translation2d();
+    Translation2d distanceTrimOffset = new Translation2d();
     Pose3d rawTargetPose3d =
         new Pose3d(target2d.getX(), target2d.getY(), targetHeight, new Rotation3d());
 
     // First-pass translation & physics to estimate time of flight without motion compensation
     Translation3d initialTranslation = rawTargetPose3d.minus(shooterPose3d).getTranslation();
     PhysicsResult firstPassPhysics =
-        computePhysicsInternal(shooterPose3d, rawTargetPose3d, initialTranslation);
+        computePhysics(shooterPose3d, rawTargetPose3d, initialTranslation);
     double t = firstPassPhysics.timeToTarget;
 
     // Compensate target for robot motion: p_t' = p_t - v * t
-    Translation2d compensatedTarget2d =
-        target2d.minus(
-            new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).times(t));
+    motionCompensationOffset =
+        new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).times(t);
+    Translation2d compensatedTarget2d = target2d.minus(motionCompensationOffset);
 
     if (Math.abs(distanceTrimMeters) > 1e-9) {
       Translation2d shooterToTarget = compensatedTarget2d.minus(shooterTranslation);
       double norm = shooterToTarget.getNorm();
       if (norm > 1e-9) {
-        compensatedTarget2d =
-            compensatedTarget2d.plus(shooterToTarget.div(norm).times(distanceTrimMeters));
+        distanceTrimOffset = shooterToTarget.div(norm).times(distanceTrimMeters);
+        compensatedTarget2d = compensatedTarget2d.plus(distanceTrimOffset);
       }
     }
 
@@ -249,12 +263,19 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     Rotation2d turretAngleWorld = angleToTarget; // .rotateBy(robotYaw.times(-0.5));
 
     return new AimState(
+        robotPose,
         robotPose3d,
         shooterPose3d,
+        rawTargetPose3d,
         compensatedTargetPose3d,
         translationToTarget,
         turretAngleWorld,
-        speeds);
+        speeds,
+        inAllianceZone,
+        target2d,
+        motionCompensationOffset,
+        distanceTrimOffset,
+        firstPassPhysics);
   }
 
   /**
@@ -264,14 +285,7 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
    * travel from the shooter to the target, assuming constant gravity and no air resistance or spin
    * effects.
    */
-  private static PhysicsResult computePhysics(AimState state) {
-    Pose3d shooterPose3d = state.shooterPose3d;
-    Pose3d targetPose3d = state.targetPose3d;
-    Translation3d translationToTarget = state.translationToTarget;
-    return computePhysicsInternal(shooterPose3d, targetPose3d, translationToTarget);
-  }
-
-  private static PhysicsResult computePhysicsInternal(
+  private static PhysicsResult computePhysics(
       Pose3d shooterPose3d, Pose3d targetPose3d, Translation3d translationToTarget) {
     double maxHeight =
         calculateMaxHeight(shooterPose3d.getTranslation(), targetPose3d.getTranslation());
@@ -284,7 +298,8 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
                 + (maxHeight - targetPose3d.getTranslation().getY())
                 + Math.pow(finalYVelocity, 2));
     double timeToTarget = (initialYVelocity - finalYVelocity) / gravity;
-    double initialXVelocity = translationToTarget.getX() / timeToTarget;
+    double initialXVelocity =
+        Math.hypot(translationToTarget.getX(), translationToTarget.getY()) / timeToTarget;
 
     return new PhysicsResult(initialXVelocity, initialYVelocity, timeToTarget);
   }
@@ -382,32 +397,9 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
             currentLocation.getX() - shooterTarget.getX(),
             currentLocation.getY() - shooterTarget.getY());
   }
+  // #endregion
 
-  // Small helper structs to make execute() readable and testable
-  private static class AimState {
-    final Pose3d robotPose3d;
-    final Pose3d shooterPose3d;
-    final Pose3d targetPose3d;
-    final Translation3d translationToTarget;
-    final Rotation2d turretAngleWorld;
-    final ChassisSpeeds fieldRelativeSpeeds;
-
-    AimState(
-        Pose3d robotPose3d,
-        Pose3d shooterPose3d,
-        Pose3d targetPose3d,
-        Translation3d translationToTarget,
-        Rotation2d turretAngleWorld,
-        ChassisSpeeds fieldRelativeSpeeds) {
-      this.robotPose3d = robotPose3d;
-      this.shooterPose3d = shooterPose3d;
-      this.targetPose3d = targetPose3d;
-      this.translationToTarget = translationToTarget;
-      this.turretAngleWorld = turretAngleWorld;
-      this.fieldRelativeSpeeds = fieldRelativeSpeeds;
-    }
-  }
-
+  // #region Turret feedforward and target selection helpers
   /**
    * Computes turret feedforward for tracking the motion-compensated ballistic target.
    *
@@ -441,6 +433,22 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
     double translationNormSquared = translationToVirtualGoal.getSquaredNorm();
 
+    if (translationNormSquared < 1e-9 || timeSinceLastLoop <= 1e-9) {
+      previousRobotSpeed = robotSpeedTranslation;
+
+      Logger.recordOutput("AimShooter/TurretFF/LoopDtSec", timeSinceLastLoop);
+      Logger.recordOutput("AimShooter/TurretFF/DeltaTimeOfFlightSec", deltaTimeOfFlight);
+      Logger.recordOutput("AimShooter/TurretFF/RobotVelocity", robotSpeedTranslation);
+      Logger.recordOutput("AimShooter/TurretFF/TranslationToVirtualGoal", translationToVirtualGoal);
+      Logger.recordOutput("AimShooter/TurretFF/TurretVelocityRotPerSec", 0.0);
+      Logger.recordOutput("AimShooter/TurretFF/TurretAccelerationRotPerSecSq", 0.0);
+      Logger.recordOutput("AimShooter/TurretFF/RobotYawVelocityFFVolts", 0.0);
+      Logger.recordOutput("AimShooter/TurretFF/TrackingFFVolts", 0.0);
+      Logger.recordOutput("AimShooter/TurretFF/TotalFFVolts", 0.0);
+
+      return Volts.zero();
+    }
+
     double turretVelocity =
         (translationToVirtualGoal.getX() * correctedVelocity.getY()
                 - translationToVirtualGoal.getY() * correctedVelocity.getX())
@@ -462,12 +470,29 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
             TurretConstants.turretKv
                 * (-Units.radiansToRotations(state.fieldRelativeSpeeds.omegaRadiansPerSecond)));
 
-    previousRobotSpeed = robotSpeedTranslation;
-
-    return robotYawVelocityFF.plus(
+    Voltage trackingFF =
         Volts.of(
             TurretConstants.turretKv * turretVelocity
-                + TurretConstants.turretKa * turretAcceleration));
+                + TurretConstants.turretKa * turretAcceleration);
+    Voltage totalFF = robotYawVelocityFF.plus(trackingFF);
+
+    Logger.recordOutput("AimShooter/TurretFF/LoopDtSec", timeSinceLastLoop);
+    Logger.recordOutput("AimShooter/TurretFF/DeltaTimeOfFlightSec", deltaTimeOfFlight);
+    Logger.recordOutput("AimShooter/TurretFF/RobotVelocity", robotSpeedTranslation);
+    Logger.recordOutput("AimShooter/TurretFF/RobotAcceleration", robotAcceleration);
+    Logger.recordOutput("AimShooter/TurretFF/VirtualGoalVelocity", virtualGoalVelocity);
+    Logger.recordOutput("AimShooter/TurretFF/CorrectedVelocity", correctedVelocity);
+    Logger.recordOutput("AimShooter/TurretFF/TranslationToVirtualGoal", translationToVirtualGoal);
+    Logger.recordOutput("AimShooter/TurretFF/TurretVelocityRotPerSec", turretVelocity);
+    Logger.recordOutput("AimShooter/TurretFF/TurretAccelerationRotPerSecSq", turretAcceleration);
+    Logger.recordOutput(
+        "AimShooter/TurretFF/RobotYawVelocityFFVolts", robotYawVelocityFF.in(Volts));
+    Logger.recordOutput("AimShooter/TurretFF/TrackingFFVolts", trackingFF.in(Volts));
+    Logger.recordOutput("AimShooter/TurretFF/TotalFFVolts", totalFF.in(Volts));
+
+    previousRobotSpeed = robotSpeedTranslation;
+
+    return totalFF;
   }
 
   /** Returns whether the shooter is currently considered inside the alliance zone. */
@@ -506,6 +531,54 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
       return QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget);
     }
   }
+  // #endregion
+
+  // #region Internal data carriers
+  // Small helper structs to make execute() readable and testable
+  private static class AimState {
+    final Pose2d robotPose2d;
+    final Pose3d robotPose3d;
+    final Pose3d shooterPose3d;
+    final Pose3d rawTargetPose3d;
+    final Pose3d targetPose3d;
+    final Translation3d translationToTarget;
+    final Rotation2d turretAngleWorld;
+    final ChassisSpeeds fieldRelativeSpeeds;
+    final boolean inAllianceZone;
+    final Translation2d selectedTarget2d;
+    final Translation2d motionCompensationOffset;
+    final Translation2d distanceTrimOffset;
+    final PhysicsResult firstPassPhysics;
+
+    AimState(
+        Pose2d robotPose2d,
+        Pose3d robotPose3d,
+        Pose3d shooterPose3d,
+        Pose3d rawTargetPose3d,
+        Pose3d targetPose3d,
+        Translation3d translationToTarget,
+        Rotation2d turretAngleWorld,
+        ChassisSpeeds fieldRelativeSpeeds,
+        boolean inAllianceZone,
+        Translation2d selectedTarget2d,
+        Translation2d motionCompensationOffset,
+        Translation2d distanceTrimOffset,
+        PhysicsResult firstPassPhysics) {
+      this.robotPose2d = robotPose2d;
+      this.robotPose3d = robotPose3d;
+      this.shooterPose3d = shooterPose3d;
+      this.rawTargetPose3d = rawTargetPose3d;
+      this.targetPose3d = targetPose3d;
+      this.translationToTarget = translationToTarget;
+      this.turretAngleWorld = turretAngleWorld;
+      this.fieldRelativeSpeeds = fieldRelativeSpeeds;
+      this.inAllianceZone = inAllianceZone;
+      this.selectedTarget2d = selectedTarget2d;
+      this.motionCompensationOffset = motionCompensationOffset;
+      this.distanceTrimOffset = distanceTrimOffset;
+      this.firstPassPhysics = firstPassPhysics;
+    }
+  }
 
   private static class PhysicsResult {
     final double initialXVelocity;
@@ -542,7 +615,9 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
       this.turretClamped = turretClamped;
     }
   }
+  // #endregion
 
+  // #region ShooterAimModel implementation
   // ========== ShooterAimModel interface implementation ==========
   @Override
   public double getTurretAngleRot() {
@@ -633,7 +708,66 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   public Rotation2d applyHoodTrim(Rotation2d baseAngle) {
     return baseAngle.plus(getHoodTrim());
   }
+  // #endregion
 
+  // #region Telemetry logging
+  /**
+   * Emits detailed telemetry about the current aim computation to AdvantageKit.
+   *
+   * <p>This is intended primarily for tuning and debugging. Values are grouped into distance,
+   * angles, physics (projectile), and setpoint/clamp diagnostics.
+   */
+  private void logAimShooterStats(AimState state, PhysicsResult physics, Setpoints set) {
+    double horizontalDistanceMeters =
+        Math.hypot(state.translationToTarget.getX(), state.translationToTarget.getY());
+    double distance3dMeters = state.translationToTarget.getNorm();
+    double verticalDeltaMeters = state.translationToTarget.getZ();
+
+    double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
+    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
+
+    // Logger.recordOutput("AimShooter/Poses/Robot2d", state.robotPose2d);
+    Logger.recordOutput("AimShooter/Poses/Robot3d", state.robotPose3d);
+    Logger.recordOutput("AimShooter/Poses/RawTarget3d", state.rawTargetPose3d);
+    Logger.recordOutput("AimShooter/Poses/CompensatedTarget3d", state.targetPose3d);
+
+    Logger.recordOutput("AimShooter/Translations/ShooterToTarget", state.translationToTarget);
+    Logger.recordOutput("AimShooter/Translations/SelectedTarget2d", state.selectedTarget2d);
+    Logger.recordOutput("AimShooter/Translations/DistanceTrimOffset", state.distanceTrimOffset);
+
+    Logger.recordOutput("AimShooter/Targeting/InAllianceZone", state.inAllianceZone);
+
+    Logger.recordOutput("AimShooter/Distance/HorizontalMeters", horizontalDistanceMeters);
+    Logger.recordOutput("AimShooter/Distance/Distance3dMeters", distance3dMeters);
+    Logger.recordOutput("AimShooter/Distance/VerticalDeltaMeters", verticalDeltaMeters);
+
+    Logger.recordOutput("AimShooter/Angles/TurretWorldDeg", state.turretAngleWorld.getDegrees());
+    Logger.recordOutput(
+        "AimShooter/Angles/RobotYawDeg", state.robotPose2d.getRotation().getDegrees());
+
+    Logger.recordOutput(
+        "AimShooter/Physics/FirstPassTimeToTargetSec", state.firstPassPhysics.timeToTarget);
+    Logger.recordOutput("AimShooter/Physics/InitialXVelocityMps", physics.initialXVelocity);
+    Logger.recordOutput("AimShooter/Physics/InitialYVelocityMps", physics.initialYVelocity);
+    Logger.recordOutput("AimShooter/Physics/LaunchSpeedMps", launchSpeedMps);
+    Logger.recordOutput("AimShooter/Physics/TimeToTargetSec", physics.timeToTarget);
+    Logger.recordOutput("AimShooter/Physics/CalculatedRPM", calculatedRPM);
+
+    Logger.recordOutput("AimShooter/Setpoints/RPM", set.rpm);
+    // Logger.recordOutput("AimShooter/Setpoints/FlywheelTrimRPM", flywheelOffsetRPM);
+    // Logger.recordOutput("AimShooter/Setpoints/HoodTrimDeg", hoodOffsetDeg);
+    // Logger.recordOutput("AimShooter/Setpoints/TurretTrimDeg", turretOffsetDeg);
+    // Logger.recordOutput("AimShooter/Setpoints/DistanceTrimInches", distanceTrimInches);
+    // Logger.recordOutput("AimShooter/Setpoints/XTrimInches", xTrimInches);
+    // Logger.recordOutput("AimShooter/Setpoints/YTrimInches", yTrimInches);
+
+    Logger.recordOutput("AimShooter/Clamp/FlywheelClamped", set.flywheelClamped);
+    Logger.recordOutput("AimShooter/Clamp/HoodClamped", set.hoodClamped);
+    Logger.recordOutput("AimShooter/Clamp/TurretClamped", set.turretClamped);
+  }
+  // #endregion
+
+  // #region Operator trim helpers
   /** Increment/decrement helpers for operator trimming during testing. */
   public void bumpFlywheelOffsetRPM(double deltaRPM) {
     flywheelOffsetRPM += deltaRPM;
@@ -652,40 +786,5 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     hoodOffsetDeg = 0.0;
     turretOffsetDeg = 0.0;
   }
-
-  /**
-   * Emits detailed telemetry about the current aim computation to AdvantageKit.
-   *
-   * <p>This is intended primarily for tuning and debugging. Values are grouped into distance,
-   * angles, physics (projectile), and setpoint/clamp diagnostics.
-   */
-  private static void logAimShooterStats(AimState state, PhysicsResult physics, Setpoints set) {
-    double horizontalDistanceMeters =
-        Math.hypot(state.translationToTarget.getX(), state.translationToTarget.getY());
-    double distance3dMeters = state.translationToTarget.getNorm();
-    double verticalDeltaMeters = state.translationToTarget.getZ();
-
-    double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
-    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
-
-    Logger.recordOutput("AimShooter/Distance/HorizontalMeters", horizontalDistanceMeters);
-    Logger.recordOutput("AimShooter/Distance/Distance3dMeters", distance3dMeters);
-    Logger.recordOutput("AimShooter/Distance/VerticalDeltaMeters", verticalDeltaMeters);
-
-    Logger.recordOutput("AimShooter/Angles/TurretWorldDeg", state.turretAngleWorld.getDegrees());
-    Logger.recordOutput("AimShooter/Angles/HoodSetpointDeg", set.hoodAngle.getDegrees());
-    Logger.recordOutput("AimShooter/Angles/TurretSetpointDeg", set.turretAngle.getDegrees());
-
-    Logger.recordOutput("AimShooter/Physics/InitialXVelocityMps", physics.initialXVelocity);
-    Logger.recordOutput("AimShooter/Physics/InitialYVelocityMps", physics.initialYVelocity);
-    Logger.recordOutput("AimShooter/Physics/LaunchSpeedMps", launchSpeedMps);
-    Logger.recordOutput("AimShooter/Physics/TimeToTargetSec", physics.timeToTarget);
-    Logger.recordOutput("AimShooter/Physics/CalculatedRPM", calculatedRPM);
-
-    Logger.recordOutput("AimShooter/Setpoints/RPM", set.rpm);
-
-    Logger.recordOutput("AimShooter/Clamp/FlywheelClamped", set.flywheelClamped);
-    Logger.recordOutput("AimShooter/Clamp/HoodClamped", set.hoodClamped);
-    Logger.recordOutput("AimShooter/Clamp/TurretClamped", set.turretClamped);
-  }
+  // #endregion
 }
