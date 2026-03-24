@@ -11,7 +11,7 @@ import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.choreo.ChoreoTraj;
 
-public class LeftNZAuto {
+public class LeftNZToDepotAuto {
   public static AutoRoutine getRoutine(
       String name, AutoFactory autoFactory, RobotCommands robotCommands, Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
