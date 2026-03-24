@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.DriveConstants.fieldWidth;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -534,7 +535,8 @@ public final class Constants {
   public static final class VisionConstants {
     public static final boolean useMegaTag2 = true;
 
-    public static final Distance maxTagDistance = Meters.of(5.0);
+    public static final Distance maxTagDistanceMT1 = Meters.of(5.0);
+    public static final Distance maxTagDistanceMT2 = fieldWidth;
     public static final int minTagCountMT1 = 2;
     public static final int minTagCountMT2 = 1;
 
