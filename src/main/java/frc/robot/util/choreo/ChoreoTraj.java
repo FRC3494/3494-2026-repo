@@ -27,37 +27,58 @@ public record ChoreoTraj(
     public static final ChoreoTraj DepotToLeftClimb = new ChoreoTraj(
 	    "DepotToLeftClimb",
 	    OptionalInt.empty(),
-	    3.40867,
+	    3.28771,
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
 	    new Pose2d(1.053, 4.306, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj LeftBumpToDepot = new ChoreoTraj(
 	    "LeftBumpToDepot",
 	    OptionalInt.empty(),
-	    2.39204,
+	    2.24906,
 	    new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
 	);
 	public static final ChoreoTraj LeftBumpToDepotPartial = new ChoreoTraj(
 	    "LeftBumpToDepotPartial",
 	    OptionalInt.empty(),
-	    2.4277,
+	    2.33346,
 	    new Pose2d(2.668, 6.036, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
 	);
 	public static final ChoreoTraj RightClimb = new ChoreoTraj(
 	    "RightClimb",
 	    OptionalInt.empty(),
-	    3.92861,
+	    3.74987,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.053, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj LeftTrenchToNZ = new ChoreoTraj(
 	    "LeftTrenchToNZ",
 	    OptionalInt.empty(),
-	    1.71839,
-	    new Pose2d(4.028, 7.622, Rotation2d.fromRadians(0)),
-	    new Pose2d(7.623, 6.44, Rotation2d.fromRadians(-2.094))
+	    2.88109,
+	    new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(7.623, 7, Rotation2d.fromRadians(-2.094))
+	);
+	public static final ChoreoTraj LeftNZToMiddleNZ = new ChoreoTraj(
+	    "LeftNZToMiddleNZ",
+	    OptionalInt.empty(),
+	    1.70313,
+	    new Pose2d(7.623, 7, Rotation2d.fromRadians(-2.094)),
+	    new Pose2d(7.623, 5.631, Rotation2d.fromRadians(-2.094))
+	);
+	public static final ChoreoTraj MiddleNZToShoot = new ChoreoTraj(
+	    "MiddleNZToShoot",
+	    OptionalInt.empty(),
+	    2.79194,
+	    new Pose2d(7.623, 5.631, Rotation2d.fromRadians(-2.094)),
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj ShootToLeftCorner = new ChoreoTraj(
+	    "ShootToLeftCorner",
+	    OptionalInt.empty(),
+	    1.92318,
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
+	    new Pose2d(0.463, 7.411, Rotation2d.fromRadians(-1.571))
 	);
 
     /**
@@ -69,7 +90,10 @@ public record ChoreoTraj(
 		Map.entry("LeftBumpToDepot", LeftBumpToDepot),
 		Map.entry("LeftBumpToDepotPartial", LeftBumpToDepotPartial),
 		Map.entry("RightClimb", RightClimb),
-		Map.entry("LeftTrenchToNZ", LeftTrenchToNZ)
+		Map.entry("LeftTrenchToNZ", LeftTrenchToNZ),
+		Map.entry("LeftNZToMiddleNZ", LeftNZToMiddleNZ),
+		Map.entry("MiddleNZToShoot", MiddleNZToShoot),
+		Map.entry("ShootToLeftCorner", ShootToLeftCorner)
     );
 
     /**

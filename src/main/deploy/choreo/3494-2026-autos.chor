@@ -25,11 +25,18 @@
      "val":8.0692
     }
    },
+   "IntakeMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"1 m / s",
+     "val":1.0
+    }
+   },
    "MaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"1.75 m / s ^ 2",
-     "val":1.75
+     "exp":"2 m / s ^ 2",
+     "val":2.0
     }
    },
    "MaxVelocity":{
@@ -37,6 +44,34 @@
     "var":{
      "exp":"2 m / s",
      "val":2.0
+    }
+   },
+   "NZMaxAcceleration":{
+    "dimension":"LinAcc",
+    "var":{
+     "exp":"3 m / s ^ 2",
+     "val":3.0
+    }
+   },
+   "NZMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"3 m / s",
+     "val":3.0
+    }
+   },
+   "RobotBumperSize":{
+    "dimension":"Length",
+    "var":{
+     "exp":"17.625 in",
+     "val":0.447675
+    }
+   },
+   "TrenchDropIntakeSpeed":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"0.5 m / s",
+     "val":0.5
     }
    }
   },
@@ -167,6 +202,48 @@
      "val":3.141592653589793
     }
    },
+   "LeftNZ":{
+    "x":{
+     "exp":"7.622711658477783 m",
+     "val":7.622711658477783
+    },
+    "y":{
+     "exp":"7 m",
+     "val":7.0
+    },
+    "heading":{
+     "exp":"-120 deg",
+     "val":-2.0943951023931953
+    }
+   },
+   "LeftTrenchStartingPosition":{
+    "x":{
+     "exp":"158.6 in + RobotBumperSize",
+     "val":4.476115
+    },
+    "y":{
+     "exp":"FieldWidth - RobotBumperSize - 1 in",
+     "val":7.596125
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
+   "MiddleNZ":{
+    "x":{
+     "exp":"LeftNZ.x",
+     "val":7.622711658477783
+    },
+    "y":{
+     "exp":"LeftNZ.y - 4.49 ft",
+     "val":5.631448
+    },
+    "heading":{
+     "exp":"LeftNZ.heading",
+     "val":-2.0943951023931953
+    }
+   },
    "NZDepotShootingTarget":{
     "x":{
      "exp":"3 m",
@@ -207,6 +284,20 @@
     "heading":{
      "exp":"180 deg",
      "val":3.141592653589793
+    }
+   },
+   "ShootLeftTrench":{
+    "x":{
+     "exp":"3.2325267791748047 m",
+     "val":3.2325267791748047
+    },
+    "y":{
+     "exp":"7.501835823059082 m",
+     "val":7.501835823059082
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
     }
    }
   }
