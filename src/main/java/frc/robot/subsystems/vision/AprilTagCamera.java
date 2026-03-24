@@ -146,7 +146,9 @@ public class AprilTagCamera {
             : poseEstimate.tagCount >= minTagCountMT1;
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCountValid", tagCountValid);
 
-    boolean tagsWithinRange = poseEstimate.avgTagDist < maxTagDistance.in(Meters);
+    boolean tagsWithinRange =
+        poseEstimate.avgTagDist
+            < (megaTag2Enabled ? maxTagDistanceMT2 : maxTagDistanceMT1).in(Meters);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsWithinRange", tagsWithinRange);
 
     return estimateNotNull && tagCountValid && tagsWithinRange;

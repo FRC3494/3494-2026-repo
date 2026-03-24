@@ -1,4 +1,4 @@
-// spotless:off
+
 package frc.robot.util.choreo;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -6,10 +6,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.Map;
 import java.util.OptionalInt;
 
+// If these imports cause errors because you're not using ChoreoLib,
+// turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-// If the 2 imports above cause errors because you're not using ChoreoLib,
-// turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
 
 /**
  * A class containing the name, start pose, end pose, and total time of every Choreo trajectory.
@@ -24,44 +24,76 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj LeftBumpToDepot = new ChoreoTraj(
-        "LeftBumpToDepot",
-        OptionalInt.empty(),
-        2.39204,
-        new Pose2d(3.58204, 6.03649, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(3.14159))
-    );
-    public static final ChoreoTraj RightClimb = new ChoreoTraj(
-        "RightClimb",
-        OptionalInt.empty(),
-        3.92861,
-        new Pose2d(3.58204, 2.03271, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0534, 2.9572, Rotation2d.fromRadians(-1.5708))
-    );
     public static final ChoreoTraj DepotToLeftClimb = new ChoreoTraj(
-        "DepotToLeftClimb",
-        OptionalInt.empty(),
-        3.40867,
-        new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(1.5708)),
-        new Pose2d(1.0534, 4.306, Rotation2d.fromRadians(1.5708))
-    );
-    public static final ChoreoTraj LeftBumpToDepotPartial = new ChoreoTraj(
-        "LeftBumpToDepotPartial",
-        OptionalInt.empty(),
-        2.4277,
-        new Pose2d(2.66764, 6.03649, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(3.14159))
-    );
+	    "DepotToLeftClimb",
+	    OptionalInt.empty(),
+	    3.28771,
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
+	    new Pose2d(1.053, 4.306, Rotation2d.fromRadians(1.571))
+	);
+	public static final ChoreoTraj LeftBumpToDepot = new ChoreoTraj(
+	    "LeftBumpToDepot",
+	    OptionalInt.empty(),
+	    2.24906,
+	    new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj LeftBumpToDepotPartial = new ChoreoTraj(
+	    "LeftBumpToDepotPartial",
+	    OptionalInt.empty(),
+	    2.33346,
+	    new Pose2d(2.668, 6.036, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj LeftTrenchToNZ = new ChoreoTraj(
+	    "LeftTrenchToNZ",
+	    OptionalInt.empty(),
+	    4.12622,
+	    new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833))
+	);
+	public static final ChoreoTraj MiddleNZToShoot = new ChoreoTraj(
+	    "MiddleNZToShoot",
+	    OptionalInt.empty(),
+	    2.31795,
+	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833)),
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj RightClimb = new ChoreoTraj(
+	    "RightClimb",
+	    OptionalInt.empty(),
+	    3.74987,
+	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.053, 2.957, Rotation2d.fromRadians(-1.571))
+	);
+	public static final ChoreoTraj ShootToLeftCorner = new ChoreoTraj(
+	    "ShootToLeftCorner",
+	    OptionalInt.empty(),
+	    1.54449,
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj LeftShootToNZ = new ChoreoTraj(
+	    "LeftShootToNZ",
+	    OptionalInt.empty(),
+	    2.83723,
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
+	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
+	);
 
     /**
      * A map between trajectory names and their corresponding data.
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-        Map.entry("LeftBumpToDepot", LeftBumpToDepot),
-        Map.entry("RightClimb", RightClimb),
-        Map.entry("DepotToLeftClimb", DepotToLeftClimb),
-        Map.entry("LeftBumpToDepotPartial", LeftBumpToDepotPartial)
+    	Map.entry("DepotToLeftClimb", DepotToLeftClimb),
+		Map.entry("LeftBumpToDepot", LeftBumpToDepot),
+		Map.entry("LeftBumpToDepotPartial", LeftBumpToDepotPartial),
+		Map.entry("LeftTrenchToNZ", LeftTrenchToNZ),
+		Map.entry("MiddleNZToShoot", MiddleNZToShoot),
+		Map.entry("RightClimb", RightClimb),
+		Map.entry("ShootToLeftCorner", ShootToLeftCorner),
+		Map.entry("LeftShootToNZ", LeftShootToNZ)
     );
 
     /**
@@ -88,4 +120,3 @@ public record ChoreoTraj(
         return routine.trajectory(this.name);
     }
 }
-// spotless:on

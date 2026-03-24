@@ -11,11 +11,32 @@
      "val":0.5
     }
    },
+   "FieldLength":{
+    "dimension":"Length",
+    "var":{
+     "exp":"16.541 m",
+     "val":16.541
+    }
+   },
+   "FieldWidth":{
+    "dimension":"Length",
+    "var":{
+     "exp":"8.0692 m",
+     "val":8.0692
+    }
+   },
+   "IntakeMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"1 m / s",
+     "val":1.0
+    }
+   },
    "MaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"1.75 m / s ^ 2",
-     "val":1.75
+     "exp":"2 m / s ^ 2",
+     "val":2.0
     }
    },
    "MaxVelocity":{
@@ -23,6 +44,41 @@
     "var":{
      "exp":"2 m / s",
      "val":2.0
+    }
+   },
+   "NZMaxAcceleration":{
+    "dimension":"LinAcc",
+    "var":{
+     "exp":"5 m / s ^ 2",
+     "val":5.0
+    }
+   },
+   "NZMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"RobotMaxSpeed - 0.06 m / s",
+     "val":4.5
+    }
+   },
+   "RobotBumperSize":{
+    "dimension":"Length",
+    "var":{
+     "exp":"17.625 in",
+     "val":0.447675
+    }
+   },
+   "RobotMaxSpeed":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"4.56 m / s",
+     "val":4.56
+    }
+   },
+   "TrenchDropIntakeSpeed":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"0.5 m / s",
+     "val":0.5
     }
    }
   },
@@ -33,7 +89,7 @@
      "val":4.6228
     },
     "y":{
-     "exp":"8.0692 m - 90 in",
+     "exp":"FieldWidth - 90 in",
      "val":5.783200000000001
     },
     "heading":{
@@ -61,7 +117,7 @@
      "val":1.0534
     },
     "y":{
-     "exp":"8.0692 m - 3.56 m - 8 in",
+     "exp":"FieldWidth - 3.56 m - 8 in",
      "val":4.306
     },
     "heading":{
@@ -75,7 +131,7 @@
      "val":1.0534
     },
     "y":{
-     "exp":"8.0692 m - 5.112 m",
+     "exp":"FieldWidth - 5.112 m",
      "val":2.9572000000000003
     },
     "heading":{
@@ -113,11 +169,11 @@
    },
    "DepotIntake":{
     "x":{
-     "exp":"16.541 m - 15.506 m + 2 in",
+     "exp":"FieldLength - 15.506 m + 2 in",
      "val":1.0858
     },
     "y":{
-     "exp":"8.0692 m - 2.1 m",
+     "exp":"FieldWidth - 2.1 m",
      "val":5.969200000000001
     },
     "heading":{
@@ -151,6 +207,48 @@
     "heading":{
      "exp":"180 deg",
      "val":3.141592653589793
+    }
+   },
+   "LeftNZ":{
+    "x":{
+     "exp":"7.622711658477783 m + 12 in",
+     "val":7.927511658477783
+    },
+    "y":{
+     "exp":"7 m",
+     "val":7.0
+    },
+    "heading":{
+     "exp":"-105 deg",
+     "val":-1.832595714594046
+    }
+   },
+   "LeftTrenchStartingPosition":{
+    "x":{
+     "exp":"158.6 in + RobotBumperSize",
+     "val":4.476115
+    },
+    "y":{
+     "exp":"FieldWidth - RobotBumperSize - 1 in",
+     "val":7.596125
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
+   "MiddleNZ":{
+    "x":{
+     "exp":"LeftNZ.x",
+     "val":7.927511658477783
+    },
+    "y":{
+     "exp":"LeftNZ.y - 5 ft",
+     "val":5.476
+    },
+    "heading":{
+     "exp":"LeftNZ.heading",
+     "val":-1.832595714594046
     }
    },
    "NZDepotShootingTarget":{
@@ -187,12 +285,26 @@
      "val":3.582040786743164
     },
     "y":{
-     "exp":"8.0692 m - LeftBumpStartingPosition.y",
+     "exp":"FieldWidth - LeftBumpStartingPosition.y",
      "val":2.0327081291198734
     },
     "heading":{
      "exp":"180 deg",
      "val":3.141592653589793
+    }
+   },
+   "ShootLeftTrench":{
+    "x":{
+     "exp":"3.2325267791748047 m",
+     "val":3.2325267791748047
+    },
+    "y":{
+     "exp":"7.501835823059082 m",
+     "val":7.501835823059082
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
     }
    }
   }

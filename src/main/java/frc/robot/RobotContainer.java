@@ -36,6 +36,8 @@ import frc.robot.OI.ShooterOI.HoodOI;
 import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
+import frc.robot.autos.LeftNZToDepotAuto;
+import frc.robot.autos.LeftNZToNZAuto;
 import frc.robot.autos.RightClimbAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -82,7 +84,7 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
-  private final RobotCommands robotCommands;
+  public final RobotCommands robotCommands;
 
   private LoggedNetworkBoolean enableTuningAutos =
       new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
@@ -166,6 +168,12 @@ public class RobotContainer {
         "DepotAndClimb",
         () -> DepotAndClimbAuto.getRoutine("DepotAndClimb", autoFactory, robotCommands, drive));
     autoChooser.addRoutine(
+        "LeftNZToDepot",
+        () -> LeftNZToDepotAuto.getRoutine("LeftNZToDepot", autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
+        "LeftNZToNZ",
+        () -> LeftNZToNZAuto.getRoutine("LeftNZToNZ", autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
         "RightClimb",
         () -> RightClimbAuto.getRoutine("RightClimb", autoFactory, robotCommands, drive));
 
@@ -180,6 +188,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    RobotModeTriggers.teleop().onTrue(robotCommands.spinDownFromShoot());
   }
 
   private void configureTuningAutos() {
@@ -547,6 +556,8 @@ public class RobotContainer {
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
     // ==================== TURRET ====================
+    turret.setDefaultCommand(robotCommands.setTurretCommand);
+
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
 

@@ -15,8 +15,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -262,15 +260,9 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   }
 
   /** Returns whether the shooter is inside the alliance zone. */
-  private boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLine) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-      return shooterTranslation.getMeasureX().minus(azLineOffset).lte(azLine);
-    } else {
-      return QuadranglesUtil.toAllianceTranslation(shooterTranslation)
-          .getMeasureX()
-          .minus(azLineOffset)
-          .lte(azLine);
-    }
+  private boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLineBlue) {
+    // ! Flips the robot location AGAIN (back to alliance-relative coordinates essentially)
+    return QuadranglesUtil.toAllianceTranslation(shooterTranslation).getMeasureX().lte(azLineBlue);
   }
 
   /**

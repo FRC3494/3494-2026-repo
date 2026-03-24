@@ -54,7 +54,7 @@ public class RobotCommands {
       new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.6);
 
   // ==================== HOPPER ====================
-  private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 75);
+  private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 80);
   private LoggedNetworkNumber kickerSpeedFactor =
       new LoggedNetworkNumber(
           "Tunable/KickerSpeedFactor", 0.8); // Number to multiply flywheel speed by
@@ -65,7 +65,7 @@ public class RobotCommands {
 
   // ==================== FLYWHEEL ====================
   private LoggedNetworkNumber flywheelThreshold =
-      new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.95);
+      new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.99);
   public LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
 
   // ==================== HOOD ====================

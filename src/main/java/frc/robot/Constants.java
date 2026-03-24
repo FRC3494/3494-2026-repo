@@ -8,6 +8,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.DriveConstants.fieldWidth;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -248,8 +249,8 @@ public final class Constants {
     public static final int[] turnMotorCurrentLimit = new int[] {25, 25, 20, 20};
     public static final double[] turnMotorReduction =
         new double[] {
-          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i
-          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i
+          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
+          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
           ((18.75) / (2.0 * Math.PI)), // Mk4n
           ((18.75) / (2.0 * Math.PI)) // Mk4n
         };
@@ -309,8 +310,8 @@ public final class Constants {
     public static double autoAngularKi = 0.0;
     public static double autoAngularKd = 0.0;
 
-    public static final Distance fieldWidth = Meters.of(8.0692);
-    public static final Distance fieldLength = Meters.of(16.541);
+    public static final Distance fieldWidth = ChoreoVars.FieldWidth;
+    public static final Distance fieldLength = ChoreoVars.FieldLength;
 
     public static final Translation2d fieldSize = new Translation2d(fieldLength, fieldWidth);
 
@@ -341,7 +342,7 @@ public final class Constants {
     public static final int spindexerCurrentLimit = 20;
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
-    public static double spindexerKp = 0.01; // 5.2634E-05
+    public static double spindexerKp = 0.3; // 5.2634E-05
     public static double spindexerKi = 1E-06;
     public static double spindexerKd = 0.0;
 
@@ -409,9 +410,10 @@ public final class Constants {
         ChoreoVars.Poses.NZOutpostShootingTarget.getTranslation();
 
     // The distance into the NZ beyond which shooter targets middle of AZ rather than Hub
-    public static final Distance azLineOffset = Inches.of(12);
+    // 17.625 inches is robot center-to-bumper edge distance
+    public static final Distance azLineOffset = Inches.of(17.625).plus(Inches.of(48));
     // TODO: Move to a more appropriate place
-    public static final Distance azLine = Inches.of(182.11);
+    public static final Distance azLine = Inches.of(158.6).plus(azLineOffset);
 
     public static final double gravity = 9.81;
 
@@ -534,7 +536,8 @@ public final class Constants {
   public static final class VisionConstants {
     public static final boolean useMegaTag2 = true;
 
-    public static final Distance maxTagDistance = Meters.of(5.0);
+    public static final Distance maxTagDistanceMT1 = Meters.of(5.0);
+    public static final Distance maxTagDistanceMT2 = fieldWidth;
     public static final int minTagCountMT1 = 2;
     public static final int minTagCountMT2 = 1;
 
