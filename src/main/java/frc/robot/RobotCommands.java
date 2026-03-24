@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
+import static frc.robot.Constants.HopperConstants.*;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
@@ -334,12 +336,28 @@ public class RobotCommands {
     return repeatingSequence(sprintForward().withTimeout(0.5), sprintBackward().withTimeout(0.5));
   }
 
+  public Command runSpindexerWithStallDetection(AngularVelocity velocity) {
+    return run(() -> hopper.setSpindexerVelocity(velocity), hopper)
+        .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit-2)
+        .andThen(
+            runOnce(() -> hopper.setSpindexerVelocity(velocity.negate()), hopper)
+                .andThen(Commands.waitSeconds(2.0)))
+        .repeatedly();
+  }
+
+  // ==================== INTAKE ====================
+  // public Command intake() {
+  //   return sequence(runIntake(), runSpindexerSlow());
+  // }
   // #endregion
 
   // #region ==================== INTAKE ====================
 
   public Command intake() {
-    return sequence(runIntake(), runSpindexerSlow());
+    return parallel(
+        runIntake(),
+        runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get() / 8.0))
+    );
   }
 
   public Command releaseIntake() {
@@ -435,7 +453,7 @@ public class RobotCommands {
         runIntake(),
         jostleIntake());
   }
-
+  
   public Command spinDownFromShoot() {
     return sequence(
         stopSpindexer(),
