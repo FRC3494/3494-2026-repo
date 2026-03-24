@@ -410,9 +410,10 @@ public final class Constants {
         ChoreoVars.Poses.NZOutpostShootingTarget.getTranslation();
 
     // The distance into the NZ beyond which shooter targets middle of AZ rather than Hub
-    public static final Distance azLineOffset = Inches.of(12);
+    // 17.625 inches is robot center-to-bumper edge distance
+    public static final Distance azLineOffset = Inches.of(17.625).plus(Inches.of(48));
     // TODO: Move to a more appropriate place
-    public static final Distance azLine = Inches.of(182.11).plus(Inches.of(12));
+    public static final Distance azLine = Inches.of(158.6).plus(azLineOffset);
 
     public static final double gravity = 9.81;
 
