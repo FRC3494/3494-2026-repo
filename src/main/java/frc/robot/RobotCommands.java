@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
 import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
@@ -21,7 +22,6 @@ import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import static frc.robot.Constants.HopperConstants.*;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
@@ -338,11 +338,27 @@ public class RobotCommands {
 
   public Command runSpindexerWithStallDetection(AngularVelocity velocity) {
     return run(() -> hopper.setSpindexerVelocity(velocity), hopper)
-        .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit-2)
+        .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit - 2)
         .andThen(
             runOnce(() -> hopper.setSpindexerVelocity(velocity.negate()), hopper)
                 .andThen(Commands.waitSeconds(2.0)))
         .repeatedly();
+  }
+
+  public Command unjamSpindexer() {
+    return sequence(
+        runOnce(
+            () -> {
+              hopper.setKickerVelocity(
+                  RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()).times(-1.0));
+            },
+            hopper),
+        runOnce(
+            () -> {
+              hopper.setSpindexerVelocity(
+                  RPM.of((spindexerInverted ? -1 : -1) * spindexerSpeed.get()));
+            },
+            hopper));
   }
 
   // ==================== INTAKE ====================
@@ -355,9 +371,7 @@ public class RobotCommands {
 
   public Command intake() {
     return parallel(
-        runIntake(),
-        runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get() / 8.0))
-    );
+        runIntake(), runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get() / 8.0)));
   }
 
   public Command releaseIntake() {
@@ -453,7 +467,7 @@ public class RobotCommands {
         runIntake(),
         jostleIntake());
   }
-  
+
   public Command spinDownFromShoot() {
     return sequence(
         stopSpindexer(),

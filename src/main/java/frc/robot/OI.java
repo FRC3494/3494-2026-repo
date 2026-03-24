@@ -88,7 +88,7 @@ public final class OI {
   }
 
   public static final class HopperOI {
-    public static Trigger runSpindexerBackwards() {
+    public static Trigger unjamSpindexer() {
       return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
 
