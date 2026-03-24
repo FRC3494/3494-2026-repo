@@ -73,6 +73,13 @@ public record ChoreoTraj(
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
 	);
+	public static final ChoreoTraj LeftShootToNZ = new ChoreoTraj(
+	    "LeftShootToNZ",
+	    OptionalInt.empty(),
+	    2.83723,
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
+	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
+	);
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -85,7 +92,8 @@ public record ChoreoTraj(
 		Map.entry("LeftTrenchToNZ", LeftTrenchToNZ),
 		Map.entry("MiddleNZToShoot", MiddleNZToShoot),
 		Map.entry("RightClimb", RightClimb),
-		Map.entry("ShootToLeftCorner", ShootToLeftCorner)
+		Map.entry("ShootToLeftCorner", ShootToLeftCorner),
+		Map.entry("LeftShootToNZ", LeftShootToNZ)
     );
 
     /**
