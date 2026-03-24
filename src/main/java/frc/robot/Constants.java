@@ -249,8 +249,8 @@ public final class Constants {
     public static final int[] turnMotorCurrentLimit = new int[] {25, 25, 20, 20};
     public static final double[] turnMotorReduction =
         new double[] {
-          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i
-          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i
+          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
+          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
           ((18.75) / (2.0 * Math.PI)), // Mk4n
           ((18.75) / (2.0 * Math.PI)) // Mk4n
         };
