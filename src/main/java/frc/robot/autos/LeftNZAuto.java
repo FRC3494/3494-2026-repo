@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
+import static edu.wpi.first.wpilibj2.command.Commands.print;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
 import choreo.auto.AutoFactory;
@@ -16,7 +17,6 @@ public class LeftNZAuto {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
     AutoTrajectory leftTrenchToNZ = ChoreoTraj.LeftTrenchToNZ.asAutoTraj(routine);
-    AutoTrajectory leftNZToMiddleNZ = ChoreoTraj.LeftNZToMiddleNZ.asAutoTraj(routine);
     AutoTrajectory middleNZToShoot = ChoreoTraj.MiddleNZToShoot.asAutoTraj(routine);
     AutoTrajectory shootToLeftCorner = ChoreoTraj.ShootToLeftCorner.asAutoTraj(routine);
 
@@ -24,21 +24,24 @@ public class LeftNZAuto {
         .active()
         .onTrue(
             sequence(
+                print("1"),
                 leftTrenchToNZ.resetOdometry(),
-                robotCommands.enableAutoShooterSettings(),
-                robotCommands.enableAutoTurret(),
-                // robotCommands.dropIntake(),
-                leftTrenchToNZ.cmd()));
+                print("2"),
+                parallel(
+                    robotCommands.enableAutoShooterSettings(),
+                    robotCommands.enableAutoTurret(),
+                    leftTrenchToNZ.cmd()),
+                print("3")));
 
-    leftTrenchToNZ.done().onTrue(sequence(robotCommands.intake(), leftNZToMiddleNZ.cmd()));
+    leftTrenchToNZ.atTime("LeftNZIntake").onTrue(robotCommands.intake());
 
-    leftNZToMiddleNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToShoot.cmd()));
+    leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToShoot.cmd()));
 
     middleNZToShoot
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(12),
+                robotCommands.shoot().withTimeout(10),
                 parallel(robotCommands.spinDownFromShoot(), shootToLeftCorner.cmd())));
 
     return routine;

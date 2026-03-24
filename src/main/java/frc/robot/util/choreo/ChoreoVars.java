@@ -19,8 +19,9 @@ public final class ChoreoVars {
     public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1);
     public static final LinearVelocity TrenchDropIntakeSpeed = Units.MetersPerSecond.of(0.5);
     public static final Distance RobotBumperSize = Units.Meters.of(0.448);
-    public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(3);
-    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(3);
+    public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(4.5);
+    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(5);
+    public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.56);
 
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.623, 5.783, Rotation2d.kZero);
@@ -36,8 +37,8 @@ public final class ChoreoVars {
         public static final Pose2d NZOutpostShootingTarget = new Pose2d(3, 1.5, Rotation2d.kZero);
         public static final Pose2d RightBumpStartingPosition = new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142));
         public static final Pose2d LeftTrenchStartingPosition = new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142));
-        public static final Pose2d LeftNZ = new Pose2d(7.623, 7, Rotation2d.fromRadians(-2.094));
-        public static final Pose2d MiddleNZ = new Pose2d(7.623, 5.631, Rotation2d.fromRadians(-2.094));
+        public static final Pose2d LeftNZ = new Pose2d(7.928, 7, Rotation2d.fromRadians(-1.833));
+        public static final Pose2d MiddleNZ = new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833));
         public static final Pose2d ShootLeftTrench = new Pose2d(3.233, 7.502, Rotation2d.kZero);
 
         private Poses() {}

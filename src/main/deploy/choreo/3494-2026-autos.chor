@@ -49,15 +49,15 @@
    "NZMaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"3 m / s ^ 2",
-     "val":3.0
+     "exp":"5 m / s ^ 2",
+     "val":5.0
     }
    },
    "NZMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"3 m / s",
-     "val":3.0
+     "exp":"RobotMaxSpeed - 0.06 m / s",
+     "val":4.5
     }
    },
    "RobotBumperSize":{
@@ -65,6 +65,13 @@
     "var":{
      "exp":"17.625 in",
      "val":0.447675
+    }
+   },
+   "RobotMaxSpeed":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"4.56 m / s",
+     "val":4.56
     }
    },
    "TrenchDropIntakeSpeed":{
@@ -204,16 +211,16 @@
    },
    "LeftNZ":{
     "x":{
-     "exp":"7.622711658477783 m",
-     "val":7.622711658477783
+     "exp":"7.622711658477783 m + 12 in",
+     "val":7.927511658477783
     },
     "y":{
      "exp":"7 m",
      "val":7.0
     },
     "heading":{
-     "exp":"-120 deg",
-     "val":-2.0943951023931953
+     "exp":"-105 deg",
+     "val":-1.832595714594046
     }
    },
    "LeftTrenchStartingPosition":{
@@ -233,15 +240,15 @@
    "MiddleNZ":{
     "x":{
      "exp":"LeftNZ.x",
-     "val":7.622711658477783
+     "val":7.927511658477783
     },
     "y":{
-     "exp":"LeftNZ.y - 4.49 ft",
-     "val":5.631448
+     "exp":"LeftNZ.y - 5 ft",
+     "val":5.476
     },
     "heading":{
      "exp":"LeftNZ.heading",
-     "val":-2.0943951023931953
+     "val":-1.832595714594046
     }
    },
    "NZDepotShootingTarget":{

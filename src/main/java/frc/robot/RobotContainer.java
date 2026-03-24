@@ -83,7 +83,7 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
-  private final RobotCommands robotCommands;
+  public final RobotCommands robotCommands;
 
   private LoggedNetworkBoolean enableTuningAutos =
       new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
@@ -183,6 +183,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    RobotModeTriggers.teleop().onTrue(robotCommands.spinDownFromShoot());
   }
 
   private void configureTuningAutos() {
