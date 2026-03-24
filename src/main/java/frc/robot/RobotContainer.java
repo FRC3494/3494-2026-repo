@@ -165,17 +165,48 @@ public class RobotContainer {
   private void configureAutos() {
     // Set up autos
     autoChooser.addRoutine(
-        "DepotAndClimb",
-        () -> DepotAndClimbAuto.getRoutine("DepotAndClimb", autoFactory, robotCommands, drive));
+        "DepotAndClimb_BLUE",
+        () ->
+            DepotAndClimbAuto.getRoutine(
+                "DepotAndClimb_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
     autoChooser.addRoutine(
-        "LeftNZToDepot",
-        () -> LeftNZToDepotAuto.getRoutine("LeftNZToDepot", autoFactory, robotCommands, drive));
+        "DepotAndClimb_RED",
+        () ->
+            DepotAndClimbAuto.getRoutine(
+                "DepotAndClimb_RED", Alliance.Red, autoFactory, robotCommands, drive));
+
     autoChooser.addRoutine(
-        "LeftNZToNZ",
-        () -> LeftNZToNZAuto.getRoutine("LeftNZToNZ", autoFactory, robotCommands, drive));
+        "LeftNZToDepot_BLUE",
+        () ->
+            LeftNZToDepotAuto.getRoutine(
+                "LeftNZToDepot_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
     autoChooser.addRoutine(
-        "RightClimb",
-        () -> RightClimbAuto.getRoutine("RightClimb", autoFactory, robotCommands, drive));
+        "LeftNZToDepot_RED",
+        () ->
+            LeftNZToDepotAuto.getRoutine(
+                "LeftNZToDepot_RED", Alliance.Red, autoFactory, robotCommands, drive));
+
+    autoChooser.addRoutine(
+        "LeftNZToNZ_BLUE",
+        () ->
+            LeftNZToNZAuto.getRoutine(
+                "LeftNZToNZ_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
+        "LeftNZToNZ_RED",
+        () ->
+            LeftNZToNZAuto.getRoutine(
+                "LeftNZToNZ_RED", Alliance.Red, autoFactory, robotCommands, drive));
+
+    autoChooser.addRoutine(
+        "RightClimb_BLUE",
+        () ->
+            RightClimbAuto.getRoutine(
+                "RightClimb_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
+        "RightClimb_RED",
+        () ->
+            RightClimbAuto.getRoutine(
+                "RightClimb_RED", Alliance.Red, autoFactory, robotCommands, drive));
 
     autoChooser.addCmd("=====================", () -> none());
 

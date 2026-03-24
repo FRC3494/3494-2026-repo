@@ -8,6 +8,7 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseOut
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
@@ -15,10 +16,17 @@ import frc.robot.util.choreo.ChoreoTraj;
 
 public class RightClimbAuto {
   public static AutoRoutine getRoutine(
-      String name, AutoFactory autoFactory, RobotCommands robotCommands, Drive drive) {
+      String name,
+      Alliance alliance,
+      AutoFactory autoFactory,
+      RobotCommands robotCommands,
+      Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
-    AutoTrajectory rightClimb = ChoreoTraj.RightClimb.asAutoTraj(routine);
+    AutoTrajectory rightClimb =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.RightClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightClimb_RED.asAutoTraj(routine);
 
     routine
         .active()

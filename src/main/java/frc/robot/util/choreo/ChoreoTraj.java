@@ -24,61 +24,117 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj DepotToLeftClimb = new ChoreoTraj(
-	    "DepotToLeftClimb",
+    public static final ChoreoTraj DepotToLeftClimb_BLUE = new ChoreoTraj(
+	    "DepotToLeftClimb_BLUE",
 	    OptionalInt.empty(),
 	    3.28771,
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
 	    new Pose2d(1.053, 4.306, Rotation2d.fromRadians(1.571))
 	);
-	public static final ChoreoTraj LeftBumpToDepot = new ChoreoTraj(
-	    "LeftBumpToDepot",
+	public static final ChoreoTraj DepotToLeftClimb_RED = new ChoreoTraj(
+	    "DepotToLeftClimb_RED",
 	    OptionalInt.empty(),
-	    2.24906,
-	    new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	    3.28771,
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
+	    new Pose2d(1.053, 4.306, Rotation2d.fromRadians(1.571))
 	);
-	public static final ChoreoTraj LeftBumpToDepotPartial = new ChoreoTraj(
-	    "LeftBumpToDepotPartial",
+	public static final ChoreoTraj LeftBumpToDepotPartial_BLUE = new ChoreoTraj(
+	    "LeftBumpToDepotPartial_BLUE",
 	    OptionalInt.empty(),
 	    2.33346,
 	    new Pose2d(2.668, 6.036, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
 	);
-	public static final ChoreoTraj LeftTrenchToNZ = new ChoreoTraj(
-	    "LeftTrenchToNZ",
+	public static final ChoreoTraj LeftBumpToDepotPartial_RED = new ChoreoTraj(
+	    "LeftBumpToDepotPartial_RED",
+	    OptionalInt.empty(),
+	    2.33346,
+	    new Pose2d(2.668, 6.036, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj LeftBumpToDepot_BLUE = new ChoreoTraj(
+	    "LeftBumpToDepot_BLUE",
+	    OptionalInt.empty(),
+	    2.24906,
+	    new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj LeftBumpToDepot_RED = new ChoreoTraj(
+	    "LeftBumpToDepot_RED",
+	    OptionalInt.empty(),
+	    2.24906,
+	    new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj LeftShootToNZ_BLUE = new ChoreoTraj(
+	    "LeftShootToNZ_BLUE",
+	    OptionalInt.empty(),
+	    2.83723,
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
+	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
+	);
+	public static final ChoreoTraj LeftShootToNZ_RED = new ChoreoTraj(
+	    "LeftShootToNZ_RED",
+	    OptionalInt.empty(),
+	    2.83723,
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
+	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
+	);
+	public static final ChoreoTraj LeftTrenchToNZ_BLUE = new ChoreoTraj(
+	    "LeftTrenchToNZ_BLUE",
 	    OptionalInt.empty(),
 	    4.12622,
 	    new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833))
 	);
-	public static final ChoreoTraj MiddleNZToShoot = new ChoreoTraj(
-	    "MiddleNZToShoot",
+	public static final ChoreoTraj LeftTrenchToNZ_RED = new ChoreoTraj(
+	    "LeftTrenchToNZ_RED",
+	    OptionalInt.empty(),
+	    4.12622,
+	    new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833))
+	);
+	public static final ChoreoTraj MiddleNZToShoot_BLUE = new ChoreoTraj(
+	    "MiddleNZToShoot_BLUE",
 	    OptionalInt.empty(),
 	    2.31795,
 	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833)),
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0))
 	);
-	public static final ChoreoTraj RightClimb = new ChoreoTraj(
-	    "RightClimb",
+	public static final ChoreoTraj MiddleNZToShoot_RED = new ChoreoTraj(
+	    "MiddleNZToShoot_RED",
+	    OptionalInt.empty(),
+	    2.31795,
+	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833)),
+	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj RightClimb_BLUE = new ChoreoTraj(
+	    "RightClimb_BLUE",
 	    OptionalInt.empty(),
 	    3.74987,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.053, 2.957, Rotation2d.fromRadians(-1.571))
 	);
-	public static final ChoreoTraj ShootToLeftCorner = new ChoreoTraj(
-	    "ShootToLeftCorner",
+	public static final ChoreoTraj RightClimb_RED = new ChoreoTraj(
+	    "RightClimb_RED",
+	    OptionalInt.empty(),
+	    3.74987,
+	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(1.053, 2.957, Rotation2d.fromRadians(-1.571))
+	);
+	public static final ChoreoTraj ShootToLeftCorner_BLUE = new ChoreoTraj(
+	    "ShootToLeftCorner_BLUE",
 	    OptionalInt.empty(),
 	    1.54449,
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
 	);
-	public static final ChoreoTraj LeftShootToNZ = new ChoreoTraj(
-	    "LeftShootToNZ",
+	public static final ChoreoTraj ShootToLeftCorner_RED = new ChoreoTraj(
+	    "ShootToLeftCorner_RED",
 	    OptionalInt.empty(),
-	    2.83723,
+	    1.54449,
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
-	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142))
 	);
 
     /**
@@ -86,14 +142,22 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-    	Map.entry("DepotToLeftClimb", DepotToLeftClimb),
-		Map.entry("LeftBumpToDepot", LeftBumpToDepot),
-		Map.entry("LeftBumpToDepotPartial", LeftBumpToDepotPartial),
-		Map.entry("LeftTrenchToNZ", LeftTrenchToNZ),
-		Map.entry("MiddleNZToShoot", MiddleNZToShoot),
-		Map.entry("RightClimb", RightClimb),
-		Map.entry("ShootToLeftCorner", ShootToLeftCorner),
-		Map.entry("LeftShootToNZ", LeftShootToNZ)
+    	Map.entry("DepotToLeftClimb_BLUE", DepotToLeftClimb_BLUE),
+		Map.entry("DepotToLeftClimb_RED", DepotToLeftClimb_RED),
+		Map.entry("LeftBumpToDepotPartial_BLUE", LeftBumpToDepotPartial_BLUE),
+		Map.entry("LeftBumpToDepotPartial_RED", LeftBumpToDepotPartial_RED),
+		Map.entry("LeftBumpToDepot_BLUE", LeftBumpToDepot_BLUE),
+		Map.entry("LeftBumpToDepot_RED", LeftBumpToDepot_RED),
+		Map.entry("LeftShootToNZ_BLUE", LeftShootToNZ_BLUE),
+		Map.entry("LeftShootToNZ_RED", LeftShootToNZ_RED),
+		Map.entry("LeftTrenchToNZ_BLUE", LeftTrenchToNZ_BLUE),
+		Map.entry("LeftTrenchToNZ_RED", LeftTrenchToNZ_RED),
+		Map.entry("MiddleNZToShoot_BLUE", MiddleNZToShoot_BLUE),
+		Map.entry("MiddleNZToShoot_RED", MiddleNZToShoot_RED),
+		Map.entry("RightClimb_BLUE", RightClimb_BLUE),
+		Map.entry("RightClimb_RED", RightClimb_RED),
+		Map.entry("ShootToLeftCorner_BLUE", ShootToLeftCorner_BLUE),
+		Map.entry("ShootToLeftCorner_RED", ShootToLeftCorner_RED)
     );
 
     /**

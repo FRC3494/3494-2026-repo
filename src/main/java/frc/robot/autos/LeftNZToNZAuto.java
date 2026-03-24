@@ -7,18 +7,32 @@ import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.choreo.ChoreoTraj;
 
 public class LeftNZToNZAuto {
   public static AutoRoutine getRoutine(
-      String name, AutoFactory autoFactory, RobotCommands robotCommands, Drive drive) {
+      String name,
+      Alliance alliance,
+      AutoFactory autoFactory,
+      RobotCommands robotCommands,
+      Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
-    AutoTrajectory leftTrenchToNZ = ChoreoTraj.LeftTrenchToNZ.asAutoTraj(routine);
-    AutoTrajectory middleNZToShoot = ChoreoTraj.MiddleNZToShoot.asAutoTraj(routine);
-    AutoTrajectory leftShootToNZ = ChoreoTraj.LeftShootToNZ.asAutoTraj(routine);
+    AutoTrajectory leftTrenchToNZ =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftTrenchToNZ_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftTrenchToNZ_RED.asAutoTraj(routine);
+    AutoTrajectory middleNZToShoot =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.MiddleNZToShoot_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.MiddleNZToShoot_RED.asAutoTraj(routine);
+    AutoTrajectory leftShootToNZ =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftShootToNZ_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftShootToNZ_RED.asAutoTraj(routine);
 
     routine
         .active()

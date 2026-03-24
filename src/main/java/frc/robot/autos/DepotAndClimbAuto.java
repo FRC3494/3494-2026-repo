@@ -6,6 +6,7 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDep
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
@@ -13,12 +14,25 @@ import frc.robot.util.choreo.ChoreoTraj;
 
 public class DepotAndClimbAuto {
   public static AutoRoutine getRoutine(
-      String name, AutoFactory autoFactory, RobotCommands robotCommands, Drive drive) {
+      String name,
+      Alliance alliance,
+      AutoFactory autoFactory,
+      RobotCommands robotCommands,
+      Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
-    AutoTrajectory leftBumpToDepot = ChoreoTraj.LeftBumpToDepot.asAutoTraj(routine);
-    AutoTrajectory leftBumpToDepotPartial = ChoreoTraj.LeftBumpToDepotPartial.asAutoTraj(routine);
-    AutoTrajectory depotToLeftClimb = ChoreoTraj.DepotToLeftClimb.asAutoTraj(routine);
+    AutoTrajectory leftBumpToDepot =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftBumpToDepot_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftBumpToDepot_RED.asAutoTraj(routine);
+    AutoTrajectory leftBumpToDepotPartial =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftBumpToDepotPartial_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftBumpToDepotPartial_RED.asAutoTraj(routine);
+    AutoTrajectory depotToLeftClimb =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.DepotToLeftClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.DepotToLeftClimb_RED.asAutoTraj(routine);
 
     routine
         .active()
