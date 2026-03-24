@@ -341,7 +341,7 @@ public final class Constants {
     public static final int spindexerCurrentLimit = 20;
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
-    public static double spindexerKp = 0.01; // 5.2634E-05
+    public static double spindexerKp = 0.3; // 5.2634E-05
     public static double spindexerKi = 1E-06;
     public static double spindexerKd = 0.0;
 
