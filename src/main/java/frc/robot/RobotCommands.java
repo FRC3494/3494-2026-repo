@@ -63,7 +63,7 @@ public class RobotCommands {
 
   // ==================== FLYWHEEL ====================
   private LoggedNetworkNumber flywheelThreshold =
-      new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.95);
+      new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.99);
   public LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
 
   // ==================== HOOD ====================
