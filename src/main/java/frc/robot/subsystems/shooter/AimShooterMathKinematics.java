@@ -34,6 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * Closed-loop ballistic aiming model for the shooter.
@@ -101,6 +102,8 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   @Getter @Setter @AutoLogOutput private double xTrimInches = 0.0;
   @Getter @Setter @AutoLogOutput private double yTrimInches = 0.0;
   @AutoLogOutput private Voltage turretFF = Volts.of(0.0);
+  private final LoggedNetworkNumber flywheelRpmMultiplier =
+      new LoggedNetworkNumber("Tunable/Shooter/FlywheelRpmMultiplier", 1.0);
 
   // Flags that indicate whether the applied offset caused the final setpoint to be clipped by
   // safety clamps. These are updated every execute() and are useful to warn operators that
@@ -153,7 +156,7 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
         computePhysics(state.robotPose3d, state.targetPose3d, state.translationToTarget);
     // 3) Compute launch speed and convert to flywheel RPM
     double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
-    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
+    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps, flywheelRpmMultiplier.get());
 
     // 4) Apply operator offsets and clamps to get final setpoints, tracking whether any were
     // clamped for logging. Use the current turret angle (from the last setpoint) so we can
@@ -371,14 +374,11 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
    * <p>TODO(#aim-shooter): Replace placeholder conversion with a calibrated model or lookup table
    * based on range testing.
    */
-  private static double calculateFlywheelRPM(double launchSpeedMps) {
+  private static double calculateFlywheelRPM(double launchSpeedMps, double rpmMultiplier) {
     // Base geometric conversion from rim surface speed (m/s) to RPM.
     double baseRpm = launchSpeedMps * 60.0 / (2.0 * Math.PI * FlywheelConstants.flywheelRadius);
 
-    // Placeholder correction factor until on-field testing maps ball exit velocity
-    // to motor RPM for this specific shooter.
-    double correctionFactor = 1.0; // TODO(#aim-shooter): Tune from range testing
-    return baseRpm * correctionFactor;
+    return baseRpm * rpmMultiplier;
   }
 
   private static double calculateMaxHeight(
@@ -724,7 +724,8 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     double verticalDeltaMeters = state.translationToTarget.getZ();
 
     double launchSpeedMps = Math.hypot(physics.initialXVelocity, physics.initialYVelocity);
-    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps);
+    double rpmMultiplier = flywheelRpmMultiplier.get();
+    double calculatedRPM = calculateFlywheelRPM(launchSpeedMps, rpmMultiplier);
 
     // Logger.recordOutput("AimShooter/Poses/Robot2d", state.robotPose2d);
     Logger.recordOutput("AimShooter/Poses/Robot3d", state.robotPose3d);
@@ -752,6 +753,7 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     Logger.recordOutput("AimShooter/Physics/LaunchSpeedMps", launchSpeedMps);
     Logger.recordOutput("AimShooter/Physics/TimeToTargetSec", physics.timeToTarget);
     Logger.recordOutput("AimShooter/Physics/CalculatedRPM", calculatedRPM);
+    Logger.recordOutput("AimShooter/Physics/FlywheelRpmMultiplier", rpmMultiplier);
 
     Logger.recordOutput("AimShooter/Setpoints/RPM", set.rpm);
     // Logger.recordOutput("AimShooter/Setpoints/FlywheelTrimRPM", flywheelOffsetRPM);
