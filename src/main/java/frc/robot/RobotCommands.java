@@ -316,7 +316,7 @@ public class RobotCommands {
         hopper);
   }
 
-  public Command runKicker() {
+  public Command startKicker() {
     return runOnce(
         () -> {
           hopper.setKickerVelocity(RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()));
@@ -455,7 +455,6 @@ public class RobotCommands {
 
   public Command shoot() {
     return sequence(
-        runSpindexer(),
         startHood(),
         startFlywheel(),
         waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
@@ -463,9 +462,9 @@ public class RobotCommands {
             () -> {
               spindexerInverted = !spindexerInverted;
             }),
-        runKicker(),
+        startKicker(),
         runIntake(),
-        jostleIntake());
+        parallel(jostleIntake(), runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get()))));
   }
 
   public Command spinDownFromShoot() {
