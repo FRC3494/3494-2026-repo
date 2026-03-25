@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
 import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -314,7 +316,7 @@ public class RobotCommands {
         hopper);
   }
 
-  public Command runKicker() {
+  public Command startKicker() {
     return runOnce(
         () -> {
           hopper.setKickerVelocity(RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()));
@@ -334,12 +336,42 @@ public class RobotCommands {
     return repeatingSequence(sprintForward().withTimeout(0.5), sprintBackward().withTimeout(0.5));
   }
 
+  public Command runSpindexerWithStallDetection(AngularVelocity velocity) {
+    return run(() -> hopper.setSpindexerVelocity(velocity), hopper)
+        .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit - 2)
+        .andThen(
+            runOnce(() -> hopper.setSpindexerVelocity(velocity.negate()), hopper)
+                .andThen(Commands.waitSeconds(2.0)))
+        .repeatedly();
+  }
+
+  public Command unjamSpindexer() {
+    return sequence(
+        runOnce(
+            () -> {
+              hopper.setKickerVelocity(
+                  RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()).times(-1.0));
+            },
+            hopper),
+        runOnce(
+            () -> {
+              hopper.setSpindexerVelocity(
+                  RPM.of((spindexerInverted ? -1 : -1) * spindexerSpeed.get()));
+            },
+            hopper));
+  }
+
+  // ==================== INTAKE ====================
+  // public Command intake() {
+  //   return sequence(runIntake(), runSpindexerSlow());
+  // }
   // #endregion
 
   // #region ==================== INTAKE ====================
 
   public Command intake() {
-    return sequence(runIntake(), runSpindexerSlow());
+    return parallel(
+        runIntake(), runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get() / 8.0)));
   }
 
   public Command releaseIntake() {
@@ -423,7 +455,6 @@ public class RobotCommands {
 
   public Command shoot() {
     return sequence(
-        runSpindexer(),
         startHood(),
         startFlywheel(),
         waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
@@ -431,9 +462,9 @@ public class RobotCommands {
             () -> {
               spindexerInverted = !spindexerInverted;
             }),
-        runKicker(),
+        startKicker(),
         runIntake(),
-        jostleIntake());
+        parallel(jostleIntake(), runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get()))));
   }
 
   public Command spinDownFromShoot() {

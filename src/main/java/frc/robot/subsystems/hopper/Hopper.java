@@ -173,6 +173,10 @@ public class Hopper extends SubsystemBase {
     kickerMotor.setVoltage(voltage);
   }
 
+  public double getSpindexerCurrent() {
+    return spindexerMotor.getOutputCurrent();
+  }
+
   public Command kickerSysIdQuasistatic(SysIdRoutine.Direction direction) {
     return run(() -> setKickerOpenLoop(Volts.of(0.0)))
         .withTimeout(1.0)

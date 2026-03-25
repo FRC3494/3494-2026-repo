@@ -376,11 +376,11 @@ public class RobotContainer {
                 drive));
 
     // ==================== HOPPER ====================
-    HopperOI.runSpindexerBackwards()
-        .onTrue(robotCommands.runSpindexerReverse())
-        .onFalse(robotCommands.stopSpindexer());
+    HopperOI.unjamSpindexer()
+        .onTrue(robotCommands.unjamSpindexer())
+        .onFalse(sequence(robotCommands.stopKicker(), robotCommands.stopSpindexer()));
 
-    HopperOI.runKicker().onTrue(robotCommands.runKicker()).onFalse(robotCommands.stopKicker());
+    HopperOI.runKicker().onTrue(robotCommands.startKicker()).onFalse(robotCommands.stopKicker());
 
     HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
 
