@@ -32,9 +32,46 @@ public class SwitchableShooterAimModel extends SubsystemBase implements ShooterA
 
   @Override
   public void periodic() {
+    ShooterAimModel.DebugState linearState = linearModel.getDebugState();
+    ShooterAimModel.DebugState kinematicsState = kinematicsModel.getDebugState();
+
     Logger.recordOutput("ShooterAimModel/UseKinematicsModel", isUsingKinematicsModel());
     Logger.recordOutput(
         "ShooterAimModel/SelectedModel", isUsingKinematicsModel() ? "Kinematics" : "Linear");
+        
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/TargetPoseDelta",
+        kinematicsState
+            .targetPose()
+            .getTranslation()
+            .minus(linearState.targetPose().getTranslation()));
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/VirtualTargetPoseDelta",
+        kinematicsState
+            .virtualTargetPose()
+            .getTranslation()
+            .minus(linearState.virtualTargetPose().getTranslation()));
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/ShooterTranslationDelta",
+        kinematicsState.shooterTranslation().minus(linearState.shooterTranslation()));
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/TurretAngleDeltaRot",
+        kinematicsState.turretAngleRot() - linearState.turretAngleRot());
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/HoodAngleDeltaDeg",
+        kinematicsState.hoodAngle().minus(linearState.hoodAngle()).getDegrees());
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/FlywheelSpeedDeltaRPM",
+        kinematicsState
+            .flywheelSpeed()
+            .minus(linearState.flywheelSpeed())
+            .in(edu.wpi.first.units.Units.RPM));
+    Logger.recordOutput(
+        "ShooterAimModel/Compare/TurretFFDeltaVolts",
+        kinematicsState
+            .turretFF()
+            .minus(linearState.turretFF())
+            .in(edu.wpi.first.units.Units.Volts));
   }
 
   @Override

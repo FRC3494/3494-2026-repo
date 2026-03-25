@@ -128,6 +128,8 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
           hoodOffsetClamped,
           flywheelOffsetClamped);
 
+  private DebugState debugState = DebugState.EMPTY;
+
   private double lastLoopTimestamp = Timer.getTimestamp();
   private double previousTOF = 0.0;
   private Translation2d previousRobotSpeed = new Translation2d();
@@ -172,6 +174,15 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
             turretOffsetDeg);
 
     turretFF = getTurretFF(state, physics.timeToTarget);
+    debugState =
+        new DebugState(
+            new Pose2d(state.rawTargetPose3d.getTranslation().toTranslation2d(), Rotation2d.kZero),
+            new Pose2d(state.targetPose3d.getTranslation().toTranslation2d(), Rotation2d.kZero),
+            state.shooterPose3d.getTranslation().toTranslation2d(),
+            setpoints.turretAngle.getRotations(),
+            setpoints.hoodAngle,
+            RPM.of(setpoints.rpm),
+            turretFF);
 
     // 5) Log detailed stats for debugging/tuning and return
     logAimShooterStats(state, physics, setpoints);
@@ -707,6 +718,11 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   @Override
   public Rotation2d applyHoodTrim(Rotation2d baseAngle) {
     return baseAngle.plus(getHoodTrim());
+  }
+
+  @Override
+  public DebugState getDebugState() {
+    return debugState;
   }
   // #endregion
 

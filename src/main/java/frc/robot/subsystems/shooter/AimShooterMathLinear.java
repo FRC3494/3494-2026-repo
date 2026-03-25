@@ -56,6 +56,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   @Getter @AutoLogOutput private Voltage turretFF = Volts.of(0.0);
   @Getter @AutoLogOutput private Rotation2d hoodAngle = Rotation2d.kZero;
   @Getter @AutoLogOutput private AngularVelocity flywheelSpeed = RPM.of(0);
+  private DebugState debugState = DebugState.EMPTY;
 
   /**
    * Container for all shooter setpoints, mirroring {@link AimShooterMath.Setpoints}.
@@ -127,6 +128,15 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     turretFF = setpoints.turretFF();
     hoodAngle = setpoints.hoodAngle();
     flywheelSpeed = setpoints.flywheelSpeed();
+    debugState =
+        new DebugState(
+            new Pose2d(state.targetLocation(), Rotation2d.kZero),
+            new Pose2d(state.virtualTargetLocation(), Rotation2d.kZero),
+            state.shooterTranslation(),
+            turretAngleRot,
+            hoodAngle,
+            flywheelSpeed,
+            turretFF);
 
     logAimShooterLinearStats(state, setpoints);
   }
@@ -527,5 +537,10 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   @Override
   public Rotation2d applyHoodTrim(Rotation2d baseAngle) {
     return baseAngle.plus(getHoodTrim());
+  }
+
+  @Override
+  public DebugState getDebugState() {
+    return debugState;
   }
 }

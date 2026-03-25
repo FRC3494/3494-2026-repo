@@ -2,7 +2,9 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
@@ -13,6 +15,26 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * (e.g. ballistic vs. interpolation-based models).
  */
 public interface ShooterAimModel extends Subsystem {
+  /** Lightweight debug snapshot for comparing aim models side-by-side. */
+  record DebugState(
+      Pose2d targetPose,
+      Pose2d virtualTargetPose,
+      Translation2d shooterTranslation,
+      double turretAngleRot,
+      Rotation2d hoodAngle,
+      AngularVelocity flywheelSpeed,
+      Voltage turretFF) {
+    public static final DebugState EMPTY =
+        new DebugState(
+            Pose2d.kZero,
+            Pose2d.kZero,
+            Translation2d.kZero,
+            0.0,
+            Rotation2d.kZero,
+            RPM.of(0.0),
+            Volts.of(0.0));
+  }
+
   /** Returns the current turret angle setpoint in rotations. */
   double getTurretAngleRot();
 
@@ -86,4 +108,8 @@ public interface ShooterAimModel extends Subsystem {
   }
 
   default void setYTrim(Distance trim) {}
+
+  default DebugState getDebugState() {
+    return DebugState.EMPTY;
+  }
 }
