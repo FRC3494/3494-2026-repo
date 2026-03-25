@@ -69,50 +69,50 @@ public record ChoreoTraj(
 	public static final ChoreoTraj LeftShootToNZ_BLUE = new ChoreoTraj(
 	    "LeftShootToNZ_BLUE",
 	    OptionalInt.empty(),
-	    2.8219,
+	    2.99302,
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
 	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj LeftShootToNZ_RED = new ChoreoTraj(
 	    "LeftShootToNZ_RED",
 	    OptionalInt.empty(),
-	    2.8219,
+	    2.99302,
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0)),
 	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj LeftTrenchToNZ_BLUE = new ChoreoTraj(
 	    "LeftTrenchToNZ_BLUE",
 	    OptionalInt.empty(),
-	    4.20878,
+	    6.01942,
 	    new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833))
+	    new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833))
 	);
 	public static final ChoreoTraj LeftTrenchToNZ_RED = new ChoreoTraj(
 	    "LeftTrenchToNZ_RED",
 	    OptionalInt.empty(),
-	    4.20878,
+	    6.01942,
 	    new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833))
+	    new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833))
 	);
 	public static final ChoreoTraj MiddleNZToLeftClimb = new ChoreoTraj(
 	    "MiddleNZToLeftClimb",
 	    OptionalInt.empty(),
-	    4.3847,
-	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833)),
+	    4.52848,
+	    new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833)),
 	    new Pose2d(1.053, 4.306, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj MiddleNZToShoot_BLUE = new ChoreoTraj(
 	    "MiddleNZToShoot_BLUE",
 	    OptionalInt.empty(),
-	    2.42023,
-	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833)),
+	    2.51946,
+	    new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833)),
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0))
 	);
 	public static final ChoreoTraj MiddleNZToShoot_RED = new ChoreoTraj(
 	    "MiddleNZToShoot_RED",
 	    OptionalInt.empty(),
-	    2.42023,
-	    new Pose2d(7.928, 5.476, Rotation2d.fromRadians(-1.833)),
+	    2.51946,
+	    new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833)),
 	    new Pose2d(3.233, 7.502, Rotation2d.fromRadians(0))
 	);
 	public static final ChoreoTraj RightClimb_BLUE = new ChoreoTraj(
