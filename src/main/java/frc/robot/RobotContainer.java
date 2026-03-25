@@ -36,7 +36,7 @@ import frc.robot.OI.ShooterOI.HoodOI;
 import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
-import frc.robot.autos.LeftNZToDepotAuto;
+import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
 import frc.robot.autos.RightClimbAuto;
 import frc.robot.subsystems.climber.Climber;
@@ -178,12 +178,12 @@ public class RobotContainer {
     autoChooser.addRoutine(
         "LeftNZToDepot_BLUE",
         () ->
-            LeftNZToDepotAuto.getRoutine(
+            LeftNZToClimbAuto.getRoutine(
                 "LeftNZToDepot_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
     autoChooser.addRoutine(
         "LeftNZToDepot_RED",
         () ->
-            LeftNZToDepotAuto.getRoutine(
+            LeftNZToClimbAuto.getRoutine(
                 "LeftNZToDepot_RED", Alliance.Red, autoFactory, robotCommands, drive));
 
     autoChooser.addRoutine(
