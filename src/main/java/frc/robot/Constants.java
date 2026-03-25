@@ -189,7 +189,7 @@ public final class Constants {
        - Divide max rotation speed when driving by max rotation speed while stationary
     */
 
-    public static final double maxSpeedMetersPerSec = 4.56; // 14.961 ft/s
+    public static final double maxSpeedMetersPerSec = 4.62906; // 15.187 ft/s
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
     public static final double maxAngularSpeedFactor = (321.5229038 / 630.028839);
     public static final double odometryFrequency = 100.0; // Hz
@@ -213,12 +213,12 @@ public final class Constants {
 
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
-    public static final int driveMotorCurrentLimit = 50;
+    public static final int driveMotorCurrentLimit = 60;
+    // When using linear characterization: actual linear distance / wheel delta
     public static final double wheelRadiusMeters =
-        Units.inchesToMeters(
-            2.29793665); // When using linear characterization: actual linear distance / wheel delta
+        Units.inchesToMeters(2.00302745); // From rotational characterization
     public static final double driveMotorReduction =
-        (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2 Gearing
+        (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+ Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
     // Drive encoder configuration
@@ -229,13 +229,13 @@ public final class Constants {
         (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM ->
     // Wheel Rad/Sec
 
-    // Drive PID configuration
-    public static double driveKp = 2.95E-05; // 0.00021829
+    // Drive PID configuration - From SysId
+    public static double driveKp = 7.43E-06;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
-    public static double driveKs = 0.1619433333; // 0.15812049
-    public static double driveKv = 0.1124575; // 0.1165 // From simple characterization: 0.11106210
-    public static double driveKa = 0.02673925; // 0.029083
+    public static double driveKs = 0.14126175;
+    public static double driveKv = 0.1179175;
+    public static double driveKa = 0.02385725;
     public static double driveSimP = 0.05;
     public static double driveSimI = 0.0;
     public static double driveSimD = 0.0;
@@ -245,7 +245,7 @@ public final class Constants {
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
-    public static final int[] turnMotorCurrentLimit = new int[] {25, 25, 20, 20};
+    public static final int[] turnMotorCurrentLimit = new int[] {40, 40, 35, 35};
     public static final double[] turnMotorReduction =
         new double[] {
           ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i
