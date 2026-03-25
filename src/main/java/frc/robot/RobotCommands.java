@@ -358,7 +358,7 @@ public class RobotCommands {
     return run(() -> hopper.setSpindexerVelocity(velocity), hopper)
         .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit - 2)
         .andThen(
-            runOnce(() -> hopper.setSpindexerVelocity(velocity.negate()), hopper)
+            runOnce(() -> hopper.setSpindexerVelocity(velocity.times(-1.0)), hopper)
                 .andThen(Commands.waitSeconds(2.0)))
         .repeatedly();
   }
