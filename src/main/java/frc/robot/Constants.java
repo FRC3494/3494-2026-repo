@@ -229,13 +229,13 @@ public final class Constants {
         (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM ->
     // Wheel Rad/Sec
 
-    // Drive PID configuration
-    public static double driveKp = 2.95E-05; // 0.00021829
+    // Drive PID configuration - From SysId
+    public static double driveKp = 7.43E-06;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
-    public static double driveKs = 0.1619433333; // 0.15812049
-    public static double driveKv = 0.1124575; // 0.1165 // From simple characterization: 0.11106210
-    public static double driveKa = 0.02673925; // 0.029083
+    public static double driveKs = 0.14126175;
+    public static double driveKv = 0.1179175;
+    public static double driveKa = 0.02385725;
     public static double driveSimP = 0.05;
     public static double driveSimI = 0.0;
     public static double driveSimD = 0.0;
