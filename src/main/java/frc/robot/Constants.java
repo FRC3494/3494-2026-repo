@@ -218,7 +218,7 @@ public final class Constants {
         Units.inchesToMeters(
             2.29793665); // When using linear characterization: actual linear distance / wheel delta
     public static final double driveMotorReduction =
-        (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // Mk4i L2 Gearing
+        (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+ Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
     // Drive encoder configuration
