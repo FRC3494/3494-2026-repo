@@ -214,9 +214,9 @@ public final class Constants {
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
     public static final int driveMotorCurrentLimit = 60;
+    // When using linear characterization: actual linear distance / wheel delta
     public static final double wheelRadiusMeters =
-        Units.inchesToMeters(
-            2.29793665); // When using linear characterization: actual linear distance / wheel delta
+        Units.inchesToMeters(2.00302745); // From rotational characterization
     public static final double driveMotorReduction =
         (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+ Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
