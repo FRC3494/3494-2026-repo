@@ -496,6 +496,10 @@ public class RobotCommands {
         ceaseFlywheel());
   }
 
+  public Command stopShootingNoDelay() {
+    return sequence(stopSpindexer(), stopKicker(), stopIntake(), stopHood(), ceaseFlywheel());
+  }
+
   public Command enableAutoShooterSettings() {
     return runOnce(
         () -> {

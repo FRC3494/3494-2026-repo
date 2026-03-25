@@ -17,7 +17,7 @@ public final class ChoreoVars {
     public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1);
     public static final LinearAcceleration MaxAcceleration = Units.MetersPerSecondPerSecond.of(2);
     public static final LinearVelocity MaxVelocity = Units.MetersPerSecond.of(2);
-    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(5);
+    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(4.5);
     public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(4.5);
     public static final Distance RobotBumperSize = Units.Meters.of(0.448);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.56);
