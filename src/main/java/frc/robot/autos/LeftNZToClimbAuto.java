@@ -59,7 +59,7 @@ public class LeftNZToClimbAuto {
                 parallel(
                     sequence(
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
-                    sequence(waitSeconds(1), robotCommands.climberMid()))));
+                    sequence(waitSeconds(1), robotCommands.climberMidWithCurrent()))));
 
     return routine;
   }
