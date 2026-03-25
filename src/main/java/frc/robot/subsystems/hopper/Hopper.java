@@ -99,7 +99,7 @@ public class Hopper extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
-                Volts.of(8),
+                null,
                 null,
                 (state) -> Logger.recordOutput("Hopper/SpindexerSysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpindexerOpenLoop(voltage), null, this));
