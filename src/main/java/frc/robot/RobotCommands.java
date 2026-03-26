@@ -354,11 +354,11 @@ public class RobotCommands {
     return repeatingSequence(sprintForward().withTimeout(0.5), sprintBackward().withTimeout(0.5));
   }
 
-  public Command runSpindexerWithStallDetection(AngularVelocity velocity) {
-    return run(() -> hopper.setSpindexerVelocity(velocity), hopper)
+  public Command runSpindexerWithStallDetection(Supplier<AngularVelocity> velocity) {
+    return run(() -> hopper.setSpindexerVelocity(velocity.get()), hopper)
         .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit - 2)
         .andThen(
-            runOnce(() -> hopper.setSpindexerVelocity(velocity.times(-1.0)), hopper)
+            runOnce(() -> hopper.setSpindexerVelocity(velocity.get().times(-1.0)), hopper)
                 .andThen(Commands.waitSeconds(2.0)))
         .repeatedly();
   }
@@ -389,7 +389,7 @@ public class RobotCommands {
 
   public Command intake() {
     return parallel(
-        runIntake(), runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get() / 8.0)));
+        runIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get() / 8.0)));
   }
 
   public Command releaseIntake() {
@@ -482,7 +482,8 @@ public class RobotCommands {
             }),
         startKicker(),
         runIntake(),
-        parallel(jostleIntake(), runSpindexerWithStallDetection(RPM.of(spindexerSpeed.get()))));
+        parallel(
+            jostleIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command spinDownFromShoot() {
