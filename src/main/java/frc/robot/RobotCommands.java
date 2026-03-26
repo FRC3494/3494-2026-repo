@@ -754,7 +754,7 @@ public class RobotCommands {
   }
 
   public Command lockTurret() {
-    return turretToPosition(0);
+    return turretToPosition(Units.degreesToRotations(90.0));
   }
 
   public Command enableAutoTurret() {
