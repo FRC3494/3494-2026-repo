@@ -31,11 +31,11 @@ public final class OI {
 
   public static final class ClimberOI {
     public static Trigger climberUp() {
-      return primaryController.y(eventLoop);
+      return primaryController.y(eventLoop).or(rightButtonBoard.button(6, eventLoop));
     }
 
     public static Trigger climberDown() {
-      return primaryController.a(eventLoop);
+      return primaryController.a(eventLoop).or(rightButtonBoard.button(5, eventLoop));
     }
 
     public static Trigger rezeroClimber() {
@@ -89,12 +89,21 @@ public final class OI {
 
   public static final class HopperOI {
     public static Trigger unjamSpindexer() {
+      return new Trigger(() -> false);
+      // return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+    }
+
+    public static Trigger spindexerBackwards() {
       return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger runKicker() {
       return new Trigger(() -> false);
       // return primaryController.leftBumper(eventLoop);
+    }
+
+    public static Trigger kickerBackwards() {
+      return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger jiggleRobot() {
@@ -149,7 +158,8 @@ public final class OI {
     }
 
     public static Trigger shootCloseWithTrim() {
-      return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootMedium() {
@@ -157,7 +167,8 @@ public final class OI {
     }
 
     public static Trigger shootMediumWithTrim() {
-      return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootFar() {
@@ -165,7 +176,8 @@ public final class OI {
     }
 
     public static Trigger shootFarWithTrim() {
-      return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootNeutralZone() {

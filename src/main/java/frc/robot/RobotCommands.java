@@ -342,6 +342,14 @@ public class RobotCommands {
         hopper);
   }
 
+  public Command startKickerReverse() {
+    return runOnce(
+        () -> {
+          hopper.setKickerVelocity(RPM.of(flywheelSpeed.get() * -kickerSpeedFactor.get()));
+        },
+        hopper);
+  }
+
   public Command stopKicker() {
     return runOnce(
         () -> {

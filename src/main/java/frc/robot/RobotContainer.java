@@ -422,7 +422,15 @@ public class RobotContainer {
         .onTrue(robotCommands.unjamSpindexer())
         .onFalse(sequence(robotCommands.stopKicker(), robotCommands.stopSpindexer()));
 
+    HopperOI.spindexerBackwards()
+        .onTrue(robotCommands.runSpindexerReverse())
+        .onFalse(robotCommands.stopSpindexer());
+
     HopperOI.runKicker().onTrue(robotCommands.startKicker()).onFalse(robotCommands.stopKicker());
+
+    HopperOI.kickerBackwards()
+        .onTrue(robotCommands.startKickerReverse())
+        .onFalse(robotCommands.stopKicker());
 
     HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
 
