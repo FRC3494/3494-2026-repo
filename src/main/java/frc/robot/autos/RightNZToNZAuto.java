@@ -12,7 +12,7 @@ import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.choreo.ChoreoTraj;
 
-public class LeftNZToNZAuto {
+public class RightNZToNZAuto {
   public static AutoRoutine getRoutine(
       String name,
       Alliance alliance,
@@ -21,44 +21,44 @@ public class LeftNZToNZAuto {
       Drive drive) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
-    AutoTrajectory leftTrenchToNZ =
+    AutoTrajectory rightTrenchToNZ =
         alliance == Alliance.Blue
-            ? ChoreoTraj.LeftTrenchToNZ_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.LeftTrenchToNZ_RED.asAutoTraj(routine);
-    AutoTrajectory leftMiddleNZToShoot =
+            ? ChoreoTraj.RightTrenchToNZ_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightTrenchToNZ_RED.asAutoTraj(routine);
+    AutoTrajectory rightMiddleNZToShoot =
         alliance == Alliance.Blue
-            ? ChoreoTraj.LeftMiddleNZToShoot_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.LeftMiddleNZToShoot_RED.asAutoTraj(routine);
-    AutoTrajectory leftShootToNZ =
+            ? ChoreoTraj.RightMiddleNZToShoot_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightMiddleNZToShoot_RED.asAutoTraj(routine);
+    AutoTrajectory rightShootToNZ =
         alliance == Alliance.Blue
-            ? ChoreoTraj.LeftShootToNZ_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.LeftShootToNZ_RED.asAutoTraj(routine);
+            ? ChoreoTraj.RightShootToNZ_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightShootToNZ_RED.asAutoTraj(routine);
 
     routine
         .active()
         .onTrue(
             sequence(
                 print("1"),
-                leftTrenchToNZ.resetOdometry(),
+                rightTrenchToNZ.resetOdometry(),
                 print("2"),
                 parallel(
                     robotCommands.enableAutoShooterSettings(),
                     robotCommands.enableAutoTurret(),
-                    leftTrenchToNZ.cmd()),
+                    rightTrenchToNZ.cmd()),
                 print("3")));
 
-    leftTrenchToNZ.atTime("LeftNZIntake").onTrue(robotCommands.intake());
+    rightTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
 
-    leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), leftMiddleNZToShoot.cmd()));
+    rightTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), rightMiddleNZToShoot.cmd()));
 
-    leftMiddleNZToShoot
+    rightMiddleNZToShoot
         .done()
         .onTrue(
             sequence(
                 robotCommands.shoot().withTimeout(10),
                 robotCommands.stopShootingNoDelay(),
                 robotCommands.runIntake(),
-                leftShootToNZ.cmd()));
+                rightShootToNZ.cmd()));
 
     return routine;
   }

@@ -25,8 +25,8 @@ public class RightClimbAuto {
 
     AutoTrajectory rightClimb =
         alliance == Alliance.Blue
-            ? ChoreoTraj.RightClimb_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.RightClimb_RED.asAutoTraj(routine);
+            ? ChoreoTraj.RightTrenchToClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightTrenchToClimb_RED.asAutoTraj(routine);
 
     routine
         .active()

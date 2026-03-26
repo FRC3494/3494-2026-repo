@@ -39,7 +39,11 @@ public final class ChoreoVars {
         public static final Pose2d NZDepotShootingTarget = new Pose2d(3, 6.5, Rotation2d.kZero);
         public static final Pose2d NZOutpostShootingTarget = new Pose2d(3, 1.5, Rotation2d.kZero);
         public static final Pose2d RightBumpStartingPosition = new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142));
+        public static final Pose2d RightMiddleNZ = new Pose2d(7.775, 2.441, Rotation2d.fromRadians(1.833));
+        public static final Pose2d RightNZ = new Pose2d(7.775, 0.764, Rotation2d.fromRadians(1.833));
+        public static final Pose2d RightTrenchStartingPosition = new Pose2d(4.476, 0.473, Rotation2d.fromRadians(3.142));
         public static final Pose2d ShootLeftTrench = new Pose2d(3.233, 7.502, Rotation2d.kZero);
+        public static final Pose2d ShootRightTrench = new Pose2d(3.233, 0.567, Rotation2d.kZero);
 
         private Poses() {}
     }

@@ -18,7 +18,7 @@ import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 
-public class LeftNZToClimbAuto {
+public class RightNZToClimbAuto {
   public static AutoRoutine getRoutine(
       String name,
       Alliance alliance,
@@ -28,15 +28,15 @@ public class LeftNZToClimbAuto {
       ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
-    AutoTrajectory leftTrenchToNZ =
+    AutoTrajectory rightTrenchToNZ =
         alliance == Alliance.Blue
-            ? ChoreoTraj.LeftTrenchToNZ_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.LeftTrenchToNZ_RED.asAutoTraj(routine);
-    AutoTrajectory middleNZToLeftClimb =
+            ? ChoreoTraj.RightTrenchToNZ_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightTrenchToNZ_RED.asAutoTraj(routine);
+    AutoTrajectory middleNZToRightClimb =
         alliance == Alliance.Blue
-            ? ChoreoTraj.MiddleNZToLeftClimb_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.MiddleNZToLeftClimb_RED.asAutoTraj(routine);
-    AutoTrajectory leftClimb =
+            ? ChoreoTraj.MiddleNZToRightClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.MiddleNZToRightClimb_RED.asAutoTraj(routine);
+    AutoTrajectory rightClimb =
         alliance == Alliance.Blue
             ? ChoreoTraj.LeftClimb_BLUE.asAutoTraj(routine)
             : ChoreoTraj.LeftClimb_RED.asAutoTraj(routine);
@@ -46,23 +46,23 @@ public class LeftNZToClimbAuto {
         .onTrue(
             sequence(
                 print("1"),
-                leftTrenchToNZ.resetOdometry(),
+                rightTrenchToNZ.resetOdometry(),
                 print("2"),
                 parallel(
                     robotCommands.enableAutoShooterSettings(),
                     robotCommands.enableAutoTurret(),
-                    leftTrenchToNZ.cmd()),
+                    rightTrenchToNZ.cmd()),
                 print("3")));
 
-    leftTrenchToNZ.atTime("LeftNZIntake").onTrue(robotCommands.intake());
+    rightTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
 
-    leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToLeftClimb.cmd()));
+    rightTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToRightClimb.cmd()));
 
-    middleNZToLeftClimb.atTime("ClimberUp").onTrue(robotCommands.climberUp());
+    middleNZToRightClimb.atTime("ClimberUp").onTrue(robotCommands.climberUp());
 
-    middleNZToLeftClimb.done().onTrue(leftClimb.cmd().deadlineFor(robotCommands.shoot()));
+    middleNZToRightClimb.done().onTrue(rightClimb.cmd().deadlineFor(robotCommands.shoot()));
 
-    leftClimb
+    rightClimb
         .done()
         .onTrue(
             sequence(
@@ -75,7 +75,7 @@ public class LeftNZToClimbAuto {
                         robotCommands.climberMidWithCurrent(),
                         runOnce(
                             () -> {
-                              shooterAimModel.setTurretTrim(Units.degreesToRotations(-10.0));
+                              shooterAimModel.setTurretTrim(Units.degreesToRotations(10.0));
                             },
                             shooterAimModel)))));
 

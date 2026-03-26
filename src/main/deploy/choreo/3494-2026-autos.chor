@@ -293,6 +293,48 @@
      "val":3.141592653589793
     }
    },
+   "RightMiddleNZ":{
+    "x":{
+     "exp":"RightNZ.x",
+     "val":7.775111658477783
+    },
+    "y":{
+     "exp":"RightNZ.y + 5.5 ft",
+     "val":2.4408000000000003
+    },
+    "heading":{
+     "exp":"RightNZ.heading",
+     "val":1.832595714594046
+    }
+   },
+   "RightNZ":{
+    "x":{
+     "exp":"7.622711658477783 m + 6 in",
+     "val":7.775111658477783
+    },
+    "y":{
+     "exp":"FieldWidth - 7 m - 1 ft",
+     "val":0.7644000000000004
+    },
+    "heading":{
+     "exp":"-LeftNZ.heading",
+     "val":1.832595714594046
+    }
+   },
+   "RightTrenchStartingPosition":{
+    "x":{
+     "exp":"158.6 in + RobotBumperSize",
+     "val":4.476115
+    },
+    "y":{
+     "exp":"RobotBumperSize + 1 in",
+     "val":0.473075
+    },
+    "heading":{
+     "exp":"LeftTrenchStartingPosition.heading",
+     "val":3.141592653589793
+    }
+   },
    "ShootLeftTrench":{
     "x":{
      "exp":"3.2325267791748047 m",
@@ -304,6 +346,20 @@
     },
     "heading":{
      "exp":"0 deg",
+     "val":0.0
+    }
+   },
+   "ShootRightTrench":{
+    "x":{
+     "exp":"3.2325267791748047 m",
+     "val":3.2325267791748047
+    },
+    "y":{
+     "exp":"FieldWidth - 7.501835823059082 m",
+     "val":0.5673641769409183
+    },
+    "heading":{
+     "exp":"ShootLeftTrench.heading",
      "val":0.0
     }
    }
