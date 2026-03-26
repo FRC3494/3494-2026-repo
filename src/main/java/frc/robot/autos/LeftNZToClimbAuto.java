@@ -34,12 +34,12 @@ public class LeftNZToClimbAuto {
             : ChoreoTraj.LeftTrenchToNZ_RED.asAutoTraj(routine);
     AutoTrajectory middleNZToLeftClimb =
         alliance == Alliance.Blue
-            ? ChoreoTraj.MiddleNZToLeftClimb.asAutoTraj(routine)
-            : ChoreoTraj.MiddleNZToLeftClimb.asAutoTraj(routine);
+            ? ChoreoTraj.MiddleNZToLeftClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.MiddleNZToLeftClimb_RED.asAutoTraj(routine);
     AutoTrajectory leftClimb =
         alliance == Alliance.Blue
-            ? ChoreoTraj.LeftClimb.asAutoTraj(routine)
-            : ChoreoTraj.LeftClimb.asAutoTraj(routine);
+            ? ChoreoTraj.LeftClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftClimb_RED.asAutoTraj(routine);
 
     routine
         .active()
