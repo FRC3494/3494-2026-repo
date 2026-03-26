@@ -112,7 +112,7 @@ public final class Constants {
       public static final int turretMagSensorDIO = 0;
     }
 
-    public static final class Vision {
+    public static final class VisionConstants {
       public static final LimelightConstants[] aprilTagLimelights = {
         // * Left side
         new LimelightConstants(

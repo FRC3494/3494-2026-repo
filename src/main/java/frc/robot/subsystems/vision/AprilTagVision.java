@@ -12,7 +12,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class AprilTagVision extends SubsystemBase {
-  private AprilTagCamera[] cameras = new AprilTagCamera[RobotMap.Vision.aprilTagLimelights.length];
+  private AprilTagCamera[] cameras =
+      new AprilTagCamera[RobotMap.VisionConstants.aprilTagLimelights.length];
 
   private Drive drive;
 
@@ -25,7 +26,7 @@ public class AprilTagVision extends SubsystemBase {
     this.drive = drive;
 
     for (int i = 0; i < cameras.length; i++) {
-      cameras[i] = new AprilTagCamera(RobotMap.Vision.aprilTagLimelights[i], useMegaTag2);
+      cameras[i] = new AprilTagCamera(RobotMap.VisionConstants.aprilTagLimelights[i], useMegaTag2);
     }
   }
 
