@@ -118,6 +118,8 @@ public class Hood extends SubsystemBase {
 
     if (shooting) {
       moveToPosition(hoodSetpointClamped);
+    } else {
+      moveToPosition(hoodMinAngle);
     }
   }
 
