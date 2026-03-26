@@ -33,9 +33,9 @@ public final class ChoreoVars {
         public static final Pose2d DepotIntake = new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142));
         public static final Pose2d Hub = new Pose2d(4.62, 4.035, Rotation2d.kZero);
         public static final Pose2d LeftBumpStartingPosition = new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142));
+        public static final Pose2d LeftMiddleNZ = new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftNZ = new Pose2d(7.775, 7.305, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftTrenchStartingPosition = new Pose2d(4.476, 7.596, Rotation2d.fromRadians(3.142));
-        public static final Pose2d LeftMiddleNZ = new Pose2d(7.775, 5.628, Rotation2d.fromRadians(-1.833));
         public static final Pose2d NZDepotShootingTarget = new Pose2d(3, 6.5, Rotation2d.kZero);
         public static final Pose2d NZOutpostShootingTarget = new Pose2d(3, 1.5, Rotation2d.kZero);
         public static final Pose2d RightBumpStartingPosition = new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142));

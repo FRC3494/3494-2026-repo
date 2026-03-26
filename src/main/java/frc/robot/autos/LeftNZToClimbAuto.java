@@ -2,6 +2,7 @@ package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDepot;
@@ -9,10 +10,12 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDep
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 
 public class LeftNZToClimbAuto {
@@ -21,7 +24,8 @@ public class LeftNZToClimbAuto {
       Alliance alliance,
       AutoFactory autoFactory,
       RobotCommands robotCommands,
-      Drive drive) {
+      Drive drive,
+      ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
     AutoTrajectory leftTrenchToNZ =
@@ -32,6 +36,10 @@ public class LeftNZToClimbAuto {
         alliance == Alliance.Blue
             ? ChoreoTraj.MiddleNZToLeftClimb.asAutoTraj(routine)
             : ChoreoTraj.MiddleNZToLeftClimb.asAutoTraj(routine);
+    AutoTrajectory leftClimb =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftClimb.asAutoTraj(routine)
+            : ChoreoTraj.LeftClimb.asAutoTraj(routine);
 
     routine
         .active()
@@ -52,14 +60,26 @@ public class LeftNZToClimbAuto {
 
     middleNZToLeftClimb.atTime("LeftClimbShoot").onTrue(robotCommands.shoot());
 
-    middleNZToLeftClimb
+    middleNZToLeftClimb.atTime("ClimberUp").onTrue(robotCommands.climberUp());
+
+    middleNZToLeftClimb.done().onTrue(leftClimb.cmd().deadlineFor(robotCommands.shoot()));
+
+    leftClimb
         .done()
         .onTrue(
             sequence(
                 parallel(
+                    robotCommands.shoot(),
                     sequence(
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
-                    sequence(waitSeconds(1), robotCommands.climberMidWithCurrent()))));
+                    sequence(
+                        waitSeconds(1),
+                        robotCommands.climberMidWithCurrent(),
+                        runOnce(
+                            () -> {
+                              shooterAimModel.setTurretTrim(Units.degreesToRotations(-10.0));
+                            },
+                            shooterAimModel)))));
 
     return routine;
   }

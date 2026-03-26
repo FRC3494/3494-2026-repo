@@ -176,15 +176,25 @@ public class RobotContainer {
                 "DepotAndClimb_RED", Alliance.Red, autoFactory, robotCommands, drive));
 
     autoChooser.addRoutine(
-        "LeftNZToDepot_BLUE",
+        "LeftNZToClimb_BLUE",
         () ->
             LeftNZToClimbAuto.getRoutine(
-                "LeftNZToDepot_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
+                "LeftNZToClimb_BLUE",
+                Alliance.Blue,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
     autoChooser.addRoutine(
-        "LeftNZToDepot_RED",
+        "LeftNZToClimb_RED",
         () ->
             LeftNZToClimbAuto.getRoutine(
-                "LeftNZToDepot_RED", Alliance.Red, autoFactory, robotCommands, drive));
+                "LeftNZToClimb_RED",
+                Alliance.Red,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
 
     autoChooser.addRoutine(
         "LeftNZToNZ_BLUE",
@@ -588,6 +598,13 @@ public class RobotContainer {
 
     // ==================== TURRET ====================
     turret.setDefaultCommand(robotCommands.setTurretCommand);
+    RobotModeTriggers.teleop()
+        .onTrue(
+            runOnce(
+                () -> {
+                  shooterAimModel.setTurretTrim(Units.degreesToRotations(0.0));
+                },
+                shooterAimModel));
 
     TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
