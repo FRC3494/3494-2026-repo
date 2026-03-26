@@ -4,14 +4,15 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
-import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDepot;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseOutpost;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
@@ -38,8 +39,8 @@ public class RightNZToClimbAuto {
             : ChoreoTraj.MiddleNZToRightClimb_RED.asAutoTraj(routine);
     AutoTrajectory rightClimb =
         alliance == Alliance.Blue
-            ? ChoreoTraj.LeftClimb_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.LeftClimb_RED.asAutoTraj(routine);
+            ? ChoreoTraj.RightClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.RightClimb_RED.asAutoTraj(routine);
 
     routine
         .active()
@@ -60,6 +61,8 @@ public class RightNZToClimbAuto {
 
     middleNZToRightClimb.atTime("ClimberUp").onTrue(robotCommands.climberUp());
 
+    middleNZToRightClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+
     middleNZToRightClimb.done().onTrue(rightClimb.cmd().deadlineFor(robotCommands.shoot()));
 
     rightClimb
@@ -69,9 +72,10 @@ public class RightNZToClimbAuto {
                 parallel(
                     robotCommands.shoot(),
                     sequence(
-                        new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
+                        new AutoAlignCommand(climbPoseOutpost, drive),
+                        robotCommands.creepBackward()),
                     sequence(
-                        waitSeconds(1),
+                        waitUntil(() -> Timer.getMatchTime() <= 3),
                         robotCommands.climberMidWithCurrent(),
                         runOnce(
                             () -> {

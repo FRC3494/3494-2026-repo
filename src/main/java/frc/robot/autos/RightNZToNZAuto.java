@@ -51,6 +51,8 @@ public class RightNZToNZAuto {
 
     rightTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), rightMiddleNZToShoot.cmd()));
 
+    rightMiddleNZToShoot.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+
     rightMiddleNZToShoot
         .done()
         .onTrue(

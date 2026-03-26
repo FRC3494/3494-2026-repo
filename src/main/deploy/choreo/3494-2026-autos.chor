@@ -28,8 +28,8 @@
    "IntakeMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"0.5 m / s",
-     "val":0.5
+     "exp":"0.75 m / s",
+     "val":0.75
     }
    },
    "MaxAcceleration":{

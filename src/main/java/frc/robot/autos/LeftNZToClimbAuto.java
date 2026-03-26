@@ -4,7 +4,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDepot;
 
 import choreo.auto.AutoFactory;
@@ -12,6 +12,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
@@ -60,6 +61,8 @@ public class LeftNZToClimbAuto {
 
     middleNZToLeftClimb.atTime("ClimberUp").onTrue(robotCommands.climberUp());
 
+    middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+
     middleNZToLeftClimb.done().onTrue(leftClimb.cmd().deadlineFor(robotCommands.shoot()));
 
     leftClimb
@@ -71,7 +74,7 @@ public class LeftNZToClimbAuto {
                     sequence(
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
                     sequence(
-                        waitSeconds(1),
+                        waitUntil(() -> Timer.getMatchTime() <= 3),
                         robotCommands.climberMidWithCurrent(),
                         runOnce(
                             () -> {
