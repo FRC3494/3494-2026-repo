@@ -489,11 +489,11 @@ public class RobotCommands {
   public Command spinDownFromShoot() {
     return sequence(
         stopSpindexer(),
+        stopHood(),
         waitSeconds(0.25),
         stopKicker(),
         waitSeconds(0.25),
         stopIntake(),
-        stopHood(),
         ceaseFlywheel());
   }
 
