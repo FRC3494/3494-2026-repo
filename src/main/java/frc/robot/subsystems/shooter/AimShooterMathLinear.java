@@ -68,9 +68,13 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   private final MedianFilter turretSetpointFilter = new MedianFilter(turretSetpointFilterSize);
 
-  private final InterpolatingDoubleTreeMap hoodAngleMapRad = new InterpolatingDoubleTreeMap();
-  private final InterpolatingDoubleTreeMap flywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
-  private final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap azHoodAngleMapRad = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap azFlywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap azTimeOfFlightMap = new InterpolatingDoubleTreeMap();
+
+  private final InterpolatingDoubleTreeMap nzHoodAngleMapRad = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap nzFlywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap nzTimeOfFlightMap = new InterpolatingDoubleTreeMap();
 
   private final LoggedNetworkNumber turretTrimDeg =
       new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg");
@@ -95,10 +99,16 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     this.robotPose = robotPose;
     this.robotSpeeds = robotSpeeds;
 
-    for (LinearInterpolationDataPoint dataPoint : linearInterpolationDataPoints) {
-      hoodAngleMapRad.put(dataPoint.distance().in(Meters), dataPoint.hoodAngle().getRadians());
-      flywheelSpeedMapRPM.put(dataPoint.distance().in(Meters), dataPoint.flywheelSpeed().in(RPM));
-      timeOfFlightMap.put(dataPoint.distance().in(Meters), dataPoint.timeOfFlight().in(Seconds));
+    for (LinearInterpolationDataPoint dataPoint : azLinearInterpolationDataPoints) {
+      azHoodAngleMapRad.put(dataPoint.distance().in(Meters), dataPoint.hoodAngle().getRadians());
+      azFlywheelSpeedMapRPM.put(dataPoint.distance().in(Meters), dataPoint.flywheelSpeed().in(RPM));
+      azTimeOfFlightMap.put(dataPoint.distance().in(Meters), dataPoint.timeOfFlight().in(Seconds));
+    }
+
+    for (LinearInterpolationDataPoint dataPoint : nzLinearInterpolationDataPoints) {
+      nzHoodAngleMapRad.put(dataPoint.distance().in(Meters), dataPoint.hoodAngle().getRadians());
+      nzFlywheelSpeedMapRPM.put(dataPoint.distance().in(Meters), dataPoint.flywheelSpeed().in(RPM));
+      nzTimeOfFlightMap.put(dataPoint.distance().in(Meters), dataPoint.timeOfFlight().in(Seconds));
     }
 
     lastLoopTimestamp = Timer.getTimestamp();
@@ -149,7 +159,9 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
    */
   private AimState buildAimState(Pose2d currentRobotPose, ChassisSpeeds robotSpeed) {
     Translation2d shooterTranslation = getRobotShooterTranslation(currentRobotPose);
-    Logger.recordOutput("AimShooterMathLinear/shooterTranslation", shooterTranslation);
+    Logger.recordOutput(
+        "AimShooterMathLinear/shooterTranslation",
+        new Pose2d(shooterTranslation, Rotation2d.kZero));
 
     Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
 
@@ -165,7 +177,10 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         shooterTranslation.getDistance(targetLocation)
             + Units.inchesToMeters(distanceTrimInches.get());
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
-    double timeOfFlight = timeOfFlightMap.get(distanceToTarget);
+    double timeOfFlight =
+        inAllianceZone
+            ? azTimeOfFlightMap.get(distanceToTarget)
+            : nzTimeOfFlightMap.get(distanceToTarget);
 
     Translation2d virtualTargetLocation = getVirtualGoal(timeOfFlight, robotSpeed, targetLocation);
     Logger.recordOutput(
@@ -395,12 +410,20 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   /** Returns the interpolated hood angle for the given distance. */
   private Rotation2d getHoodAngle(boolean inAllianceZone, double distanceMeters) {
-    return Rotation2d.fromRadians(hoodAngleMapRad.get(distanceMeters));
+    if (inAllianceZone) {
+      return Rotation2d.fromRadians(azHoodAngleMapRad.get(distanceMeters));
+    } else {
+      return Rotation2d.fromRadians(nzHoodAngleMapRad.get(distanceMeters));
+    }
   }
 
   /** Returns the interpolated flywheel speed for the given distance. */
   private AngularVelocity getFlywheelSpeed(boolean inAllianceZone, double distanceMeters) {
-    return RPM.of(flywheelSpeedMapRPM.get(distanceMeters));
+    if (inAllianceZone) {
+      return RPM.of(azFlywheelSpeedMapRPM.get(distanceMeters));
+    } else {
+      return RPM.of(nzFlywheelSpeedMapRPM.get(distanceMeters));
+    }
   }
 
   // ==================== TRIM ====================
