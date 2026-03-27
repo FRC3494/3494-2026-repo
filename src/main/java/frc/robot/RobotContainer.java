@@ -375,7 +375,7 @@ public class RobotContainer {
     ClimberOI.climberDown()
         .onTrue(
             either(
-                robotCommands.climberMid(),
+                robotCommands.climberMidWithCurrent(),
                 robotCommands.climberDown(),
                 () ->
                     climber.getPosition()
