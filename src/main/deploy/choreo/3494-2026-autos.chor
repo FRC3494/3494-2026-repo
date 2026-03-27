@@ -28,8 +28,8 @@
    "IntakeMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"0.75 m / s",
-     "val":0.75
+     "exp":"1.5 m / s",
+     "val":1.5
     }
    },
    "MaxAcceleration":{
@@ -216,7 +216,7 @@
     },
     "y":{
      "exp":"LeftNZ.y - 5.5 ft",
-     "val":5.6284
+     "val":5.59792
     },
     "heading":{
      "exp":"LeftNZ.heading",
@@ -229,12 +229,26 @@
      "val":7.775111658477783
     },
     "y":{
-     "exp":"7 m + 1 ft",
-     "val":7.3048
+     "exp":"7 m + 0.9 ft",
+     "val":7.27432
     },
     "heading":{
      "exp":"-105 deg",
      "val":-1.832595714594046
+    }
+   },
+   "LeftNZLoopEnd":{
+    "x":{
+     "exp":"5.801136016845703 m",
+     "val":5.801136016845703
+    },
+    "y":{
+     "exp":"5.819921493530273 m",
+     "val":5.819921493530273
+    },
+    "heading":{
+     "exp":"90 deg",
+     "val":1.5707963267948966
     }
    },
    "LeftTrenchStartingPosition":{
@@ -300,7 +314,7 @@
     },
     "y":{
      "exp":"RightNZ.y + 5.5 ft",
-     "val":2.4408000000000003
+     "val":2.4712800000000006
     },
     "heading":{
      "exp":"RightNZ.heading",
@@ -313,12 +327,26 @@
      "val":7.775111658477783
     },
     "y":{
-     "exp":"FieldWidth - 7 m - 1 ft",
-     "val":0.7644000000000004
+     "exp":"FieldWidth - 7 m - 0.9 ft",
+     "val":0.7948800000000004
     },
     "heading":{
      "exp":"-LeftNZ.heading",
      "val":1.832595714594046
+    }
+   },
+   "RightNZLoopEnd":{
+    "x":{
+     "exp":"5.801136016845703 m",
+     "val":5.801136016845703
+    },
+    "y":{
+     "exp":"FieldWidth - 5.819921493530273 m",
+     "val":2.249278506469727
+    },
+    "heading":{
+     "exp":"-90 deg",
+     "val":-1.5707963267948966
     }
    },
    "RightTrenchStartingPosition":{
