@@ -600,7 +600,7 @@ public class RobotCommands {
   }
 
   public Command setCloseShot(boolean withTrim) {
-    Rotation2d angle = Rotation2d.fromDegrees(24.2238027);
+    Rotation2d angle = Rotation2d.fromDegrees(25.6);
     AngularVelocity speed = RPM.of(2800);
     if (!withTrim) {
       return setManualShooterSettings(angle, speed);
@@ -610,8 +610,8 @@ public class RobotCommands {
   }
 
   public Command setMediumShot(boolean withTrim) {
-    Rotation2d angle = Rotation2d.fromDegrees(35);
-    AngularVelocity speed = RPM.of(3200);
+    Rotation2d angle = Rotation2d.fromDegrees(33);
+    AngularVelocity speed = RPM.of(3100);
     if (!withTrim) {
       return setManualShooterSettings(angle, speed);
     } else {
@@ -620,8 +620,8 @@ public class RobotCommands {
   }
 
   public Command setFarShot(boolean withTrim) {
-    Rotation2d angle = Rotation2d.fromDegrees(45);
-    AngularVelocity speed = RPM.of(3750);
+    Rotation2d angle = Rotation2d.fromDegrees(38);
+    AngularVelocity speed = RPM.of(3675);
     if (!withTrim) {
       return setManualShooterSettings(angle, speed);
     } else {
