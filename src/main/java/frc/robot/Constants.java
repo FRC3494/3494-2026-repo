@@ -423,6 +423,8 @@ public final class Constants {
     public static final double shooterY = Units.inchesToMeters(-2.074);
     public static final double shooterZ = Units.inchesToMeters(13.72);
 
+    // *
+    // https://docs.google.com/spreadsheets/d/14hwlqJER8P0QzwcH5v36mP58clVzJN8zftQV1oThM_0/edit?usp=sharing
     public static final LinearInterpolationDataPoint[] azLinearInterpolationDataPoints =
         new LinearInterpolationDataPoint[] {
           // TODO: need time of flight
@@ -459,9 +461,12 @@ public final class Constants {
           new LinearInterpolationDataPoint(
               Meters.of(4.64), Rotation2d.fromDegrees(36), RPM.of(3550), Seconds.of(0.0)),
           new LinearInterpolationDataPoint(
-              Meters.of(5.24), Rotation2d.fromDegrees(38), RPM.of(3675), Seconds.of(0.0)),
+              Meters.of(5.24), Rotation2d.fromDegrees(38), RPM.of(3600), Seconds.of(0.0)),
+          // ! Last points extrapolated from:  https://www.desmos.com/calculator/lvx3alcbyt
           new LinearInterpolationDataPoint(
-              Meters.of(9.33), Rotation2d.fromDegrees(45), RPM.of(4500), Seconds.of(0.0))
+              Meters.of(7.37), Rotation2d.fromDegrees(45), RPM.of(4150), Seconds.of(0.0)),
+          new LinearInterpolationDataPoint(
+              Meters.of(8.91), Rotation2d.fromDegrees(45), RPM.of(4500), Seconds.of(0.0))
         };
 
     public static final LinearInterpolationDataPoint[] nzLinearInterpolationDataPoints =
