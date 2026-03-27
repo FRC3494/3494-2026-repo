@@ -35,7 +35,11 @@ public final class OI {
     }
 
     public static Trigger climberDown() {
-      return primaryController.a(eventLoop).or(rightButtonBoard.button(5, eventLoop));
+      return primaryController.a(eventLoop);
+    }
+
+    public static Trigger climberAllTheWayDown() {
+      return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger rezeroClimber() {
