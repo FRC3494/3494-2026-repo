@@ -52,7 +52,7 @@ public class RobotCommands {
       new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
   // How far DOWN the climber is for "mid" position
   public LoggedNetworkNumber climberMidFactor =
-      new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.9);
+      new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.8);
 
   // ==================== HOPPER ====================
   private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 75);
@@ -399,6 +399,27 @@ public class RobotCommands {
         .repeatedly();
   }
 
+  public Command runSpindexerKickerWithStallDetection(Supplier<AngularVelocity> velocity) {
+    return sequence(
+        runSpindexer(),
+        startKicker(),
+        repeatingSequence(
+            waitUntil(
+                () ->
+                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
+            runSpindexerReverse(),
+            stopKicker(),
+            waitSeconds(0.1),
+            startKicker(),
+            waitUntil(
+                () ->
+                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
+            runSpindexer(),
+            stopKicker(),
+            waitSeconds(0.1),
+            startKicker()));
+  }
+
   public Command unjamSpindexer() {
     return sequence(
         runOnce(
@@ -523,7 +544,8 @@ public class RobotCommands {
         startKicker(),
         runIntake(),
         parallel(
-            jostleIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
+            jostleIntake(),
+            runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command shootWithoutIntakeJostle() {
@@ -537,7 +559,7 @@ public class RobotCommands {
             }),
         startKicker(),
         runIntake(),
-        runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get())));
+        runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get())));
   }
 
   public Command spinDownFromShoot() {
