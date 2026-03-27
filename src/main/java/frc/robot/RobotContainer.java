@@ -383,6 +383,8 @@ public class RobotContainer {
 
     ClimberOI.climberAllTheWayDown().onTrue(robotCommands.climberDown());
 
+    ClimberOI.actuallyClimb().onTrue(robotCommands.climberMidWithCurrent());
+
     ClimberOI.rezeroClimber().onTrue(robotCommands.rezeroClimber());
 
     ClimberOI.climberManualUp()

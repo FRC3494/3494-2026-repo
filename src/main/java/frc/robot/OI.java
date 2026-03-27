@@ -42,6 +42,10 @@ public final class OI {
       return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
     }
 
+    public static Trigger actuallyClimb() {
+      return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+    }
+
     public static Trigger rezeroClimber() {
       return leftButtonBoard.button(1, eventLoop).castTo(Trigger::new);
     }
@@ -107,7 +111,7 @@ public final class OI {
     }
 
     public static Trigger kickerBackwards() {
-      return rightButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+      return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger jiggleRobot() {
@@ -185,7 +189,8 @@ public final class OI {
     }
 
     public static Trigger shootNeutralZone() {
-      return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(4, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootNeutralZoneWithTrim() {
