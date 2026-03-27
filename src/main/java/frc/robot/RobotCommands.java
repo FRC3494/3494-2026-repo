@@ -413,10 +413,6 @@ public class RobotCommands {
             hopper));
   }
 
-  // ==================== INTAKE ====================
-  // public Command intake() {
-  //   return sequence(runIntake(), runSpindexerSlow());
-  // }
   // #endregion
 
   // #region ==================== INTAKE ====================
