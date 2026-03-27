@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Hood extends SubsystemBase {
@@ -79,6 +80,8 @@ public class Hood extends SubsystemBase {
     hoodConfig.closedLoop.feedForward.sva(hoodKs, hoodKv, hoodKa);
     hoodMotor.configure(
         hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    Logger.recordOutput("Shooter/Hood/Motor/CurrentLimit", Amps.of(hoodCurrentLimit));
 
     setRelativeEncoderPosition(hoodMinAngle);
   }
@@ -153,6 +156,8 @@ public class Hood extends SubsystemBase {
     SparkFlexConfig config = new SparkFlexConfig();
     config.smartCurrentLimit((int) limit.in(Amps));
     hoodMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    Logger.recordOutput("Shooter/Hood/Motor/CurrentLimit", limit);
   }
 
   public void setRelativeEncoderPosition(Rotation2d position) {

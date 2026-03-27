@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Climber extends SubsystemBase {
@@ -55,6 +56,8 @@ public class Climber extends SubsystemBase {
     climberConfig.closedLoop.feedForward.sva(climberKs, climberKv, climberKa);
     climberMotor.configure(
         climberConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    Logger.recordOutput("Climber/Motor/CurrentLimit", Amps.of(climberCurrentLimit));
 
     setRelativeEncoderPosition(climberDownPosition);
   }
@@ -103,6 +106,8 @@ public class Climber extends SubsystemBase {
     config.smartCurrentLimit((int) limit.in(Amps));
     climberMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+    Logger.recordOutput("Climber/Motor/CurrentLimit", limit);
   }
 
   public void setRelativeEncoderPosition(double position) {
