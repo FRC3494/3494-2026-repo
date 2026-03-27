@@ -524,6 +524,7 @@ public class RobotCommands {
         stopKicker(),
         waitSeconds(0.25),
         stopIntake(),
+        ceaseJostleIntake(),
         ceaseFlywheel());
   }
 
