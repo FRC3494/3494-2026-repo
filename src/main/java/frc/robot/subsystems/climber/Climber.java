@@ -24,8 +24,8 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 public class Climber extends SubsystemBase {
   private SparkFlex climberMotor;
 
-  @Getter @AutoLogOutput private double climberSetpoint = 0.0;
-  @Getter @AutoLogOutput private double climberSetpointClamped = 0.0;
+  @Getter @AutoLogOutput private double climberSetpoint = climberDownPosition;
+  @Getter @AutoLogOutput private double climberSetpointClamped = climberDownPosition;
 
   private LoggedNetworkNumber climberP = new LoggedNetworkNumber("Tunable/Climber/kP", climberKp);
   private LoggedNetworkNumber climberI = new LoggedNetworkNumber("Tunable/Climber/kI", climberKi);
