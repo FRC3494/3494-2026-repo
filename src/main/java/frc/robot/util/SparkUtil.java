@@ -78,5 +78,23 @@ public class SparkUtil {
 
     Logger.recordOutput(key + "/Setpoint", spark.getClosedLoopController().getSetpoint());
     Logger.recordOutput(key + "/AtSetpoint", spark.getClosedLoopController().isAtSetpoint());
+
+    Logger.recordOutput(key + "/Faults/Can", spark.getFaults().can);
+    Logger.recordOutput(key + "/Faults/EscEeprom", spark.getFaults().escEeprom);
+    Logger.recordOutput(key + "/Faults/Firmware", spark.getFaults().firmware);
+    Logger.recordOutput(key + "/Faults/GateDriver", spark.getFaults().gateDriver);
+    Logger.recordOutput(key + "/Faults/MotorType", spark.getFaults().motorType);
+    Logger.recordOutput(key + "/Faults/Other", spark.getFaults().other);
+    Logger.recordOutput(key + "/Faults/Sensor", spark.getFaults().sensor);
+    Logger.recordOutput(key + "/Faults/Temperature", spark.getFaults().temperature);
+
+    Logger.recordOutput(key + "/Warnings/Brownout", spark.getWarnings().brownout);
+    Logger.recordOutput(key + "/Warnings/EscEeprom", spark.getWarnings().escEeprom);
+    Logger.recordOutput(key + "/Warnings/ExtEeprom", spark.getWarnings().extEeprom);
+    Logger.recordOutput(key + "/Warnings/HasReset", spark.getWarnings().hasReset);
+    Logger.recordOutput(key + "/Warnings/Other", spark.getWarnings().other);
+    Logger.recordOutput(key + "/Warnings/Overcurrent", spark.getWarnings().overcurrent);
+    Logger.recordOutput(key + "/Warnings/Sensor", spark.getWarnings().sensor);
+    Logger.recordOutput(key + "/Warnings/Stall", spark.getWarnings().stall);
   }
 }
