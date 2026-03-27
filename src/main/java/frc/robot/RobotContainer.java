@@ -488,7 +488,12 @@ public class RobotContainer {
     IntakeOI.lowerIntake().whileTrue(robotCommands.lowerIntake());
 
     // ==================== SHOOTER ====================
-    RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoShooterSettings());
+    RobotModeTriggers.teleop()
+        .onTrue(
+            sequence(
+                robotCommands.enableAutoShooterSettings(),
+                robotCommands.stopHood(),
+                robotCommands.ceaseFlywheel()));
 
     ShooterOI.shoot()
         .whileTrue(
