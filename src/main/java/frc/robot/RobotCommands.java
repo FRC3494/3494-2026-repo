@@ -129,45 +129,67 @@ public class RobotCommands {
 
   // #region ==================== CLIMBER ====================
   public Command climberUp() {
-    return runOnce(
-        () -> {
-          climber.setPosition(climberUpPos.get());
-        },
-        climber);
-  }
-
-  public Command climberMid() {
-    return runOnce(
-        () -> {
-          climber.setPosition(climberDownPos.get() * climberMidFactor.get());
-        },
-        climber);
-  }
-
-  public Command climberMidWithCurrent() {
     return sequence(
-        runOnce(
-            () -> {
-              climber.setCurrentLimit(Amps.of(30));
-              climber.setOpenLoop(Volts.of(5));
-            },
-            climber),
-        waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
         runOnce(
             () -> {
               climber.setCurrentLimit(Amps.of(climberCurrentLimit));
             },
             climber),
-        waitSeconds(0.5),
-        climberMid());
+        runOnce(
+            () -> {
+              climber.setPosition(climberUpPos.get());
+            },
+            climber));
+  }
+
+  public Command climberMid() {
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+            },
+            climber),
+        runOnce(
+            () -> {
+              climber.setPosition(climberDownPos.get() * climberMidFactor.get());
+            },
+            climber));
+  }
+
+  public Command climberMidWithCurrent() {
+    return sequence(
+            runOnce(
+                () -> {
+                  climber.setCurrentLimit(Amps.of(30));
+                  climber.setOpenLoop(Volts.of(5));
+                },
+                climber),
+            waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
+            runOnce(
+                () -> {
+                  climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+                },
+                climber),
+            waitSeconds(0.5),
+            climberMid())
+        .finallyDo(
+            () -> {
+              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+            });
   }
 
   public Command climberDown() {
-    return runOnce(
-        () -> {
-          climber.setPosition(climberDownPos.get());
-        },
-        climber);
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+            },
+            climber),
+        runOnce(
+            () -> {
+              climber.setPosition(climberDownPos.get());
+            },
+            climber));
   }
 
   public Command rezeroClimber() {
