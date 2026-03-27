@@ -435,7 +435,17 @@ public class RobotContainer {
     HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
 
     // ==================== INTAKE ====================
-    IntakeOI.intake().onTrue(robotCommands.intake()).onFalse(robotCommands.releaseIntake());
+    IntakeOI.intake()
+        .onTrue(
+            either(
+                sequence(robotCommands.ceaseJostleIntake(), robotCommands.runIntake()),
+                robotCommands.intake(),
+                ShooterOI.shoot()::getAsBoolean))
+        .whileFalse(
+            either(
+                robotCommands.jostleIntake(),
+                robotCommands.releaseIntake(),
+                ShooterOI.shoot()::getAsBoolean));
     IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
 
     IntakeOI.toggleIntake()
@@ -454,7 +464,13 @@ public class RobotContainer {
     // ==================== SHOOTER ====================
     RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoShooterSettings());
 
-    ShooterOI.shoot().whileTrue(robotCommands.shoot()).onFalse(robotCommands.spinDownFromShoot());
+    ShooterOI.shoot()
+        .whileTrue(robotCommands.shoot())
+        .onFalse(
+            either(
+                sequence(robotCommands.spinDownFromShoot(), robotCommands.intake()),
+                robotCommands.spinDownFromShoot(),
+                IntakeOI.intake()::getAsBoolean));
 
     ShooterOI.shootClose()
         .whileTrue(sequence(robotCommands.setCloseShot(false), robotCommands.shoot()))
