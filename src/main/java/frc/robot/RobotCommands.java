@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -208,6 +209,7 @@ public class RobotCommands {
                   climber.setCurrentLimit(Amps.of(climberCurrentLimit));
                 },
                 climber))
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
               climber.setCurrentLimit(Amps.of(climberCurrentLimit));
@@ -693,7 +695,8 @@ public class RobotCommands {
                   hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
                 },
                 hood))
-        .withTimeout(hoodRezeroTimeoutSeconds);
+        .withTimeout(hoodRezeroTimeoutSeconds)
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
   }
 
   public Command setHoodManual(Rotation2d angle) {
