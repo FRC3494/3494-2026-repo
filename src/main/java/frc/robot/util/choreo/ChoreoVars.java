@@ -14,7 +14,7 @@ public final class ChoreoVars {
     public static final LinearVelocity ClimbMaxVelocity = Units.MetersPerSecond.of(0.5);
     public static final Distance FieldLength = Units.Meters.of(16.541);
     public static final Distance FieldWidth = Units.Meters.of(8.069);
-    public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1.5);
+    public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(0.75);
     public static final LinearAcceleration MaxAcceleration = Units.MetersPerSecondPerSecond.of(2);
     public static final LinearVelocity MaxVelocity = Units.MetersPerSecond.of(2);
     public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(4);

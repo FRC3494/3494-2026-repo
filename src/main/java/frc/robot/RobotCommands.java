@@ -190,7 +190,9 @@ public class RobotCommands {
             () -> {
               climber.setPosition(climberDownPos.get());
             },
-            climber));
+            climber),
+        waitUntil(() -> climber.getPosition() > climberDownPos.get() - climberTolerance),
+        stopClimber());
   }
 
   public Command rezeroClimber() {
