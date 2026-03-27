@@ -465,7 +465,11 @@ public class RobotContainer {
     RobotModeTriggers.teleop().onTrue(robotCommands.enableAutoShooterSettings());
 
     ShooterOI.shoot()
-        .whileTrue(robotCommands.shoot())
+        .whileTrue(
+            either(
+                robotCommands.shootWithoutIntakeJostle(),
+                robotCommands.shoot(),
+                IntakeOI.intake()::getAsBoolean))
         .onFalse(
             either(
                 sequence(robotCommands.spinDownFromShoot(), robotCommands.intake()),

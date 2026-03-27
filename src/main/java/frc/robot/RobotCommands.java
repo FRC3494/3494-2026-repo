@@ -526,6 +526,20 @@ public class RobotCommands {
             jostleIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
 
+  public Command shootWithoutIntakeJostle() {
+    return sequence(
+        startHood(),
+        startFlywheel(),
+        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+        runOnce(
+            () -> {
+              spindexerInverted = !spindexerInverted;
+            }),
+        startKicker(),
+        runIntake(),
+        runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get())));
+  }
+
   public Command spinDownFromShoot() {
     return sequence(
         stopSpindexer(),
