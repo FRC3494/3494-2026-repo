@@ -163,7 +163,7 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static final int climberCurrentLimit = 50; // !  Was 70
+    public static final int climberCurrentLimit = 70;
     // 1:80 ratio is to prevent encoder from looping
     public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 

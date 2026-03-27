@@ -51,7 +51,7 @@ public class RobotCommands {
       new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
   // How far DOWN the climber is for "mid" position
   public LoggedNetworkNumber climberMidFactor =
-      new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.6);
+      new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.9);
 
   // ==================== HOPPER ====================
   private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 75);
