@@ -31,11 +31,13 @@ public final class OI {
 
   public static final class ClimberOI {
     public static Trigger climberUp() {
-      return primaryController.y(eventLoop).or(rightButtonBoard.button(6, eventLoop));
+      return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+      // return primaryController.y(eventLoop).or(rightButtonBoard.button(6, eventLoop));
     }
 
     public static Trigger climberDown() {
-      return primaryController.a(eventLoop);
+      return new Trigger(() -> false);
+      // return primaryController.a(eventLoop);
     }
 
     public static Trigger climberAllTheWayDown() {
