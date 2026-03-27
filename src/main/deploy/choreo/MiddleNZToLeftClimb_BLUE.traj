@@ -225,6 +225,6 @@
   "splits":[0]
  },
  "events":[
-   {"name":"ClimberUp", "from":{"target":3, "targetTimestamp":1.76527, "offset":{"exp":"0.5 s", "val":0.5}}, "event":null},
+   {"name":"ClimberUp", "from":{"target":3, "targetTimestamp":1.76527, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"StartFlywheel", "from":{"target":5, "targetTimestamp":3.70806, "offset":{"exp":"-1.5 s", "val":-1.5}}, "event":null}]
 }

@@ -59,7 +59,9 @@ public class LeftNZToClimbAuto {
 
     leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToLeftClimb.cmd()));
 
-    middleNZToLeftClimb.atTime("ClimberUp").onTrue(robotCommands.climberUp());
+    middleNZToLeftClimb
+        .atPose("ClimberUp", Units.inchesToMeters(6), Math.PI)
+        .onTrue(robotCommands.climberUp());
 
     middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
