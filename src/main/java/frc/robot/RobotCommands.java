@@ -487,6 +487,14 @@ public class RobotCommands {
         .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
 
+  public Command ceaseJostleIntake() {
+    return runOnce(
+        () -> {
+          intake.setUppyDownyVelocity(RPM.of(0));
+        },
+        intake);
+  }
+
   public Command raiseIntake() {
     return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
         .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
