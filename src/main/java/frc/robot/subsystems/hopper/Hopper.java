@@ -11,12 +11,15 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
+import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -55,6 +58,13 @@ public class Hopper extends SubsystemBase {
       new LoggedNetworkNumber("Tunable/Hopper/Kicker/kV", kickerKv);
   private LoggedNetworkNumber kickerA =
       new LoggedNetworkNumber("Tunable/Hopper/Kicker/kA", kickerKa);
+
+  @Getter
+  @AutoLogOutput(key = "Hopper/SpindexerFilteredMotorCurrent")
+  private Current spindexerFilteredCurrent = Amps.of(0);
+
+  private final MedianFilter spindexerCurrentFilter =
+      new MedianFilter(spindexerCurrentSensingFilterSize);
 
   SysIdRoutine spindexerSysId;
   SysIdRoutine kickerSysId;
@@ -145,6 +155,9 @@ public class Hopper extends SubsystemBase {
     if (kickerSvaChanged) {
       setKickerSVA(kickerS.get(), kickerV.get(), kickerA.get());
     }
+
+    spindexerFilteredCurrent =
+        Amps.of(spindexerCurrentFilter.calculate(spindexerMotor.getOutputCurrent()));
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {

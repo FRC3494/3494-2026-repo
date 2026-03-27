@@ -390,7 +390,7 @@ public class RobotCommands {
 
   public Command runSpindexerWithStallDetection(Supplier<AngularVelocity> velocity) {
     return run(() -> hopper.setSpindexerVelocity(velocity.get()), hopper)
-        .until(() -> hopper.getSpindexerCurrent() > spindexerCurrentLimit - 2)
+        .until(() -> hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0)))
         .andThen(
             runOnce(() -> hopper.setSpindexerVelocity(velocity.get().times(-1.0)), hopper)
                 .andThen(Commands.waitSeconds(2.0)))

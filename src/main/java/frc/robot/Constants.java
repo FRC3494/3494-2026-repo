@@ -342,6 +342,8 @@ public final class Constants {
     public static final int spindexerCurrentLimit = 30;
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
+    public static final int spindexerCurrentSensingFilterSize = 10;
+
     public static double spindexerKp = 3.0357E-05;
     public static double spindexerKi = 0.0;
     public static double spindexerKd = 0.0;
