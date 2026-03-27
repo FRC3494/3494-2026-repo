@@ -194,20 +194,24 @@ public class RobotCommands {
 
   public Command rezeroClimber() {
     return sequence(
-        runOnce(
+            runOnce(
+                () -> {
+                  climber.setCurrentLimit(Amps.of(20));
+                  climber.setOpenLoop(Volts.of(2));
+                },
+                climber),
+            waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(19))),
+            runOnce(
+                () -> {
+                  climber.setOpenLoop(Volts.of(0));
+                  climber.setRelativeEncoderPosition(climberDownPosition);
+                  climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+                },
+                climber))
+        .finallyDo(
             () -> {
-              climber.setCurrentLimit(Amps.of(20));
-              climber.setOpenLoop(Volts.of(2));
-            },
-            climber),
-        waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(19))),
-        runOnce(
-            () -> {
-              climber.setOpenLoop(Volts.of(0));
-              climber.setRelativeEncoderPosition(climberDownPosition);
               climber.setCurrentLimit(Amps.of(climberCurrentLimit));
-            },
-            climber));
+            });
   }
 
   public Command stopClimber() {
