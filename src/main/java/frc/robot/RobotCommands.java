@@ -888,6 +888,15 @@ public class RobotCommands {
         .ignoringDisable(true);
   }
 
+  public Command setTurretEncoderTo180() {
+    return runOnce(
+            () -> {
+              turret.setRelativeEncoderPosition(0.5);
+            },
+            turret)
+        .ignoringDisable(true);
+  }
+
   // #endregion
 
 }
