@@ -6,10 +6,13 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDep
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 
 public class DepotAndClimbAuto {
@@ -18,7 +21,8 @@ public class DepotAndClimbAuto {
       Alliance alliance,
       AutoFactory autoFactory,
       RobotCommands robotCommands,
-      Drive drive) {
+      Drive drive,
+      ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(name);
 
     AutoTrajectory leftBumpToDepot =
@@ -41,26 +45,32 @@ public class DepotAndClimbAuto {
                 leftBumpToDepot.resetOdometry(),
                 robotCommands.enableAutoShooterSettings(),
                 robotCommands.enableAutoTurret(),
-                waitSeconds(0.5),
-                robotCommands.climberUp(),
-                robotCommands.shoot(),
-                waitSeconds(3),
-                parallel(robotCommands.spinDownFromShoot(), robotCommands.dropIntake()),
-                parallel(robotCommands.intake(), leftBumpToDepotPartial.cmd())));
+                parallel(robotCommands.dropIntake()),
+                leftBumpToDepotPartial.cmd().deadlineFor(robotCommands.intake())));
 
     leftBumpToDepotPartial
         .done()
-        .onTrue(sequence(robotCommands.shoot(), waitSeconds(1.75), depotToLeftClimb.cmd()));
+        .onTrue(
+            sequence(
+                robotCommands.shoot().withTimeout(1.75),
+                depotToLeftClimb.cmd().deadlineFor(robotCommands.shoot())));
 
     depotToLeftClimb
         .done()
         .onTrue(
             sequence(
                 parallel(
-                    robotCommands.spinDownFromShoot(),
+                    robotCommands.shoot(),
                     sequence(
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
-                    sequence(waitSeconds(1), robotCommands.climberMid()))));
+                    sequence(
+                        waitUntil(() -> Timer.getMatchTime() <= 3),
+                        robotCommands.climberMidWithCurrent(),
+                        runOnce(
+                            () -> {
+                              shooterAimModel.setTurretTrim(Units.degreesToRotations(-10.0));
+                            },
+                            shooterAimModel)))));
 
     return routine;
   }
