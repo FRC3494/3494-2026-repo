@@ -131,9 +131,9 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-      rezeroFromAbsEncoderDebounced();
+    rezeroFromAbsEncoderDebounced();
 
-      logMotorStats("Shooter/Turret/Motor", turretMotor, true);
+    logMotorStats("Shooter/Turret/Motor", turretMotor, true);
 
     boolean pidChanged =
         false
@@ -227,9 +227,9 @@ public class Turret extends SubsystemBase {
     if (getAbsPositionRot() < 1e-5) return;
 
     try {
-        rezeroFromAbsEncoder();
+      rezeroFromAbsEncoder();
     } finally {
-        hasRezeroRun = true;
+      hasRezeroRun = true;
     }
   }
 
