@@ -145,6 +145,20 @@ public class RobotCommands {
         stopClimber());
   }
 
+  public Command climberUpInstant() {
+    return sequence(
+        runOnce(
+            () -> {
+              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+            },
+            climber),
+        runOnce(
+            () -> {
+              climber.setPosition(climberUpPos.get());
+            },
+            climber));
+  }
+
   public Command climberMid() {
     return sequence(
         runOnce(
