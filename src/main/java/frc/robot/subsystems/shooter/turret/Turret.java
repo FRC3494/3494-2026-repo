@@ -234,7 +234,7 @@ public class Turret extends SubsystemBase {
   }
 
   public void rezeroFromAbsEncoder() {
-    setRelativeEncoderPosition(getAbsPositionRot() - Units.degreesToRotations(90));
+    setRelativeEncoderPosition(getAbsPositionRot() - Units.degreesToRotations(90) + 1.0);
   }
 
   @AutoLogOutput(key = "Shooter/Turret/MagSensor")

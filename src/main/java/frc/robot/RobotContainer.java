@@ -171,12 +171,22 @@ public class RobotContainer {
         "DepotAndClimb_BLUE",
         () ->
             DepotAndClimbAuto.getRoutine(
-                "DepotAndClimb_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
+                "DepotAndClimb_BLUE",
+                Alliance.Blue,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
     autoChooser.addRoutine(
         "DepotAndClimb_RED",
         () ->
             DepotAndClimbAuto.getRoutine(
-                "DepotAndClimb_RED", Alliance.Red, autoFactory, robotCommands, drive));
+                "DepotAndClimb_RED",
+                Alliance.Red,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
 
     autoChooser.addRoutine(
         "LeftNZLoop_BLUE",
