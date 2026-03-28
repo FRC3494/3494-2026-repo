@@ -47,7 +47,9 @@ public class Climber extends SubsystemBase {
     climberConfig
         .smartCurrentLimit(climberCurrentLimit)
         .idleMode(IdleMode.kBrake)
-        .inverted(climberInverted);
+        .inverted(climberInverted)
+        .openLoopRampRate(climberRampRate.in(Seconds))
+        .closedLoopRampRate(climberRampRate.in(Seconds));
     climberConfig
         .encoder
         .positionConversionFactor(climberGearRatio)
