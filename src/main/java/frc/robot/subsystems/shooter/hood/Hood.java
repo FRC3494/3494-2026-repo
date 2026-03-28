@@ -68,7 +68,12 @@ public class Hood extends SubsystemBase {
     hoodMotor = new SparkFlex(RobotMap.Shooter.hoodMotorCanId, MotorType.kBrushless);
 
     SparkFlexConfig hoodConfig = new SparkFlexConfig();
-    hoodConfig.smartCurrentLimit(hoodCurrentLimit).idleMode(IdleMode.kBrake).inverted(hoodInverted);
+    hoodConfig
+        .smartCurrentLimit(hoodCurrentLimit)
+        .idleMode(IdleMode.kBrake)
+        .inverted(hoodInverted)
+        .openLoopRampRate(hoodRampRate.in(Seconds))
+        .closedLoopRampRate(hoodRampRate.in(Seconds));
     hoodConfig
         .encoder
         .positionConversionFactor(hoodGearRatio)

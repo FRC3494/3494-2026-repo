@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.util.SparkUtil.*;
 
@@ -135,7 +136,9 @@ public class ModuleIOSpark implements ModuleIO {
         .inverted(driveInverted[module])
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(driveMotorCurrentLimit)
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .openLoopRampRate(driveRampRate.in(Seconds))
+        .closedLoopRampRate(driveRampRate.in(Seconds));
     driveConfig
         .encoder
         .positionConversionFactor(driveEncoderPositionFactor)
@@ -170,7 +173,9 @@ public class ModuleIOSpark implements ModuleIO {
         .inverted(turnInverted[module])
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(turnMotorCurrentLimit[module])
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .openLoopRampRate(turnRampRate.in(Seconds))
+        .closedLoopRampRate(turnRampRate.in(Seconds));
     turnConfig
         .absoluteEncoder
         .inverted(turnRelEncoderInverted[module])

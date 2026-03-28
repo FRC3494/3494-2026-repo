@@ -86,7 +86,9 @@ public class Intake extends SubsystemBase {
     spinnySpinnyConfig
         .smartCurrentLimit(spinnySpinnyCurrentLimit)
         .idleMode(IdleMode.kCoast)
-        .inverted(spinnySpinnyInverted);
+        .inverted(spinnySpinnyInverted)
+        .openLoopRampRate(spinnySpinnyRampRate.in(Seconds))
+        .closedLoopRampRate(spinnySpinnyRampRate.in(Seconds));
     spinnySpinnyConfig
         .encoder
         .positionConversionFactor(spinnySpinnyGearRatio)
@@ -101,7 +103,9 @@ public class Intake extends SubsystemBase {
     uppyDownyConfig
         .smartCurrentLimit(uppyDownyCurrentLimit)
         .idleMode(IdleMode.kCoast)
-        .inverted(uppyDownyInverted);
+        .inverted(uppyDownyInverted)
+        .openLoopRampRate(uppyDownyRampRate.in(Seconds))
+        .closedLoopRampRate(uppyDownyRampRate.in(Seconds));
     uppyDownyConfig
         .encoder
         .positionConversionFactor(uppyDownyGearRatio)

@@ -218,6 +218,7 @@ public final class Constants {
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
     public static final int driveMotorCurrentLimit = 60;
+    public static final Time driveRampRate = Milliseconds.of(10);
     // When using linear characterization: actual linear distance / wheel delta
     public static final double wheelRadiusMeters =
         Units.inchesToMeters(2.00302745); // From rotational characterization
@@ -250,6 +251,7 @@ public final class Constants {
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
     public static final int[] turnMotorCurrentLimit = new int[] {40, 40, 35, 35};
+    public static final Time turnRampRate = Milliseconds.of(10);
     public static final double[] turnMotorReduction =
         new double[] {
           ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
@@ -343,6 +345,7 @@ public final class Constants {
     // spindexer constants
     public static final boolean spindexerInverted = true;
     public static final int spindexerCurrentLimit = 30;
+    public static final Time spindexerRampRate = Milliseconds.of(0);
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
     public static final int spindexerCurrentSensingFilterSize = 10;
@@ -361,6 +364,7 @@ public final class Constants {
     // kicker constants
     public static final boolean kickerInverted = false;
     public static final int kickerCurrentLimit = 50;
+    public static final Time kickerRampRate = Milliseconds.of(0);
 
     public static double kickerKp = 2.8084E-08;
     public static double kickerKi = 0.0;
@@ -374,6 +378,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
     public static final int spinnySpinnyCurrentLimit = 50;
+    public static final Time spinnySpinnyRampRate = Milliseconds.of(0);
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
 
     public static double spinnySpinnyKp = 3.1048E-05;
@@ -386,6 +391,7 @@ public final class Constants {
 
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 50;
+    public static final Time uppyDownyRampRate = Milliseconds.of(10);
     public static final double uppyDownyGearRatio = 1.0 / 4.0;
     public static final int uppyDownCurrentSensingFilterSize = 10;
 
@@ -497,6 +503,7 @@ public final class Constants {
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;
       public static final int flywheelCurrentLimit = 50;
+      public static final Time flywheelRampRate = Milliseconds.of(0);
       public static final double flywheelRadius = Units.inchesToMeters(4) / 2.0;
 
       public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
@@ -518,6 +525,7 @@ public final class Constants {
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;
       public static final int hoodCurrentLimit = 50;
+      public static final Time hoodRampRate = Milliseconds.of(0);
       public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
       public static final int hoodCurrentSensingFilterSize = 10;
 
@@ -542,6 +550,7 @@ public final class Constants {
     public static final class TurretConstants {
       public static final boolean turretInverted = true;
       public static final int turretCurrentLimit = 50;
+      public static final Time turretRampRate = Milliseconds.of(0);
 
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
