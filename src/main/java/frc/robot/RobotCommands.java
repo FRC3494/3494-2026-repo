@@ -140,7 +140,9 @@ public class RobotCommands {
             () -> {
               climber.setPosition(climberUpPos.get());
             },
-            climber));
+            climber),
+        waitUntil(() -> climber.getPosition() < climberDownPos.get() + climberTolerance),
+        stopClimber());
   }
 
   public Command climberMid() {
@@ -154,7 +156,12 @@ public class RobotCommands {
             () -> {
               climber.setPosition(climberDownPos.get() * climberMidFactor.get());
             },
-            climber));
+            climber),
+        either(
+            waitUntil(() -> climber.getPosition() > climberDownPos.get() - climberTolerance),
+            waitUntil(() -> climber.getPosition() < climberDownPos.get() + climberTolerance),
+            () -> climber.getPosition() <= climberDownPos.get() * climberMidFactor.get()),
+        stopClimber());
   }
 
   public Command climberMidWithCurrent() {
