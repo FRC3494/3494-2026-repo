@@ -61,7 +61,7 @@ public class LeftNZToClimbAuto {
 
     middleNZToLeftClimb
         .atPose("ClimberUp", Units.inchesToMeters(6), Math.PI)
-        .onTrue(robotCommands.climberUpInstant());
+        .onTrue(robotCommands.climberUp());
 
     middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
