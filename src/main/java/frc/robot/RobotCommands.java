@@ -202,6 +202,7 @@ public class RobotCommands {
             climberMid())
         .finallyDo(
             () -> {
+              climber.setOpenLoop(Volts.of(0));
               climber.setCurrentLimit(Amps.of(climberCurrentLimit));
             });
   }
@@ -235,12 +236,17 @@ public class RobotCommands {
                 () -> {
                   climber.setOpenLoop(Volts.of(0));
                   climber.setRelativeEncoderPosition(climberDownPosition);
+                },
+                climber),
+            runOnce(
+                () -> {
                   climber.setCurrentLimit(Amps.of(climberCurrentLimit));
                 },
                 climber))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
+              climber.setOpenLoop(Volts.of(0));
               climber.setCurrentLimit(Amps.of(climberCurrentLimit));
             });
   }
