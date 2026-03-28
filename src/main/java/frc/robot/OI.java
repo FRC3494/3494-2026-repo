@@ -129,7 +129,7 @@ public final class OI {
     }
 
     public static Trigger outtake() {
-      return primaryController.x(eventLoop);
+      return primaryController.x(eventLoop).or(rightButtonBoard.button(3, eventLoop));
     }
 
     public static Trigger toggleIntake() {
@@ -182,7 +182,8 @@ public final class OI {
     }
 
     public static Trigger shootFar() {
-      return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger shootFarWithTrim() {
