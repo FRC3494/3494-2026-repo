@@ -48,7 +48,7 @@ public class RobotCommands {
   // ==================== CLIMBER ====================
   private LoggedNetworkNumber climberUpPos =
       new LoggedNetworkNumber("Tunable/ClimberUpPos", climberUpPosition);
-  private LoggedNetworkNumber climberDownPos =
+  public LoggedNetworkNumber climberDownPos =
       new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
   // How far DOWN the climber is for "mid" position
   public LoggedNetworkNumber climberMidFactor =
