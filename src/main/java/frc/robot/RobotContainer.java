@@ -744,6 +744,7 @@ public class RobotContainer {
     SmartDashboard.putData("Buttons/EnableAutoTurret", robotCommands.enableAutoTurret());
 
     TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
+    SmartDashboard.putData("Buttons/SetTurretEncoderTo0", robotCommands.setTurretEncoderTo0());
 
     TurretOI.turretTo180().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(180)));
     TurretOI.turretTo90().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(90)));

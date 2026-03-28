@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -234,7 +233,7 @@ public class Turret extends SubsystemBase {
   }
 
   public void rezeroFromAbsEncoder() {
-    setRelativeEncoderPosition(getAbsPositionRot() - Units.degreesToRotations(90));
+    // setRelativeEncoderPosition(getAbsPositionRot() - Units.degreesToRotations(90));
   }
 
   @AutoLogOutput(key = "Shooter/Turret/MagSensor")
