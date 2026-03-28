@@ -563,14 +563,14 @@ public final class Constants {
 
       public static final double turretYawVelocityFactor = 0.5;
 
-      public static double turretKp = 0.55;
+      public static double turretKp = 1.0;
       public static double turretKi = 0.002;
       public static double turretKd = 10;
 
       public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
       public static double turretIZone = Units.degreesToRotations(20);
 
-      public static double turretKs = 0.28642;
+      public static double turretKs = 1.0;
       public static double turretKv = 0.1;
       public static double turretKa = 0.013128;
 

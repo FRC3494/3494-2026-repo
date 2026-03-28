@@ -219,12 +219,12 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
                     state.currentRobotPose().getRotation())
                 + Units.degreesToRotations(turretTrimDeg.get()));
 
-    Voltage computedTurretFF =
-        getTurretFF(
-            state.shooterTranslation(),
-            state.virtualTargetLocation(),
-            state.timeOfFlight(),
-            state.robotSpeed());
+    Voltage computedTurretFF = Volts.of(0);
+    // getTurretFF(
+    //     state.shooterTranslation(),
+    //     state.virtualTargetLocation(),
+    //     state.timeOfFlight(),
+    //     state.robotSpeed());
 
     Rotation2d computedHoodAngle =
         getHoodAngle(state.inAllianceZone(), state.virtualDistanceToTarget())
