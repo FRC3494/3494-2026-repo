@@ -579,7 +579,7 @@ public final class Constants {
       public static final double turretGearRatio = (17.0 / 115.0) * (1.0 / 3.0);
 
       public static final double turretAbsEncoderGearRatio =
-          (17.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0) * (1.0 / 1.007);
+          (17.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0) * (1.0 / 1.014);
 
       public static final double turretAbsEncoderOffset =
           0.22140323 - Units.degreesToRotations(90) / turretAbsEncoderGearRatio;
