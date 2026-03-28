@@ -127,12 +127,13 @@ public class Turret extends SubsystemBase {
     //                 })
     //             .ignoringDisable(true));
 
-    rezeroFromAbsEncoder();
   }
 
   @Override
   public void periodic() {
-    logMotorStats("Shooter/Turret/Motor", turretMotor, true);
+      rezeroFromAbsEncoderDebounced();
+
+      logMotorStats("Shooter/Turret/Motor", turretMotor, true);
 
     boolean pidChanged =
         false
@@ -214,6 +215,22 @@ public class Turret extends SubsystemBase {
 
   public void setRelativeEncoderPosition(double rotations) {
     turretMotor.getEncoder().setPosition(rotations);
+  }
+
+  boolean hasRezeroRun = false;
+
+  public void rezeroFromAbsEncoderDebounced() {
+    Logger.recordOutput("Shooter/Turret/HasRezeroRun", hasRezeroRun);
+
+    if (hasRezeroRun) return;
+
+    if (getAbsPositionRot() < 1e-5) return;
+
+    try {
+        rezeroFromAbsEncoder();
+    } finally {
+        hasRezeroRun = true;
+    }
   }
 
   public void rezeroFromAbsEncoder() {
