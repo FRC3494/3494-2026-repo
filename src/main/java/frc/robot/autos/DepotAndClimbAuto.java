@@ -45,7 +45,8 @@ public class DepotAndClimbAuto {
                 leftBumpToDepot.resetOdometry(),
                 robotCommands.enableAutoShooterSettings(),
                 robotCommands.enableAutoTurret(),
-                parallel(robotCommands.dropIntake()),
+                robotCommands.climberUpInstant(),
+                robotCommands.dropIntake(),
                 leftBumpToDepotPartial.cmd().deadlineFor(robotCommands.intake())));
 
     leftBumpToDepotPartial
