@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.Voltage;
@@ -83,6 +84,7 @@ public class Turret extends SubsystemBase {
         .velocityConversionFactor(turretGearRatio);
     turretConfig
         .absoluteEncoder
+        .apply(AbsoluteEncoderConfig.Presets.REV_ThroughBoreEncoderV2)
         .zeroOffset(turretAbsEncoderOffset)
         .positionConversionFactor(turretAbsEncoderGearRatio)
         .velocityConversionFactor(turretAbsEncoderGearRatio);
@@ -125,7 +127,6 @@ public class Turret extends SubsystemBase {
     //                       "\tAbsolute Encoder Offset: " + formatter.format(absEncoderOffset));
     //                 })
     //             .ignoringDisable(true));
-
   }
 
   @Override
