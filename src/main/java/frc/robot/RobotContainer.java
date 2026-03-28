@@ -36,10 +36,13 @@ import frc.robot.OI.ShooterOI.HoodOI;
 import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
+import frc.robot.autos.LeftCloseNZAuto;
 import frc.robot.autos.LeftNZLoopAuto;
 import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
 import frc.robot.autos.RightClimbAuto;
+import frc.robot.autos.RightCloseNZAuto;
+import frc.robot.autos.RightNZLoopAuto;
 import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
 import frc.robot.subsystems.climber.Climber;
@@ -189,6 +192,27 @@ public class RobotContainer {
                 shooterAimModel));
 
     autoChooser.addRoutine(
+        "LeftCloseNZ_BLUE",
+        () ->
+            LeftCloseNZAuto.getRoutine(
+                "LeftCloseNZ_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
+        "LeftCloseNZ_RED",
+        () ->
+            LeftCloseNZAuto.getRoutine(
+                "LeftCloseNZ_RED", Alliance.Red, autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
+        "RightCloseNZ_BLUE",
+        () ->
+            RightCloseNZAuto.getRoutine(
+                "RightCloseNZ_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
+    autoChooser.addRoutine(
+        "RightCloseNZ_RED",
+        () ->
+            RightCloseNZAuto.getRoutine(
+                "RightCloseNZ_RED", Alliance.Red, autoFactory, robotCommands, drive));
+
+    autoChooser.addRoutine(
         "LeftNZLoop_BLUE",
         () ->
             LeftNZLoopAuto.getRoutine(
@@ -196,17 +220,17 @@ public class RobotContainer {
     autoChooser.addRoutine(
         "LeftNZLoop_RED",
         () ->
-            LeftNZToNZAuto.getRoutine(
+            LeftNZLoopAuto.getRoutine(
                 "LeftNZLoop_RED", Alliance.Red, autoFactory, robotCommands, drive));
     autoChooser.addRoutine(
         "RightNZLoop_BLUE",
         () ->
-            RightNZToNZAuto.getRoutine(
+            RightNZLoopAuto.getRoutine(
                 "RightNZLoop_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
     autoChooser.addRoutine(
         "RightNZLoop_RED",
         () ->
-            RightNZToNZAuto.getRoutine(
+            RightNZLoopAuto.getRoutine(
                 "RightNZLoop_RED", Alliance.Red, autoFactory, robotCommands, drive));
 
     autoChooser.addRoutine(
