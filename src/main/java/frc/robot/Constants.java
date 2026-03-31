@@ -574,7 +574,7 @@ public final class Constants {
       public static double turretKv = 0.1;
       public static double turretKa = 0.013128;
 
-      public static final int turretSetpointFilterSize = 30;
+      public static final int turretSetpointFilterSize = 1;
 
       public static final double turretGearRatio = (17.0 / 115.0) * (1.0 / 3.0);
 
