@@ -90,11 +90,13 @@ public class AprilTagCamera {
     poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
     poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-    logPoseEstimateStats(poseEstimate1, "MegaTag1");
-    logPoseEstimateStats(poseEstimate2, "MegaTag2");
-
-    validMeasurement1 = isMeasurementValid(poseEstimate1, "MegaTag1");
-    validMeasurement2 = isMeasurementValid(poseEstimate2, "MegaTag2");
+    if (megaTag2Enabled) {
+      logPoseEstimateStats(poseEstimate2, "MegaTag2");
+      validMeasurement2 = isMeasurementValid(poseEstimate2, "MegaTag2");
+    } else {
+      logPoseEstimateStats(poseEstimate1, "MegaTag1");
+      validMeasurement1 = isMeasurementValid(poseEstimate1, "MegaTag1");
+    }
 
     // Save pose estimate if valid
     if (validMeasurement1 && !megaTag2Enabled) {
@@ -123,35 +125,33 @@ public class AprilTagCamera {
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCount", poseEstimate.tagCount);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/IsMegaTag2", poseEstimate.isMegaTag2);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/Latency", poseEstimate.latency);
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCount", poseEstimate.tagCount);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagSpan", poseEstimate.tagSpan);
     Logger.recordOutput(
         "Vision/" + name + "/" + tagType + "/PoseTimestamp", poseEstimate.timestampSeconds);
-    Logger.recordOutput(
-        "Vision/" + name + "/" + tagType + "/RawFiducials", poseEstimate.rawFiducials.toString());
-    Logger.recordOutput(
-        "Vision/" + name + "/" + tagType + "/CameraPoseRobotSpace",
-        LimelightHelpers.getCameraPose3d_RobotSpace(name));
   }
 
   private boolean isMeasurementValid(PoseEstimate poseEstimate, String tagType) {
     // TODO: use limelight's own measurement valid function
 
     boolean estimateNotNull = poseEstimate != null;
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/EstimateNotNull", estimateNotNull);
 
     boolean tagCountValid =
         megaTag2Enabled
             ? poseEstimate.tagCount >= minTagCountMT2
             : poseEstimate.tagCount >= minTagCountMT1;
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCountValid", tagCountValid);
 
     boolean tagsWithinRange =
         poseEstimate.avgTagDist
             < (megaTag2Enabled ? maxTagDistanceMT2 : maxTagDistanceMT1).in(Meters);
-    Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsWithinRange", tagsWithinRange);
 
-    return estimateNotNull && tagCountValid && tagsWithinRange;
+    boolean valid = estimateNotNull && tagCountValid && tagsWithinRange;
+    if (!valid) {
+      Logger.recordOutput("Vision/" + name + "/" + tagType + "/EstimateNotNull", estimateNotNull);
+      Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCountValid", tagCountValid);
+      Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsWithinRange", tagsWithinRange);
+    }
+
+    return valid;
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
