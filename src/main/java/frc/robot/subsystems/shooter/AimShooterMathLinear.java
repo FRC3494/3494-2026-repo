@@ -160,7 +160,10 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
    * <p>This collects the selected target, the raw/virtual distances, and the interpolated
    * time-of-flight used for motion compensation.
    */
-  private AimState buildAimState(Pose2d currentRobotPose, ChassisSpeeds robotSpeed) {
+  private AimState buildAimState(Pose2d currentRobotPose, ChassisSpeeds chassisSpeeds) {
+    ChassisSpeeds robotSpeed =
+        ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, currentRobotPose.getRotation());
+
     Translation2d shooterTranslation = getRobotShooterTranslation(currentRobotPose);
     Logger.recordOutput(
         "AimShooterMathLinear/shooterTranslation",
