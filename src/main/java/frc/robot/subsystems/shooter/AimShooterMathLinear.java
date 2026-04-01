@@ -54,6 +54,9 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   @Getter @AutoLogOutput private Rotation2d hoodAngle = Rotation2d.kZero;
   @Getter @AutoLogOutput private AngularVelocity flywheelSpeed = RPM.of(0);
 
+  private final LoggedNetworkNumber robotYawVelocityKv =
+      new LoggedNetworkNumber("Tunable/Turret/RobotYawKv", robotYawKv);
+
   /**
    * Container for all shooter setpoints, mirroring {@link AimShooterMath.Setpoints}.
    *
@@ -219,12 +222,12 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
                     state.currentRobotPose().getRotation())
                 + Units.degreesToRotations(turretTrimDeg.get()));
 
-    Voltage computedTurretFF = Volts.of(0);
-    // getTurretFF(
-    //     state.shooterTranslation(),
-    //     state.virtualTargetLocation(),
-    //     state.timeOfFlight(),
-    //     state.robotSpeed());
+    Voltage computedTurretFF =
+        getTurretFF(
+            state.shooterTranslation(),
+            state.virtualTargetLocation(),
+            state.timeOfFlight(),
+            state.robotSpeed());
 
     Rotation2d computedHoodAngle =
         getHoodAngle(state.inAllianceZone(), state.virtualDistanceToTarget())
@@ -399,13 +402,16 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
     // Chassis yaw rotates the whole robot underneath the turret, so compensate that directly.
     Voltage robotYawVelocityFF =
-        Volts.of(turretKv * (-Units.radiansToRotations(robotSpeed.omegaRadiansPerSecond)));
+        Volts.of(
+            robotYawVelocityKv.get()
+                * (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
 
     previousRobotSpeed = robotSpeedTranslation;
 
     // Standard velocity + acceleration feedforward model in turret-angle units.
-    return robotYawVelocityFF.plus(
-        Volts.of(turretKv * turretVelocity + turretKa * turretAcceleration));
+    return robotYawVelocityFF;
+    // .plus(
+    //  Volts.of(turretKv * turretVelocity + turretKa * turretAcceleration));
   }
 
   /** Returns the interpolated hood angle for the given distance. */

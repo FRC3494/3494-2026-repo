@@ -11,11 +11,9 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -28,7 +26,6 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Turret extends SubsystemBase {
   private SparkFlex turretMotor;
-  private DigitalInput turretMagSensor;
 
   @Getter
   @AutoLogOutput(key = "Shooter/Turret/TurretSetpoint", unit = "rotations")
@@ -57,8 +54,6 @@ public class Turret extends SubsystemBase {
       new LoggedNetworkNumber(
           "Tunable/Turret/CableRetractorFFCCW", turretCableRetractorFFCCW.in(Volts));
 
-  private double magSensorStartPosition = 0.0;
-
   SysIdRoutine turretSysId;
 
   public Turret() {
@@ -82,16 +77,8 @@ public class Turret extends SubsystemBase {
         .encoder
         .positionConversionFactor(turretGearRatio)
         .velocityConversionFactor(turretGearRatio);
-    turretConfig
-        .absoluteEncoder
-        .apply(AbsoluteEncoderConfig.Presets.REV_ThroughBoreEncoderV2)
-        .zeroOffset(turretAbsEncoderOffset)
-        .positionConversionFactor(turretAbsEncoderGearRatio)
-        .velocityConversionFactor(turretAbsEncoderGearRatio);
     turretMotor.configure(
         turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    turretMagSensor = new DigitalInput(RobotMap.Shooter.turretMagSensorDIO);
 
     turretSysId =
         new SysIdRoutine(
@@ -102,38 +89,14 @@ public class Turret extends SubsystemBase {
                 (state) -> Logger.recordOutput("Shooter/Turret/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setOpenLoop(voltage), null, this));
 
-    // new Trigger(this::isMagSensorTripped)
-    //     .and(ShooterOI.rezeroTurret())
-    //     .onTrue(
-    //         runOnce(
-    //                 () -> {
-    //                   magSensorStartPosition = getRawAbsPosition();
-    //                 })
-    //             .ignoringDisable(true))
-    //     .onFalse(
-    //         runOnce(
-    //                 () -> {
-    //                   double magSensorEndPosition = getRawAbsPosition();
-    //                   double magSensorPosition =
-    //                       (magSensorStartPosition + magSensorEndPosition) / 2;
-
-    //                   double absEncoderOffset =
-    //                       MathUtil.inputModulus(magSensorPosition - turretAbsEncoderOffset, 0,
-    // 1);
-
-    //                   NumberFormat formatter = new DecimalFormat("#0.00000000");
-    //                   System.out.println("********** Turret Zeroing Results **********");
-    //                   System.out.println(
-    //                       "\tAbsolute Encoder Offset: " + formatter.format(absEncoderOffset));
-    //                 })
-    //             .ignoringDisable(true));
+    if (Math.abs(turretMotor.getEncoder().getPosition()) <= 1E-5) {
+      setRelativeEncoderPosition(turretRezeroLocation);
+    }
   }
 
   @Override
   public void periodic() {
-    rezeroFromAbsEncoderDebounced();
-
-    logMotorStats("Shooter/Turret/Motor", turretMotor, true);
+    logMotorStats("Shooter/Turret/Motor", turretMotor, false);
 
     boolean pidChanged =
         false
@@ -217,39 +180,9 @@ public class Turret extends SubsystemBase {
     turretMotor.getEncoder().setPosition(rotations);
   }
 
-  boolean hasRezeroRun = false;
-
-  public void rezeroFromAbsEncoderDebounced() {
-    Logger.recordOutput("Shooter/Turret/HasRezeroRun", hasRezeroRun);
-
-    if (hasRezeroRun) return;
-
-    if (getAbsPositionRot() < 1e-5) return;
-
-    try {
-      rezeroFromAbsEncoder();
-    } finally {
-      hasRezeroRun = true;
-    }
-  }
-
-  public void rezeroFromAbsEncoder() {
-    // setRelativeEncoderPosition(getAbsPositionRot() - Units.degreesToRotations(90));
-  }
-
-  @AutoLogOutput(key = "Shooter/Turret/MagSensor")
-  private boolean isMagSensorTripped() {
-    return turretMagSensor.get();
-  }
-
   @AutoLogOutput(key = "Shooter/Turret/RelPosition", unit = "Rotations")
   public double getPositionRot() {
     return turretMotor.getEncoder().getPosition();
-  }
-
-  @AutoLogOutput(key = "Shooter/Turret/AbsPositionRot", unit = "Rotations")
-  public double getAbsPositionRot() {
-    return turretMotor.getAbsoluteEncoder().getPosition();
   }
 
   private void setPID(double p, double i, double d, double s, double v, double a) {

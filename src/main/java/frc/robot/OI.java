@@ -330,14 +330,6 @@ public final class OI {
             .castTo(Trigger::new);
       }
 
-      public static Trigger rezeroTurret() {
-        return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
-      }
-
-      public static Trigger unmurderTurret() {
-        return leftButtonBoard.button(5, eventLoop).castTo(Trigger::new);
-      }
-
       public static Trigger lockTurret() {
         return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
       }

@@ -52,7 +52,6 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.AimShooterMathKinematics;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
@@ -79,8 +78,6 @@ public class RobotContainer {
   private final Hood hood;
   private final Turret turret;
 
-  private final AimShooterMathKinematics aimShooterMath;
-  private final AimShooterMathLinear aimShooterMathLinear;
   private final ShooterAimModel shooterAimModel;
 
   // Choreo
@@ -137,10 +134,8 @@ public class RobotContainer {
     hood = new Hood();
     turret = new Turret();
 
-    aimShooterMath = new AimShooterMathKinematics(drive::getPose, drive::getChassisSpeeds);
-    aimShooterMathLinear = new AimShooterMathLinear(drive::getPose, drive::getChassisSpeeds);
-
-    shooterAimModel = aimShooterMathLinear;
+    // ! Hot swap shooter math classes here
+    shooterAimModel = new AimShooterMathLinear(drive::getPose, drive::getChassisSpeeds);
 
     robotCommands =
         new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret, shooterAimModel);
@@ -737,8 +732,6 @@ public class RobotContainer {
                 },
                 shooterAimModel));
 
-    TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
-    TurretOI.unmurderTurret().onTrue(robotCommands.unmurderTurret());
     TurretOI.lockTurret().onTrue(robotCommands.lockTurret());
     TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
     SmartDashboard.putData("Buttons/EnableAutoTurret", robotCommands.enableAutoTurret());

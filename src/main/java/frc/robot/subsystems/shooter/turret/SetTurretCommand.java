@@ -22,7 +22,7 @@ public class SetTurretCommand extends Command {
 
   @Override
   public void execute() {
-    // turret.setTurretArbFF(arbFFVolts.get());
+    turret.setTurretArbFF(arbFFVolts.get());
     turret.setPosition(turretAngleRot.getAsDouble());
   }
 }

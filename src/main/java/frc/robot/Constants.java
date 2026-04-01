@@ -109,7 +109,6 @@ public final class Constants {
       public static final int hoodMotorCanId = 7;
 
       public static final int turretMotorCanId = 14;
-      public static final int turretMagSensorDIO = 0;
     }
 
     public static final class VisionConstants {
@@ -555,34 +554,31 @@ public final class Constants {
       public static final double turretMinAngleRot = Units.degreesToRotations(-45);
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
-      public static double turretPositionTolerance = Units.degreesToRotations(0.4);
+      // Turret shooting over the back of the robot
+      public static final double turretRezeroLocation = Units.degreesToRotations(180);
+
+      public static double turretPositionTolerance = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position
       public static final double turretCableRetractorStart = Units.degreesToRotations(115);
-      public static final Voltage turretCableRetractorFFCW = Volts.of(-0.3);
-      public static final Voltage turretCableRetractorFFCCW = Volts.of(-0.1);
+      public static final Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
+      public static final Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
 
-      public static final double turretYawVelocityFactor = 0.5;
-
-      public static double turretKp = 1.0;
-      public static double turretKi = 0.002;
-      public static double turretKd = 10;
+      public static double turretKp = 3.0;
+      public static double turretKi = 0.0;
+      public static double turretKd = 0.0;
 
       public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
       public static double turretIZone = Units.degreesToRotations(20);
 
-      public static double turretKs = 1.0;
-      public static double turretKv = 0.1;
-      public static double turretKa = 0.013128;
+      public static double turretKs = 0.16;
+      public static double turretKv = 0.0;
+      public static double turretKa = 0.0;
+
+      public static double robotYawKv = 0.08;
 
       public static final int turretSetpointFilterSize = 1;
 
       public static final double turretGearRatio = (17.0 / 115.0) * (1.0 / 3.0);
-
-      public static final double turretAbsEncoderGearRatio =
-          (17.0 / 115.0) * (60.0 / 20.0) * (60.0 / 20.0);
-
-      public static final double turretAbsEncoderOffset =
-          0.22140323 - Units.degreesToRotations(90) / turretAbsEncoderGearRatio;
     }
   }
 

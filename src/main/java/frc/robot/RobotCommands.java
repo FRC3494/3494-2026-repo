@@ -845,27 +845,6 @@ public class RobotCommands {
         turret);
   }
 
-  public Command rezeroTurret() {
-    return runOnce(
-            () -> {
-              turret.rezeroFromAbsEncoder();
-            },
-            turret)
-        .ignoringDisable(true);
-  }
-
-  public Command unmurderTurret() {
-    return sequence(
-        runOnce(
-            () -> {
-              turret.setOpenLoop(Volts.of(-1.5));
-            },
-            turret),
-        waitSeconds(0.5),
-        rezeroTurret(),
-        enableAutoTurret());
-  }
-
   public Command lockTurret() {
     return turretToPosition(Units.degreesToRotations(90.0));
   }
