@@ -3,11 +3,14 @@ package frc.robot;
 import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 public final class OI {
   private static EventLoop eventLoop = new EventLoop();
@@ -18,6 +21,7 @@ public final class OI {
 
   public static void update() {
     eventLoop.poll();
+    RumbleOI.update();
 
     Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
     Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
@@ -356,6 +360,57 @@ public final class OI {
         return new Trigger(() -> false);
         // return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
       }
+    }
+  }
+
+  public static final class RumbleOI {
+    private static int shiftRumbleStage = 0;
+    private static boolean isRumbling = false;
+    private static Timer shiftRumbleTimer = new Timer();
+
+    private static LoggedNetworkBoolean shiftRumbleEnabledEntry =
+        new LoggedNetworkBoolean("Tunable/ShiftRumbleEnabled", shiftRumbleEnabled);
+
+    public static void update() {
+      if (!shiftRumbleEnabledEntry.get()) {
+        return;
+      }
+
+      var shiftTime = shiftRumbleTimer.get();
+
+      if (shiftRumbleStage < shiftTimeSeconds.length
+          && !isRumbling
+          && shiftTime > shiftTimeSeconds[shiftRumbleStage] - shiftRumbleTimeOffsetSeconds) {
+        startRumble();
+        isRumbling = true;
+      } else if (isRumbling
+          && shiftTime
+              > shiftTimeSeconds[shiftRumbleStage]
+                  - shiftRumbleTimeOffsetSeconds
+                  + shiftRumbleDurationSeconds) {
+        stopRumble();
+        isRumbling = false;
+        shiftRumbleStage++;
+      }
+    }
+
+    public static void startTimer() {
+      shiftRumbleStage = 0;
+      isRumbling = false;
+      shiftRumbleTimer.reset();
+      shiftRumbleTimer.start();
+    }
+
+    public static void startRumble() {
+      primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity);
+    }
+
+    public static void stopRumble() {
+      primaryController.setRumble(RumbleType.kBothRumble, 0.0);
+    }
+
+    public static void stopTimer() {
+      shiftRumbleTimer.stop();
     }
   }
 }

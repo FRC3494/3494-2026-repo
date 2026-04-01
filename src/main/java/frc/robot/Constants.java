@@ -157,6 +157,20 @@ public final class Constants {
 
     public static final double controllerStickDeadband = 0.05;
     public static final double controllerTriggerDeadband = 0.25;
+
+    public static final boolean shiftRumbleEnabled = true;
+    public static final double shiftRumbleIntensity = 0.75;
+    public static final double shiftRumbleDurationSeconds = 3.0;
+    public static final double shiftRumbleTimeOffsetSeconds = 5.0;
+
+    // SHIFT 0 10 Seconds 2:20 – 2:10
+    // SHIFT 1 25 Seconds 2:10 - 1:45
+    // SHIFT 2 25 Seconds 1:45 - 1:20
+    // SHIFT 3 25 Seconds 1:20 - 0:55
+    // SHIFT 4 25 Seconds 0:55 - 0:30
+    // END GAME 30 Seconds 0:30 - 0:00
+    public static final double[] shiftTimeSeconds =
+        new double[] {10.0, 35.0, 60.0, 85.0, 110.0, 135.0};
   }
 
   // ========================= SUBSYSTEMS ========================= //
