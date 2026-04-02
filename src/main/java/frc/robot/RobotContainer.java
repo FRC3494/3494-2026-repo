@@ -461,10 +461,6 @@ public class RobotContainer {
 
     // #region HOPPER
 
-    HopperOI.unjamSpindexer()
-        .onTrue(robotCommands.unjamSpindexer())
-        .onFalse(sequence(robotCommands.stopKicker(), robotCommands.stopSpindexer()));
-
     HopperOI.spindexerBackwards()
         .onTrue(robotCommands.startSpindexerReverse())
         .onFalse(robotCommands.stopSpindexer());

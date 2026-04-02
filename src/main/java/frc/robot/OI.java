@@ -105,11 +105,6 @@ public final class OI {
 
   // #region HOPPER
   public static final class HopperOI {
-    public static Trigger unjamSpindexer() {
-      return new Trigger(() -> false);
-      // return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
-    }
-
     public static Trigger spindexerBackwards() {
       return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
     }
