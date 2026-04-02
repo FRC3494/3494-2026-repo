@@ -666,7 +666,7 @@ public class RobotContainer {
     flywheel.setDefaultCommand(robotCommands.autoFlywheelCommand());
 
     FlywheelOI.runFlywheel()
-        .onTrue(robotCommands.setFlywheelManual(RPM.of(robotCommands.flywheelSpeed.get())))
+        .onTrue(robotCommands.setFlywheelManual(RPM.of(robotCommands.flywheelRPM.get())))
         .onFalse(robotCommands.flywheelManualStop());
 
     FlywheelOI.increaseFlywheelTrim()

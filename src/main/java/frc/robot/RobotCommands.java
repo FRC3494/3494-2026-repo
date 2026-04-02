@@ -7,7 +7,10 @@ import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
 import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
+import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelManualSpeed;
+import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelThresholdFactor;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretManualIncrementRot;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.turretRezeroLocationRot;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.turretShootingToleranceRot;
 
@@ -46,44 +49,44 @@ public class RobotCommands {
   // #region TUNABLES
 
   // CLIMBER
-  private LoggedNetworkNumber climberUpPos =
+  private final LoggedNetworkNumber climberUpPos =
       new LoggedNetworkNumber("Tunable/ClimberUpPos", climberUpPosition);
-  public LoggedNetworkNumber climberDownPos =
+  public final LoggedNetworkNumber climberDownPos =
       new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
-  // How far DOWN the climber is for "mid" position
-  public LoggedNetworkNumber climberMidFactor =
-      new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.8);
+  public final LoggedNetworkNumber climberMidFactor =
+      new LoggedNetworkNumber("Tunable/ClimberMidFactor", climberMidPositionFactor);
 
   // HOPPER
   private final LoggedNetworkNumber spindexerRPM =
       new LoggedNetworkNumber("Tunable/SpindexerRPM", spindexerSpeed.in(RPM));
   private final LoggedNetworkNumber spindexerIntakingRPM =
       new LoggedNetworkNumber("Tunable/SpindexerIntakingRPM", spindexerIntakingSpeed.in(RPM));
-  private final LoggedNetworkNumber kickerSpeedFactor =
-      new LoggedNetworkNumber(
-          "Tunable/KickerSpeedFactor", 1.0); // Number to multiply flywheel speed by
+  private final LoggedNetworkNumber kickerSpeedMultiplier =
+      new LoggedNetworkNumber("Tunable/KickerSpeedFactor", kickerSpeedFactor);
   private boolean spindexerInverted = false;
 
   // INTAKE
-  private LoggedNetworkNumber intakeSpeed = new LoggedNetworkNumber("Tunable/IntakeRPM", 2000);
+  private final LoggedNetworkNumber intakeSpeedRPM =
+      new LoggedNetworkNumber("Tunable/IntakeRPM", intakeSpinnySpinnySpeed.in(RPM));
 
   // FLYWHEEL
-  private LoggedNetworkNumber flywheelThreshold =
-      new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.99);
-  public LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
+  private final LoggedNetworkNumber flywheelThreshold =
+      new LoggedNetworkNumber("Tunable/FlywheelThreshold", flywheelThresholdFactor);
+  public final LoggedNetworkNumber flywheelRPM =
+      new LoggedNetworkNumber("Tunable/FlywheelRPM", flywheelManualSpeed.in(RPM));
 
   // HOOD
-  private LoggedNetworkNumber hoodAngle =
-      new LoggedNetworkNumber("Tunable/HoodAngle", 0.0 + hoodMinAngle.getDegrees());
-  private LoggedNetworkNumber hoodIncrement =
-      new LoggedNetworkNumber("Tunable/HoodIncrementDeg", 2.0);
+  private final LoggedNetworkNumber hoodAngleDeg =
+      new LoggedNetworkNumber("Tunable/HoodAngle", hoodManualAngle.getDegrees());
+  private final LoggedNetworkNumber hoodIncrementDeg =
+      new LoggedNetworkNumber("Tunable/HoodIncrementDeg", hoodManualIncrement.getDegrees());
 
   // TURRET
-  private LoggedNetworkNumber turretManualSpeed =
-      new LoggedNetworkNumber("Tunable/TurretManualSpeed", 2.0);
-  private LoggedNetworkNumber turretShootingToleranceDeg =
+  private final LoggedNetworkNumber turretShootingToleranceDeg =
       new LoggedNetworkNumber(
           "Tunable/TurretShootingTolerance", Units.rotationsToDegrees(turretShootingToleranceRot));
+  private final LoggedNetworkNumber turretManualSpeedRot =
+      new LoggedNetworkNumber("Tunable/TurretManualSpeed", turretManualIncrementRot);
 
   // #endregion
 
@@ -396,7 +399,7 @@ public class RobotCommands {
   public Command startKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()));
+          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * kickerSpeedMultiplier.get()));
         },
         hopper);
   }
@@ -404,7 +407,7 @@ public class RobotCommands {
   public Command startKickerReverse() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelSpeed.get() * -kickerSpeedFactor.get()));
+          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * -kickerSpeedMultiplier.get()));
         },
         hopper);
   }
@@ -489,7 +492,7 @@ public class RobotCommands {
   public Command startIntake() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeed.get()));
+          intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeedRPM.get()));
         },
         intake);
   }
@@ -497,7 +500,7 @@ public class RobotCommands {
   public Command startIntakeReverse() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeed.get()));
+          intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeedRPM.get()));
         },
         intake);
   }
@@ -683,8 +686,8 @@ public class RobotCommands {
 
   public Command setDashboardShot() {
     return sequence(
-        setFlywheelManual(() -> RPM.of(flywheelSpeed.get())),
-        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngle.get())));
+        setFlywheelManual(() -> RPM.of(flywheelRPM.get())),
+        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngleDeg.get())));
   }
 
   public void setShooterAimModel(ShooterAimModel shooterAimModel) {
@@ -817,7 +820,7 @@ public class RobotCommands {
         () -> {
           hood.removeDefaultCommand();
           hood.setPosition(
-              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrement.get())));
+              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrementDeg.get())));
         },
         hood);
   }
@@ -827,7 +830,7 @@ public class RobotCommands {
         () -> {
           hood.removeDefaultCommand();
           hood.setPosition(
-              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrement.get())));
+              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrementDeg.get())));
         },
         hood);
   }
@@ -852,7 +855,7 @@ public class RobotCommands {
               turret.removeDefaultCommand();
               turret.setPosition(
                   turret.getTurretSetpointRot()
-                      + Units.degreesToRotations(turretManualSpeed.get()));
+                      + Units.degreesToRotations(turretManualSpeedRot.get()));
             },
             turret));
   }
@@ -864,7 +867,7 @@ public class RobotCommands {
               turret.removeDefaultCommand();
               turret.setPosition(
                   turret.getTurretSetpointRot()
-                      - Units.degreesToRotations(turretManualSpeed.get()));
+                      - Units.degreesToRotations(turretManualSpeedRot.get()));
             },
             turret));
   }

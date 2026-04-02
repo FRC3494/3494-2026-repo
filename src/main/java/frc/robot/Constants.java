@@ -174,6 +174,8 @@ public final class Constants {
 
     public static final double climberDownPosition = 2.443155 + 0.5;
     public static final double climberUpPosition = 0.4;
+    // Fraction of the way DOWN the "mid" position (climb position) is
+    public static final double climberMidPositionFactor = 0.8;
 
     public static final double climberTolerance = 0.01;
 
@@ -349,15 +351,15 @@ public final class Constants {
   // #region HOPPER
   public static final class HopperConstants {
     // Spindexer constants
-    public static final AngularVelocity spindexerSpeed = RPM.of(80);
-    public static final AngularVelocity spindexerIntakingSpeed = RPM.of(10);
-
     public static final boolean spindexerInverted = true;
     public static final int spindexerCurrentLimit = 30;
     public static final Time spindexerRampRate = Milliseconds.of(0);
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
     public static final int spindexerCurrentSensingFilterSize = 10;
+
+    public static final AngularVelocity spindexerSpeed = RPM.of(80);
+    public static final AngularVelocity spindexerIntakingSpeed = RPM.of(10);
 
     public static double spindexerKp = 3.0357E-05;
     public static double spindexerKi = 0.0;
@@ -375,6 +377,9 @@ public final class Constants {
     public static final int kickerCurrentLimit = 50;
     public static final Time kickerRampRate = Milliseconds.of(0);
 
+    // Number to multiply the flywheel speed by
+    public static final double kickerSpeedFactor = 1.0;
+
     public static double kickerKp = 2.8084E-08;
     public static double kickerKi = 0.0;
     public static double kickerKd = 0.0;
@@ -391,6 +396,8 @@ public final class Constants {
     public static final int spinnySpinnyCurrentLimit = 50;
     public static final Time spinnySpinnyRampRate = Milliseconds.of(0);
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
+
+    public static final AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
 
     public static double spinnySpinnyKp = 3.1048E-05;
     public static double spinnySpinnyKi = 0.0;
@@ -501,6 +508,11 @@ public final class Constants {
       public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
       public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
 
+      // Fraction of target speed at which kicker triggers and robot starts shooting
+      public static final double flywheelThresholdFactor = 0.99;
+      // Default starting speed for shots using dashboard settings
+      public static final AngularVelocity flywheelManualSpeed = RPM.of(3000);
+
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       public static double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
       public static double flywheelKi = 1E-07;
@@ -523,6 +535,14 @@ public final class Constants {
       public static final double hoodGearRatio = (17.0 / 20.0) * (20.0 / 340.0);
       public static final int hoodCurrentSensingFilterSize = 10;
 
+      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(24.2238027);
+      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
+
+      // Default hood angle for shots using dashboard settings
+      public static final Rotation2d hoodManualAngle = hoodMinAngle;
+      // Speed of manually moving hood up and down
+      public static final Rotation2d hoodManualIncrement = Rotation2d.fromDegrees(2.0);
+
       public static double hoodKp = 20.0;
       public static double hoodKi = 0.0;
       public static double hoodKd = 0.0;
@@ -534,9 +554,6 @@ public final class Constants {
       public static double hoodKs = 0.0;
       public static double hoodKv = 0.0;
       public static double hoodKa = 0.0;
-
-      public static final Rotation2d hoodMinAngle = Rotation2d.fromDegrees(24.2238027);
-      public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
 
       public static final double hoodRezeroTimeoutSeconds = 10.0;
     }
@@ -554,6 +571,9 @@ public final class Constants {
       // Turret shooting over the back of the robot
       public static final double turretRezeroLocationRot = Units.degreesToRotations(180);
       public static final double turretShootingToleranceRot = Units.degreesToRotations(20.0);
+
+      // Speed of manually moving turret CW/CCW
+      public static final double turretManualIncrementRot = Units.degreesToRotations(2.0);
 
       public static double turretPositionToleranceRot = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position
