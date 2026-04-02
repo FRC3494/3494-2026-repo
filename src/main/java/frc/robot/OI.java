@@ -345,19 +345,8 @@ public final class OI {
         return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
       }
 
-      public static Trigger setTurretEncoderTo0() {
+      public static Trigger rezeroTurret() {
         return new Trigger(() -> false);
-        // return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
-      }
-
-      public static Trigger turretTo180() {
-        return new Trigger(() -> false);
-        // return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
-      }
-
-      public static Trigger turretTo90() {
-        return new Trigger(() -> false);
-        // return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
       }
     }
     // #endregion

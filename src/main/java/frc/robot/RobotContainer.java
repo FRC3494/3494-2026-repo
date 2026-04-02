@@ -760,11 +760,17 @@ public class RobotContainer {
     TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());
     SmartDashboard.putData("Buttons/EnableAutoTurret", robotCommands.enableAutoTurret());
 
-    TurretOI.setTurretEncoderTo0().onTrue(robotCommands.setTurretEncoderTo0());
-    SmartDashboard.putData("Buttons/SetTurretEncoderTo180", robotCommands.setTurretEncoderTo180());
+    TurretOI.rezeroTurret().onTrue(robotCommands.rezeroTurret());
+    SmartDashboard.putData("Buttons/RezeroTurret", robotCommands.rezeroTurret());
 
-    TurretOI.turretTo180().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(180)));
-    TurretOI.turretTo90().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(90)));
+    SmartDashboard.putData(
+        "Buttons/TurretTo0", robotCommands.turretToPosition(Units.degreesToRotations(0)));
+    SmartDashboard.putData(
+        "Buttons/TurretTo90", robotCommands.turretToPosition(Units.degreesToRotations(90)));
+    SmartDashboard.putData(
+        "Buttons/TurretTo180", robotCommands.turretToPosition(Units.degreesToRotations(180)));
+    SmartDashboard.putData(
+        "Buttons/TurretTo270", robotCommands.turretToPosition(Units.degreesToRotations(270)));
 
     // #endregion
   }

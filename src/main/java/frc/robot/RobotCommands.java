@@ -8,6 +8,7 @@ import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
 import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretRezeroLocation;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -860,19 +861,10 @@ public class RobotCommands {
         .ignoringDisable(true);
   }
 
-  public Command setTurretEncoderTo0() {
+  public Command rezeroTurret() {
     return runOnce(
             () -> {
-              turret.setRelativeEncoderPosition(0);
-            },
-            turret)
-        .ignoringDisable(true);
-  }
-
-  public Command setTurretEncoderTo180() {
-    return runOnce(
-            () -> {
-              turret.setRelativeEncoderPosition(0.5);
+              turret.setRelativeEncoderPosition(turretRezeroLocation);
             },
             turret)
         .ignoringDisable(true);
