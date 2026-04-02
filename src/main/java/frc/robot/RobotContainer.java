@@ -154,13 +154,14 @@ public class RobotContainer {
             true,
             drive,
             Autos::logTrajectory);
-    configureAutos();
+    configureCompetitionAutos();
 
     // Configure the button bindings
     configureButtonBindings();
   }
 
-  private void configureAutos() {
+  // #region AUTOS
+  private void configureCompetitionAutos() {
     // Set up autos
     autoChooser.addRoutine(
         "DepotAndClimb_BLUE",
@@ -292,7 +293,7 @@ public class RobotContainer {
   }
 
   private void configureTuningAutos() {
-    // ==================== Drive ====================
+    // Drive
     autoChooser.addCmd(
         "Drive Wheel Radius Rotational Characterization",
         () -> DriveCommands.wheelRadiusCharacterization(drive));
@@ -314,7 +315,7 @@ public class RobotContainer {
     autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
-    // ==================== Flywheel ====================
+    // Flywheel
     autoChooser.addCmd(
         "Flywheel SysId (Quasistatic Forward)",
         () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -328,7 +329,7 @@ public class RobotContainer {
         "Flywheel SysId (Dynamic Reverse)",
         () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // ==================== Hopper ====================
+    // Hopper
     autoChooser.addCmd(
         "Spindexer SysId (Quasistatic Forward)",
         () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -355,7 +356,7 @@ public class RobotContainer {
         "Kicker SysId (Dynamic Reverse)",
         () -> hopper.kickerSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // ==================== Intake ====================
+    // Intake
     autoChooser.addCmd(
         "Intake SpinnySpinny SysId (Quasistatic Forward)",
         () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -369,7 +370,7 @@ public class RobotContainer {
         "Intake SpinnySpinny SysId (Dynamic Reverse)",
         () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // ==================== Turret ====================
+    // Turret
     autoChooser.addCmd(
         "Turret SysId (Quasistatic Forward)",
         () -> turret.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -385,6 +386,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
+  // #endregion
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -393,10 +395,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // ==================== WHOLE ROBOT ====================
+    // #region WHOLE ROBOT
     OI.rezeroMechanisms().onTrue(robotCommands.rezeroMechanisms());
 
-    // ==================== CLIMBER ====================
+    // #endregion
+
+    // #region CLIMBER
+
     ClimberOI.climberUp().onTrue(robotCommands.climberUp());
 
     ClimberOI.climberDown()
@@ -422,7 +427,10 @@ public class RobotContainer {
         .onTrue(robotCommands.climberManualDown())
         .onFalse(robotCommands.stopClimber());
 
-    // ==================== DRIVE ====================
+    // #endregion
+
+    // #region DRIVE
+
     drive.setDefaultCommand(robotCommands.joystickDriveCommand);
 
     DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
@@ -449,7 +457,10 @@ public class RobotContainer {
                 },
                 drive));
 
-    // ==================== HOPPER ====================
+    // #endregion
+
+    // #region HOPPER
+
     HopperOI.unjamSpindexer()
         .onTrue(robotCommands.unjamSpindexer())
         .onFalse(sequence(robotCommands.stopKicker(), robotCommands.stopSpindexer()));
@@ -466,7 +477,10 @@ public class RobotContainer {
 
     HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
 
-    // ==================== INTAKE ====================
+    // #endregion
+
+    // #region INTAKE
+
     IntakeOI.intake()
         .onTrue(
             either(
@@ -493,7 +507,10 @@ public class RobotContainer {
 
     IntakeOI.lowerIntake().whileTrue(robotCommands.lowerIntake());
 
-    // ==================== SHOOTER ====================
+    // #endregion
+
+    // #region SHOOTER
+
     RobotModeTriggers.teleop()
         .onTrue(
             sequence(
@@ -644,7 +661,10 @@ public class RobotContainer {
                 },
                 shooterAimModel));
 
-    // ==================== FLYWHEEL ====================
+    // #endregion
+
+    // #region FLYWHEEL
+
     flywheel.setDefaultCommand(robotCommands.autoFlywheelCommand());
 
     FlywheelOI.runFlywheel()
@@ -668,7 +688,10 @@ public class RobotContainer {
                 },
                 shooterAimModel));
 
-    // ==================== HOOD ====================
+    // #endregion
+
+    // #region HOOD
+
     hood.setDefaultCommand(robotCommands.autoHoodCommand());
 
     HoodOI.rezeroHood().onTrue(robotCommands.rezeroHood());
@@ -693,7 +716,10 @@ public class RobotContainer {
     HoodOI.hoodManualUp().whileTrue(robotCommands.hoodManualUp());
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
-    // ==================== TURRET ====================
+    // #endregion
+
+    // #region TURRET
+
     turret.setDefaultCommand(robotCommands.autoTurretCommand());
     RobotModeTriggers.teleop()
         .onTrue(
@@ -741,6 +767,8 @@ public class RobotContainer {
 
     TurretOI.turretTo180().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(180)));
     TurretOI.turretTo90().onTrue(robotCommands.turretToPosition(Units.degreesToRotations(90)));
+
+    // #endregion
   }
 
   /**

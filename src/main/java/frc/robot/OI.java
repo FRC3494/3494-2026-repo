@@ -24,11 +24,14 @@ public final class OI {
     Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
   }
 
+  // #region WHOLE ROBOT
   public static Trigger rezeroMechanisms() {
     // Just hit individual buttons lol
     return new Trigger(() -> false);
   }
+  // #endregion
 
+  // #region CLIMBER
   public static final class ClimberOI {
     public static Trigger climberUp() {
       return rightButtonBoard.button(6, eventLoop).castTo(Trigger::new);
@@ -61,7 +64,9 @@ public final class OI {
       return new Trigger(() -> false);
     }
   }
+  // #endregion
 
+  // #region DRIVE
   public static final class DriveOI {
     public static double joystickDriveX() {
       return MathUtil.applyDeadband(-primaryController.getLeftY(), controllerStickDeadband);
@@ -96,7 +101,9 @@ public final class OI {
       return primaryController.leftBumper(eventLoop);
     }
   }
+  // #endregion
 
+  // #region HOPPER
   public static final class HopperOI {
     public static Trigger unjamSpindexer() {
       return new Trigger(() -> false);
@@ -120,7 +127,9 @@ public final class OI {
       return primaryController.povLeft();
     }
   }
+  // #endregion
 
+  // #region INTAKE
   public static final class IntakeOI {
     public static Trigger intake() {
       return primaryController
@@ -145,17 +154,19 @@ public final class OI {
       return primaryController.b(eventLoop);
     }
 
-    // L3
+    // L3 (push in on left stick)
     public static Trigger raiseIntake() {
       return primaryController.button(9, eventLoop);
     }
 
-    // R3
+    // R3 (push in on right stick)
     public static Trigger lowerIntake() {
       return primaryController.button(10, eventLoop);
     }
   }
+  // #endregion
 
+  // #region SHOOTER
   public static final class ShooterOI {
     public static Trigger shoot() {
       return primaryController
@@ -253,6 +264,7 @@ public final class OI {
       return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
     }
 
+    // #region FLYWHEEL
     public static final class FlywheelOI {
       public static Trigger runFlywheel() {
         return new Trigger(() -> false);
@@ -267,7 +279,9 @@ public final class OI {
         return new Trigger(() -> false);
       }
     }
+    // #endregion
 
+    // #region HOOD
     public static final class HoodOI {
       public static Trigger hoodManualUp() {
         // Just use hood rezero
@@ -293,7 +307,9 @@ public final class OI {
         return new Trigger(() -> false);
       }
     }
+    // #endregion
 
+    // #region TURRET
     public static final class TurretOI {
       public static Trigger turretManualCCW() {
         return new Trigger(() -> false);
@@ -349,5 +365,7 @@ public final class OI {
         // return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
       }
     }
+    // #endregion
   }
+  // #endregion
 }

@@ -42,7 +42,7 @@ public class RobotCommands {
 
   private ShooterAimModel shooterAimModel;
 
-  // ==================== CLIMBER ====================
+  // CLIMBER
   private LoggedNetworkNumber climberUpPos =
       new LoggedNetworkNumber("Tunable/ClimberUpPos", climberUpPosition);
   public LoggedNetworkNumber climberDownPos =
@@ -51,32 +51,32 @@ public class RobotCommands {
   public LoggedNetworkNumber climberMidFactor =
       new LoggedNetworkNumber("Tunable/ClimberMidFactor", 0.8);
 
-  // ==================== HOPPER ====================
+  // HOPPER
   private LoggedNetworkNumber spindexerSpeed = new LoggedNetworkNumber("Tunable/SpindexerRPM", 80);
   private LoggedNetworkNumber kickerSpeedFactor =
       new LoggedNetworkNumber(
           "Tunable/KickerSpeedFactor", 1.0); // Number to multiply flywheel speed by
   private boolean spindexerInverted = false;
 
-  // ==================== INTAKE ====================
+  // INTAKE
   private LoggedNetworkNumber intakeSpeed = new LoggedNetworkNumber("Tunable/IntakeRPM", 2000);
 
-  // ==================== FLYWHEEL ====================
+  // FLYWHEEL
   private LoggedNetworkNumber flywheelThreshold =
       new LoggedNetworkNumber("Tunable/FlywheelThreshold", 0.99);
   public LoggedNetworkNumber flywheelSpeed = new LoggedNetworkNumber("Tunable/FlywheelRPM", 3000);
 
-  // ==================== HOOD ====================
+  // HOOD
   private LoggedNetworkNumber hoodAngle =
       new LoggedNetworkNumber("Tunable/HoodAngle", 0.0 + hoodMinAngle.getDegrees());
   private LoggedNetworkNumber hoodIncrement =
       new LoggedNetworkNumber("Tunable/HoodIncrementDeg", 2.0);
 
-  // ==================== TURRET ====================
+  // TURRET
   private LoggedNetworkNumber turretManualSpeed =
       new LoggedNetworkNumber("Tunable/TurretManualSpeed", 2.0);
 
-  // ==================== COMMANDS ====================
+  // COMMANDS
   public final Command joystickDriveCommand;
 
   public RobotCommands(
@@ -106,7 +106,7 @@ public class RobotCommands {
             OI.DriveOI::joystickDriveOmega);
   }
 
-  // #region ==================== WHOLE ROBOT ====================
+  // #region WHOLE ROBOT
 
   public Command rezeroMechanisms() {
     return parallel(rezeroClimber(), rezeroHood());
@@ -115,7 +115,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== CLIMBER ====================
+  // #region CLIMBER
   public Command climberUp() {
     return sequence(
         runOnce(
@@ -270,7 +270,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== DRIVE ====================
+  // #region DRIVE
 
   public Command stopDrive() {
     return runOnce(() -> drive.stop(), drive);
@@ -349,7 +349,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== HOPPER ====================
+  // #region HOPPER
 
   public Command runSpindexer() {
     return runOnce(
@@ -460,7 +460,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== INTAKE ====================
+  // #region INTAKE
 
   public Command intake() {
     return parallel(
@@ -552,7 +552,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== SHOOTER ====================
+  // #region SHOOTER
 
   public Command shoot() {
     return sequence(
@@ -678,7 +678,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== FLYWHEEL ====================
+  // #region FLYWHEEL
 
   public Command autoFlywheelCommand() {
     return run(
@@ -733,7 +733,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== HOOD ====================
+  // #region HOOD
 
   public Command autoHoodCommand() {
     return run(
@@ -819,7 +819,7 @@ public class RobotCommands {
 
   // #endregion
 
-  // #region ==================== TURRET ====================
+  // #region TURRET
 
   public Command autoTurretCommand() {
     return run(

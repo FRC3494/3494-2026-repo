@@ -62,6 +62,7 @@ public final class Constants {
     Testing
   }
 
+  // #region ROBOT MAP
   public static class RobotMap {
     public static final int pdhCanId = 31;
     public static final int mitoCANdria1CanId = 8;
@@ -148,7 +149,9 @@ public final class Constants {
       };
     }
   }
+  // #endregion
 
+  // #region OI
   public static class OIConstants {
     public static final int primaryControllerPort = 0;
     public static final int leftButtonBoardPort = 1;
@@ -157,9 +160,9 @@ public final class Constants {
     public static final double controllerStickDeadband = 0.05;
     public static final double controllerTriggerDeadband = 0.25;
   }
+  // #endregion
 
-  // ========================= SUBSYSTEMS ========================= //
-
+  // #region CLIMBER
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
     public static final int climberCurrentLimit = 70;
@@ -182,7 +185,9 @@ public final class Constants {
     public static double climberKv = 0.0;
     public static double climberKa = 0.0;
   }
+  // #endregion
 
+  // #region DRIVE
   public static class DriveConstants {
     /*
     ! Things that need to be configured in addition to AdvantageKit Swerve Template configs
@@ -339,7 +344,9 @@ public final class Constants {
       public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
     }
   }
+  // #endregion
 
+  // #region HOPPER
   public static final class HopperConstants {
     // spindexer constants
     public static final boolean spindexerInverted = true;
@@ -373,7 +380,9 @@ public final class Constants {
     public static double kickerKv = 0.0017874;
     public static double kickerKa = 0.00010453;
   }
+  // #endregion
 
+  // #region INTAKE
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
     public static final int spinnySpinnyCurrentLimit = 50;
@@ -411,7 +420,9 @@ public final class Constants {
     public static final double jostleIntakeUpTime = 0.75;
     public static final double jostleIntakeDownTime = 0.5;
   }
+  // #endregion
 
+  // #region SHOOTER
   public static final class ShooterConstants {
     public static final Translation2d hubLocation = ChoreoVars.Poses.Hub.getTranslation();
     public static final Translation2d nzDepotShootingTarget =
@@ -477,6 +488,7 @@ public final class Constants {
         AngularVelocity flywheelSpeed,
         Time timeOfFlight) {}
 
+    // #region FLYWHEEL
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;
       public static final int flywheelCurrentLimit = 50;
@@ -498,7 +510,9 @@ public final class Constants {
       public static double flywheelKv = 0.0017972; // From SysId: 0.0021194
       public static double flywheelKa = 0.00028032; // From SysId: 0.0011572
     }
+    // #endregion
 
+    // #region HOOD
     public static final class HoodConstants {
       public static final boolean hoodInverted = false;
       public static final int hoodCurrentLimit = 50;
@@ -523,7 +537,9 @@ public final class Constants {
 
       public static final double hoodRezeroTimeoutSeconds = 10.0;
     }
+    // #endregion
 
+    // #region TURRET
     public static final class TurretConstants {
       public static final boolean turretInverted = true;
       public static final int turretCurrentLimit = 50;
@@ -558,8 +574,11 @@ public final class Constants {
 
       public static final double turretGearRatio = (17.0 / 115.0) * (1.0 / 3.0);
     }
+    // #endregion
   }
+  // #endregion
 
+  // #region VISION
   public static final class VisionConstants {
     public static final boolean useMegaTag2 = true;
 
@@ -612,4 +631,5 @@ public final class Constants {
 
     public static record LimelightConstants(String name, Pose3d position) {}
   }
+  // #endregion
 }
