@@ -550,6 +550,7 @@ public final class Constants {
 
       // Turret shooting over the back of the robot
       public static final double turretRezeroLocation = Units.degreesToRotations(180);
+      public static final double turretShootingToleranceRot = Units.degreesToRotations(20.0);
 
       public static double turretPositionTolerance = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position

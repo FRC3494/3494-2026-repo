@@ -9,6 +9,7 @@ import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
 import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.turretRezeroLocation;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.turretShootingToleranceRot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -42,6 +42,8 @@ public class RobotCommands {
   private final Turret turret;
 
   private ShooterAimModel shooterAimModel;
+
+  // #region TUNABLES
 
   // CLIMBER
   private LoggedNetworkNumber climberUpPos =
@@ -76,6 +78,11 @@ public class RobotCommands {
   // TURRET
   private LoggedNetworkNumber turretManualSpeed =
       new LoggedNetworkNumber("Tunable/TurretManualSpeed", 2.0);
+  private LoggedNetworkNumber turretShootingToleranceDeg =
+      new LoggedNetworkNumber(
+          "Tunable/TurretShootingTolerance", Units.rotationsToDegrees(turretShootingToleranceRot));
+
+  // #endregion
 
   // COMMANDS
   public final Command joystickDriveCommand;
@@ -355,7 +362,7 @@ public class RobotCommands {
   public Command startSpindexer() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : 1) * spindexerSpeed.get()));
+          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : 1) * spindexerSpeed.get()));
         },
         hopper);
   }
@@ -364,7 +371,7 @@ public class RobotCommands {
     return runOnce(
         () -> {
           hopper.setSpindexerVelocity(
-              RPM.of((spindexerInverted ? 1 : 1) * spindexerSpeed.get() / 8.0));
+              RPM.of((spindexerInverted ? -1 : 1) * spindexerSpeed.get() / 8.0));
         },
         hopper);
   }
@@ -372,9 +379,16 @@ public class RobotCommands {
   public Command startSpindexerReverse() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : -1) * spindexerSpeed.get()));
+          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : -1) * spindexerSpeed.get()));
         },
         hopper);
+  }
+
+  public Command invertSpindexer() {
+    return runOnce(
+        () -> {
+          spindexerInverted = !spindexerInverted;
+        });
   }
 
   public Command stopSpindexer() {
@@ -414,33 +428,55 @@ public class RobotCommands {
   }
 
   public Command runSpindexerWithStallDetection(Supplier<AngularVelocity> velocity) {
-    return run(() -> hopper.setSpindexerVelocity(velocity.get()), hopper)
-        .until(() -> hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0)))
-        .andThen(
-            runOnce(() -> hopper.setSpindexerVelocity(velocity.get().times(-1.0)), hopper)
-                .andThen(Commands.waitSeconds(2.0)))
-        .repeatedly();
+    return repeatingSequence(
+            startSpindexer(),
+            waitUntil(
+                () ->
+                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
+            invertSpindexer())
+        .finallyDo(
+            () -> {
+              spindexerInverted = false;
+            });
   }
 
-  public Command runSpindexerAndKickerWithStallDetection(Supplier<AngularVelocity> velocity) {
+  public Command runSpindexerAndKicker(Supplier<AngularVelocity> velocity) {
     return sequence(
-        startSpindexer(),
-        startKicker(),
-        repeatingSequence(
-            waitUntil(
-                () ->
-                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
-            startSpindexerReverse(),
-            stopKicker(),
-            waitSeconds(0.1),
-            startKicker(),
-            waitUntil(
-                () ->
-                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
             startSpindexer(),
-            stopKicker(),
-            waitSeconds(0.1),
-            startKicker()));
+            startKicker(),
+            repeatingSequence(
+                waitUntil(
+                    () ->
+                        false
+                            || hopper
+                                .getSpindexerFilteredCurrent()
+                                .gt(Amps.of(spindexerCurrentLimit - 2.0))
+                            || Math.abs(
+                                    turret.getPositionRot() - turret.getTurretSetpointClampedRot())
+                                > Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                either(
+                    sequence(
+                        stopKicker(),
+                        waitUntil(
+                            () ->
+                                Math.abs(
+                                        turret.getPositionRot()
+                                            - turret.getTurretSetpointClampedRot())
+                                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                        startKicker()),
+                    sequence(
+                        invertSpindexer(),
+                        startSpindexer(),
+                        stopKicker(),
+                        waitSeconds(0.1),
+                        startKicker()),
+                    () ->
+                        Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
+                            > Units.degreesToRotations(turretShootingToleranceDeg.get()))))
+        .finallyDo(
+            () -> {
+              spindexerInverted = false;
+            });
   }
 
   // #endregion
@@ -543,35 +579,35 @@ public class RobotCommands {
     return sequence(
         startHood(),
         startFlywheel(),
-        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
-        runOnce(
-            () -> {
-              spindexerInverted = !spindexerInverted;
-            }),
-        startKicker(),
         startIntake(),
+        startSpindexer(),
+        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+        waitUntil(
+            () ->
+                Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
+                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommand(),
             runIntakeJostle(),
-            runSpindexerAndKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
+            runSpindexerAndKicker(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command shootWithoutIntakeJostle() {
     return sequence(
         startHood(),
         startFlywheel(),
-        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
-        runOnce(
-            () -> {
-              spindexerInverted = !spindexerInverted;
-            }),
-        startKicker(),
         startIntake(),
+        startSpindexer(),
+        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+        waitUntil(
+            () ->
+                Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
+                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommand(),
-            runSpindexerAndKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
+            runSpindexerAndKicker(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command spinDownFromShoot() {
