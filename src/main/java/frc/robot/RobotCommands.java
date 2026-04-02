@@ -25,10 +25,7 @@ import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.shooter.flywheel.SetFlywheelCommand;
 import frc.robot.subsystems.shooter.hood.Hood;
-import frc.robot.subsystems.shooter.hood.SetHoodCommand;
-import frc.robot.subsystems.shooter.turret.SetTurretCommand;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
@@ -82,10 +79,6 @@ public class RobotCommands {
   // ==================== COMMANDS ====================
   public final Command joystickDriveCommand;
 
-  public final Command setFlywheelCommand;
-  public final Command setHoodCommand;
-  public final Command setTurretCommand;
-
   public RobotCommands(
       Climber climber,
       Drive drive,
@@ -111,12 +104,6 @@ public class RobotCommands {
             OI.DriveOI::joystickDriveX,
             OI.DriveOI::joystickDriveY,
             OI.DriveOI::joystickDriveOmega);
-
-    setFlywheelCommand = new SetFlywheelCommand(flywheel, shooterAimModel::getFlywheelSpeed);
-    setHoodCommand = new SetHoodCommand(hood, shooterAimModel::getHoodAngle);
-    setTurretCommand =
-        new SetTurretCommand(
-            turret, shooterAimModel::getTurretAngleRot, shooterAimModel::getTurretFF);
   }
 
   // #region ==================== WHOLE ROBOT ====================
@@ -616,8 +603,8 @@ public class RobotCommands {
   public Command enableAutoShooterSettings() {
     return runOnce(
         () -> {
-          flywheel.setDefaultCommand(setFlywheelCommand);
-          hood.setDefaultCommand(setHoodCommand);
+          flywheel.setDefaultCommand(autoFlywheelCommand());
+          hood.setDefaultCommand(autoHoodCommand());
         },
         flywheel,
         hood);
@@ -688,6 +675,14 @@ public class RobotCommands {
 
   // #region ==================== FLYWHEEL ====================
 
+  public Command autoFlywheelCommand() {
+    return run(
+        () -> {
+          flywheel.setVelocity(shooterAimModel.getFlywheelSpeed());
+        },
+        flywheel);
+  }
+
   public Command stopFlywheel() {
     return runOnce(
         () -> {
@@ -734,6 +729,15 @@ public class RobotCommands {
   // #endregion
 
   // #region ==================== HOOD ====================
+
+  public Command autoHoodCommand() {
+    return run(
+        () -> {
+          hood.setPosition(shooterAimModel.getHoodAngle());
+        },
+        hood);
+  }
+
   public Command startHood() {
     return runOnce(
         () -> {
@@ -812,6 +816,15 @@ public class RobotCommands {
 
   // #region ==================== TURRET ====================
 
+  public Command autoTurretCommand() {
+    return run(
+        () -> {
+          turret.setTurretArbFF(shooterAimModel.getTurretFF());
+          turret.setPosition(shooterAimModel.getTurretAngleRot());
+        },
+        turret);
+  }
+
   public Command turretManualCCW() {
     return sequence(
         run(
@@ -852,7 +865,7 @@ public class RobotCommands {
   public Command enableAutoTurret() {
     return runOnce(
             () -> {
-              turret.setDefaultCommand(setTurretCommand);
+              turret.setDefaultCommand(autoTurretCommand());
             },
             turret)
         .ignoringDisable(true);

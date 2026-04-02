@@ -645,7 +645,7 @@ public class RobotContainer {
                 shooterAimModel));
 
     // ==================== FLYWHEEL ====================
-    flywheel.setDefaultCommand(robotCommands.setFlywheelCommand);
+    flywheel.setDefaultCommand(robotCommands.autoFlywheelCommand());
 
     FlywheelOI.runFlywheel()
         .onTrue(robotCommands.runFlywheelManual(RPM.of(robotCommands.flywheelSpeed.get())))
@@ -669,7 +669,7 @@ public class RobotContainer {
                 shooterAimModel));
 
     // ==================== HOOD ====================
-    hood.setDefaultCommand(robotCommands.setHoodCommand);
+    hood.setDefaultCommand(robotCommands.autoHoodCommand());
 
     HoodOI.rezeroHood().onTrue(robotCommands.rezeroHood());
 
@@ -694,7 +694,7 @@ public class RobotContainer {
     HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
 
     // ==================== TURRET ====================
-    turret.setDefaultCommand(robotCommands.setTurretCommand);
+    turret.setDefaultCommand(robotCommands.autoTurretCommand());
     RobotModeTriggers.teleop()
         .onTrue(
             runOnce(
