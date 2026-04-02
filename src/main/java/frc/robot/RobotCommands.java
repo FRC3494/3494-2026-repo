@@ -566,6 +566,8 @@ public class RobotCommands {
         startKicker(),
         runIntake(),
         parallel(
+            autoFlywheelCommand(),
+            autoHoodCommand(),
             jostleIntake(),
             runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
@@ -581,7 +583,10 @@ public class RobotCommands {
             }),
         startKicker(),
         runIntake(),
-        runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get())));
+        parallel(
+            autoFlywheelCommand(),
+            autoHoodCommand(),
+            runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command spinDownFromShoot() {
