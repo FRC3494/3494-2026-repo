@@ -71,7 +71,7 @@ public class Turret extends SubsystemBase {
         .pid(turretKp, turretKi, turretKd)
         .iMaxAccum(turretIMaxAccum)
         .iZone(turretIZone)
-        .allowedClosedLoopError(turretPositionTolerance, ClosedLoopSlot.kSlot0);
+        .allowedClosedLoopError(turretPositionToleranceRot, ClosedLoopSlot.kSlot0);
     turretConfig.closedLoop.feedForward.sva(turretKs, turretKv, turretKa);
     turretConfig
         .encoder
@@ -90,7 +90,7 @@ public class Turret extends SubsystemBase {
             new SysIdRoutine.Mechanism((voltage) -> setOpenLoop(voltage), null, this));
 
     if (Math.abs(turretMotor.getEncoder().getPosition()) <= 1E-5) {
-      setRelativeEncoderPosition(turretRezeroLocation);
+      setRelativeEncoderPosition(turretRezeroLocationRot);
     }
   }
 
@@ -137,13 +137,13 @@ public class Turret extends SubsystemBase {
     if (turretSetpointClampedRot < currentPositionRot) {
       // Clockwise
       totalFF =
-          currentPositionRot < turretCableRetractorStart
+          currentPositionRot < turretCableRetractorStartRot
               ? turretCableRetractorFFCWVolts.get()
               : 0.0;
     } else {
       // Counterclockwise
       totalFF =
-          currentPositionRot < turretCableRetractorStart
+          currentPositionRot < turretCableRetractorStartRot
               ? turretCableRetractorFFCCWVolts.get()
               : 0.0;
     }

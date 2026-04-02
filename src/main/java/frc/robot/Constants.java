@@ -348,7 +348,10 @@ public final class Constants {
 
   // #region HOPPER
   public static final class HopperConstants {
-    // spindexer constants
+    // Spindexer constants
+    public static final AngularVelocity spindexerSpeed = RPM.of(80);
+    public static final AngularVelocity spindexerIntakingSpeed = RPM.of(10);
+
     public static final boolean spindexerInverted = true;
     public static final int spindexerCurrentLimit = 30;
     public static final Time spindexerRampRate = Milliseconds.of(0);
@@ -367,7 +370,7 @@ public final class Constants {
     public static double spindexerKv = 0.064507;
     public static double spindexerKa = 0.0047122; // 0.28273
 
-    // kicker constants
+    // Kicker constants
     public static final boolean kickerInverted = false;
     public static final int kickerCurrentLimit = 50;
     public static final Time kickerRampRate = Milliseconds.of(0);
@@ -549,12 +552,12 @@ public final class Constants {
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
       // Turret shooting over the back of the robot
-      public static final double turretRezeroLocation = Units.degreesToRotations(180);
+      public static final double turretRezeroLocationRot = Units.degreesToRotations(180);
       public static final double turretShootingToleranceRot = Units.degreesToRotations(20.0);
 
-      public static double turretPositionTolerance = Units.degreesToRotations(0.1);
+      public static double turretPositionToleranceRot = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position
-      public static final double turretCableRetractorStart = Units.degreesToRotations(115);
+      public static final double turretCableRetractorStartRot = Units.degreesToRotations(115);
       public static final Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
       public static final Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
 
