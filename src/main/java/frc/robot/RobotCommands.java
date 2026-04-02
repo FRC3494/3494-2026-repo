@@ -116,7 +116,7 @@ public class RobotCommands {
   // #endregion
 
   // #region CLIMBER
-  public Command climberUp() {
+  public Command runClimberUp() {
     return sequence(
         runOnce(
             () -> {
@@ -132,7 +132,7 @@ public class RobotCommands {
         stopClimber());
   }
 
-  public Command climberUpInstant() {
+  public Command startClimberUp() {
     return sequence(
         runOnce(
             () -> {
@@ -146,7 +146,7 @@ public class RobotCommands {
             climber));
   }
 
-  public Command climberMid() {
+  public Command runClimberMid() {
     return sequence(
         runOnce(
             () -> {
@@ -171,7 +171,7 @@ public class RobotCommands {
         stopClimber());
   }
 
-  public Command climberMidWithCurrent() {
+  public Command runClimberMidWithCurrent() {
     return sequence(
             runOnce(
                 () -> {
@@ -186,7 +186,7 @@ public class RobotCommands {
                 },
                 climber),
             waitSeconds(0.5),
-            climberMid())
+            runClimberMid())
         .finallyDo(
             () -> {
               climber.setOpenLoop(Volts.of(0));
@@ -194,7 +194,7 @@ public class RobotCommands {
             });
   }
 
-  public Command climberDown() {
+  public Command runClimberDown() {
     return sequence(
         runOnce(
             () -> {
@@ -312,7 +312,7 @@ public class RobotCommands {
         drive);
   }
 
-  public Command autoAlignClimb() {
+  public Command autoAlignToTower() {
     return runOnce(
         () -> {
           double distanceToOutpostPose =
@@ -351,7 +351,7 @@ public class RobotCommands {
 
   // #region HOPPER
 
-  public Command runSpindexer() {
+  public Command startSpindexer() {
     return runOnce(
         () -> {
           hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : 1) * spindexerSpeed.get()));
@@ -359,7 +359,7 @@ public class RobotCommands {
         hopper);
   }
 
-  public Command runSpindexerSlow() {
+  public Command startSpindexerSlow() {
     return runOnce(
         () -> {
           hopper.setSpindexerVelocity(
@@ -368,7 +368,7 @@ public class RobotCommands {
         hopper);
   }
 
-  public Command runSpindexerReverse() {
+  public Command startSpindexerReverse() {
     return runOnce(
         () -> {
           hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : -1) * spindexerSpeed.get()));
@@ -421,41 +421,25 @@ public class RobotCommands {
         .repeatedly();
   }
 
-  public Command runSpindexerKickerWithStallDetection(Supplier<AngularVelocity> velocity) {
+  public Command runSpindexerAndKickerWithStallDetection(Supplier<AngularVelocity> velocity) {
     return sequence(
-        runSpindexer(),
+        startSpindexer(),
         startKicker(),
         repeatingSequence(
             waitUntil(
                 () ->
                     hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
-            runSpindexerReverse(),
+            startSpindexerReverse(),
             stopKicker(),
             waitSeconds(0.1),
             startKicker(),
             waitUntil(
                 () ->
                     hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
-            runSpindexer(),
+            startSpindexer(),
             stopKicker(),
             waitSeconds(0.1),
             startKicker()));
-  }
-
-  public Command unjamSpindexer() {
-    return sequence(
-        runOnce(
-            () -> {
-              hopper.setKickerVelocity(
-                  RPM.of(flywheelSpeed.get() * kickerSpeedFactor.get()).times(-1.0));
-            },
-            hopper),
-        runOnce(
-            () -> {
-              hopper.setSpindexerVelocity(
-                  RPM.of((spindexerInverted ? -1 : -1) * spindexerSpeed.get()));
-            },
-            hopper));
   }
 
   // #endregion
@@ -464,14 +448,14 @@ public class RobotCommands {
 
   public Command intake() {
     return parallel(
-        runIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get() / 8.0)));
+        startIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerSpeed.get() / 8.0)));
   }
 
-  public Command releaseIntake() {
+  public Command spinDownFromIntake() {
     return sequence(stopIntake(), stopSpindexer());
   }
 
-  public Command runIntake() {
+  public Command startIntake() {
     return runOnce(
         () -> {
           intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeed.get()));
@@ -479,7 +463,7 @@ public class RobotCommands {
         intake);
   }
 
-  public Command runIntakeReverse() {
+  public Command startIntakeReverse() {
     return runOnce(
         () -> {
           intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeed.get()));
@@ -495,7 +479,7 @@ public class RobotCommands {
         intake);
   }
 
-  public Command dropIntake() {
+  public Command dropIntakeWithDrive() {
     return sequence(
         sprintForward().withTimeout(0.88), sprintBackward().withTimeout(0.75), stopDrive());
   }
@@ -519,7 +503,7 @@ public class RobotCommands {
             intake));
   }
 
-  public Command jostleIntake() {
+  public Command runIntakeJostle() {
     // Start by moving up (-RPM) first so we move away from the bottom hard stop
     return sequence(
             runOnce(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake),
@@ -532,7 +516,7 @@ public class RobotCommands {
         .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
 
-  public Command ceaseJostleIntake() {
+  public Command stopIntakeJostle() {
     return runOnce(
         () -> {
           intake.setUppyDownyVelocity(RPM.of(0));
@@ -540,12 +524,12 @@ public class RobotCommands {
         intake);
   }
 
-  public Command raiseIntake() {
+  public Command intakeManualUp() {
     return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
         .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
 
-  public Command lowerIntake() {
+  public Command intakeManualDown() {
     return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
         .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
   }
@@ -564,12 +548,12 @@ public class RobotCommands {
               spindexerInverted = !spindexerInverted;
             }),
         startKicker(),
-        runIntake(),
+        startIntake(),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommand(),
-            jostleIntake(),
-            runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
+            runIntakeJostle(),
+            runSpindexerAndKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command shootWithoutIntakeJostle() {
@@ -582,11 +566,11 @@ public class RobotCommands {
               spindexerInverted = !spindexerInverted;
             }),
         startKicker(),
-        runIntake(),
+        startIntake(),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommand(),
-            runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
+            runSpindexerAndKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
   }
 
   public Command spinDownFromShoot() {
@@ -597,12 +581,12 @@ public class RobotCommands {
         stopKicker(),
         waitSeconds(0.25),
         stopIntake(),
-        ceaseJostleIntake(),
-        ceaseFlywheel());
+        stopIntakeJostle(),
+        stopFlywheel());
   }
 
-  public Command stopShootingNoDelay() {
-    return sequence(stopSpindexer(), stopKicker(), stopIntake(), stopHood(), ceaseFlywheel());
+  public Command stopShootNoDelay() {
+    return sequence(stopSpindexer(), stopKicker(), stopIntake(), stopHood(), stopFlywheel());
   }
 
   public Command enableAutoShooterSettings() {
@@ -616,13 +600,13 @@ public class RobotCommands {
   }
 
   public Command setManualShooterSettings(Rotation2d hoodAngle, AngularVelocity flywheelSpeed) {
-    return sequence(runFlywheelManual(flywheelSpeed), setHoodManual(hoodAngle));
+    return sequence(setFlywheelManual(flywheelSpeed), setHoodManual(hoodAngle));
   }
 
   public Command setManualShooterSettingsWithTrim(
       Rotation2d hoodAngle, AngularVelocity flywheelSpeed) {
     return sequence(
-        runFlywheelManual(() -> shooterAimModel.applyFlywheelTrim(flywheelSpeed)),
+        setFlywheelManual(() -> shooterAimModel.applyFlywheelTrim(flywheelSpeed)),
         setHoodManual(() -> shooterAimModel.applyHoodTrim(hoodAngle)));
   }
 
@@ -668,7 +652,7 @@ public class RobotCommands {
 
   public Command setDashboardShot() {
     return sequence(
-        runFlywheelManual(() -> RPM.of(flywheelSpeed.get())),
+        setFlywheelManual(() -> RPM.of(flywheelSpeed.get())),
         setHoodManual(() -> Rotation2d.fromDegrees(hoodAngle.get())));
   }
 
@@ -688,15 +672,6 @@ public class RobotCommands {
         flywheel);
   }
 
-  public Command stopFlywheel() {
-    return runOnce(
-        () -> {
-          flywheel.removeDefaultCommand();
-          flywheel.setVelocity(RPM.of(0));
-        },
-        flywheel);
-  }
-
   public Command startFlywheel() {
     return runOnce(
         () -> {
@@ -705,7 +680,7 @@ public class RobotCommands {
         flywheel);
   }
 
-  public Command ceaseFlywheel() {
+  public Command stopFlywheel() {
     return runOnce(
         () -> {
           flywheel.setShooting(false);
@@ -713,7 +688,7 @@ public class RobotCommands {
         flywheel);
   }
 
-  public Command runFlywheelManual(AngularVelocity speed) {
+  public Command setFlywheelManual(AngularVelocity speed) {
     return runOnce(
         () -> {
           flywheel.removeDefaultCommand();
@@ -722,11 +697,20 @@ public class RobotCommands {
         flywheel);
   }
 
-  public Command runFlywheelManual(Supplier<AngularVelocity> speed) {
+  public Command setFlywheelManual(Supplier<AngularVelocity> speed) {
     return runOnce(
         () -> {
           flywheel.removeDefaultCommand();
           flywheel.setVelocity(speed.get());
+        },
+        flywheel);
+  }
+
+  public Command flywheelManualStop() {
+    return runOnce(
+        () -> {
+          flywheel.removeDefaultCommand();
+          flywheel.setVelocity(RPM.of(0));
         },
         flywheel);
   }
@@ -797,7 +781,7 @@ public class RobotCommands {
         hood);
   }
 
-  public Command hoodManualUp() {
+  public Command runHoodManualUp() {
     return run(
         () -> {
           hood.removeDefaultCommand();
@@ -807,7 +791,7 @@ public class RobotCommands {
         hood);
   }
 
-  public Command hoodManualDown() {
+  public Command runHoodManualDown() {
     return run(
         () -> {
           hood.removeDefaultCommand();
@@ -830,7 +814,7 @@ public class RobotCommands {
         turret);
   }
 
-  public Command turretManualCCW() {
+  public Command runTurretManualCCW() {
     return sequence(
         run(
             () -> {
@@ -842,7 +826,7 @@ public class RobotCommands {
             turret));
   }
 
-  public Command turretManualCW() {
+  public Command runTurretManualCW() {
     return sequence(
         run(
             () -> {

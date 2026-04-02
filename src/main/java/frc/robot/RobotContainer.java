@@ -402,21 +402,21 @@ public class RobotContainer {
 
     // #region CLIMBER
 
-    ClimberOI.climberUp().onTrue(robotCommands.climberUp());
+    ClimberOI.climberUp().onTrue(robotCommands.runClimberUp());
 
     ClimberOI.climberDown()
         .onTrue(
             either(
-                robotCommands.climberMidWithCurrent(),
-                robotCommands.climberDown(),
+                robotCommands.runClimberMidWithCurrent(),
+                robotCommands.runClimberDown(),
                 () ->
                     climber.getPosition()
                         <= robotCommands.climberDownPos.get() * robotCommands.climberMidFactor.get()
                             - 0.05));
 
-    ClimberOI.climberAllTheWayDown().onTrue(robotCommands.climberDown());
+    ClimberOI.climberAllTheWayDown().onTrue(robotCommands.runClimberDown());
 
-    ClimberOI.actuallyClimb().onTrue(robotCommands.climberMidWithCurrent());
+    ClimberOI.actuallyClimb().onTrue(robotCommands.runClimberMidWithCurrent());
 
     ClimberOI.rezeroClimber().onTrue(robotCommands.rezeroClimber());
 
@@ -449,7 +449,7 @@ public class RobotContainer {
                 () -> Rotation2d.kPi.div(4)));
 
     DriveOI.autoAlignClimb()
-        .onTrue(robotCommands.autoAlignClimb())
+        .onTrue(robotCommands.autoAlignToTower())
         .onFalse(
             runOnce(
                 () -> {
@@ -466,7 +466,7 @@ public class RobotContainer {
         .onFalse(sequence(robotCommands.stopKicker(), robotCommands.stopSpindexer()));
 
     HopperOI.spindexerBackwards()
-        .onTrue(robotCommands.runSpindexerReverse())
+        .onTrue(robotCommands.startSpindexerReverse())
         .onFalse(robotCommands.stopSpindexer());
 
     HopperOI.runKicker().onTrue(robotCommands.startKicker()).onFalse(robotCommands.stopKicker());
@@ -484,28 +484,30 @@ public class RobotContainer {
     IntakeOI.intake()
         .onTrue(
             either(
-                sequence(robotCommands.ceaseJostleIntake(), robotCommands.runIntake()),
+                sequence(robotCommands.stopIntakeJostle(), robotCommands.startIntake()),
                 robotCommands.intake(),
                 ShooterOI.shoot()::getAsBoolean))
         .whileFalse(
             either(
-                robotCommands.jostleIntake(),
-                robotCommands.releaseIntake(),
+                robotCommands.runIntakeJostle(),
+                robotCommands.spinDownFromIntake(),
                 ShooterOI.shoot()::getAsBoolean));
-    IntakeOI.outtake().onTrue(robotCommands.runIntakeReverse()).onFalse(robotCommands.stopIntake());
+    IntakeOI.outtake()
+        .onTrue(robotCommands.startIntakeReverse())
+        .onFalse(robotCommands.stopIntake());
 
     IntakeOI.toggleIntake()
         .onTrue(
             either(
                 robotCommands.intake(),
-                robotCommands.releaseIntake(),
+                robotCommands.spinDownFromIntake(),
                 () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.of(0))));
 
     IntakeOI.rezeroIntakeUppyDowny().onTrue(robotCommands.rezeroIntakeUppyDowny());
 
-    IntakeOI.raiseIntake().whileTrue(robotCommands.raiseIntake());
+    IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManualUp());
 
-    IntakeOI.lowerIntake().whileTrue(robotCommands.lowerIntake());
+    IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManualDown());
 
     // #endregion
 
@@ -516,7 +518,7 @@ public class RobotContainer {
             sequence(
                 robotCommands.enableAutoShooterSettings(),
                 robotCommands.stopHood(),
-                robotCommands.ceaseFlywheel()));
+                robotCommands.stopFlywheel()));
 
     ShooterOI.shoot()
         .whileTrue(
@@ -668,8 +670,8 @@ public class RobotContainer {
     flywheel.setDefaultCommand(robotCommands.autoFlywheelCommand());
 
     FlywheelOI.runFlywheel()
-        .onTrue(robotCommands.runFlywheelManual(RPM.of(robotCommands.flywheelSpeed.get())))
-        .onFalse(robotCommands.stopFlywheel());
+        .onTrue(robotCommands.setFlywheelManual(RPM.of(robotCommands.flywheelSpeed.get())))
+        .onFalse(robotCommands.flywheelManualStop());
 
     FlywheelOI.increaseFlywheelTrim()
         .whileTrue(
@@ -713,8 +715,8 @@ public class RobotContainer {
                 },
                 shooterAimModel));
 
-    HoodOI.hoodManualUp().whileTrue(robotCommands.hoodManualUp());
-    HoodOI.hoodManualDown().whileTrue(robotCommands.hoodManualDown());
+    HoodOI.hoodManualUp().whileTrue(robotCommands.runHoodManualUp());
+    HoodOI.hoodManualDown().whileTrue(robotCommands.runHoodManualDown());
 
     // #endregion
 
@@ -729,8 +731,8 @@ public class RobotContainer {
                 },
                 shooterAimModel));
 
-    TurretOI.turretManualCCW().whileTrue(robotCommands.turretManualCCW());
-    TurretOI.turretManualCW().whileTrue(robotCommands.turretManualCW());
+    TurretOI.turretManualCCW().whileTrue(robotCommands.runTurretManualCCW());
+    TurretOI.turretManualCW().whileTrue(robotCommands.runTurretManualCW());
 
     TurretOI.resetTurretTrim()
         .onTrue(

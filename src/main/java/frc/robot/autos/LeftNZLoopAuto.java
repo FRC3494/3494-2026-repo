@@ -62,8 +62,8 @@ public class LeftNZLoopAuto {
         .onTrue(
             sequence(
                 robotCommands.shoot().withTimeout(10),
-                robotCommands.stopShootingNoDelay(),
-                robotCommands.runIntake(),
+                robotCommands.stopShootNoDelay(),
+                robotCommands.startIntake(),
                 leftShootToNZ.cmd()));
 
     return routine;

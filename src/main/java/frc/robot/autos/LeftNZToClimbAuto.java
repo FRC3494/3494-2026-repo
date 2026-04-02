@@ -61,7 +61,7 @@ public class LeftNZToClimbAuto {
 
     middleNZToLeftClimb
         .atPose("ClimberUp", Units.inchesToMeters(6), Math.PI)
-        .onTrue(robotCommands.climberUpInstant());
+        .onTrue(robotCommands.startClimberUp());
 
     middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
@@ -77,7 +77,7 @@ public class LeftNZToClimbAuto {
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
                     sequence(
                         waitUntil(() -> Timer.getMatchTime() <= 3),
-                        robotCommands.climberMidWithCurrent(),
+                        robotCommands.runClimberMidWithCurrent(),
                         runOnce(
                             () -> {
                               shooterAimModel.setTurretTrim(Units.degreesToRotations(-10.0));

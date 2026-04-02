@@ -61,7 +61,7 @@ public class RightNZToClimbAuto {
 
     middleNZToRightClimb
         .atPose("ClimberUp", Units.inchesToMeters(6), Math.PI)
-        .onTrue(robotCommands.climberUpInstant());
+        .onTrue(robotCommands.startClimberUp());
 
     middleNZToRightClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
@@ -78,7 +78,7 @@ public class RightNZToClimbAuto {
                         robotCommands.creepBackward()),
                     sequence(
                         waitUntil(() -> Timer.getMatchTime() <= 3),
-                        robotCommands.climberMidWithCurrent(),
+                        robotCommands.runClimberMidWithCurrent(),
                         runOnce(
                             () -> {
                               shooterAimModel.setTurretTrim(Units.degreesToRotations(10.0));

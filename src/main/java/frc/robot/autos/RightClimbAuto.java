@@ -36,7 +36,7 @@ public class RightClimbAuto {
                 robotCommands.enableAutoShooterSettings(),
                 robotCommands.enableAutoTurret(),
                 waitSeconds(0.5),
-                robotCommands.climberUp(),
+                robotCommands.runClimberUp(),
                 robotCommands.shoot(),
                 waitSeconds(3),
                 parallel(rightClimb.cmd(), robotCommands.spinDownFromShoot())));
@@ -47,7 +47,7 @@ public class RightClimbAuto {
             parallel(
                 sequence(
                     new AutoAlignCommand(climbPoseOutpost, drive), robotCommands.creepBackward()),
-                sequence(waitSeconds(1), robotCommands.climberMid())));
+                sequence(waitSeconds(1), robotCommands.runClimberMid())));
 
     return routine;
   }

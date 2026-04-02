@@ -45,8 +45,8 @@ public class DepotAndClimbAuto {
                 leftBumpToDepot.resetOdometry(),
                 robotCommands.enableAutoShooterSettings(),
                 robotCommands.enableAutoTurret(),
-                robotCommands.climberUpInstant(),
-                robotCommands.dropIntake(),
+                robotCommands.startClimberUp(),
+                robotCommands.dropIntakeWithDrive(),
                 leftBumpToDepotPartial.cmd().deadlineFor(robotCommands.intake())));
 
     leftBumpToDepotPartial
@@ -66,7 +66,7 @@ public class DepotAndClimbAuto {
                         new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
                     sequence(
                         waitUntil(() -> Timer.getMatchTime() <= 3),
-                        robotCommands.climberMidWithCurrent(),
+                        robotCommands.runClimberMidWithCurrent(),
                         runOnce(
                             () -> {
                               shooterAimModel.setTurretTrim(Units.degreesToRotations(-10.0));
