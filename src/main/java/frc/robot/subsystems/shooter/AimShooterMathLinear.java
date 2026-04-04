@@ -71,6 +71,11 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   private final MedianFilter turretSetpointFilter = new MedianFilter(turretSetpointFilterSize);
 
+  private final LoggedNetworkNumber azTOFAdjustSecs =
+      new LoggedNetworkNumber("Tunable/AzTofAdjustment", azTOFAdjustment.in(Seconds));
+  private final LoggedNetworkNumber nzTOFAdjustSecs =
+      new LoggedNetworkNumber("Tunable/NzTofAdjustment", nzTOFAdjustment.in(Seconds));
+
   private final InterpolatingDoubleTreeMap azHoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap azFlywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap azTimeOfFlightMap = new InterpolatingDoubleTreeMap();
@@ -185,8 +190,8 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
     double timeOfFlight =
         inAllianceZone
-            ? azTimeOfFlightMap.get(distanceToTarget)
-            : nzTimeOfFlightMap.get(distanceToTarget);
+            ? azTimeOfFlightMap.get(distanceToTarget) + azTOFAdjustSecs.get()
+            : nzTimeOfFlightMap.get(distanceToTarget) + nzTOFAdjustSecs.get();
 
     Translation2d virtualTargetLocation = getVirtualGoal(timeOfFlight, robotSpeed, targetLocation);
     Logger.recordOutput(
