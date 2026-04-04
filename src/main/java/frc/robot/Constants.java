@@ -505,17 +505,13 @@ public final class Constants {
     public static final LinearInterpolationDataPoint[] nzLinearInterpolationDataPoints =
         new LinearInterpolationDataPoint[] {
           new LinearInterpolationDataPoint(
-              Meters.of(9.170), Rotation2d.fromDegrees(45), RPM.of(4500.0), Seconds.of(1.689116)),
+              Meters.of(7.270), Rotation2d.fromDegrees(45), RPM.of(3500.0), Seconds.of(1.425)),
           new LinearInterpolationDataPoint(
-              Meters.of(5.530), Rotation2d.fromDegrees(45), RPM.of(3750.0), Seconds.of(1.562444)),
+              Meters.of(5.650), Rotation2d.fromDegrees(45), RPM.of(3100.0), Seconds.of(1.330)),
           new LinearInterpolationDataPoint(
-              Meters.of(3.315), Rotation2d.fromDegrees(40), RPM.of(3200.0), Seconds.of(1.485362)),
+              Meters.of(4.410), Rotation2d.fromDegrees(45), RPM.of(2600.0), Seconds.of(1.150)),
           new LinearInterpolationDataPoint(
-              Meters.of(2.157), Rotation2d.fromDegrees(35), RPM.of(3000.0), Seconds.of(1.4450636)),
-          new LinearInterpolationDataPoint(
-              Meters.of(1.492), Rotation2d.fromDegrees(29), RPM.of(2800.0), Seconds.of(1.4219216)),
-          new LinearInterpolationDataPoint(
-              Meters.of(1.053), Rotation2d.fromDegrees(29), RPM.of(2800.0), Seconds.of(1.4066444))
+              Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2200.0), Seconds.of(1.0)),
         };
 
     public static record LinearInterpolationDataPoint(
