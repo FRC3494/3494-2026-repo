@@ -33,6 +33,7 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class RobotCommands {
@@ -64,6 +65,9 @@ public class RobotCommands {
   private final LoggedNetworkNumber kickerSpeedMultiplier =
       new LoggedNetworkNumber("Tunable/KickerSpeedFactor", kickerSpeedFactor);
   private boolean spindexerInverted = false;
+  private int spindexerStallReversals = 0;
+  private int spindexerStallsForward = 0;
+  private int spindexerStallsReverse = 0;
 
   // INTAKE
   private final LoggedNetworkNumber intakeSpeedRPM =
@@ -384,7 +388,16 @@ public class RobotCommands {
   public Command invertSpindexer() {
     return runOnce(
         () -> {
+          if (spindexerInverted) {
+            spindexerStallsReverse++;
+          } else {
+            spindexerStallsForward++;
+          }
           spindexerInverted = !spindexerInverted;
+          spindexerStallReversals++;
+          Logger.recordOutput("Hopper/SpindexerStallReversals", spindexerStallReversals);
+          Logger.recordOutput("Hopper/SpindexerStallsForward", spindexerStallsForward);
+          Logger.recordOutput("Hopper/SpindexerStallsReverse", spindexerStallsReverse);
         });
   }
 
