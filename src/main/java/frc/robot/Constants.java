@@ -454,7 +454,7 @@ public final class Constants {
 
     // *
     // https://docs.google.com/spreadsheets/d/14hwlqJER8P0QzwcH5v36mP58clVzJN8zftQV1oThM_0/edit?usp=sharing
-    public static final Time azTOFAdjustment = Seconds.of(1.23);
+    public static final Time azTOFAdjustment = Seconds.of(0.3);
     public static final LinearInterpolationDataPoint[] azLinearInterpolationDataPoints =
         new LinearInterpolationDataPoint[] {
           // * Tuned front towards hub
@@ -505,13 +505,13 @@ public final class Constants {
     public static final LinearInterpolationDataPoint[] nzLinearInterpolationDataPoints =
         new LinearInterpolationDataPoint[] {
           new LinearInterpolationDataPoint(
-              Meters.of(7.270), Rotation2d.fromDegrees(45), RPM.of(3500.0), Seconds.of(1.425)),
+              Meters.of(7.270), Rotation2d.fromDegrees(45), RPM.of(3900.0), Seconds.of(1.425)),
           new LinearInterpolationDataPoint(
-              Meters.of(5.650), Rotation2d.fromDegrees(45), RPM.of(3100.0), Seconds.of(1.330)),
+              Meters.of(5.650), Rotation2d.fromDegrees(45), RPM.of(3300.0), Seconds.of(1.330)),
           new LinearInterpolationDataPoint(
-              Meters.of(4.410), Rotation2d.fromDegrees(45), RPM.of(2600.0), Seconds.of(1.150)),
+              Meters.of(4.410), Rotation2d.fromDegrees(45), RPM.of(2800.0), Seconds.of(1.150)),
           new LinearInterpolationDataPoint(
-              Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2200.0), Seconds.of(1.0)),
+              Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2400.0), Seconds.of(1.0)),
         };
 
     public static record LinearInterpolationDataPoint(

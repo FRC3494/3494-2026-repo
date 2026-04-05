@@ -91,7 +91,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   private final LoggedNetworkNumber flywheelTrimRPM =
       new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM");
   private final LoggedNetworkNumber distanceTrimInches =
-      new LoggedNetworkNumber("Tunable/Trim/DistanceTrimInches");
+      new LoggedNetworkNumber("Tunable/Trim/DistanceTrimInches", -8.0);
   private final LoggedNetworkNumber xTrimInches =
       new LoggedNetworkNumber("Tunable/Trim/XTrimInches");
   private final LoggedNetworkNumber yTrimInches =
