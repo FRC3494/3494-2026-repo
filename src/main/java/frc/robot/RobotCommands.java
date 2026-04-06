@@ -576,7 +576,7 @@ public class RobotCommands {
     return sequence(
         startHood(),
         startFlywheel(),
-        startIntake(),
+        // startIntake(),
         startSpindexer(),
         waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
         waitUntil(
