@@ -561,9 +561,9 @@ public final class Constants {
       public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
 
       // Default hood angle for shots using dashboard settings
-      public static final Rotation2d hoodManualAngle = hoodMinAngle;
+      public static Rotation2d hoodManualAngle = hoodMinAngle;
       // Speed of manually moving hood up and down
-      public static final Rotation2d hoodManualIncrement = Rotation2d.fromDegrees(2.0);
+      public static Rotation2d hoodManualIncrement = Rotation2d.fromDegrees(2.0);
 
       public static double hoodKp = 20.0;
       public static double hoodKi = 0.0;

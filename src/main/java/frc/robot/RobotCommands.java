@@ -45,12 +45,6 @@ public class RobotCommands {
 
   private boolean spindexerInverted = false;
 
-  // HOOD
-  private final LoggedNetworkNumber hoodAngleDeg =
-      new LoggedNetworkNumber("Tunable/HoodAngle", hoodManualAngle.getDegrees());
-  private final LoggedNetworkNumber hoodIncrementDeg =
-      new LoggedNetworkNumber("Tunable/HoodIncrementDeg", hoodManualIncrement.getDegrees());
-
   // TURRET
   private final LoggedNetworkNumber turretShootingToleranceDeg =
       new LoggedNetworkNumber(
@@ -655,8 +649,7 @@ public class RobotCommands {
 
   public Command setDashboardShot() {
     return sequence(
-        setFlywheelManual(() -> flywheelManualSpeed),
-        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngleDeg.get())));
+        setFlywheelManual(() -> flywheelManualSpeed), setHoodManual(() -> hoodManualAngle));
   }
 
   public void setShooterAimModel(ShooterAimModel shooterAimModel) {
@@ -788,8 +781,7 @@ public class RobotCommands {
     return run(
         () -> {
           hood.removeDefaultCommand();
-          hood.setPosition(
-              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrementDeg.get())));
+          hood.setPosition(hood.getHoodSetpoint().plus(hoodManualIncrement));
         },
         hood);
   }
@@ -798,8 +790,7 @@ public class RobotCommands {
     return run(
         () -> {
           hood.removeDefaultCommand();
-          hood.setPosition(
-              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrementDeg.get())));
+          hood.setPosition(hood.getHoodSetpoint().minus(hoodManualIncrement));
         },
         hood);
   }
