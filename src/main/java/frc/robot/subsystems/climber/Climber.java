@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -76,15 +77,11 @@ public class Climber extends SubsystemBase {
     builder.addDoubleArrayProperty(
         "PID",
         () -> new double[] {climberKp, climberKi, climberKd},
-        (double[] values) -> {
-          setPID(values[0], values[1], values[2]);
-        });
+        (double[] values) -> setPID(values[0], values[1], values[2]));
     builder.addDoubleArrayProperty(
         "SVA",
         () -> new double[] {climberKs, climberKv, climberKa},
-        (double[] values) -> {
-          setSVA(values[0], values[1], values[2]);
-        });
+        (double[] values) -> setSVA(values[0], values[1], values[2]));
 
     builder.addIntegerProperty(
         "Normal Current Limit",
@@ -93,6 +90,11 @@ public class Climber extends SubsystemBase {
           climberCurrentLimit = ((int) value);
           setCurrentLimit(Amps.of(value));
         });
+
+    builder.addDoubleProperty(
+        "Ramp Rate (ms)",
+        () -> climberRampRate.in(Milliseconds),
+        (double value) -> setRampRate(Milliseconds.of(value)));
   }
 
   private void logSendableValues() {
@@ -166,6 +168,15 @@ public class Climber extends SubsystemBase {
     climberKv = v;
     climberKa = a;
     config.closedLoop.feedForward.sva(s, v, a);
+    climberMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setRampRate(Time rampRate) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    climberRampRate = rampRate;
+    config.openLoopRampRate(rampRate.in(Seconds));
+    config.closedLoopRampRate(rampRate.in(Seconds));
     climberMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
