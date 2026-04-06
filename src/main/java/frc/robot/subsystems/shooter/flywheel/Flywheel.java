@@ -76,11 +76,11 @@ public class Flywheel extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty(
-        "Flywheel Threshold Factor",
+        "Threshold Factor",
         () -> flywheelThresholdFactor,
         (double value) -> flywheelThresholdFactor = value);
     builder.addIntegerProperty(
-        "Flywheel Manual Speed",
+        "Manual Speed",
         () -> ((long) flywheelManualSpeed.in(RPM)),
         (long value) -> flywheelManualSpeed = RPM.of(value));
 
