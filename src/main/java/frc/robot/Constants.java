@@ -165,19 +165,19 @@ public final class Constants {
   // #region CLIMBER
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static final int climberCurrentLimit = 70;
+    public static int climberCurrentLimit = 70;
     public static final Time climberRampRate = Milliseconds.of(10);
     // 1:80 ratio is to prevent encoder from looping
     public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 
     public static final int climberCurrentSensingFilterSize = 10;
 
-    public static final double climberDownPosition = 2.443155 + 0.5;
-    public static final double climberUpPosition = 0.4;
-    // Fraction of the way DOWN the "mid" position (climb position) is
-    public static final double climberMidPositionFactor = 0.8;
+    public static double climberUpPosition = 0.4;
+    public static double climberDownPosition = 2.443155 + 0.5;
+    // Fraction of the way DOWN the climb position is
+    public static double climbPositionFactor = 0.8;
 
-    public static final double climberTolerance = 0.01;
+    public static double climberTolerance = 0.01;
 
     public static double climberKp = 10.0;
     public static double climberKi = 0.0;
@@ -192,7 +192,7 @@ public final class Constants {
   // #region DRIVE
   public static class DriveConstants {
     /*
-    ! Things that need to be configured in addition to AdvantageKit Swerve Template configs
+    ! Things that need to be configured in addition to AdvantageKit Swerve Template configs:
 
     * maxAngularSpeedFactor
        - Units: rad/sec

@@ -48,14 +48,6 @@ public class RobotCommands {
 
   // #region TUNABLES
 
-  // CLIMBER
-  private final LoggedNetworkNumber climberUpPos =
-      new LoggedNetworkNumber("Tunable/ClimberUpPos", climberUpPosition);
-  public final LoggedNetworkNumber climberDownPos =
-      new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
-  public final LoggedNetworkNumber climberMidFactor =
-      new LoggedNetworkNumber("Tunable/ClimberMidFactor", climberMidPositionFactor);
-
   // HOPPER
   private final LoggedNetworkNumber spindexerRPM =
       new LoggedNetworkNumber("Tunable/SpindexerRPM", spindexerSpeed.in(RPM));
@@ -139,10 +131,10 @@ public class RobotCommands {
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberUpPos.get());
+              climber.setPosition(climberUpPosition);
             },
             climber),
-        waitUntil(() -> climber.getPosition() < climberUpPos.get() + climberTolerance),
+        waitUntil(() -> climber.getPosition() < climberUpPosition + climberTolerance),
         stopClimber());
   }
 
@@ -155,7 +147,7 @@ public class RobotCommands {
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberUpPos.get());
+              climber.setPosition(climberUpPosition);
             },
             climber));
   }
@@ -169,19 +161,19 @@ public class RobotCommands {
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberDownPos.get() * climberMidFactor.get());
+              climber.setPosition(climberDownPosition * climbPositionFactor);
             },
             climber),
         either(
             waitUntil(
                 () ->
                     climber.getPosition()
-                        > climberDownPos.get() * climberMidFactor.get() - climberTolerance),
+                        > climberDownPosition * climbPositionFactor - climberTolerance),
             waitUntil(
                 () ->
                     climber.getPosition()
-                        < climberDownPos.get() * climberMidFactor.get() + climberTolerance),
-            () -> climber.getPosition() <= climberDownPos.get() * climberMidFactor.get()),
+                        < climberDownPosition * climbPositionFactor + climberTolerance),
+            () -> climber.getPosition() <= climberDownPosition * climbPositionFactor),
         stopClimber());
   }
 
@@ -217,10 +209,10 @@ public class RobotCommands {
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberDownPos.get());
+              climber.setPosition(climberDownPosition);
             },
             climber),
-        waitUntil(() -> climber.getPosition() > climberDownPos.get() - climberTolerance),
+        waitUntil(() -> climber.getPosition() > climberDownPosition - climberTolerance),
         stopClimber());
   }
 
