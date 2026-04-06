@@ -62,8 +62,8 @@ public class RightCloseNZAuto {
         .onTrue(
             sequence(
                 robotCommands.shoot().withTimeout(10),
-                robotCommands.stopShootingNoDelay(),
-                robotCommands.runIntake(),
+                robotCommands.stopShootNoDelay(),
+                robotCommands.startIntake(),
                 rightShootToNZ.cmd()));
 
     return routine;
