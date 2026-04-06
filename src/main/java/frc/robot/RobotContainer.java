@@ -62,7 +62,6 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
-import frc.robot.util.choreo.ChoreoVars;
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 /**
@@ -423,38 +422,10 @@ public class RobotContainer {
     // #region WHOLE ROBOT
     OI.rezeroMechanisms().onTrue(robotCommands.rezeroMechanisms());
 
-    SmartDashboard.putData(
-        "ResetOdoLeftTrench",
-        runOnce(
-                () -> {
-                  drive.setPose(ChoreoVars.Poses.LeftTrenchStartingPosition);
-                },
-                drive)
-            .ignoringDisable(true));
-    SmartDashboard.putData(
-        "ResetOdoRightTrench",
-        runOnce(
-                () -> {
-                  drive.setPose(ChoreoVars.Poses.RightTrenchStartingPosition);
-                },
-                drive)
-            .ignoringDisable(true));
-    SmartDashboard.putData(
-        "ResetOdoLeftBump",
-        runOnce(
-                () -> {
-                  drive.setPose(ChoreoVars.Poses.LeftBumpStartingPosition);
-                },
-                drive)
-            .ignoringDisable(true));
-    SmartDashboard.putData(
-        "ResetOdoRightBump",
-        runOnce(
-                () -> {
-                  drive.setPose(ChoreoVars.Poses.RightBumpStartingPosition);
-                },
-                drive)
-            .ignoringDisable(true));
+    SmartDashboard.putData("ResetOdoLeftTrench", Autos.resetOdoLeftTrench(drive));
+    SmartDashboard.putData("ResetOdoRightTrench", Autos.resetOdoRightTrench(drive));
+    SmartDashboard.putData("ResetOdoLeftBump", Autos.resetOdoLeftBump(drive));
+    SmartDashboard.putData("ResetOdoRightBump", Autos.resetOdoRightBump(drive));
 
     // #endregion
 
