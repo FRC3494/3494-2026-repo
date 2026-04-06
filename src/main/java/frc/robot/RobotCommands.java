@@ -126,7 +126,7 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
@@ -142,7 +142,7 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
@@ -156,7 +156,7 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
@@ -188,7 +188,7 @@ public class RobotCommands {
             waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
             runOnce(
                 () -> {
-                  climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+                  climber.setCurrentLimit(climberCurrentLimit);
                 },
                 climber),
             waitSeconds(0.5),
@@ -196,7 +196,7 @@ public class RobotCommands {
         .finallyDo(
             () -> {
               climber.setOpenLoop(Volts.of(0));
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             });
   }
 
@@ -204,7 +204,7 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
@@ -233,14 +233,14 @@ public class RobotCommands {
                 climber),
             runOnce(
                 () -> {
-                  climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+                  climber.setCurrentLimit(climberCurrentLimit);
                 },
                 climber))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
               climber.setOpenLoop(Volts.of(0));
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             });
   }
 
