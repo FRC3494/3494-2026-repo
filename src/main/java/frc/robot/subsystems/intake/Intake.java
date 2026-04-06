@@ -11,11 +11,12 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -23,7 +24,6 @@ import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Intake extends SubsystemBase {
   SparkFlex spinnySpinnyMotor;
@@ -34,44 +34,6 @@ public class Intake extends SubsystemBase {
 
   @Getter @AutoLogOutput double uppyDownySetpoint = 0.0;
   @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
-
-  private LoggedNetworkNumber uppyDownyP =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kP", uppyDownyKp);
-  private LoggedNetworkNumber uppyDownyI =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kI", uppyDownyKi);
-  private LoggedNetworkNumber uppyDownyD =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kD", uppyDownyKd);
-
-  private LoggedNetworkNumber spinnySpinnyP =
-      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kP", spinnySpinnyKp);
-  private LoggedNetworkNumber spinnySpinnyI =
-      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kI", spinnySpinnyKi);
-  private LoggedNetworkNumber spinnySpinnyD =
-      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kD", spinnySpinnyKd);
-
-  private LoggedNetworkNumber spinnySpinnyS =
-      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kS", spinnySpinnyKs);
-  private LoggedNetworkNumber spinnySpinnyV =
-      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kV", spinnySpinnyKv);
-  private LoggedNetworkNumber spinnySpinnyA =
-      new LoggedNetworkNumber("Tunable/Intake/SpinnySpinny/kA", spinnySpinnyKa);
-
-  private LoggedNetworkNumber uppyDownyS =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kS", uppyDownyKs);
-  private LoggedNetworkNumber uppyDownyV =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kV", uppyDownyKv);
-  private LoggedNetworkNumber uppyDownyA =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/kA", uppyDownyKa);
-
-  private LoggedNetworkNumber uppyDownyRaiseRPMTunable =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/RaiseRPM", uppyDownyRaiseRPM);
-  private LoggedNetworkNumber uppyDownyLowerRPMTunable =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/LowerRPM", uppyDownyLowerRPM);
-
-  private LoggedNetworkNumber jostleIntakeUpTimeTunable =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/JostleUpTime", jostleIntakeUpTime);
-  private LoggedNetworkNumber jostleIntakeDownTimeTunable =
-      new LoggedNetworkNumber("Tunable/Intake/UppyDowny/JostleDownTime", jostleIntakeDownTime);
 
   @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
 
@@ -84,7 +46,7 @@ public class Intake extends SubsystemBase {
     spinnySpinnyMotor = new SparkFlex(RobotMap.Intake.spinnySpinnyCanId, MotorType.kBrushless);
     SparkFlexConfig spinnySpinnyConfig = new SparkFlexConfig();
     spinnySpinnyConfig
-        .smartCurrentLimit(spinnySpinnyCurrentLimit)
+        .smartCurrentLimit(((int) spinnySpinnyCurrentLimit.in(Amps)))
         .idleMode(IdleMode.kCoast)
         .inverted(spinnySpinnyInverted)
         .openLoopRampRate(spinnySpinnyRampRate.in(Seconds))
@@ -123,44 +85,81 @@ public class Intake extends SubsystemBase {
                 null,
                 (state) -> Logger.recordOutput("Intake/SpinnySpinnySysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpinnySpinnyOpenLoop(voltage), null, this));
+
+    SmartDashboard.putData("Intake", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addIntegerProperty(
+        "SpinnySpinny/Speed",
+        () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
+        (long value) -> intakeSpinnySpinnySpeed = RPM.of(value));
+
+    builder.addDoubleArrayProperty(
+        "SpinnySpinny/PID",
+        () -> new double[] {spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd},
+        (double[] values) -> setSpinnySpinnyPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "SpinnySpinny/SVA",
+        () -> new double[] {spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa},
+        (double[] values) -> setSpinnySpinnySVA(values[0], values[1], values[2]));
+
+    builder.addDoubleProperty(
+        "UppyDowny/Raise RPM",
+        () -> uppyDownyRaiseRPM,
+        (double value) -> uppyDownyRaiseRPM = value);
+    builder.addDoubleProperty(
+        "UppyDowny/Lower RPM",
+        () -> uppyDownyLowerRPM,
+        (double value) -> uppyDownyLowerRPM = value);
+    builder.addDoubleProperty(
+        "UppyDowny/Jostle Intake Up Time",
+        () -> jostleIntakeUpTime,
+        (double value) -> jostleIntakeUpTime = value);
+    builder.addDoubleProperty(
+        "UppyDowny/Jostle Intake Down Time",
+        () -> jostleIntakeDownTime,
+        (double value) -> jostleIntakeDownTime = value);
+
+    builder.addDoubleArrayProperty(
+        "UppyDowny/PID",
+        () -> new double[] {uppyDownyKp, uppyDownyKi, uppyDownyKd},
+        (double[] values) -> setUppyDownyPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "UppyDowny/SVA",
+        () -> new double[] {uppyDownyKs, uppyDownyKv, uppyDownyKa},
+        (double[] values) -> setUppyDownySVA(values[0], values[1], values[2]));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
+
+    Logger.recordOutput("SpinnySpinny/PID/kP", spinnySpinnyKp);
+    Logger.recordOutput("SpinnySpinny/PID/kI", spinnySpinnyKi);
+    Logger.recordOutput("SpinnySpinny/PID/kD", spinnySpinnyKd);
+    Logger.recordOutput("SpinnySpinny/PID/kS", spinnySpinnyKs);
+    Logger.recordOutput("SpinnySpinny/PID/kV", spinnySpinnyKv);
+    Logger.recordOutput("SpinnySpinny/PID/kA", spinnySpinnyKa);
+
+    Logger.recordOutput("UppyDowny/RaiseRPM", uppyDownyRaiseRPM);
+    Logger.recordOutput("UppyDowny/LowerRPM", uppyDownyLowerRPM);
+    Logger.recordOutput("UppyDowny/JostleIntakeUpTime", jostleIntakeUpTime);
+    Logger.recordOutput("UppyDowny/JostleIntakeDownTime", jostleIntakeDownTime);
+
+    Logger.recordOutput("UppyDowny/PID/kP", uppyDownyKp);
+    Logger.recordOutput("UppyDowny/PID/kI", uppyDownyKi);
+    Logger.recordOutput("UppyDowny/PID/kD", uppyDownyKd);
+    Logger.recordOutput("UppyDowny/PID/kS", uppyDownyKs);
+    Logger.recordOutput("UppyDowny/PID/kV", uppyDownyKv);
+    Logger.recordOutput("UppyDowny/PID/kA", uppyDownyKa);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyMotor, false);
     logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
-
-    boolean uppyDownyPidChanged =
-        uppyDownyP.get() != uppyDownyKp
-            || uppyDownyI.get() != uppyDownyKi
-            || uppyDownyD.get() != uppyDownyKd;
-    if (uppyDownyPidChanged) {
-      setUppyDownyPID(uppyDownyP.get(), uppyDownyI.get(), uppyDownyD.get());
-    }
-
-    boolean uppyDownySvaChanged =
-        uppyDownyS.get() != uppyDownyKs
-            || uppyDownyV.get() != uppyDownyKv
-            || uppyDownyA.get() != uppyDownyKa;
-    if (uppyDownySvaChanged) {
-      setUppyDownySVA(uppyDownyS.get(), uppyDownyV.get(), uppyDownyA.get());
-    }
-
-    boolean spinnySpinnyPidChanged =
-        spinnySpinnyP.get() != spinnySpinnyKp
-            || spinnySpinnyI.get() != spinnySpinnyKi
-            || spinnySpinnyD.get() != spinnySpinnyKd;
-    if (spinnySpinnyPidChanged) {
-      setSpinnySpinnyPID(spinnySpinnyP.get(), spinnySpinnyI.get(), spinnySpinnyD.get());
-    }
-
-    boolean spinnySpinnySvaChanged =
-        spinnySpinnyS.get() != spinnySpinnyKs
-            || spinnySpinnyV.get() != spinnySpinnyKv
-            || spinnySpinnyA.get() != spinnySpinnyKa;
-    if (spinnySpinnySvaChanged) {
-      setSpinnySpinnySVA(spinnySpinnyS.get(), spinnySpinnyV.get(), spinnySpinnyA.get());
-    }
+    logSendableValues();
 
     uppyDownyFilteredCurrent =
         Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));
@@ -193,15 +192,6 @@ public class Intake extends SubsystemBase {
         .andThen(spinnySpinnySysId.dynamic(direction));
   }
 
-  public void setUppyDownyPosition(double setpoint) {
-    uppyDownySetpoint = setpoint;
-    uppyDownySetpointClamped = MathUtil.clamp(setpoint, uppyDownyMinPosition, uppyDownyMaxPosition);
-
-    uppyDownyMotor
-        .getClosedLoopController()
-        .setSetpoint(uppyDownySetpointClamped, ControlType.kPosition);
-  }
-
   public double getUppyDownyPosition() {
     return uppyDownyMotor.getEncoder().getPosition();
   }
@@ -224,22 +214,6 @@ public class Intake extends SubsystemBase {
     config.smartCurrentLimit((int) limit.in(Amps));
     uppyDownyMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-  }
-
-  public AngularVelocity getUppyDownyRaiseRPM() {
-    return RPM.of(uppyDownyRaiseRPMTunable.get());
-  }
-
-  public AngularVelocity getUppyDownyLowerRPM() {
-    return RPM.of(uppyDownyLowerRPMTunable.get());
-  }
-
-  public double getInstakeUpTime() {
-    return jostleIntakeUpTimeTunable.get();
-  }
-
-  public double getInstakeDownTime() {
-    return jostleIntakeDownTimeTunable.get();
   }
 
   public void setUppyDownyRelativeEncoderPosition(double position) {

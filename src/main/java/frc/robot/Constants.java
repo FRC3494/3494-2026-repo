@@ -393,11 +393,11 @@ public final class Constants {
   // #region INTAKE
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
-    public static final int spinnySpinnyCurrentLimit = 50;
+    public static final Current spinnySpinnyCurrentLimit = Amps.of(50);
     public static final Time spinnySpinnyRampRate = Milliseconds.of(0);
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
 
-    public static final AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
+    public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
 
     public static double spinnySpinnyKp = 3.1048E-05;
     public static double spinnySpinnyKi = 0.0;
@@ -424,11 +424,11 @@ public final class Constants {
     public static double uppyDownyKv = 0.007;
     public static double uppyDownyKa = 0.0;
 
-    public static final double uppyDownyRaiseRPM = -500.0;
-    public static final double uppyDownyLowerRPM = 150.0;
+    public static double uppyDownyRaiseRPM = -500.0;
+    public static double uppyDownyLowerRPM = 150.0;
 
-    public static final double jostleIntakeUpTime = 0.75;
-    public static final double jostleIntakeDownTime = 0.5;
+    public static double jostleIntakeUpTime = 0.75;
+    public static double jostleIntakeDownTime = 0.5;
   }
   // #endregion
 

@@ -50,10 +50,6 @@ public class RobotCommands {
 
   private boolean spindexerInverted = false;
 
-  // INTAKE
-  private final LoggedNetworkNumber intakeSpeedRPM =
-      new LoggedNetworkNumber("Tunable/IntakeRPM", intakeSpinnySpinnySpeed.in(RPM));
-
   // FLYWHEEL
   private final LoggedNetworkNumber flywheelThreshold =
       new LoggedNetworkNumber("Tunable/FlywheelThreshold", flywheelThresholdFactor);
@@ -478,7 +474,7 @@ public class RobotCommands {
   public Command startIntake() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeedRPM.get()));
+          intake.setSpinnySpinnyVelocity(intakeSpinnySpinnySpeed);
         },
         intake);
   }
@@ -486,7 +482,7 @@ public class RobotCommands {
   public Command startIntakeReverse() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeedRPM.get()));
+          intake.setSpinnySpinnyVelocity(intakeSpinnySpinnySpeed.times(-1.0));
         },
         intake);
   }
@@ -526,32 +522,32 @@ public class RobotCommands {
   public Command runIntakeJostle() {
     // Start by moving up (-RPM) first so we move away from the bottom hard stop
     return sequence(
-            runOnce(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake),
+            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
             waitSeconds(0.15),
             repeatingSequence(
-                run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
-                    .withTimeout(intake.getInstakeDownTime()),
-                run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
-                    .withTimeout(intake.getInstakeUpTime())))
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
+                run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
+                    .withTimeout(jostleIntakeDownTime),
+                run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
+                    .withTimeout(jostleIntakeUpTime)))
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()));
   }
 
   public Command stopIntakeJostle() {
     return runOnce(
         () -> {
-          intake.setUppyDownyVelocity(RPM.of(0));
+          intake.setUppyDownyVelocity(RPM.zero());
         },
         intake);
   }
 
   public Command intakeManualUp() {
-    return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
+    return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()));
   }
 
   public Command intakeManualDown() {
-    return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
+    return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()));
   }
 
   // #endregion
