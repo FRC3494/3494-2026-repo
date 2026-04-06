@@ -352,14 +352,14 @@ public final class Constants {
   public static final class HopperConstants {
     // Spindexer constants
     public static final boolean spindexerInverted = true;
-    public static final int spindexerCurrentLimit = 30;
-    public static final Time spindexerRampRate = Milliseconds.of(0);
+    public static Current spindexerCurrentLimit = Amps.of(30);
+    public static Time spindexerRampRate = Milliseconds.of(0);
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
     public static final int spindexerCurrentSensingFilterSize = 10;
 
-    public static final AngularVelocity spindexerSpeed = RPM.of(80);
-    public static final AngularVelocity spindexerIntakingSpeed = RPM.of(10);
+    public static AngularVelocity spindexerSpeed = RPM.of(80);
+    public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
 
     public static double spindexerKp = 3.0357E-05;
     public static double spindexerKi = 0.0;
@@ -378,7 +378,7 @@ public final class Constants {
     public static final Time kickerRampRate = Milliseconds.of(0);
 
     // Number to multiply the flywheel speed by
-    public static final double kickerSpeedFactor = 1.0;
+    public static double kickerSpeedFactor = 1.0;
 
     public static double kickerKp = 2.8084E-08;
     public static double kickerKi = 0.0;

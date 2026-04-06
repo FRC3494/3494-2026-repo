@@ -15,6 +15,8 @@ import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -22,7 +24,6 @@ import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Hopper extends SubsystemBase {
   private SparkFlex spindexerMotor;
@@ -30,34 +31,6 @@ public class Hopper extends SubsystemBase {
 
   @AutoLogOutput private AngularVelocity spindexerSetpointRPM = RPM.of(0.0);
   @AutoLogOutput private AngularVelocity kickerSetpointRPM = RPM.of(0.0);
-
-  private LoggedNetworkNumber spindexerP =
-      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kP", spindexerKp);
-  private LoggedNetworkNumber spindexerI =
-      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kI", spindexerKi);
-  private LoggedNetworkNumber spindexerD =
-      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kD", spindexerKd);
-
-  private LoggedNetworkNumber spindexerS =
-      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kS", spindexerKs);
-  private LoggedNetworkNumber spindexerV =
-      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kV", spindexerKv);
-  private LoggedNetworkNumber spindexerA =
-      new LoggedNetworkNumber("Tunable/Hopper/Spindexer/kA", spindexerKa);
-
-  private LoggedNetworkNumber kickerP =
-      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kP", kickerKp);
-  private LoggedNetworkNumber kickerI =
-      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kI", kickerKi);
-  private LoggedNetworkNumber kickerD =
-      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kD", kickerKd);
-
-  private LoggedNetworkNumber kickerS =
-      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kS", kickerKs);
-  private LoggedNetworkNumber kickerV =
-      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kV", kickerKv);
-  private LoggedNetworkNumber kickerA =
-      new LoggedNetworkNumber("Tunable/Hopper/Kicker/kA", kickerKa);
 
   @Getter
   @AutoLogOutput(key = "Hopper/SpindexerFilteredMotorCurrent")
@@ -76,7 +49,7 @@ public class Hopper extends SubsystemBase {
     // initialize spindexer motor config
     SparkFlexConfig spindexerConfig = new SparkFlexConfig();
     spindexerConfig
-        .smartCurrentLimit(spindexerCurrentLimit)
+        .smartCurrentLimit(((int) spindexerCurrentLimit.in(Amps)))
         .idleMode(IdleMode.kCoast)
         .inverted(spindexerInverted)
         .openLoopRampRate(spindexerRampRate.in(Seconds))
@@ -115,7 +88,7 @@ public class Hopper extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Hopper/SpindexerSysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Hopper/Spindexer/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpindexerOpenLoop(voltage), null, this));
     kickerSysId =
         new SysIdRoutine(
@@ -123,42 +96,80 @@ public class Hopper extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Hopper/KickerSysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Hopper/Kicker/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setKickerOpenLoop(voltage), null, this));
+
+    SmartDashboard.putData("Hopper", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    // Spindexer
+    builder.addIntegerProperty(
+        "Spindexer/Speed (RPM)",
+        () -> ((long) spindexerSpeed.in(RPM)),
+        (long value) -> spindexerSpeed = RPM.of(value));
+    builder.addIntegerProperty(
+        "Spindexer/Speed while Intaking",
+        () -> (long) spindexerIntakingSpeed.in(RPM),
+        (long value) -> spindexerIntakingSpeed = RPM.of(value));
+
+    builder.addDoubleArrayProperty(
+        "Spindexer/PID",
+        () -> new double[] {spindexerKp, spindexerKi, spindexerKd},
+        (double[] values) -> setSpindexerPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "Spindexer/SVA",
+        () -> new double[] {spindexerKs, spindexerKv, spindexerKa},
+        (double[] values) -> setSpindexerSVA(values[0], values[1], values[2]));
+
+    builder.addIntegerProperty(
+        "Spindexer/Current Limit",
+        () -> ((long) spindexerCurrentLimit.in(Amps)),
+        (long value) -> setSpindexerCurrentLimit(Amps.of(value)));
+
+    // Kicker
+    builder.addDoubleProperty(
+        "Kicker/Speed Factor",
+        () -> kickerSpeedFactor,
+        (double value) -> kickerSpeedFactor = value);
+
+    builder.addDoubleArrayProperty(
+        "Kicker/PID",
+        () -> new double[] {kickerKp, kickerKi, kickerKd},
+        (double[] values) -> setKickerPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "Kicker/SVA",
+        () -> new double[] {kickerKs, kickerKv, kickerKa},
+        (double[] values) -> setKickerSVA(values[0], values[1], values[2]));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("Spindexer/Speed", spindexerSpeed);
+    Logger.recordOutput("Spindexer/IntakingSpeed", spindexerIntakingSpeed);
+
+    Logger.recordOutput("Spindexer/PID/kP", spindexerKp);
+    Logger.recordOutput("Spindexer/PID/kI", spindexerKi);
+    Logger.recordOutput("Spindexer/PID/kD", spindexerKd);
+    Logger.recordOutput("Spindexer/PID/kS", spindexerKs);
+    Logger.recordOutput("Spindexer/PID/kV", spindexerKv);
+    Logger.recordOutput("Spindexer/PID/kA", spindexerKa);
+
+    Logger.recordOutput("Kicker/SpeedFactor", kickerSpeedFactor);
+
+    Logger.recordOutput("Kicker/PID/kP", kickerKp);
+    Logger.recordOutput("Kicker/PID/kI", kickerKi);
+    Logger.recordOutput("Kicker/PID/kD", kickerKd);
+    Logger.recordOutput("Kicker/PID/kS", kickerKs);
+    Logger.recordOutput("Kicker/PID/kV", kickerKv);
+    Logger.recordOutput("Kicker/PID/kA", kickerKa);
   }
 
   @Override
   public void periodic() {
-    logMotorStats("Hopper/SpindexerMotor", spindexerMotor, false);
-    logMotorStats("Hopper/KickerMotor", kickerMotor, false);
-
-    boolean pidChanged =
-        spindexerP.get() != spindexerKp
-            || spindexerI.get() != spindexerKi
-            || spindexerD.get() != spindexerKd;
-    if (pidChanged) {
-      setPID(spindexerP.get(), spindexerI.get(), spindexerD.get());
-    }
-
-    boolean spindexerSvaChanged =
-        spindexerS.get() != spindexerKs
-            || spindexerV.get() != spindexerKv
-            || spindexerA.get() != spindexerKa;
-    if (spindexerSvaChanged) {
-      setSpindexerSVA(spindexerS.get(), spindexerV.get(), spindexerA.get());
-    }
-
-    boolean kickerPidChanged =
-        kickerP.get() != kickerKp || kickerI.get() != kickerKi || kickerD.get() != kickerKd;
-    if (kickerPidChanged) {
-      setKickerPID(kickerP.get(), kickerI.get(), kickerD.get());
-    }
-
-    boolean kickerSvaChanged =
-        kickerS.get() != kickerKs || kickerV.get() != kickerKv || kickerA.get() != kickerKa;
-    if (kickerSvaChanged) {
-      setKickerSVA(kickerS.get(), kickerV.get(), kickerA.get());
-    }
+    logMotorStats("Hopper/Spindexer/Motor", spindexerMotor, false);
+    logMotorStats("Hopper/Kicker/Motor", kickerMotor, false);
+    logSendableValues();
 
     spindexerFilteredCurrent =
         Amps.of(spindexerCurrentFilter.calculate(spindexerMotor.getOutputCurrent()));
@@ -218,7 +229,7 @@ public class Hopper extends SubsystemBase {
         .andThen(spindexerSysId.dynamic(direction));
   }
 
-  private void setPID(double p, double i, double d) {
+  private void setSpindexerPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
     spindexerKp = p;
     spindexerKi = i;
@@ -234,6 +245,14 @@ public class Hopper extends SubsystemBase {
     spindexerKv = v;
     spindexerKa = a;
     config.closedLoop.feedForward.sva(s, v, a);
+    spindexerMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSpindexerCurrentLimit(Current limit) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spindexerCurrentLimit = limit;
+    config.smartCurrentLimit(((int) limit.in(Amps)));
     spindexerMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }

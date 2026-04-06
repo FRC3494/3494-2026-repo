@@ -48,13 +48,6 @@ public class RobotCommands {
 
   // #region TUNABLES
 
-  // HOPPER
-  private final LoggedNetworkNumber spindexerRPM =
-      new LoggedNetworkNumber("Tunable/SpindexerRPM", spindexerSpeed.in(RPM));
-  private final LoggedNetworkNumber spindexerIntakingRPM =
-      new LoggedNetworkNumber("Tunable/SpindexerIntakingRPM", spindexerIntakingSpeed.in(RPM));
-  private final LoggedNetworkNumber kickerSpeedMultiplier =
-      new LoggedNetworkNumber("Tunable/KickerSpeedFactor", kickerSpeedFactor);
   private boolean spindexerInverted = false;
 
   // INTAKE
@@ -360,7 +353,7 @@ public class RobotCommands {
   public Command startSpindexer() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : 1) * spindexerRPM.get()));
+          hopper.setSpindexerVelocity(spindexerSpeed.times(spindexerInverted ? -1 : 1));
         },
         hopper);
   }
@@ -368,7 +361,7 @@ public class RobotCommands {
   public Command startSpindexerReverse() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : -1) * spindexerRPM.get()));
+          hopper.setSpindexerVelocity(spindexerSpeed.times(spindexerInverted ? 1 : -1));
         },
         hopper);
   }
@@ -391,7 +384,7 @@ public class RobotCommands {
   public Command startKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * kickerSpeedMultiplier.get()));
+          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * kickerSpeedFactor));
         },
         hopper);
   }
@@ -399,7 +392,7 @@ public class RobotCommands {
   public Command startKickerReverse() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * -kickerSpeedMultiplier.get()));
+          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * -kickerSpeedFactor));
         },
         hopper);
   }
@@ -421,7 +414,9 @@ public class RobotCommands {
             startSpindexer(),
             waitUntil(
                 () ->
-                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
+                    hopper
+                        .getSpindexerFilteredCurrent()
+                        .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))),
             invertSpindexer())
         .finallyDo(
             () -> {
@@ -439,7 +434,7 @@ public class RobotCommands {
                         false
                             || hopper
                                 .getSpindexerFilteredCurrent()
-                                .gt(Amps.of(spindexerCurrentLimit - 2.0))
+                                .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))
                             || Math.abs(
                                     turret.getPositionRot() - turret.getTurretSetpointClampedRot())
                                 > Units.degreesToRotations(turretShootingToleranceDeg.get())),
@@ -473,8 +468,7 @@ public class RobotCommands {
   // #region INTAKE
 
   public Command intake() {
-    return parallel(
-        startIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerIntakingRPM.get())));
+    return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed));
   }
 
   public Command spinDownFromIntake() {
@@ -579,7 +573,7 @@ public class RobotCommands {
             autoFlywheelCommand(),
             autoHoodCommand(),
             runIntakeJostle(),
-            runSpindexerAndKicker(() -> RPM.of(spindexerRPM.get()))));
+            runSpindexerAndKicker(() -> spindexerSpeed)));
   }
 
   public Command shootWithoutIntakeJostle() {
@@ -594,9 +588,7 @@ public class RobotCommands {
                 Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
                     <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
         parallel(
-            autoFlywheelCommand(),
-            autoHoodCommand(),
-            runSpindexerAndKicker(() -> RPM.of(spindexerRPM.get()))));
+            autoFlywheelCommand(), autoHoodCommand(), runSpindexerAndKicker(() -> spindexerSpeed)));
   }
 
   public Command spinDownFromShoot() {
