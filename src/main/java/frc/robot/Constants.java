@@ -21,6 +21,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
@@ -165,7 +166,7 @@ public final class Constants {
   // #region CLIMBER
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static int climberCurrentLimit = 70;
+    public static Current climberCurrentLimit = Amps.of(70);
     public static Time climberRampRate = Milliseconds.of(10);
     public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 

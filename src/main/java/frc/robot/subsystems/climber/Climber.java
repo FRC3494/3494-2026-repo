@@ -39,7 +39,7 @@ public class Climber extends SubsystemBase {
 
     SparkFlexConfig climberConfig = new SparkFlexConfig();
     climberConfig
-        .smartCurrentLimit(climberCurrentLimit)
+        .smartCurrentLimit(((int) climberCurrentLimit.in(Amps)))
         .idleMode(IdleMode.kBrake)
         .inverted(climberInverted)
         .openLoopRampRate(climberRampRate.in(Seconds))
@@ -52,8 +52,6 @@ public class Climber extends SubsystemBase {
     climberConfig.closedLoop.feedForward.sva(climberKs, climberKv, climberKa);
     climberMotor.configure(
         climberConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
-    Logger.recordOutput("Climber/Motor/CurrentLimit", Amps.of(climberCurrentLimit));
 
     setRelativeEncoderPosition(climberDownPosition);
 
@@ -85,9 +83,9 @@ public class Climber extends SubsystemBase {
 
     builder.addIntegerProperty(
         "Normal Current Limit",
-        () -> climberCurrentLimit,
+        () -> ((long) climberCurrentLimit.in(Amps)),
         (long value) -> {
-          climberCurrentLimit = ((int) value);
+          climberCurrentLimit = Amps.of(value);
           setCurrentLimit(Amps.of(value));
         });
 
@@ -109,6 +107,10 @@ public class Climber extends SubsystemBase {
     Logger.recordOutput("Climber/PID/kS", climberKs);
     Logger.recordOutput("Climber/PID/kV", climberKv);
     Logger.recordOutput("Climber/PID/kA", climberKa);
+
+    Logger.recordOutput("Climber/NormalCurrentLimit", climberCurrentLimit);
+
+    Logger.recordOutput("Climber/Motor/RampRate", climberRampRate);
   }
 
   @Override
