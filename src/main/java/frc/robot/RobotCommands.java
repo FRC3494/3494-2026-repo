@@ -5,14 +5,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
-import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
-import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
-import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelManualSpeed;
-import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelThresholdFactor;
+import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretManualIncrementRot;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretRezeroLocationRot;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretShootingToleranceRot;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -49,12 +44,6 @@ public class RobotCommands {
   // #region TUNABLES
 
   private boolean spindexerInverted = false;
-
-  // FLYWHEEL
-  private final LoggedNetworkNumber flywheelThreshold =
-      new LoggedNetworkNumber("Tunable/FlywheelThreshold", flywheelThresholdFactor);
-  public final LoggedNetworkNumber flywheelRPM =
-      new LoggedNetworkNumber("Tunable/FlywheelRPM", flywheelManualSpeed.in(RPM));
 
   // HOOD
   private final LoggedNetworkNumber hoodAngleDeg =
@@ -372,7 +361,7 @@ public class RobotCommands {
   public Command stopSpindexer() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of(0.0));
+          hopper.setSpindexerVelocity(RPM.zero());
         },
         hopper);
   }
@@ -380,7 +369,7 @@ public class RobotCommands {
   public Command startKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * kickerSpeedFactor));
+          hopper.setKickerVelocity(shooterAimModel.getFlywheelSpeed().times(kickerSpeedFactor));
         },
         hopper);
   }
@@ -388,7 +377,7 @@ public class RobotCommands {
   public Command startKickerReverse() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * -kickerSpeedFactor));
+          hopper.setKickerVelocity(shooterAimModel.getFlywheelSpeed().times(-kickerSpeedFactor));
         },
         hopper);
   }
@@ -396,7 +385,7 @@ public class RobotCommands {
   public Command stopKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(0.0));
+          hopper.setKickerVelocity(RPM.zero());
         },
         hopper);
   }
@@ -560,7 +549,7 @@ public class RobotCommands {
         startFlywheel(),
         // startIntake(),
         startSpindexer(),
-        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+        waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
         waitUntil(
             () ->
                 Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
@@ -578,7 +567,7 @@ public class RobotCommands {
         startFlywheel(),
         startIntake(),
         startSpindexer(),
-        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
+        waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
         waitUntil(
             () ->
                 Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
@@ -666,7 +655,7 @@ public class RobotCommands {
 
   public Command setDashboardShot() {
     return sequence(
-        setFlywheelManual(() -> RPM.of(flywheelRPM.get())),
+        setFlywheelManual(() -> flywheelManualSpeed),
         setHoodManual(() -> Rotation2d.fromDegrees(hoodAngleDeg.get())));
   }
 

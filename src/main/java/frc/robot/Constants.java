@@ -531,9 +531,9 @@ public final class Constants {
       public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
 
       // Fraction of target speed at which kicker triggers and robot starts shooting
-      public static final double flywheelThresholdFactor = 0.99;
+      public static double flywheelThresholdFactor = 0.99;
       // Default starting speed for shots using dashboard settings
-      public static final AngularVelocity flywheelManualSpeed = RPM.of(3000);
+      public static AngularVelocity flywheelManualSpeed = RPM.of(3000);
 
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       public static double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794

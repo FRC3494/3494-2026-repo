@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -687,7 +688,7 @@ public class RobotContainer {
     flywheel.setDefaultCommand(robotCommands.autoFlywheelCommand());
 
     FlywheelOI.runFlywheel()
-        .onTrue(robotCommands.setFlywheelManual(RPM.of(robotCommands.flywheelRPM.get())))
+        .onTrue(robotCommands.setFlywheelManual(() -> flywheelManualSpeed))
         .onFalse(robotCommands.flywheelManualStop());
 
     FlywheelOI.increaseFlywheelTrim()
