@@ -577,7 +577,7 @@ public class RobotCommands {
               spindexerInverted = !spindexerInverted;
             }),
         startKicker(),
-        // runIntake(),
+        runIntake(),
         parallel(
             jostleIntake(),
             runSpindexerKickerWithStallDetection(() -> RPM.of(spindexerSpeed.get()))));
