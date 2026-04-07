@@ -57,8 +57,11 @@ public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+
   private final SysIdRoutine driveSysId;
   private final SysIdRoutine turnSysId;
+  private final SysIdRoutine robotTurnSysId;
+
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
@@ -146,6 +149,15 @@ public class Drive extends SubsystemBase {
                 (state) -> Logger.recordOutput("Drive/TurnSysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runTurnCharacterization(voltage.in(Volts)), null, this));
+    robotTurnSysId =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("Drive/RobotTurnSysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> runRobotTurnCharacterization(voltage.in(Volts)), null, this));
 
     SmartDashboard.putData("RobotField", robotField2d);
     SmartDashboard.putData("Drive", this);
@@ -340,6 +352,14 @@ public class Drive extends SubsystemBase {
     }
   }
 
+  /** Spins robot in place with the specified drive output */
+  public void runRobotTurnCharacterization(double output) {
+    modules[0].runDriveCharacterization(output, Rotation2d.fromDegrees(135));
+    modules[1].runDriveCharacterization(output, Rotation2d.fromDegrees(45));
+    modules[2].runDriveCharacterization(output, Rotation2d.fromDegrees(225));
+    modules[3].runDriveCharacterization(output, Rotation2d.fromDegrees(315));
+  }
+
   /** Stops the drive. */
   public void stop() {
     runVelocity(new ChassisSpeeds());
@@ -382,6 +402,18 @@ public class Drive extends SubsystemBase {
     return run(() -> runTurnCharacterization(0.0))
         .withTimeout(1.0)
         .andThen(turnSysId.dynamic(direction));
+  }
+
+  public Command robotTurnSysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return run(() -> runRobotTurnCharacterization(0.0))
+        .withTimeout(1.0)
+        .andThen(robotTurnSysId.quasistatic(direction));
+  }
+
+  public Command robotTurnSysIdDynamic(SysIdRoutine.Direction direction) {
+    return run(() -> runRobotTurnCharacterization(0.0))
+        .withTimeout(1.0)
+        .andThen(robotTurnSysId.dynamic(direction));
   }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */

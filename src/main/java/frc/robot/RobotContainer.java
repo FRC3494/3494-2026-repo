@@ -355,6 +355,19 @@ public class RobotContainer {
         () -> drive.turnSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     autoChooser.addCmd(
+        "Robot Turn SysId (Quasistatic Forward)",
+        () -> drive.robotTurnSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Robot Turn SysId (Quasistatic Reverse)",
+        () -> drive.robotTurnSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Robot Turn SysId (Dynamic Forward)",
+        () -> drive.robotTurnSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Robot Turn SysId (Dynamic Reverse)",
+        () -> drive.robotTurnSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
     // Flywheel
