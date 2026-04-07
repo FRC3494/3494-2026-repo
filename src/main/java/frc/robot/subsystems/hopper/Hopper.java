@@ -149,25 +149,25 @@ public class Hopper extends SubsystemBase {
   }
 
   private void logSendableValues() {
-    Logger.recordOutput("Spindexer/Speed", spindexerSpeed);
-    Logger.recordOutput("Spindexer/IntakingSpeed", spindexerIntakingSpeed);
+    Logger.recordOutput("Hopper/Spindexer/Speed", spindexerSpeed);
+    Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", spindexerIntakingSpeed);
 
-    Logger.recordOutput("Spindexer/PID/kP", spindexerKp);
-    Logger.recordOutput("Spindexer/PID/kI", spindexerKi);
-    Logger.recordOutput("Spindexer/PID/kD", spindexerKd);
-    Logger.recordOutput("Spindexer/PID/kS", spindexerKs);
-    Logger.recordOutput("Spindexer/PID/kV", spindexerKv);
-    Logger.recordOutput("Spindexer/PID/kA", spindexerKa);
+    Logger.recordOutput("Hopper/Spindexer/PID/kP", spindexerKp);
+    Logger.recordOutput("Hopper/Spindexer/PID/kI", spindexerKi);
+    Logger.recordOutput("Hopper/Spindexer/PID/kD", spindexerKd);
+    Logger.recordOutput("Hopper/Spindexer/PID/kS", spindexerKs);
+    Logger.recordOutput("Hopper/Spindexer/PID/kV", spindexerKv);
+    Logger.recordOutput("Hopper/Spindexer/PID/kA", spindexerKa);
 
-    // Logger.recordOutput("Kicker/SpeedFactor", kickerSpeedFactor);
-    Logger.recordOutput("Kicker/Speed", kickerSpeed);
+    // Logger.recordOutput("Hopper/Kicker/SpeedFactor", kickerSpeedFactor);
+    Logger.recordOutput("Hopper/Kicker/Speed", kickerSpeed);
 
-    Logger.recordOutput("Kicker/PID/kP", kickerKp);
-    Logger.recordOutput("Kicker/PID/kI", kickerKi);
-    Logger.recordOutput("Kicker/PID/kD", kickerKd);
-    Logger.recordOutput("Kicker/PID/kS", kickerKs);
-    Logger.recordOutput("Kicker/PID/kV", kickerKv);
-    Logger.recordOutput("Kicker/PID/kA", kickerKa);
+    Logger.recordOutput("Hopper/Kicker/PID/kP", kickerKp);
+    Logger.recordOutput("Hopper/Kicker/PID/kI", kickerKi);
+    Logger.recordOutput("Hopper/Kicker/PID/kD", kickerKd);
+    Logger.recordOutput("Hopper/Kicker/PID/kS", kickerKs);
+    Logger.recordOutput("Hopper/Kicker/PID/kV", kickerKv);
+    Logger.recordOutput("Hopper/Kicker/PID/kA", kickerKa);
   }
 
   @Override
