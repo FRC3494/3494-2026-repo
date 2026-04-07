@@ -143,10 +143,12 @@ public class RobotContainer {
 
     robotCommands =
         new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret, shooterAimModel);
+
     RobotModeTriggers.autonomous()
         .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
-    RobotModeTriggers.teleop()
-        .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
+
+    RobotModeTriggers.autonomous()
+        .onFalse(runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
 
     // Set up auto routines
     autoChooser = new AutoChooser();
@@ -450,10 +452,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
     // #region WHOLE ROBOT
-    OI.matchPeriodRumble().whileTrue(OI.primaryControllerRumble());
 
     OI.rezeroMechanisms().onTrue(robotCommands.rezeroMechanisms());
+
+    OI.RumbleOI.shiftRumbleWindow().whileTrue(OI.RumbleOI.shiftRumbleSequence());
 
     SmartDashboard.putData("ResetOdoLeftTrench", Autos.resetOdoLeftTrench(drive));
     SmartDashboard.putData("ResetOdoRightTrench", Autos.resetOdoRightTrench(drive));
