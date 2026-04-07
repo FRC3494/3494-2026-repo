@@ -591,24 +591,26 @@ public final class Constants {
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
       // Turret shooting over the back of the robot
-      public static final double turretRezeroLocationRot = Units.degreesToRotations(180);
-      public static final double turretShootingToleranceRot = Units.degreesToRotations(20.0);
+      public static double turretRezeroLocationRot = Units.degreesToRotations(180);
+      public static double turretShootingToleranceRot = Units.degreesToRotations(20.0);
 
       // Speed of manually moving turret CW/CCW
-      public static final double turretManualIncrementRot = Units.degreesToRotations(2.0);
+      public static double turretManualIncrementRot = Units.degreesToRotations(2.0);
 
       public static double turretPositionToleranceRot = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position
-      public static final double turretCableRetractorStartRot = Units.degreesToRotations(115);
-      public static final Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
-      public static final Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
+      public static double turretCableRetractorStartRot = Units.degreesToRotations(115);
+      // Feedforward for retractor when turret is moving clockwise (against the retractor)
+      public static Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
+      // Feedforward for retractor when turret is moving counterclockwise (with the retractor)
+      public static Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
 
       public static double turretKp = 3.0;
       public static double turretKi = 0.0;
       public static double turretKd = 0.0;
 
-      public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
-      public static double turretIZone = Units.degreesToRotations(20);
+      public static double turretIMaxAccumRot = Units.degreesToRotations(10) * 1000;
+      public static double turretIZoneRot = Units.degreesToRotations(20);
 
       public static double turretKs = 0.16;
       public static double turretKv = 0.0;

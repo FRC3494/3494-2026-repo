@@ -28,7 +28,6 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class RobotCommands {
   private final Climber climber;
@@ -41,20 +40,8 @@ public class RobotCommands {
 
   private ShooterAimModel shooterAimModel;
 
-  // #region TUNABLES
-
   private boolean spindexerInverted = false;
 
-  // TURRET
-  private final LoggedNetworkNumber turretShootingToleranceDeg =
-      new LoggedNetworkNumber(
-          "Tunable/TurretShootingTolerance", Units.rotationsToDegrees(turretShootingToleranceRot));
-  private final LoggedNetworkNumber turretManualSpeedRot =
-      new LoggedNetworkNumber("Tunable/TurretManualSpeed", turretManualIncrementRot);
-
-  // #endregion
-
-  // COMMANDS
   public final Command joystickDriveCommand;
 
   public RobotCommands(
@@ -416,7 +403,7 @@ public class RobotCommands {
                                 .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))
                             || Math.abs(
                                     turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                                > Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                                > turretShootingToleranceRot),
                 either(
                     sequence(
                         stopKicker(),
@@ -425,7 +412,7 @@ public class RobotCommands {
                                 Math.abs(
                                         turret.getPositionRot()
                                             - turret.getTurretSetpointClampedRot())
-                                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                                    <= turretShootingToleranceRot),
                         startKicker()),
                     sequence(
                         invertSpindexer(),
@@ -435,7 +422,7 @@ public class RobotCommands {
                         startKicker()),
                     () ->
                         Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                            > Units.degreesToRotations(turretShootingToleranceDeg.get()))))
+                            > turretShootingToleranceRot)))
         .finallyDo(
             () -> {
               spindexerInverted = false;
@@ -547,7 +534,7 @@ public class RobotCommands {
         waitUntil(
             () ->
                 Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                    <= turretShootingToleranceRot),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommand(),
@@ -565,7 +552,7 @@ public class RobotCommands {
         waitUntil(
             () ->
                 Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                    <= turretShootingToleranceRot),
         parallel(
             autoFlywheelCommand(), autoHoodCommand(), runSpindexerAndKicker(() -> spindexerSpeed)));
   }
@@ -813,9 +800,7 @@ public class RobotCommands {
         run(
             () -> {
               turret.removeDefaultCommand();
-              turret.setPosition(
-                  turret.getTurretSetpointRot()
-                      + Units.degreesToRotations(turretManualSpeedRot.get()));
+              turret.setPosition(turret.getTurretSetpointRot() + turretManualIncrementRot);
             },
             turret));
   }
@@ -825,9 +810,7 @@ public class RobotCommands {
         run(
             () -> {
               turret.removeDefaultCommand();
-              turret.setPosition(
-                  turret.getTurretSetpointRot()
-                      - Units.degreesToRotations(turretManualSpeedRot.get()));
+              turret.setPosition(turret.getTurretSetpointRot() - turretManualIncrementRot);
             },
             turret));
   }
