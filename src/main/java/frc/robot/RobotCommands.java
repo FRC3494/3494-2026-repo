@@ -401,28 +401,17 @@ public class RobotCommands {
                             || hopper
                                 .getSpindexerFilteredCurrent()
                                 .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))
-                            || Math.abs(
-                                    turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                                > turretShootingToleranceRot),
+                            || !turret.withinShootingTolerance()),
                 either(
                     sequence(
-                        stopKicker(),
-                        waitUntil(
-                            () ->
-                                Math.abs(
-                                        turret.getPositionRot()
-                                            - turret.getTurretSetpointClampedRot())
-                                    <= turretShootingToleranceRot),
-                        startKicker()),
+                        stopKicker(), waitUntil(turret::withinShootingTolerance), startKicker()),
                     sequence(
                         invertSpindexer(),
                         startSpindexer(),
                         stopKicker(),
                         waitSeconds(0.1),
                         startKicker()),
-                    () ->
-                        Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                            > turretShootingToleranceRot)))
+                    () -> !turret.withinShootingTolerance())))
         .finallyDo(
             () -> {
               spindexerInverted = false;
@@ -531,10 +520,7 @@ public class RobotCommands {
         // startIntake(),
         startSpindexer(),
         waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-        waitUntil(
-            () ->
-                Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                    <= turretShootingToleranceRot),
+        waitUntil(turret::withinShootingTolerance),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommand(),
@@ -549,10 +535,7 @@ public class RobotCommands {
         startIntake(),
         startSpindexer(),
         waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-        waitUntil(
-            () ->
-                Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                    <= turretShootingToleranceRot),
+        waitUntil(turret::withinShootingTolerance),
         parallel(
             autoFlywheelCommand(), autoHoodCommand(), runSpindexerAndKicker(() -> spindexerSpeed)));
   }

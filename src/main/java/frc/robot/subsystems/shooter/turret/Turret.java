@@ -224,6 +224,10 @@ public class Turret extends SubsystemBase {
     return turretMotor.getEncoder().getPosition();
   }
 
+  public boolean withinShootingTolerance() {
+    return Math.abs(getPositionRot() - getTurretSetpointClampedRot()) <= turretShootingToleranceRot;
+  }
+
   private void setPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
     turretKp = p;
