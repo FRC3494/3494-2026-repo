@@ -68,13 +68,14 @@ public class Module {
     io.setTurnPosition(state.angle);
   }
 
-  /** Runs the module with the specified output while controlling to zero degrees. */
-  public void runDriveCharacterization(double output) {
+  /** Runs the module with the specified output while controlling to the specified angle. */
+  public void runDriveCharacterization(double output, Rotation2d angle) {
     io.setDriveOpenLoop(output);
-    io.setTurnPosition(Rotation2d.kZero);
+    io.setTurnPosition(angle);
   }
 
   public void runTurnCharacterization(double output) {
+    io.setDriveVelocity(0);
     io.setTurnOpenLoop(output);
   }
 

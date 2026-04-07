@@ -329,8 +329,8 @@ public class Drive extends SubsystemBase {
 
   /** Runs the drive in a straight line with the specified drive output. */
   public void runDriveCharacterization(double output) {
-    for (int i = 0; i < 4; i++) {
-      modules[i].runDriveCharacterization(output);
+    for (var module : modules) {
+      module.runDriveCharacterization(output, Rotation2d.kZero);
     }
   }
 
