@@ -940,7 +940,9 @@ public class RobotCommands {
     double robotBlueX =
         QuadranglesUtil.toAllianceTranslation(drive.getPose().getTranslation()).getX();
     double hubX = ChoreoVars.Poses.Hub.getX();
-    return Math.abs(robotBlueX - hubX) < trenchSafetyBufferMeters;
+    double speedX = drive.getChassisSpeeds().vxMetersPerSecond;
+    double dynamicBuffer = trenchSafetyBufferMeters + speedX * trenchSafetyLookaheadSeconds;
+    return Math.abs(robotBlueX - hubX) < dynamicBuffer;
   }
   // #endregion
 
