@@ -111,26 +111,48 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         "Robot Yaw kV", () -> robotYawKv, (double value) -> robotYawKv = value);
 
     builder.addDoubleProperty(
-        "Turret Trim",
-        () -> Units.rotationsToDegrees(turretTrimRot),
-        (double value) -> turretTrimRot = Units.degreesToRotations(value));
+        "AZ Turret Trim",
+        () -> Units.rotationsToDegrees(azTurretTrimRot),
+        (double value) -> azTurretTrimRot = Units.degreesToRotations(value));
     builder.addDoubleProperty(
-        "Hood Trim",
-        hoodTrim::getDegrees,
-        (double value) -> hoodTrim = Rotation2d.fromDegrees(value));
+        "AZ Hood Trim",
+        azHoodTrim::getDegrees,
+        (double value) -> azHoodTrim = Rotation2d.fromDegrees(value));
     builder.addIntegerProperty(
-        "Flywheel Trim",
-        () -> ((long) flywheelTrim.in(RPM)),
-        (long value) -> flywheelTrim = RPM.of(value));
+        "AZ Flywheel Trim",
+        () -> ((long) azFlywheelTrim.in(RPM)),
+        (long value) -> azFlywheelTrim = RPM.of(value));
 
     builder.addDoubleProperty(
-        "Distance Trim (in)",
-        () -> distanceTrim.in(Inches),
-        (double value) -> distanceTrim = Inches.of(value));
+        "AZ Distance Trim (in)",
+        () -> azDistanceTrim.in(Inches),
+        (double value) -> azDistanceTrim = Inches.of(value));
     builder.addDoubleProperty(
-        "X Trim (in)", () -> xTrim.in(Inches), (double value) -> xTrim = Inches.of(value));
+        "AZ X Trim (in)", () -> azXTrim.in(Inches), (double value) -> azXTrim = Inches.of(value));
     builder.addDoubleProperty(
-        "Y Trim (in)", () -> yTrim.in(Inches), (double value) -> yTrim = Inches.of(value));
+        "AZ Y Trim (in)", () -> azYTrim.in(Inches), (double value) -> azYTrim = Inches.of(value));
+
+    builder.addDoubleProperty(
+        "NZ Turret Trim",
+        () -> Units.rotationsToDegrees(nzTurretTrimRot),
+        (double value) -> nzTurretTrimRot = Units.degreesToRotations(value));
+    builder.addDoubleProperty(
+        "NZ Hood Trim",
+        nzHoodTrim::getDegrees,
+        (double value) -> nzHoodTrim = Rotation2d.fromDegrees(value));
+    builder.addIntegerProperty(
+        "NZ Flywheel Trim",
+        () -> ((long) nzFlywheelTrim.in(RPM)),
+        (long value) -> nzFlywheelTrim = RPM.of(value));
+
+    builder.addDoubleProperty(
+        "NZ Distance Trim (in)",
+        () -> nzDistanceTrim.in(Inches),
+        (double value) -> nzDistanceTrim = Inches.of(value));
+    builder.addDoubleProperty(
+        "NZ X Trim (in)", () -> nzXTrim.in(Inches), (double value) -> nzXTrim = Inches.of(value));
+    builder.addDoubleProperty(
+        "NZ Y Trim (in)", () -> nzYTrim.in(Inches), (double value) -> nzYTrim = Inches.of(value));
 
     builder.addDoubleProperty(
         "AZ TOF Adjustment",
@@ -145,13 +167,21 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   private void logSendableValues() {
     Logger.recordOutput("AimShooterMath/RobotYawKv", robotYawKv);
 
-    Logger.recordOutput("AimShooterMathLinear/TurretTrim", turretTrimRot);
-    Logger.recordOutput("AimShooterMathLinear/HoodTrim", hoodTrim);
-    Logger.recordOutput("AimShooterMathLinear/FlywheelTrim", flywheelTrim);
+    Logger.recordOutput("AimShooterMathLinear/AZTurretTrim", azTurretTrimRot);
+    Logger.recordOutput("AimShooterMathLinear/AZHoodTrim", azHoodTrim);
+    Logger.recordOutput("AimShooterMathLinear/AZFlywheelTrim", azFlywheelTrim);
 
-    Logger.recordOutput("AimShooterMathLinear/DistanceTrim", distanceTrim);
-    Logger.recordOutput("AimShooterMathLinear/XTrim", xTrim);
-    Logger.recordOutput("AimShooterMathLinear/YTrim", yTrim);
+    Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", azDistanceTrim);
+    Logger.recordOutput("AimShooterMathLinear/AZXTrim", azXTrim);
+    Logger.recordOutput("AimShooterMathLinear/AZYTrim", azYTrim);
+
+    Logger.recordOutput("AimShooterMathLinear/NZTurretTrim", nzTurretTrimRot);
+    Logger.recordOutput("AimShooterMathLinear/NZHoodTrim", nzHoodTrim);
+    Logger.recordOutput("AimShooterMathLinear/NZFlywheelTrim", nzFlywheelTrim);
+
+    Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", nzDistanceTrim);
+    Logger.recordOutput("AimShooterMathLinear/NZXTrim", nzXTrim);
+    Logger.recordOutput("AimShooterMathLinear/NZYTrim", nzYTrim);
 
     Logger.recordOutput("AimShooterMathLinear/AzTofAdjustment", azTOFAdjustment);
     Logger.recordOutput("AimShooterMathLinear/NzTofAdjustment", nzTOFAdjustment);
@@ -222,7 +252,8 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         "AimShooterMathLinear/TargetLocation", new Pose2d(targetLocation, Rotation2d.kZero));
 
     double distanceToTarget =
-        shooterTranslation.getDistance(targetLocation) + distanceTrim.in(Meters);
+        shooterTranslation.getDistance(targetLocation)
+            + (inAllianceZone ? azDistanceTrim.in(Meters) : nzDistanceTrim.in(Meters));
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
     double timeOfFlight =
         inAllianceZone
@@ -236,7 +267,8 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         new Pose2d(virtualTargetLocation, Rotation2d.kZero));
 
     double virtualDistanceToTarget =
-        shooterTranslation.getDistance(virtualTargetLocation) + distanceTrim.in(Meters);
+        shooterTranslation.getDistance(virtualTargetLocation)
+            + (inAllianceZone ? azDistanceTrim.in(Meters) : nzDistanceTrim.in(Meters));
     Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
     return new AimState(
@@ -260,11 +292,11 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   private LinearSetpoints computeSetpoints(AimState state) {
     double filteredTurretAngleRot =
         turretSetpointFilter.calculate(
-            getTurretAngleRot(
+                getTurretAngleRot(
                     state.virtualTargetLocation(),
                     state.shooterTranslation(),
-                    state.currentRobotPose().getRotation())
-                + turretTrimRot);
+                    state.currentRobotPose().getRotation()))
+            + (state.inAllianceZone() ? azTurretTrimRot : nzTurretTrimRot);
 
     Voltage computedTurretFF =
         getTurretFF(
@@ -274,11 +306,12 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
             state.robotSpeed());
 
     Rotation2d computedHoodAngle =
-        getHoodAngle(state.inAllianceZone(), state.virtualDistanceToTarget()).plus(hoodTrim);
+        getHoodAngle(state.inAllianceZone(), state.virtualDistanceToTarget())
+            .plus(state.inAllianceZone() ? azHoodTrim : nzHoodTrim);
 
     AngularVelocity computedFlywheelSpeed =
         getFlywheelSpeed(state.inAllianceZone(), state.virtualDistanceToTarget())
-            .plus(flywheelTrim);
+            .plus(state.inAllianceZone() ? azFlywheelTrim : nzFlywheelTrim);
 
     debugLogging();
 
@@ -335,9 +368,9 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   private Translation2d getTargetLocation(
       Translation2d shooterTranslation, boolean inAllianceZone, Translation2d allianceHubLocation) {
     if (inAllianceZone) {
-      return allianceHubLocation.plus(new Translation2d(getXTrim(), getYTrim()));
+      return allianceHubLocation.plus(new Translation2d(azXTrim, azYTrim));
     } else {
-      return getNZShootingTarget(shooterTranslation);
+      return getNZShootingTarget(shooterTranslation).plus(new Translation2d(nzXTrim, nzYTrim));
     }
   }
 
@@ -478,51 +511,51 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   // ==================== TRIM ====================
   /** Returns the turret trim in rotations. */
   public double getTurretTrimRot() {
-    return turretTrimRot;
+    return azTurretTrimRot;
   }
 
   public void setTurretTrim(double rotations) {
-    turretTrimRot = rotations;
+    azTurretTrimRot = rotations;
   }
 
   public Rotation2d getHoodTrim() {
-    return hoodTrim;
+    return azHoodTrim;
   }
 
   public void setHoodTrim(Rotation2d trim) {
-    hoodTrim = trim;
+    azHoodTrim = trim;
   }
 
   public AngularVelocity getFlywheelTrim() {
-    return flywheelTrim;
+    return azFlywheelTrim;
   }
 
   public void setFlywheelTrim(AngularVelocity trim) {
-    flywheelTrim = trim;
+    azFlywheelTrim = trim;
   }
 
   public Distance getDistanceTrim() {
-    return distanceTrim;
+    return azDistanceTrim;
   }
 
   public void setDistanceTrim(Distance trim) {
-    distanceTrim = trim;
+    azDistanceTrim = trim;
   }
 
   public Distance getXTrim() {
-    return xTrim;
+    return azXTrim;
   }
 
   public void setXTrim(Distance trim) {
-    xTrim = trim;
+    azXTrim = trim;
   }
 
   public Distance getYTrim() {
-    return yTrim;
+    return azYTrim;
   }
 
   public void setYTrim(Distance trim) {
-    yTrim = trim;
+    azYTrim = trim;
   }
 
   public void debugLogging() {
