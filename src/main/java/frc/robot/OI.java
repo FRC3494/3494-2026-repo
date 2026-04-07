@@ -1,10 +1,15 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.littletonrobotics.junction.Logger;
@@ -22,6 +27,32 @@ public final class OI {
     Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
     Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
     Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
+  }
+
+  public static Command primaryControllerRumble() {
+    return run(() -> {
+          primaryController.setRumble(RumbleType.kBothRumble, matchPeriodRumbleIntensity);
+        })
+        .finallyDo(
+            () -> {
+              primaryController.setRumble(RumbleType.kBothRumble, 0.0);
+            });
+  }
+
+  public static Trigger matchPeriodRumble() {
+    return new Trigger(
+        () -> {
+          double matchTime = DriverStation.getMatchTime();
+
+          for (double matchPeriodTime : matchPeriodTimes) {
+            if (matchTime >= matchPeriodTime + matchPeriodRumbleDuration
+                && matchTime <= matchPeriodTime) {
+              return true;
+            }
+          }
+
+          return false;
+        });
   }
 
   // #region WHOLE ROBOT
