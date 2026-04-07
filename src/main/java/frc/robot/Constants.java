@@ -160,6 +160,20 @@ public final class Constants {
 
     public static final double controllerStickDeadband = 0.05;
     public static final double controllerTriggerDeadband = 0.25;
+
+    public static final double matchPeriodRumbleIntensity = 0.75;
+    // How many secs BEFORE the shift change when the controller starts rumbling
+    public static final double matchPeriodRumbleOffset = 5.0;
+    // How long the controller rumbles for
+    public static final double matchPeriodRumbleDuration = 2.0;
+    public static final double[] matchPeriodTimes =
+        new double[] {
+          130, // 2:10
+          105, // 1:45
+          80, // 1:20
+          55, // 0:55
+          30, // 0:30
+        };
   }
   // #endregion
 
