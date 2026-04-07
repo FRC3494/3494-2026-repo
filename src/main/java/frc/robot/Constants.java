@@ -635,8 +635,8 @@ public final class Constants {
     public static final int minTagCountMT1 = 2;
     public static final int minTagCountMT2 = 1;
 
-    public static final double maxDistanceStdDev = 1.2;
-    public static final double maxAngleStdDev = 999999;
+    public static double distanceStdDev = 1.2;
+    public static double angleStdDev = 999999;
 
     // * AprilTag Locations:
     // *
