@@ -151,7 +151,7 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
-    SmartDashboard.putData("robot_field", robotField2d);
+    SmartDashboard.putData("RobotField", robotField2d);
   }
 
   // @codescene (disable: "Bumpy Road Ahead", disable: "Complex Method")

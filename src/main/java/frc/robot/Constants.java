@@ -247,12 +247,12 @@ public final class Constants {
     public static double driveKs = 0.14126175;
     public static double driveKv = 0.1179175;
     public static double driveKa = 0.02385725;
-    public static double driveSimP = 0.05;
-    public static double driveSimI = 0.0;
-    public static double driveSimD = 0.0;
-    public static double driveSimKs = 0.0;
-    public static double driveSimKv = 0.0789;
-    public static double driveSimKa = 0.0;
+    public static final double driveSimP = 0.05;
+    public static final double driveSimI = 0.0;
+    public static final double driveSimD = 0.0;
+    public static final double driveSimKs = 0.0;
+    public static final double driveSimKv = 0.0789;
+    public static final double driveSimKa = 0.0;
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
@@ -278,9 +278,9 @@ public final class Constants {
     public static double turnKp = 2.0;
     public static double turnKi = 0.0;
     public static double turnKd = 0.0;
-    public static double turnSimP = 8.0;
-    public static double turnSimI = 0.0;
-    public static double turnSimD = 0.0;
+    public static final double turnSimP = 8.0;
+    public static final double turnSimI = 0.0;
+    public static final double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
