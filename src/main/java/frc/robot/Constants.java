@@ -452,6 +452,17 @@ public final class Constants {
     public static final double shooterY = Units.inchesToMeters(-2.074);
     public static final double shooterZ = Units.inchesToMeters(13.72);
 
+    public static class AimShooterMathLinearConstants {
+      public static double robotYawKv = 0.08;
+
+      public static double turretTrimRot = Units.degreesToRotations(0.0);
+      public static Rotation2d hoodTrim = Rotation2d.kZero;
+      public static AngularVelocity flywheelTrim = RPM.zero();
+
+      public static Distance distanceTrim = Inches.of(30.0);
+      public static Distance xTrim = Inches.zero();
+      public static Distance yTrim = Inches.zero();
+
       // *
       // https://docs.google.com/spreadsheets/d/14hwlqJER8P0QzwcH5v36mP58clVzJN8zftQV1oThM_0/edit?usp=sharing
       public static Time azTOFAdjustment = Seconds.of(0.3);

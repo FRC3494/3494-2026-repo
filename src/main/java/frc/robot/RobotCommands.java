@@ -30,7 +30,6 @@ import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class RobotCommands {
   private final Climber climber;
@@ -423,7 +422,9 @@ public class RobotCommands {
                             || !turret.withinShootingTolerance()),
                 either(
                     sequence(
-                        stopKicker(), waitUntil(turret::withinShootingTolerance), startKickerWithTrenchSafety()),
+                        stopKicker(),
+                        waitUntil(turret::withinShootingTolerance),
+                        startKickerWithTrenchSafety()),
                     sequence(
                         invertSpindexer(),
                         startSpindexer(),
