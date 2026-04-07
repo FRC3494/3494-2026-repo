@@ -364,7 +364,7 @@ public class RobotCommands {
   public Command startKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(shooterAimModel.getFlywheelSpeed().times(kickerSpeedFactor));
+          hopper.setKickerVelocity(kickerSpeed);
         },
         hopper);
   }
@@ -376,7 +376,7 @@ public class RobotCommands {
   public Command startKickerReverse() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(shooterAimModel.getFlywheelSpeed().times(-kickerSpeedFactor));
+          hopper.setKickerVelocity(kickerSpeed.times(-1.0));
         },
         hopper);
   }
