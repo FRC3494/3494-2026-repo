@@ -578,6 +578,8 @@ public final class Constants {
       public static double hoodKa = 0.0;
 
       public static final double hoodRezeroTimeoutSeconds = 10.0;
+
+      public static final double trenchSafetyBufferMeters = 1.0;
     }
     // #endregion
 

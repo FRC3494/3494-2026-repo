@@ -5,8 +5,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
-import static frc.robot.Constants.IntakeConstants.uppyDownyCurrentLimit;
-import static frc.robot.Constants.IntakeConstants.uppyDownyMinPosition;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelManualSpeed;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelThresholdFactor;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
@@ -32,6 +30,7 @@ import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
+import frc.robot.util.choreo.ChoreoVars;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -417,6 +416,10 @@ public class RobotCommands {
         hopper);
   }
 
+  public Command startKickerWithTrenchSafety() {
+    return isUnderTrench() ? stopKicker() : startKicker();
+  }
+
   public Command startKickerReverse() {
     return runOnce(
         () -> {
@@ -453,7 +456,7 @@ public class RobotCommands {
   public Command runSpindexerAndKicker(Supplier<AngularVelocity> velocity) {
     return sequence(
             startSpindexer(),
-            startKicker(),
+            startKickerWithTrenchSafety(),
             repeatingSequence(
                 waitUntil(
                     () ->
@@ -473,13 +476,13 @@ public class RobotCommands {
                                         turret.getPositionRot()
                                             - turret.getTurretSetpointClampedRot())
                                     <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
-                        startKicker()),
+                        startKickerWithTrenchSafety()),
                     sequence(
                         invertSpindexer(),
                         startSpindexer(),
                         stopKicker(),
                         waitSeconds(0.1),
-                        startKicker()),
+                        startKickerWithTrenchSafety()),
                     () ->
                         Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
                             > Units.degreesToRotations(turretShootingToleranceDeg.get()))))
@@ -598,7 +601,7 @@ public class RobotCommands {
                     <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
         parallel(
             autoFlywheelCommand(),
-            autoHoodCommand(),
+            autoHoodCommandWithTrenchSafety(),
             runIntakeJostle(),
             runSpindexerAndKicker(() -> RPM.of(spindexerRPM.get()))));
   }
@@ -616,7 +619,7 @@ public class RobotCommands {
                     <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
         parallel(
             autoFlywheelCommand(),
-            autoHoodCommand(),
+            autoHoodCommandWithTrenchSafety(),
             runSpindexerAndKicker(() -> RPM.of(spindexerRPM.get()))));
   }
 
@@ -774,6 +777,19 @@ public class RobotCommands {
         hood);
   }
 
+  public Command autoHoodCommandWithTrenchSafety() {
+    return run(
+        () -> {
+          if (isUnderTrench()) {
+            hood.setShooting(false);
+          } else {
+            hood.setShooting(true);
+            hood.setPosition(shooterAimModel.getHoodAngle());
+          }
+        },
+        hood);
+  }
+
   public Command startHood() {
     return runOnce(
         () -> {
@@ -916,6 +932,16 @@ public class RobotCommands {
         .ignoringDisable(true);
   }
 
+  // #endregion
+
+  // #region UTIL
+
+  public boolean isUnderTrench() {
+    double robotBlueX =
+        QuadranglesUtil.toAllianceTranslation(drive.getPose().getTranslation()).getX();
+    double hubX = ChoreoVars.Poses.Hub.getX();
+    return Math.abs(robotBlueX - hubX) < trenchSafetyBufferMeters;
+  }
   // #endregion
 
 }
