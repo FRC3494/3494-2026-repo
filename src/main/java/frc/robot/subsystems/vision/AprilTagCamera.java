@@ -43,7 +43,7 @@ public class AprilTagCamera {
   private AngularVelocity robotYawVelocity = DegreesPerSecond.of(0.0);
 
   @Getter
-  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement")
+  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement1")
   private boolean validMeasurement1;
 
   @Getter
@@ -112,6 +112,7 @@ public class AprilTagCamera {
     }
   }
 
+  @AutoLogOutput(key = "Vision/{name}/Valid")
   public boolean isValidMeasurement() {
     if (!megaTag2Enabled) {
       return validMeasurement1;
