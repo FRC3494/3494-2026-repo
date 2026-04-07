@@ -6,12 +6,15 @@ import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public final class OI {
@@ -21,12 +24,55 @@ public final class OI {
   private static Joystick leftButtonBoard = new Joystick(leftButtonBoardPort);
   private static Joystick rightButtonBoard = new Joystick(rightButtonBoardPort);
 
+  private static WonAutoState wonAutoState = WonAutoState.Unknown;
+
   public static void update() {
     eventLoop.poll();
 
     Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
     Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
     Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
+
+    if (wonAutoState == WonAutoState.Unknown) {
+      String gameData = DriverStation.getGameSpecificMessage();
+      Optional<Alliance> alliance = DriverStation.getAlliance();
+      if (gameData.length() > 0 && alliance.isPresent()) {
+        switch (gameData.charAt(0)) {
+          case 'B':
+            setWonAutoState(alliance.get() == Alliance.Blue ? WonAutoState.Won : WonAutoState.Lost);
+            break;
+          case 'R':
+            setWonAutoState(alliance.get() == Alliance.Blue ? WonAutoState.Lost : WonAutoState.Won);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  public static void setWonAutoState(WonAutoState state) {
+    Logger.recordOutput("OI/WonAutoState", state.toString());
+    wonAutoState = state;
+
+    Color indicatorColor = Color.kBlack;
+    switch (state) {
+      case Won:
+        indicatorColor = Color.kGreen;
+        break;
+      case Lost:
+        indicatorColor = Color.kRed;
+        break;
+      case Unknown:
+        break;
+    }
+    Logger.recordOutput("OI/WonAutoIndicator", indicatorColor.toHexString());
+  }
+
+  public static enum WonAutoState {
+    Won,
+    Lost,
+    Unknown
   }
 
   public static Command primaryControllerRumble() {
