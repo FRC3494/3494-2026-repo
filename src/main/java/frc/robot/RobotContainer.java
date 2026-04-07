@@ -632,17 +632,6 @@ public class RobotContainer {
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
-    ShooterOI.resetShooterTrims()
-        .onTrue(
-            runOnce(
-                    () -> {
-                      shooterAimModel.setDistanceTrim(Inches.of(0));
-                      shooterAimModel.setFlywheelTrim(RPM.of(0));
-                      shooterAimModel.setHoodTrim(Rotation2d.kZero);
-                    },
-                    shooterAimModel)
-                .ignoringDisable(true));
-
     ShooterOI.increaseDistanceTrim()
         .whileTrue(
             run(
@@ -659,13 +648,7 @@ public class RobotContainer {
                       shooterAimModel.getDistanceTrim().minus(Inches.of(1)));
                 },
                 shooterAimModel));
-    ShooterOI.resetDistanceTrim()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooterAimModel.setDistanceTrim(Inches.of(0));
-                },
-                shooterAimModel));
+    ShooterOI.resetDistanceTrim().onTrue(robotCommands.resetDistanceTrim());
 
     Distance xyTrimSensitivity = Inches.of(1.0);
     ShooterOI.trimRight()
@@ -713,14 +696,7 @@ public class RobotContainer {
                 },
                 shooterAimModel));
 
-    ShooterOI.resetXYTrim()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooterAimModel.setXTrim(Inches.of(0));
-                  shooterAimModel.setYTrim(Inches.of(0));
-                },
-                shooterAimModel));
+    ShooterOI.resetXYTrim().onTrue(robotCommands.resetXYTrim());
 
     // #endregion
 

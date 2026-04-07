@@ -91,6 +91,8 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   private final Supplier<Pose2d> robotPoseSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
+  @Getter private boolean inAllianceZone = true;
+
   // Persistent runtime offsets that operators can bump to trim aim during testing.
   // These are annotated for AutoLogOutput so they appear in logs/networktables for tuning.
   @Getter @Setter @AutoLogOutput private double flywheelOffsetRPM = 0.0;

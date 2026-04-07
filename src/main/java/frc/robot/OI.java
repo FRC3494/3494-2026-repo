@@ -262,11 +262,6 @@ public final class OI {
       return leftButtonBoard.button(10, eventLoop).castTo(Trigger::new);
     }
 
-    public static Trigger resetShooterTrims() {
-      return new Trigger(() -> false);
-      // return primaryController.povRight();
-    }
-
     public static Trigger increaseDistanceTrim() {
       return leftButtonBoard
           .axisLessThan(1, -controllerStickDeadband, eventLoop)

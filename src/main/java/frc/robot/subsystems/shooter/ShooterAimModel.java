@@ -25,6 +25,8 @@ public interface ShooterAimModel extends Subsystem {
   /** Returns the current flywheel speed setpoint. */
   AngularVelocity getFlywheelSpeed();
 
+  boolean isInAllianceZone();
+
   // ===== Optional trim application helpers =====
 
   /**

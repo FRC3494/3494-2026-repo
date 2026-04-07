@@ -5,6 +5,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
+import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
@@ -578,6 +579,32 @@ public class RobotCommands {
     return sequence(stopSpindexer(), stopKicker(), stopIntake(), stopHood(), stopFlywheel());
   }
 
+  public Command resetDistanceTrim() {
+    return runOnce(
+        () -> {
+          if (shooterAimModel.isInAllianceZone()) {
+            azDistanceTrim = Inches.of(0.0);
+          } else {
+            nzDistanceTrim = Inches.of(0.0);
+          }
+        },
+        shooterAimModel);
+  }
+
+  public Command resetXYTrim() {
+    return runOnce(
+        () -> {
+          if (shooterAimModel.isInAllianceZone()) {
+            azXTrim = Inches.of(0.0);
+            azYTrim = Inches.of(0.0);
+          } else {
+            nzXTrim = Inches.of(0.0);
+            nzYTrim = Inches.of(0.0);
+          }
+        },
+        shooterAimModel);
+  }
+
   public Command enableAutoShooterSettings() {
     return runOnce(
         () -> {
@@ -811,6 +838,14 @@ public class RobotCommands {
           turret.setPosition(shooterAimModel.getTurretAngleRot());
         },
         turret);
+  }
+
+  public Command resetTurretTrim() {
+    return runOnce(
+        () -> {
+          turretTrimRot = Units.degreesToRotations(0.0);
+        },
+        shooterAimModel);
   }
 
   public Command runTurretManualCCW() {
