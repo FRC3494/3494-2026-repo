@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.ShooterConstants.LinearInterpolationDataPoint;
+import frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.LinearInterpolationDataPoint;
 import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;

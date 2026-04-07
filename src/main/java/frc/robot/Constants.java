@@ -200,8 +200,12 @@ public final class Constants {
     */
 
     public static final double maxSpeedMetersPerSec = 4.62906; // 15.187 ft/s
+    public static final double maxShootingSpeedMetersPerSec = Units.feetToMeters(10);
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
-    public static final double maxAngularSpeedFactor = (321.5229038 / 630.028839);
+    public static final double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 72);
+    public static final double maxAngularShootingSpeedRadPerSec = Units.degreesToRadians(180);
+    public static final double demoModeSpeedFactor = 0.15;
+
     public static final double odometryFrequency = 100.0; // Hz
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
@@ -452,6 +456,7 @@ public final class Constants {
     public static final double shooterY = Units.inchesToMeters(-2.074);
     public static final double shooterZ = Units.inchesToMeters(13.72);
 
+    // #region LINEAR INTERP
     public static class AimShooterMathLinearConstants {
       public static double robotYawKv = 0.08;
 
@@ -524,14 +529,14 @@ public final class Constants {
             new LinearInterpolationDataPoint(
                 Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2400.0), Seconds.of(1.0)),
           };
+
+      public static record LinearInterpolationDataPoint(
+          Distance distance,
+          Rotation2d hoodAngle,
+          AngularVelocity flywheelSpeed,
+          Time timeOfFlight) {}
     }
     // #endregion
-
-    public static record LinearInterpolationDataPoint(
-        Distance distance,
-        Rotation2d hoodAngle,
-        AngularVelocity flywheelSpeed,
-        Time timeOfFlight) {}
 
     // #region FLYWHEEL
     public static final class FlywheelConstants {
