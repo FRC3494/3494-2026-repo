@@ -91,8 +91,9 @@ public final class OI {
           double matchTime = DriverStation.getMatchTime();
 
           for (double matchPeriodTime : matchPeriodTimes) {
-            if (matchTime >= matchPeriodTime + matchPeriodRumbleDuration
-                && matchTime <= matchPeriodTime) {
+            if (matchTime <= matchPeriodTime + matchPeriodRumbleOffset
+                && matchTime
+                    >= matchPeriodTime + matchPeriodRumbleOffset - matchPeriodRumbleDuration) {
               return true;
             }
           }
