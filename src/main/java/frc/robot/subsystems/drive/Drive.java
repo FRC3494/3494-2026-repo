@@ -31,7 +31,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -44,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.OI;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -519,18 +519,32 @@ public class Drive extends SubsystemBase {
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return maxSpeedMetersPerSec * 0.15;
+        return !OI.ShooterOI.shoot().getAsBoolean()
+            ? maxSpeedMetersPerSec * demoModeSpeedFactor
+            : maxShootingSpeedMetersPerSec * demoModeSpeedFactor;
       }
       default -> {
-        return maxSpeedMetersPerSec;
+        return !OI.ShooterOI.shoot().getAsBoolean()
+            ? maxSpeedMetersPerSec
+            : maxShootingSpeedMetersPerSec;
       }
     }
   }
 
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
-    // return speed * maxAngularSpeedFactor;
-    return Units.degreesToRadians(360 + 72);
+    switch (Constants.driveMode) {
+      case DEMO -> {
+        return !OI.ShooterOI.shoot().getAsBoolean()
+            ? maxAngularSpeedRadPerSec * demoModeSpeedFactor
+            : maxAngularShootingSpeedRadPerSec * demoModeSpeedFactor;
+      }
+      default -> {
+        return !OI.ShooterOI.shoot().getAsBoolean()
+            ? maxAngularSpeedRadPerSec
+            : maxAngularShootingSpeedRadPerSec;
+      }
+    }
   }
 
   public void rezeroTurnEncoders() {
