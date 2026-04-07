@@ -13,7 +13,10 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -22,7 +25,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Turret extends SubsystemBase {
   private SparkFlex turretMotor;
@@ -39,21 +41,6 @@ public class Turret extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Turret/ArbFF")
   private Voltage turretArbFF = Volts.of(0.0);
 
-  private LoggedNetworkNumber turretP = new LoggedNetworkNumber("Tunable/Turret/kP", turretKp);
-  private LoggedNetworkNumber turretI = new LoggedNetworkNumber("Tunable/Turret/kI", turretKi);
-  private LoggedNetworkNumber turretD = new LoggedNetworkNumber("Tunable/Turret/kD", turretKd);
-
-  private LoggedNetworkNumber turretS = new LoggedNetworkNumber("Tunable/Turret/kS", turretKs);
-  private LoggedNetworkNumber turretV = new LoggedNetworkNumber("Tunable/Turret/kV", turretKv);
-  private LoggedNetworkNumber turretA = new LoggedNetworkNumber("Tunable/Turret/kA", turretKa);
-
-  private LoggedNetworkNumber turretCableRetractorFFCWVolts =
-      new LoggedNetworkNumber(
-          "Tunable/Turret/CableRetractorFFCW", turretCableRetractorFFCW.in(Volts));
-  private LoggedNetworkNumber turretCableRetractorFFCCWVolts =
-      new LoggedNetworkNumber(
-          "Tunable/Turret/CableRetractorFFCCW", turretCableRetractorFFCCW.in(Volts));
-
   SysIdRoutine turretSysId;
 
   public Turret() {
@@ -69,8 +56,8 @@ public class Turret extends SubsystemBase {
     turretConfig
         .closedLoop
         .pid(turretKp, turretKi, turretKd)
-        .iMaxAccum(turretIMaxAccum)
-        .iZone(turretIZone)
+        .iMaxAccum(turretIMaxAccumRot)
+        .iZone(turretIZoneRot)
         .allowedClosedLoopError(turretPositionToleranceRot, ClosedLoopSlot.kSlot0);
     turretConfig.closedLoop.feedForward.sva(turretKs, turretKv, turretKa);
     turretConfig
@@ -92,24 +79,76 @@ public class Turret extends SubsystemBase {
     if (Math.abs(turretMotor.getEncoder().getPosition()) <= 1E-5) {
       setRelativeEncoderPosition(turretRezeroLocationRot);
     }
+
+    SmartDashboard.putData("Shooter/Turret", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty(
+        "Rezero Location",
+        () -> Units.rotationsToDegrees(turretRezeroLocationRot),
+        (double value) -> turretRezeroLocationRot = Units.degreesToRotations(value));
+    builder.addDoubleProperty(
+        "Shooting Tolerance",
+        () -> Units.rotationsToDegrees(turretShootingToleranceRot),
+        (double value) -> turretShootingToleranceRot = Units.degreesToRotations(value));
+
+    builder.addDoubleArrayProperty(
+        "PID",
+        () -> new double[] {turretKp, turretKi, turretKd},
+        (double[] values) -> setPID(values[0], values[1], values[2]));
+    builder.addDoubleProperty(
+        "IMaxAccum (deg)",
+        () -> Units.rotationsToDegrees(turretIMaxAccumRot),
+        (double value) -> setPIDIntegralConstants(Units.degreesToRotations(value), turretIZoneRot));
+    builder.addDoubleProperty(
+        "IZone (deg)",
+        () -> Units.rotationsToDegrees(turretIZoneRot),
+        (double value) ->
+            setPIDIntegralConstants(turretIMaxAccumRot, Units.degreesToRotations(value)));
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {turretKs, turretKv, turretKa},
+        (double[] values) -> setSVA(values[0], values[1], values[2]));
+
+    builder.addDoubleProperty(
+        "Cable Retractor Start Location",
+        () -> Units.rotationsToDegrees(turretCableRetractorStartRot),
+        (double value) -> turretCableRetractorStartRot = Units.degreesToRotations(value));
+    builder.addDoubleProperty(
+        "Cable Retractor CW FF",
+        () -> turretCableRetractorFFCW.in(Volts),
+        (double value) -> turretCableRetractorFFCW = Volts.of(value));
+    builder.addDoubleProperty(
+        "Cable Retractor CCW FF",
+        () -> turretCableRetractorFFCCW.in(Volts),
+        (double value) -> turretCableRetractorFFCCW = Volts.of(value));
+
+    builder.addDoubleProperty(
+        "Manual Increment",
+        () -> Units.rotationsToDegrees(turretManualIncrementRot),
+        (double value) -> turretManualIncrementRot = Units.degreesToRotations(value));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("Shooter/Turret/RezeroLocation", turretRezeroLocationRot);
+    Logger.recordOutput("Shooter/Turret/ShootingTolerance", turretShootingToleranceRot);
+
+    Logger.recordOutput("Shooter/Turret/PID/kP", turretKp);
+    Logger.recordOutput("Shooter/Turret/PID/kI", turretKi);
+    Logger.recordOutput("Shooter/Turret/PID/kD", turretKd);
+    Logger.recordOutput("Shooter/Turret/PID/IMaxAccum", turretIMaxAccumRot);
+    Logger.recordOutput("Shooter/Turret/PID/IZone", turretIZoneRot);
+    Logger.recordOutput("Shooter/Turret/PID/kS", turretKs);
+    Logger.recordOutput("Shooter/Turret/PID/kV", turretKv);
+    Logger.recordOutput("Shooter/Turret/PID/kA", turretKa);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Turret/Motor", turretMotor, false);
-
-    boolean pidChanged =
-        false
-            || turretP.get() != turretKp
-            || turretI.get() != turretKi
-            || turretD.get() != turretKd
-            || turretS.get() != turretKs
-            || turretV.get() != turretKv
-            || turretA.get() != turretKa;
-    if (pidChanged) {
-      setPID(
-          turretP.get(), turretI.get(), turretD.get(), turretS.get(), turretV.get(), turretA.get());
-    }
+    logSendableValues();
 
     runTurret();
   }
@@ -135,16 +174,16 @@ public class Turret extends SubsystemBase {
     double totalFF = 0.0;
 
     if (turretSetpointClampedRot < currentPositionRot) {
-      // Clockwise
+      // Turret is moving clockwise
       totalFF =
           currentPositionRot < turretCableRetractorStartRot
-              ? turretCableRetractorFFCWVolts.get()
+              ? turretCableRetractorFFCW.in(Volts)
               : 0.0;
     } else {
-      // Counterclockwise
+      // Turret is moving counterclockwise
       totalFF =
           currentPositionRot < turretCableRetractorStartRot
-              ? turretCableRetractorFFCCWVolts.get()
+              ? turretCableRetractorFFCCW.in(Volts)
               : 0.0;
     }
 
@@ -185,19 +224,35 @@ public class Turret extends SubsystemBase {
     return turretMotor.getEncoder().getPosition();
   }
 
-  private void setPID(double p, double i, double d, double s, double v, double a) {
-    SparkFlexConfig config = new SparkFlexConfig();
+  public boolean withinShootingTolerance() {
+    return Math.abs(getPositionRot() - getTurretSetpointClampedRot()) <= turretShootingToleranceRot;
+  }
 
+  private void setPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
     turretKp = p;
     turretKi = i;
     turretKd = d;
     config.closedLoop.pid(p, i, d);
+    turretMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 
+  private void setPIDIntegralConstants(double iMaxAccumRot, double iZoneRot) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    turretIMaxAccumRot = iMaxAccumRot;
+    turretIZoneRot = iZoneRot;
+    config.closedLoop.iMaxAccum(iMaxAccumRot).iZone(iZoneRot);
+    turretMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
     turretKs = s;
     turretKv = v;
     turretKa = a;
     config.closedLoop.feedForward.sva(s, v, a);
-
     turretMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }

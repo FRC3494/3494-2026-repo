@@ -128,4 +128,16 @@ public class Module {
   public void rezeroTurnEncoder() {
     io.rezeroTurnEncoder();
   }
+
+  public void setDrivePID(double p, double i, double d) {
+    io.setDrivePID(p, i, d);
+  }
+
+  public void setDriveSVA(double s, double v, double a) {
+    io.setDriveSVA(s, v, a);
+  }
+
+  public void setTurnPID(double p, double i, double d) {
+    io.setTurnPID(p, i, d);
+  }
 }

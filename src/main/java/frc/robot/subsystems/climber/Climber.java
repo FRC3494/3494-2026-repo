@@ -14,27 +14,21 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Climber extends SubsystemBase {
   private SparkFlex climberMotor;
 
   @Getter @AutoLogOutput private double climberSetpoint = climberDownPosition;
   @Getter @AutoLogOutput private double climberSetpointClamped = climberDownPosition;
-
-  private LoggedNetworkNumber climberP = new LoggedNetworkNumber("Tunable/Climber/kP", climberKp);
-  private LoggedNetworkNumber climberI = new LoggedNetworkNumber("Tunable/Climber/kI", climberKi);
-  private LoggedNetworkNumber climberD = new LoggedNetworkNumber("Tunable/Climber/kD", climberKd);
-
-  private LoggedNetworkNumber climberS = new LoggedNetworkNumber("Tunable/Climber/kS", climberKs);
-  private LoggedNetworkNumber climberV = new LoggedNetworkNumber("Tunable/Climber/kV", climberKv);
-  private LoggedNetworkNumber climberA = new LoggedNetworkNumber("Tunable/Climber/kA", climberKa);
 
   @Getter @AutoLogOutput private Current filteredCurrent = Amps.of(0);
 
@@ -45,7 +39,7 @@ public class Climber extends SubsystemBase {
 
     SparkFlexConfig climberConfig = new SparkFlexConfig();
     climberConfig
-        .smartCurrentLimit(climberCurrentLimit)
+        .smartCurrentLimit(((int) climberCurrentLimit.in(Amps)))
         .idleMode(IdleMode.kBrake)
         .inverted(climberInverted)
         .openLoopRampRate(climberRampRate.in(Seconds))
@@ -59,26 +53,70 @@ public class Climber extends SubsystemBase {
     climberMotor.configure(
         climberConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    Logger.recordOutput("Climber/Motor/CurrentLimit", Amps.of(climberCurrentLimit));
-
     setRelativeEncoderPosition(climberDownPosition);
+
+    SmartDashboard.putData("Climber", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    // TODO: maybe make smth with mutable doubles so I don't have to write this much boilerplate?
+    builder.addDoubleProperty(
+        "Up Position", () -> climberUpPosition, (double value) -> climberUpPosition = value);
+    builder.addDoubleProperty(
+        "Down Position", () -> climberDownPosition, (double value) -> climberDownPosition = value);
+    builder.addDoubleProperty(
+        "Climb Position Factor",
+        () -> climbPositionFactor,
+        (double value) -> climbPositionFactor = value);
+    builder.addDoubleProperty(
+        "Tolerance", () -> climberTolerance, (double value) -> climberTolerance = value);
+
+    builder.addDoubleArrayProperty(
+        "PID",
+        () -> new double[] {climberKp, climberKi, climberKd},
+        (double[] values) -> setPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {climberKs, climberKv, climberKa},
+        (double[] values) -> setSVA(values[0], values[1], values[2]));
+
+    builder.addIntegerProperty(
+        "Normal Current Limit",
+        () -> ((long) climberCurrentLimit.in(Amps)),
+        (long value) -> {
+          climberCurrentLimit = Amps.of(value);
+          setCurrentLimit(Amps.of(value));
+        });
+
+    builder.addDoubleProperty(
+        "Ramp Rate (ms)",
+        () -> climberRampRate.in(Milliseconds),
+        (double value) -> setRampRate(Milliseconds.of(value)));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("Climber/Setpoints/UpPosition", climberUpPosition);
+    Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
+    Logger.recordOutput("Climber/Setpoints/ClimbPositionFactor", climbPositionFactor);
+    Logger.recordOutput("Climber/Setpoints/Tolerance", climberTolerance);
+
+    Logger.recordOutput("Climber/PID/kP", climberKp);
+    Logger.recordOutput("Climber/PID/kI", climberKi);
+    Logger.recordOutput("Climber/PID/kD", climberKd);
+    Logger.recordOutput("Climber/PID/kS", climberKs);
+    Logger.recordOutput("Climber/PID/kV", climberKv);
+    Logger.recordOutput("Climber/PID/kA", climberKa);
+
+    Logger.recordOutput("Climber/NormalCurrentLimit", climberCurrentLimit);
+
+    Logger.recordOutput("Climber/Motor/RampRate", climberRampRate);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Climber/Motor", climberMotor, false);
-
-    boolean pidChanged =
-        climberP.get() != climberKp || climberI.get() != climberKi || climberD.get() != climberKd;
-    if (pidChanged) {
-      setPID(climberP.get(), climberI.get(), climberD.get());
-    }
-
-    boolean svaChanged =
-        climberS.get() != climberKs || climberV.get() != climberKv || climberA.get() != climberKa;
-    if (svaChanged) {
-      setSVA(climberS.get(), climberV.get(), climberA.get());
-    }
+    logSendableValues();
 
     filteredCurrent = Amps.of(currentFilter.calculate(climberMotor.getOutputCurrent()));
   }
@@ -132,6 +170,15 @@ public class Climber extends SubsystemBase {
     climberKv = v;
     climberKa = a;
     config.closedLoop.feedForward.sva(s, v, a);
+    climberMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setRampRate(Time rampRate) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    climberRampRate = rampRate;
+    config.openLoopRampRate(rampRate.in(Seconds));
+    config.closedLoopRampRate(rampRate.in(Seconds));
     climberMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }

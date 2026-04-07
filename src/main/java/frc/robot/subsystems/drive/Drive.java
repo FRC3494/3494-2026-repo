@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -50,7 +51,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
@@ -84,20 +84,6 @@ public class Drive extends SubsystemBase {
       new PIDController(autoLinearKp, autoLinearKi, autoLinearKd);
   private final PIDController headingController =
       new PIDController(autoAngularKp, autoAngularKi, autoAngularKd);
-
-  private final LoggedNetworkNumber autoLinearP =
-      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kP", autoLinearKp);
-  private final LoggedNetworkNumber autoLinearI =
-      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kI", autoLinearKi);
-  private final LoggedNetworkNumber autoLinearD =
-      new LoggedNetworkNumber("Tunable/Drive/Auto/Linear/kD", autoLinearKd);
-
-  private final LoggedNetworkNumber autoAngularP =
-      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kP", autoAngularKp);
-  private final LoggedNetworkNumber autoAngularI =
-      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kI", autoAngularKi);
-  private final LoggedNetworkNumber autoAngularD =
-      new LoggedNetworkNumber("Tunable/Drive/Auto/Angular/kD", autoAngularKd);
 
   public Drive(
       GyroIO gyroIO,
@@ -151,7 +137,53 @@ public class Drive extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
-    SmartDashboard.putData("robot_field", robotField2d);
+    SmartDashboard.putData("RobotField", robotField2d);
+    SmartDashboard.putData("Drive", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleArrayProperty(
+        "Auto Linear PID",
+        () -> new double[] {autoLinearKp, autoLinearKi, autoLinearKd},
+        (double[] values) -> setAutoLinearPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "Auto Angular PID",
+        () -> new double[] {autoAngularKp, autoAngularKi, autoAngularKd},
+        (double[] values) -> setAutoAngularPID(values[0], values[1], values[2]));
+
+    builder.addDoubleArrayProperty(
+        "Drive PID",
+        () -> new double[] {driveKp, driveKi, driveKd},
+        (double[] values) -> setDrivePID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "Drive SVA",
+        () -> new double[] {driveKs, driveKv, driveKa},
+        (double[] values) -> setDriveSVA(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "Turn PID",
+        () -> new double[] {turnKp, turnKi, turnKd},
+        (double[] values) -> setTurnPID(values[0], values[1], values[2]));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("Drive/AutoLinearPID/kP", autoLinearKp);
+    Logger.recordOutput("Drive/AutoLinearPID/kI", autoLinearKi);
+    Logger.recordOutput("Drive/AutoLinearPID/kD", autoLinearKd);
+    Logger.recordOutput("Drive/AutoAngularPID/kP", autoAngularKp);
+    Logger.recordOutput("Drive/AutoAngularPID/kI", autoAngularKi);
+    Logger.recordOutput("Drive/AutoAngularPID/kD", autoAngularKd);
+
+    Logger.recordOutput("Drive/DrivePID/kP", driveKp);
+    Logger.recordOutput("Drive/DrivePID/kI", driveKi);
+    Logger.recordOutput("Drive/DrivePID/kD", driveKd);
+    Logger.recordOutput("Drive/DrivePID/kS", driveKs);
+    Logger.recordOutput("Drive/DrivePID/kV", driveKv);
+    Logger.recordOutput("Drive/DrivePID/kA", driveKa);
+
+    Logger.recordOutput("Drive/TurnPID/kP", turnKp);
+    Logger.recordOutput("Drive/TurnPID/kI", turnKi);
+    Logger.recordOutput("Drive/TurnPID/kD", turnKd);
   }
 
   // @codescene (disable: "Bumpy Road Ahead", disable: "Complex Method")
@@ -164,6 +196,8 @@ public class Drive extends SubsystemBase {
       module.periodic();
     }
     odometryLock.unlock();
+
+    logSendableValues();
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -212,22 +246,6 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
-
-    boolean autoLinearChanged =
-        autoLinearP.get() != autoLinearKp
-            || autoLinearI.get() != autoLinearKi
-            || autoLinearD.get() != autoLinearKd;
-    if (autoLinearChanged) {
-      setAutoLinearPID(autoLinearP.get(), autoLinearI.get(), autoLinearD.get());
-    }
-
-    boolean autoAngularChanged =
-        autoAngularP.get() != autoAngularKp
-            || autoAngularI.get() != autoAngularKi
-            || autoAngularD.get() != autoAngularKd;
-    if (autoAngularChanged) {
-      setAutoAngularPID(autoAngularP.get(), autoAngularI.get(), autoAngularD.get());
-    }
   }
 
   /**
@@ -456,6 +474,24 @@ public class Drive extends SubsystemBase {
   public void rezeroTurnEncoders() {
     for (var module : modules) {
       module.rezeroTurnEncoder();
+    }
+  }
+
+  public void setDrivePID(double p, double i, double d) {
+    for (var module : modules) {
+      module.setDrivePID(p, i, d);
+    }
+  }
+
+  public void setDriveSVA(double s, double v, double a) {
+    for (var module : modules) {
+      module.setDriveSVA(s, v, a);
+    }
+  }
+
+  public void setTurnPID(double p, double i, double d) {
+    for (var module : modules) {
+      module.setTurnPID(p, i, d);
     }
   }
 

@@ -5,12 +5,9 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
-import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelManualSpeed;
-import static frc.robot.Constants.ShooterConstants.FlywheelConstants.flywheelThresholdFactor;
+import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretManualIncrementRot;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretRezeroLocationRot;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretShootingToleranceRot;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -46,54 +43,11 @@ public class RobotCommands {
 
   private ShooterAimModel shooterAimModel;
 
-  // #region TUNABLES
-
-  // CLIMBER
-  private final LoggedNetworkNumber climberUpPos =
-      new LoggedNetworkNumber("Tunable/ClimberUpPos", climberUpPosition);
-  public final LoggedNetworkNumber climberDownPos =
-      new LoggedNetworkNumber("Tunable/ClimberDownPos", climberDownPosition);
-  public final LoggedNetworkNumber climberMidFactor =
-      new LoggedNetworkNumber("Tunable/ClimberMidFactor", climberMidPositionFactor);
-
-  // HOPPER
-  private final LoggedNetworkNumber spindexerRPM =
-      new LoggedNetworkNumber("Tunable/SpindexerRPM", spindexerSpeed.in(RPM));
-  private final LoggedNetworkNumber spindexerIntakingRPM =
-      new LoggedNetworkNumber("Tunable/SpindexerIntakingRPM", spindexerIntakingSpeed.in(RPM));
-  private final LoggedNetworkNumber kickerSpeedMultiplier =
-      new LoggedNetworkNumber("Tunable/KickerSpeedFactor", kickerSpeedFactor);
   private boolean spindexerInverted = false;
   private int spindexerStallReversals = 0;
   private int spindexerStallsForward = 0;
   private int spindexerStallsReverse = 0;
 
-  // INTAKE
-  private final LoggedNetworkNumber intakeSpeedRPM =
-      new LoggedNetworkNumber("Tunable/IntakeRPM", intakeSpinnySpinnySpeed.in(RPM));
-
-  // FLYWHEEL
-  private final LoggedNetworkNumber flywheelThreshold =
-      new LoggedNetworkNumber("Tunable/FlywheelThreshold", flywheelThresholdFactor);
-  public final LoggedNetworkNumber flywheelRPM =
-      new LoggedNetworkNumber("Tunable/FlywheelRPM", flywheelManualSpeed.in(RPM));
-
-  // HOOD
-  private final LoggedNetworkNumber hoodAngleDeg =
-      new LoggedNetworkNumber("Tunable/HoodAngle", hoodManualAngle.getDegrees());
-  private final LoggedNetworkNumber hoodIncrementDeg =
-      new LoggedNetworkNumber("Tunable/HoodIncrementDeg", hoodManualIncrement.getDegrees());
-
-  // TURRET
-  private final LoggedNetworkNumber turretShootingToleranceDeg =
-      new LoggedNetworkNumber(
-          "Tunable/TurretShootingTolerance", Units.rotationsToDegrees(turretShootingToleranceRot));
-  private final LoggedNetworkNumber turretManualSpeedRot =
-      new LoggedNetworkNumber("Tunable/TurretManualSpeed", turretManualIncrementRot);
-
-  // #endregion
-
-  // COMMANDS
   public final Command joystickDriveCommand;
 
   public RobotCommands(
@@ -137,15 +91,15 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberUpPos.get());
+              climber.setPosition(climberUpPosition);
             },
             climber),
-        waitUntil(() -> climber.getPosition() < climberUpPos.get() + climberTolerance),
+        waitUntil(() -> climber.getPosition() < climberUpPosition + climberTolerance),
         stopClimber());
   }
 
@@ -153,12 +107,12 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberUpPos.get());
+              climber.setPosition(climberUpPosition);
             },
             climber));
   }
@@ -167,24 +121,24 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberDownPos.get() * climberMidFactor.get());
+              climber.setPosition(climberDownPosition * climbPositionFactor);
             },
             climber),
         either(
             waitUntil(
                 () ->
                     climber.getPosition()
-                        > climberDownPos.get() * climberMidFactor.get() - climberTolerance),
+                        > climberDownPosition * climbPositionFactor - climberTolerance),
             waitUntil(
                 () ->
                     climber.getPosition()
-                        < climberDownPos.get() * climberMidFactor.get() + climberTolerance),
-            () -> climber.getPosition() <= climberDownPos.get() * climberMidFactor.get()),
+                        < climberDownPosition * climbPositionFactor + climberTolerance),
+            () -> climber.getPosition() <= climberDownPosition * climbPositionFactor),
         stopClimber());
   }
 
@@ -199,7 +153,7 @@ public class RobotCommands {
             waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
             runOnce(
                 () -> {
-                  climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+                  climber.setCurrentLimit(climberCurrentLimit);
                 },
                 climber),
             waitSeconds(0.5),
@@ -207,7 +161,7 @@ public class RobotCommands {
         .finallyDo(
             () -> {
               climber.setOpenLoop(Volts.of(0));
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             });
   }
 
@@ -215,15 +169,15 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             },
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberDownPos.get());
+              climber.setPosition(climberDownPosition);
             },
             climber),
-        waitUntil(() -> climber.getPosition() > climberDownPos.get() - climberTolerance),
+        waitUntil(() -> climber.getPosition() > climberDownPosition - climberTolerance),
         stopClimber());
   }
 
@@ -244,14 +198,14 @@ public class RobotCommands {
                 climber),
             runOnce(
                 () -> {
-                  climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+                  climber.setCurrentLimit(climberCurrentLimit);
                 },
                 climber))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
               climber.setOpenLoop(Volts.of(0));
-              climber.setCurrentLimit(Amps.of(climberCurrentLimit));
+              climber.setCurrentLimit(climberCurrentLimit);
             });
   }
 
@@ -371,7 +325,7 @@ public class RobotCommands {
   public Command startSpindexer() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? -1 : 1) * spindexerRPM.get()));
+          hopper.setSpindexerVelocity(spindexerSpeed.times(spindexerInverted ? -1 : 1));
         },
         hopper);
   }
@@ -379,7 +333,7 @@ public class RobotCommands {
   public Command startSpindexerReverse() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of((spindexerInverted ? 1 : -1) * spindexerRPM.get()));
+          hopper.setSpindexerVelocity(spindexerSpeed.times(spindexerInverted ? 1 : -1));
         },
         hopper);
   }
@@ -403,7 +357,7 @@ public class RobotCommands {
   public Command stopSpindexer() {
     return runOnce(
         () -> {
-          hopper.setSpindexerVelocity(RPM.of(0.0));
+          hopper.setSpindexerVelocity(RPM.zero());
         },
         hopper);
   }
@@ -411,7 +365,7 @@ public class RobotCommands {
   public Command startKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * kickerSpeedMultiplier.get()));
+          hopper.setKickerVelocity(shooterAimModel.getFlywheelSpeed().times(kickerSpeedFactor));
         },
         hopper);
   }
@@ -423,7 +377,7 @@ public class RobotCommands {
   public Command startKickerReverse() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(flywheelRPM.get() * -kickerSpeedMultiplier.get()));
+          hopper.setKickerVelocity(shooterAimModel.getFlywheelSpeed().times(-kickerSpeedFactor));
         },
         hopper);
   }
@@ -431,7 +385,7 @@ public class RobotCommands {
   public Command stopKicker() {
     return runOnce(
         () -> {
-          hopper.setKickerVelocity(RPM.of(0.0));
+          hopper.setKickerVelocity(RPM.zero());
         },
         hopper);
   }
@@ -445,7 +399,9 @@ public class RobotCommands {
             startSpindexer(),
             waitUntil(
                 () ->
-                    hopper.getSpindexerFilteredCurrent().gt(Amps.of(spindexerCurrentLimit - 2.0))),
+                    hopper
+                        .getSpindexerFilteredCurrent()
+                        .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))),
             invertSpindexer())
         .finallyDo(
             () -> {
@@ -463,29 +419,18 @@ public class RobotCommands {
                         false
                             || hopper
                                 .getSpindexerFilteredCurrent()
-                                .gt(Amps.of(spindexerCurrentLimit - 2.0))
-                            || Math.abs(
-                                    turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                                > Units.degreesToRotations(turretShootingToleranceDeg.get())),
+                                .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))
+                            || !turret.withinShootingTolerance()),
                 either(
                     sequence(
-                        stopKicker(),
-                        waitUntil(
-                            () ->
-                                Math.abs(
-                                        turret.getPositionRot()
-                                            - turret.getTurretSetpointClampedRot())
-                                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
-                        startKickerWithTrenchSafety()),
+                        stopKicker(), waitUntil(turret::withinShootingTolerance), startKickerWithTrenchSafety()),
                     sequence(
                         invertSpindexer(),
                         startSpindexer(),
                         stopKicker(),
                         waitSeconds(0.1),
                         startKickerWithTrenchSafety()),
-                    () ->
-                        Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                            > Units.degreesToRotations(turretShootingToleranceDeg.get()))))
+                    () -> !turret.withinShootingTolerance())))
         .finallyDo(
             () -> {
               spindexerInverted = false;
@@ -497,8 +442,7 @@ public class RobotCommands {
   // #region INTAKE
 
   public Command intake() {
-    return parallel(
-        startIntake(), runSpindexerWithStallDetection(() -> RPM.of(spindexerIntakingRPM.get())));
+    return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed));
   }
 
   public Command spinDownFromIntake() {
@@ -508,7 +452,7 @@ public class RobotCommands {
   public Command startIntake() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(intakeSpeedRPM.get()));
+          intake.setSpinnySpinnyVelocity(intakeSpinnySpinnySpeed);
         },
         intake);
   }
@@ -516,7 +460,7 @@ public class RobotCommands {
   public Command startIntakeReverse() {
     return runOnce(
         () -> {
-          intake.setSpinnySpinnyVelocity(RPM.of(-intakeSpeedRPM.get()));
+          intake.setSpinnySpinnyVelocity(intakeSpinnySpinnySpeed.times(-1.0));
         },
         intake);
   }
@@ -556,32 +500,32 @@ public class RobotCommands {
   public Command runIntakeJostle() {
     // Start by moving up (-RPM) first so we move away from the bottom hard stop
     return sequence(
-            runOnce(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake),
+            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
             waitSeconds(0.15),
             repeatingSequence(
-                run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
-                    .withTimeout(intake.getInstakeDownTime()),
-                run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
-                    .withTimeout(intake.getInstakeUpTime())))
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
+                run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
+                    .withTimeout(jostleIntakeDownTime),
+                run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
+                    .withTimeout(jostleIntakeUpTime)))
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()));
   }
 
   public Command stopIntakeJostle() {
     return runOnce(
         () -> {
-          intake.setUppyDownyVelocity(RPM.of(0));
+          intake.setUppyDownyVelocity(RPM.zero());
         },
         intake);
   }
 
   public Command intakeManualUp() {
-    return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyRaiseRPM()), intake)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
+    return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()));
   }
 
   public Command intakeManualDown() {
-    return run(() -> intake.setUppyDownyVelocity(intake.getUppyDownyLowerRPM()), intake)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.of(0)));
+    return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()));
   }
 
   // #endregion
@@ -594,16 +538,13 @@ public class RobotCommands {
         startFlywheel(),
         // startIntake(),
         startSpindexer(),
-        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
-        waitUntil(
-            () ->
-                Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
+        waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+        waitUntil(turret::withinShootingTolerance),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommandWithTrenchSafety(),
             runIntakeJostle(),
-            runSpindexerAndKicker(() -> RPM.of(spindexerRPM.get()))));
+            runSpindexerAndKicker(() -> spindexerSpeed)));
   }
 
   public Command shootWithoutIntakeJostle() {
@@ -612,15 +553,12 @@ public class RobotCommands {
         startFlywheel(),
         startIntake(),
         startSpindexer(),
-        waitUntil(() -> flywheel.atVelocity(flywheelThreshold.get())),
-        waitUntil(
-            () ->
-                Math.abs(turret.getPositionRot() - turret.getTurretSetpointClampedRot())
-                    <= Units.degreesToRotations(turretShootingToleranceDeg.get())),
+        waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+        waitUntil(turret::withinShootingTolerance),
         parallel(
             autoFlywheelCommand(),
             autoHoodCommandWithTrenchSafety(),
-            runSpindexerAndKicker(() -> RPM.of(spindexerRPM.get()))));
+            runSpindexerAndKicker(() -> spindexerSpeed)));
   }
 
   public Command spinDownFromShoot() {
@@ -702,8 +640,7 @@ public class RobotCommands {
 
   public Command setDashboardShot() {
     return sequence(
-        setFlywheelManual(() -> RPM.of(flywheelRPM.get())),
-        setHoodManual(() -> Rotation2d.fromDegrees(hoodAngleDeg.get())));
+        setFlywheelManual(() -> flywheelManualSpeed), setHoodManual(() -> hoodManualAngle));
   }
 
   public void setShooterAimModel(ShooterAimModel shooterAimModel) {
@@ -848,8 +785,7 @@ public class RobotCommands {
     return run(
         () -> {
           hood.removeDefaultCommand();
-          hood.setPosition(
-              hood.getHoodSetpoint().plus(Rotation2d.fromDegrees(hoodIncrementDeg.get())));
+          hood.setPosition(hood.getHoodSetpoint().plus(hoodManualIncrement));
         },
         hood);
   }
@@ -858,8 +794,7 @@ public class RobotCommands {
     return run(
         () -> {
           hood.removeDefaultCommand();
-          hood.setPosition(
-              hood.getHoodSetpoint().minus(Rotation2d.fromDegrees(hoodIncrementDeg.get())));
+          hood.setPosition(hood.getHoodSetpoint().minus(hoodManualIncrement));
         },
         hood);
   }
@@ -882,9 +817,7 @@ public class RobotCommands {
         run(
             () -> {
               turret.removeDefaultCommand();
-              turret.setPosition(
-                  turret.getTurretSetpointRot()
-                      + Units.degreesToRotations(turretManualSpeedRot.get()));
+              turret.setPosition(turret.getTurretSetpointRot() + turretManualIncrementRot);
             },
             turret));
   }
@@ -894,9 +827,7 @@ public class RobotCommands {
         run(
             () -> {
               turret.removeDefaultCommand();
-              turret.setPosition(
-                  turret.getTurretSetpointRot()
-                      - Units.degreesToRotations(turretManualSpeedRot.get()));
+              turret.setPosition(turret.getTurretSetpointRot() - turretManualIncrementRot);
             },
             turret));
   }

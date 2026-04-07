@@ -13,6 +13,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -20,7 +22,6 @@ import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Flywheel extends SubsystemBase {
   private SparkFlex leftMotor;
@@ -31,20 +32,6 @@ public class Flywheel extends SubsystemBase {
   private AngularVelocity flywheelSetpoint = RPM.of(0.0);
 
   SysIdRoutine sysId;
-
-  private LoggedNetworkNumber flywheelP =
-      new LoggedNetworkNumber("Tunable/Flywheel/kP", flywheelKp);
-  private LoggedNetworkNumber flywheelI =
-      new LoggedNetworkNumber("Tunable/Flywheel/kI", flywheelKi);
-  private LoggedNetworkNumber flywheelD =
-      new LoggedNetworkNumber("Tunable/Flywheel/kD", flywheelKd);
-
-  private LoggedNetworkNumber flywheelS =
-      new LoggedNetworkNumber("Tunable/Flywheel/kS", flywheelKs);
-  private LoggedNetworkNumber flywheelV =
-      new LoggedNetworkNumber("Tunable/Flywheel/kV", flywheelKv);
-  private LoggedNetworkNumber flywheelA =
-      new LoggedNetworkNumber("Tunable/Flywheel/kA", flywheelKa);
 
   @AutoLogOutput(key = "Shooter/Flywheel/Shooting")
   private boolean shooting = false;
@@ -82,28 +69,45 @@ public class Flywheel extends SubsystemBase {
                 null,
                 (state) -> Logger.recordOutput("Shooter/Flywheel/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setOpenLoop(voltage), null, this));
+
+    SmartDashboard.putData("Shooter/Flywheel", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty(
+        "Threshold Factor",
+        () -> flywheelThresholdFactor,
+        (double value) -> flywheelThresholdFactor = value);
+    builder.addIntegerProperty(
+        "Manual Speed",
+        () -> ((long) flywheelManualSpeed.in(RPM)),
+        (long value) -> flywheelManualSpeed = RPM.of(value));
+
+    builder.addDoubleArrayProperty(
+        "PID",
+        () -> new double[] {flywheelKp, flywheelKi, flywheelKd},
+        (double[] values) -> setPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {flywheelKs, flywheelKv, flywheelKa},
+        (double[] values) -> setSVA(values[0], values[1], values[2]));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("Shooter/Flywheel/PID/kP", flywheelKp);
+    Logger.recordOutput("Shooter/Flywheel/PID/kI", flywheelKi);
+    Logger.recordOutput("Shooter/Flywheel/PID/kD", flywheelKd);
+    Logger.recordOutput("Shooter/Flywheel/PID/kS", flywheelKs);
+    Logger.recordOutput("Shooter/Flywheel/PID/kV", flywheelKv);
+    Logger.recordOutput("Shooter/Flywheel/PID/kA", flywheelKa);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
     logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
-
-    boolean pidChanged =
-        flywheelP.get() != flywheelKp
-            || flywheelI.get() != flywheelKi
-            || flywheelD.get() != flywheelKd;
-    if (pidChanged) {
-      setPID(flywheelP.get(), flywheelI.get(), flywheelD.get());
-    }
-
-    boolean svaChanged =
-        flywheelS.get() != flywheelKs
-            || flywheelV.get() != flywheelKv
-            || flywheelA.get() != flywheelKa;
-    if (svaChanged) {
-      setSVA(flywheelS.get(), flywheelV.get(), flywheelA.get());
-    }
+    logSendableValues();
   }
 
   public void setVelocity(AngularVelocity velocity) {

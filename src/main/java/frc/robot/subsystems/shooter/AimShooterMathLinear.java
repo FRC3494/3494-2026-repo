@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
 
 import edu.wpi.first.math.filter.MedianFilter;
@@ -15,7 +16,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.LinearInterpolationDataPoint;
@@ -24,7 +27,6 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * Interpolation-based aiming model for the shooter.
@@ -54,9 +56,6 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   @Getter @AutoLogOutput private Rotation2d hoodAngle = Rotation2d.kZero;
   @Getter @AutoLogOutput private AngularVelocity flywheelSpeed = RPM.of(0);
 
-  private final LoggedNetworkNumber robotYawVelocityKv =
-      new LoggedNetworkNumber("Tunable/Turret/RobotYawKv", robotYawKv);
-
   /**
    * Container for all shooter setpoints, mirroring {@link AimShooterMath.Setpoints}.
    *
@@ -71,11 +70,6 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   private final MedianFilter turretSetpointFilter = new MedianFilter(turretSetpointFilterSize);
 
-  private final LoggedNetworkNumber azTOFAdjustSecs =
-      new LoggedNetworkNumber("Tunable/AzTofAdjustment", azTOFAdjustment.in(Seconds));
-  private final LoggedNetworkNumber nzTOFAdjustSecs =
-      new LoggedNetworkNumber("Tunable/NzTofAdjustment", nzTOFAdjustment.in(Seconds));
-
   private final InterpolatingDoubleTreeMap azHoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap azFlywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap azTimeOfFlightMap = new InterpolatingDoubleTreeMap();
@@ -83,19 +77,6 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   private final InterpolatingDoubleTreeMap nzHoodAngleMapRad = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap nzFlywheelSpeedMapRPM = new InterpolatingDoubleTreeMap();
   private final InterpolatingDoubleTreeMap nzTimeOfFlightMap = new InterpolatingDoubleTreeMap();
-
-  private final LoggedNetworkNumber turretTrimDeg =
-      new LoggedNetworkNumber("Tunable/Trim/TurretTrimDeg");
-  private final LoggedNetworkNumber hoodTrimDeg =
-      new LoggedNetworkNumber("Tunable/Trim/HoodTrimDeg");
-  private final LoggedNetworkNumber flywheelTrimRPM =
-      new LoggedNetworkNumber("Tunable/Trim/FlywheelTrimRPM");
-  private final LoggedNetworkNumber distanceTrimInches =
-      new LoggedNetworkNumber("Tunable/Trim/DistanceTrimInches", -8.0);
-  private final LoggedNetworkNumber xTrimInches =
-      new LoggedNetworkNumber("Tunable/Trim/XTrimInches");
-  private final LoggedNetworkNumber yTrimInches =
-      new LoggedNetworkNumber("Tunable/Trim/YTrimInches");
 
   private double lastLoopTimestamp;
   private double previousTOF = 0.0;
@@ -120,10 +101,66 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     }
 
     lastLoopTimestamp = Timer.getTimestamp();
+
+    SmartDashboard.putData("AimShooterMathLinear", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty(
+        "Robot Yaw kV", () -> robotYawKv, (double value) -> robotYawKv = value);
+
+    builder.addDoubleProperty(
+        "Turret Trim",
+        () -> Units.rotationsToDegrees(turretTrimRot),
+        (double value) -> turretTrimRot = Units.degreesToRotations(value));
+    builder.addDoubleProperty(
+        "Hood Trim",
+        hoodTrim::getDegrees,
+        (double value) -> hoodTrim = Rotation2d.fromDegrees(value));
+    builder.addIntegerProperty(
+        "Flywheel Trim",
+        () -> ((long) flywheelTrim.in(RPM)),
+        (long value) -> flywheelTrim = RPM.of(value));
+
+    builder.addDoubleProperty(
+        "Distance Trim (in)",
+        () -> distanceTrim.in(Inches),
+        (double value) -> distanceTrim = Inches.of(value));
+    builder.addDoubleProperty(
+        "X Trim (in)", () -> xTrim.in(Inches), (double value) -> xTrim = Inches.of(value));
+    builder.addDoubleProperty(
+        "Y Trim (in)", () -> yTrim.in(Inches), (double value) -> yTrim = Inches.of(value));
+
+    builder.addDoubleProperty(
+        "AZ TOF Adjustment",
+        () -> azTOFAdjustment.in(Seconds),
+        (double value) -> azTOFAdjustment = Seconds.of(value));
+    builder.addDoubleProperty(
+        "NZ TOF Adjustment",
+        () -> nzTOFAdjustment.in(Seconds),
+        (double value) -> nzTOFAdjustment = Seconds.of(value));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("AimShooterMath/RobotYawKv", robotYawKv);
+
+    Logger.recordOutput("AimShooterMathLinear/TurretTrim", turretTrimRot);
+    Logger.recordOutput("AimShooterMathLinear/HoodTrim", hoodTrim);
+    Logger.recordOutput("AimShooterMathLinear/FlywheelTrim", flywheelTrim);
+
+    Logger.recordOutput("AimShooterMathLinear/DistanceTrim", distanceTrim);
+    Logger.recordOutput("AimShooterMathLinear/XTrim", xTrim);
+    Logger.recordOutput("AimShooterMathLinear/YTrim", yTrim);
+
+    Logger.recordOutput("AimShooterMathLinear/AzTofAdjustment", azTOFAdjustment);
+    Logger.recordOutput("AimShooterMathLinear/NzTofAdjustment", nzTOFAdjustment);
   }
 
   @Override
   public void periodic() {
+    logSendableValues();
+
     Pose2d currentRobotPose = robotPose.get();
     ChassisSpeeds robotSpeed = robotSpeeds.get();
 
@@ -185,13 +222,13 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         "AimShooterMathLinear/TargetLocation", new Pose2d(targetLocation, Rotation2d.kZero));
 
     double distanceToTarget =
-        shooterTranslation.getDistance(targetLocation)
-            + Units.inchesToMeters(distanceTrimInches.get());
+        shooterTranslation.getDistance(targetLocation) + distanceTrim.in(Meters);
     Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
     double timeOfFlight =
         inAllianceZone
-            ? azTimeOfFlightMap.get(distanceToTarget) + azTOFAdjustSecs.get()
-            : nzTimeOfFlightMap.get(distanceToTarget) + nzTOFAdjustSecs.get();
+            ? azTimeOfFlightMap.get(distanceToTarget) + azTOFAdjustment.in(Seconds)
+            : nzTimeOfFlightMap.get(distanceToTarget) + nzTOFAdjustment.in(Seconds);
+    timeOfFlight = Math.max(timeOfFlight, 0);
 
     Translation2d virtualTargetLocation = getVirtualGoal(timeOfFlight, robotSpeed, targetLocation);
     Logger.recordOutput(
@@ -199,8 +236,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         new Pose2d(virtualTargetLocation, Rotation2d.kZero));
 
     double virtualDistanceToTarget =
-        shooterTranslation.getDistance(virtualTargetLocation)
-            + Units.inchesToMeters(distanceTrimInches.get());
+        shooterTranslation.getDistance(virtualTargetLocation) + distanceTrim.in(Meters);
     Logger.recordOutput("AimShooterMathLinear/VirtualDistance", Meters.of(virtualDistanceToTarget));
 
     return new AimState(
@@ -228,7 +264,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
                     state.virtualTargetLocation(),
                     state.shooterTranslation(),
                     state.currentRobotPose().getRotation())
-                + Units.degreesToRotations(turretTrimDeg.get()));
+                + turretTrimRot);
 
     Voltage computedTurretFF =
         getTurretFF(
@@ -238,12 +274,11 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
             state.robotSpeed());
 
     Rotation2d computedHoodAngle =
-        getHoodAngle(state.inAllianceZone(), state.virtualDistanceToTarget())
-            .plus(Rotation2d.fromDegrees(hoodTrimDeg.get()));
+        getHoodAngle(state.inAllianceZone(), state.virtualDistanceToTarget()).plus(hoodTrim);
 
     AngularVelocity computedFlywheelSpeed =
         getFlywheelSpeed(state.inAllianceZone(), state.virtualDistanceToTarget())
-            .plus(RPM.of(flywheelTrimRPM.get()));
+            .plus(flywheelTrim);
 
     debugLogging();
 
@@ -411,7 +446,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     // Chassis yaw rotates the whole robot underneath the turret, so compensate that directly.
     Voltage robotYawVelocityFF =
         Volts.of(
-            robotYawVelocityKv.get()
+            robotYawKv
                 * (-Units.radiansPerSecondToRotationsPerMinute(robotSpeed.omegaRadiansPerSecond)));
 
     previousRobotSpeed = robotSpeedTranslation;
@@ -443,51 +478,51 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   // ==================== TRIM ====================
   /** Returns the turret trim in rotations. */
   public double getTurretTrimRot() {
-    return Units.degreesToRotations(turretTrimDeg.get());
+    return turretTrimRot;
   }
 
-  public void setTurretTrim(double trimRot) {
-    turretTrimDeg.set(Units.rotationsToDegrees(trimRot));
+  public void setTurretTrim(double rotations) {
+    turretTrimRot = rotations;
   }
 
   public Rotation2d getHoodTrim() {
-    return Rotation2d.fromDegrees(hoodTrimDeg.get());
+    return hoodTrim;
   }
 
   public void setHoodTrim(Rotation2d trim) {
-    hoodTrimDeg.set(trim.getDegrees());
+    hoodTrim = trim;
   }
 
   public AngularVelocity getFlywheelTrim() {
-    return RPM.of(flywheelTrimRPM.get());
+    return flywheelTrim;
   }
 
   public void setFlywheelTrim(AngularVelocity trim) {
-    flywheelTrimRPM.set(trim.in(RPM));
+    flywheelTrim = trim;
   }
 
   public Distance getDistanceTrim() {
-    return Inches.of(distanceTrimInches.get());
+    return distanceTrim;
   }
 
   public void setDistanceTrim(Distance trim) {
-    distanceTrimInches.set(trim.in(Inches));
+    distanceTrim = trim;
   }
 
   public Distance getXTrim() {
-    return Inches.of(xTrimInches.get());
+    return xTrim;
   }
 
   public void setXTrim(Distance trim) {
-    xTrimInches.set(trim.in(Inches));
+    xTrim = trim;
   }
 
   public Distance getYTrim() {
-    return Inches.of(yTrimInches.get());
+    return yTrim;
   }
 
   public void setYTrim(Distance trim) {
-    yTrimInches.set(trim.in(Inches));
+    yTrim = trim;
   }
 
   public void debugLogging() {

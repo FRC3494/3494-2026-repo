@@ -17,12 +17,13 @@ import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Hood extends SubsystemBase {
   private SparkFlex hoodMotor;
@@ -36,27 +37,6 @@ public class Hood extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/Hood/Shooting")
   private boolean shooting = false;
-
-  private LoggedNetworkNumber hoodP =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kP", hoodKp);
-  private LoggedNetworkNumber hoodI =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kI", hoodKi);
-  private LoggedNetworkNumber hoodD =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kD", hoodKd);
-
-  private LoggedNetworkNumber hoodS =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kS", hoodKs);
-  private LoggedNetworkNumber hoodV =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kV", hoodKv);
-  private LoggedNetworkNumber hoodA =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Main/kA", hoodKa);
-
-  private LoggedNetworkNumber hoodToZeroP =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Zeroing/kP", hoodToZeroKp);
-  private LoggedNetworkNumber hoodToZeroI =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Zeroing/kI", hoodToZeroKi);
-  private LoggedNetworkNumber hoodToZeroD =
-      new LoggedNetworkNumber("Tunable/Shooter/Hood/Zeroing/kD", hoodToZeroKd);
 
   @Getter
   @AutoLogOutput(key = "Shooter/Hood/FilteredMotorCurrent")
@@ -89,29 +69,51 @@ public class Hood extends SubsystemBase {
     Logger.recordOutput("Shooter/Hood/Motor/CurrentLimit", Amps.of(hoodCurrentLimit));
 
     setRelativeEncoderPosition(hoodMinAngle);
+
+    SmartDashboard.putData("Shooter/Hood", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty(
+        "Manual Angle",
+        hoodManualAngle::getDegrees,
+        (double value) -> hoodManualAngle = Rotation2d.fromDegrees(value));
+    builder.addDoubleProperty(
+        "Manual Increment",
+        hoodManualIncrement::getDegrees,
+        (double value) -> hoodManualIncrement = Rotation2d.fromDegrees(value));
+
+    builder.addDoubleArrayProperty(
+        "PID",
+        () -> new double[] {hoodKp, hoodKi, hoodKd},
+        (double[] values) -> setPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "ToZero PID",
+        () -> new double[] {hoodToZeroKp, hoodToZeroKi, hoodToZeroKd},
+        (double[] values) -> setToZeroPID(values[0], values[1], values[2]));
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {hoodKs, hoodKv, hoodKa},
+        (double[] values) -> setSVA(values[0], values[1], values[2]));
+  }
+
+  private void logSendableValues() {
+    Logger.recordOutput("Shooter/Hood/PID/kP", hoodKp);
+    Logger.recordOutput("Shooter/Hood/PID/kI", hoodKi);
+    Logger.recordOutput("Shooter/Hood/PID/kD", hoodKd);
+    Logger.recordOutput("Shooter/Hood/ToZeroPID/kP", hoodKp);
+    Logger.recordOutput("Shooter/Hood/ToZeroPID/kI", hoodKi);
+    Logger.recordOutput("Shooter/Hood/ToZeroPID/kD", hoodKd);
+    Logger.recordOutput("Shooter/Hood/PID/kS", hoodKs);
+    Logger.recordOutput("Shooter/Hood/PID/kV", hoodKv);
+    Logger.recordOutput("Shooter/Hood/PID/kA", hoodKa);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
-
-    boolean pidChanged = hoodP.get() != hoodKp || hoodI.get() != hoodKi || hoodD.get() != hoodKd;
-    if (pidChanged) {
-      setPID(hoodP.get(), hoodI.get(), hoodD.get());
-    }
-
-    boolean zeroPidChanged =
-        hoodToZeroP.get() != hoodToZeroKp
-            || hoodToZeroI.get() != hoodToZeroKi
-            || hoodToZeroD.get() != hoodToZeroKd;
-    if (zeroPidChanged) {
-      setZeroPID(hoodToZeroP.get(), hoodToZeroI.get(), hoodToZeroD.get());
-    }
-
-    boolean svaChanged = hoodS.get() != hoodKs || hoodV.get() != hoodKv || hoodA.get() != hoodKa;
-    if (svaChanged) {
-      setSVA(hoodS.get(), hoodV.get(), hoodA.get());
-    }
+    logSendableValues();
 
     filteredCurrent = Amps.of(currentFilter.calculate(hoodMotor.getOutputCurrent()));
   }
@@ -178,7 +180,7 @@ public class Hood extends SubsystemBase {
     hoodMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  private void setZeroPID(double p, double i, double d) {
+  private void setToZeroPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
     hoodToZeroKp = p;
     hoodToZeroKi = i;

@@ -50,4 +50,10 @@ public interface ModuleIO {
   public default void setTurnPosition(Rotation2d rotation) {}
 
   public default void rezeroTurnEncoder() {}
+
+  public default void setDrivePID(double p, double i, double d) {}
+
+  public default void setDriveSVA(double s, double v, double a) {}
+
+  public default void setTurnPID(double p, double i, double d) {}
 }

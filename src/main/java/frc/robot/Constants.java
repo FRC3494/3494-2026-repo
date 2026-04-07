@@ -21,6 +21,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
@@ -165,19 +166,18 @@ public final class Constants {
   // #region CLIMBER
   public static class ClimberConstants {
     public static final boolean climberInverted = false;
-    public static final int climberCurrentLimit = 70;
-    public static final Time climberRampRate = Milliseconds.of(10);
-    // 1:80 ratio is to prevent encoder from looping
+    public static Current climberCurrentLimit = Amps.of(70);
+    public static Time climberRampRate = Milliseconds.of(10);
     public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 
     public static final int climberCurrentSensingFilterSize = 10;
 
-    public static final double climberDownPosition = 2.443155 + 0.5;
-    public static final double climberUpPosition = 0.4;
-    // Fraction of the way DOWN the "mid" position (climb position) is
-    public static final double climberMidPositionFactor = 0.8;
+    public static double climberUpPosition = 0.4;
+    public static double climberDownPosition = 2.443155 + 0.5;
+    // Fraction of the way DOWN the climb position is
+    public static double climbPositionFactor = 0.8;
 
-    public static final double climberTolerance = 0.01;
+    public static double climberTolerance = 0.01;
 
     public static double climberKp = 10.0;
     public static double climberKi = 0.0;
@@ -192,7 +192,7 @@ public final class Constants {
   // #region DRIVE
   public static class DriveConstants {
     /*
-    ! Things that need to be configured in addition to AdvantageKit Swerve Template configs
+    ! Things that need to be configured in addition to AdvantageKit Swerve Template configs:
 
     * maxAngularSpeedFactor
        - Units: rad/sec
@@ -247,12 +247,12 @@ public final class Constants {
     public static double driveKs = 0.14126175;
     public static double driveKv = 0.1179175;
     public static double driveKa = 0.02385725;
-    public static double driveSimP = 0.05;
-    public static double driveSimI = 0.0;
-    public static double driveSimD = 0.0;
-    public static double driveSimKs = 0.0;
-    public static double driveSimKv = 0.0789;
-    public static double driveSimKa = 0.0;
+    public static final double driveSimP = 0.05;
+    public static final double driveSimI = 0.0;
+    public static final double driveSimD = 0.0;
+    public static final double driveSimKs = 0.0;
+    public static final double driveSimKv = 0.0789;
+    public static final double driveSimKa = 0.0;
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
@@ -278,9 +278,9 @@ public final class Constants {
     public static double turnKp = 2.0;
     public static double turnKi = 0.0;
     public static double turnKd = 0.0;
-    public static double turnSimP = 8.0;
-    public static double turnSimI = 0.0;
-    public static double turnSimD = 0.0;
+    public static final double turnSimP = 8.0;
+    public static final double turnSimI = 0.0;
+    public static final double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
@@ -352,14 +352,14 @@ public final class Constants {
   public static final class HopperConstants {
     // Spindexer constants
     public static final boolean spindexerInverted = true;
-    public static final int spindexerCurrentLimit = 30;
-    public static final Time spindexerRampRate = Milliseconds.of(0);
+    public static Current spindexerCurrentLimit = Amps.of(30);
+    public static Time spindexerRampRate = Milliseconds.of(0);
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
     public static final int spindexerCurrentSensingFilterSize = 10;
 
-    public static final AngularVelocity spindexerSpeed = RPM.of(80);
-    public static final AngularVelocity spindexerIntakingSpeed = RPM.of(10);
+    public static AngularVelocity spindexerSpeed = RPM.of(80);
+    public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
 
     public static double spindexerKp = 3.0357E-05;
     public static double spindexerKi = 0.0;
@@ -378,7 +378,7 @@ public final class Constants {
     public static final Time kickerRampRate = Milliseconds.of(0);
 
     // Number to multiply the flywheel speed by
-    public static final double kickerSpeedFactor = 1.0;
+    public static double kickerSpeedFactor = 1.0;
 
     public static double kickerKp = 2.8084E-08;
     public static double kickerKi = 0.0;
@@ -393,11 +393,11 @@ public final class Constants {
   // #region INTAKE
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
-    public static final int spinnySpinnyCurrentLimit = 50;
+    public static final Current spinnySpinnyCurrentLimit = Amps.of(50);
     public static final Time spinnySpinnyRampRate = Milliseconds.of(0);
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
 
-    public static final AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
+    public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
 
     public static double spinnySpinnyKp = 3.1048E-05;
     public static double spinnySpinnyKi = 0.0;
@@ -424,11 +424,11 @@ public final class Constants {
     public static double uppyDownyKv = 0.007;
     public static double uppyDownyKa = 0.0;
 
-    public static final double uppyDownyRaiseRPM = -500.0;
-    public static final double uppyDownyLowerRPM = 150.0;
+    public static double uppyDownyRaiseRPM = -500.0;
+    public static double uppyDownyLowerRPM = 150.0;
 
-    public static final double jostleIntakeUpTime = 0.75;
-    public static final double jostleIntakeDownTime = 0.5;
+    public static double jostleIntakeUpTime = 0.75;
+    public static double jostleIntakeDownTime = 0.5;
   }
   // #endregion
 
@@ -452,67 +452,69 @@ public final class Constants {
     public static final double shooterY = Units.inchesToMeters(-2.074);
     public static final double shooterZ = Units.inchesToMeters(13.72);
 
-    // *
-    // https://docs.google.com/spreadsheets/d/14hwlqJER8P0QzwcH5v36mP58clVzJN8zftQV1oThM_0/edit?usp=sharing
-    public static final Time azTOFAdjustment = Seconds.of(0.3);
-    public static final LinearInterpolationDataPoint[] azLinearInterpolationDataPoints =
-        new LinearInterpolationDataPoint[] {
-          // * Tuned front towards hub
-          new LinearInterpolationDataPoint(
-              Meters.of(1.111),
-              Rotation2d.fromDegrees(24.2238027),
-              RPM.of(2700),
-              Seconds.of(0.910875)),
-          new LinearInterpolationDataPoint(
-              Meters.of(1.868), Rotation2d.fromDegrees(27), RPM.of(2900), Seconds.of(1.0055)),
-          new LinearInterpolationDataPoint(
-              Meters.of(2.054), Rotation2d.fromDegrees(29), RPM.of(2950), Seconds.of(1.02875)),
-          new LinearInterpolationDataPoint(
-              Meters.of(2.235), Rotation2d.fromDegrees(30), RPM.of(2975), Seconds.of(1.051375)),
-          new LinearInterpolationDataPoint(
-              Meters.of(2.633), Rotation2d.fromDegrees(32), RPM.of(3050), Seconds.of(1.101125)),
-          new LinearInterpolationDataPoint(
-              Meters.of(2.852), Rotation2d.fromDegrees(33), RPM.of(3100), Seconds.of(1.1285)),
-          new LinearInterpolationDataPoint(
-              Meters.of(3.125), Rotation2d.fromDegrees(34), RPM.of(3150), Seconds.of(1.162625)),
-          // * Tuned side towards hub
-          new LinearInterpolationDataPoint(
-              Meters.of(3.268), Rotation2d.fromDegrees(33), RPM.of(3100), Seconds.of(1.1805)),
-          new LinearInterpolationDataPoint(
-              Meters.of(3.546), Rotation2d.fromDegrees(34), RPM.of(3175), Seconds.of(1.21525)),
-          new LinearInterpolationDataPoint(
-              Meters.of(3.66), Rotation2d.fromDegrees(33), RPM.of(3300), Seconds.of(1.2295)),
-          new LinearInterpolationDataPoint(
-              Meters.of(3.695), Rotation2d.fromDegrees(32), RPM.of(3425), Seconds.of(1.233875)),
-          new LinearInterpolationDataPoint(
-              Meters.of(3.826), Rotation2d.fromDegrees(35), RPM.of(3275), Seconds.of(1.25025)),
-          new LinearInterpolationDataPoint(
-              Meters.of(4.045), Rotation2d.fromDegrees(35), RPM.of(3350), Seconds.of(1.277625)),
-          new LinearInterpolationDataPoint(
-              Meters.of(4.23), Rotation2d.fromDegrees(35), RPM.of(3440), Seconds.of(1.30075)),
-          new LinearInterpolationDataPoint(
-              Meters.of(4.64), Rotation2d.fromDegrees(36), RPM.of(3550), Seconds.of(1.352)),
-          new LinearInterpolationDataPoint(
-              Meters.of(5.24), Rotation2d.fromDegrees(38), RPM.of(3600), Seconds.of(1.427)),
-          // ! Last points extrapolated from:  https://www.desmos.com/calculator/lvx3alcbyt
-          new LinearInterpolationDataPoint(
-              Meters.of(7.37), Rotation2d.fromDegrees(45), RPM.of(4150), Seconds.of(1.69325)),
-          new LinearInterpolationDataPoint(
-              Meters.of(8.91), Rotation2d.fromDegrees(45), RPM.of(4500), Seconds.of(1.88575))
-        };
+      // *
+      // https://docs.google.com/spreadsheets/d/14hwlqJER8P0QzwcH5v36mP58clVzJN8zftQV1oThM_0/edit?usp=sharing
+      public static Time azTOFAdjustment = Seconds.of(0.3);
+      public static final LinearInterpolationDataPoint[] azLinearInterpolationDataPoints =
+          new LinearInterpolationDataPoint[] {
+            // * Tuned front towards hub
+            new LinearInterpolationDataPoint(
+                Meters.of(1.111),
+                Rotation2d.fromDegrees(24.2238027),
+                RPM.of(2700),
+                Seconds.of(0.910875)),
+            new LinearInterpolationDataPoint(
+                Meters.of(1.868), Rotation2d.fromDegrees(27), RPM.of(2900), Seconds.of(1.0055)),
+            new LinearInterpolationDataPoint(
+                Meters.of(2.054), Rotation2d.fromDegrees(29), RPM.of(2950), Seconds.of(1.02875)),
+            new LinearInterpolationDataPoint(
+                Meters.of(2.235), Rotation2d.fromDegrees(30), RPM.of(2975), Seconds.of(1.051375)),
+            new LinearInterpolationDataPoint(
+                Meters.of(2.633), Rotation2d.fromDegrees(32), RPM.of(3050), Seconds.of(1.101125)),
+            new LinearInterpolationDataPoint(
+                Meters.of(2.852), Rotation2d.fromDegrees(33), RPM.of(3100), Seconds.of(1.1285)),
+            new LinearInterpolationDataPoint(
+                Meters.of(3.125), Rotation2d.fromDegrees(34), RPM.of(3150), Seconds.of(1.162625)),
+            // * Tuned side towards hub
+            new LinearInterpolationDataPoint(
+                Meters.of(3.268), Rotation2d.fromDegrees(33), RPM.of(3100), Seconds.of(1.1805)),
+            new LinearInterpolationDataPoint(
+                Meters.of(3.546), Rotation2d.fromDegrees(34), RPM.of(3175), Seconds.of(1.21525)),
+            new LinearInterpolationDataPoint(
+                Meters.of(3.66), Rotation2d.fromDegrees(33), RPM.of(3300), Seconds.of(1.2295)),
+            new LinearInterpolationDataPoint(
+                Meters.of(3.695), Rotation2d.fromDegrees(32), RPM.of(3425), Seconds.of(1.233875)),
+            new LinearInterpolationDataPoint(
+                Meters.of(3.826), Rotation2d.fromDegrees(35), RPM.of(3275), Seconds.of(1.25025)),
+            new LinearInterpolationDataPoint(
+                Meters.of(4.045), Rotation2d.fromDegrees(35), RPM.of(3350), Seconds.of(1.277625)),
+            new LinearInterpolationDataPoint(
+                Meters.of(4.23), Rotation2d.fromDegrees(35), RPM.of(3440), Seconds.of(1.30075)),
+            new LinearInterpolationDataPoint(
+                Meters.of(4.64), Rotation2d.fromDegrees(36), RPM.of(3550), Seconds.of(1.352)),
+            new LinearInterpolationDataPoint(
+                Meters.of(5.24), Rotation2d.fromDegrees(38), RPM.of(3600), Seconds.of(1.427)),
+            // ! Last points extrapolated from:  https://www.desmos.com/calculator/lvx3alcbyt
+            new LinearInterpolationDataPoint(
+                Meters.of(7.37), Rotation2d.fromDegrees(45), RPM.of(4150), Seconds.of(1.69325)),
+            new LinearInterpolationDataPoint(
+                Meters.of(8.91), Rotation2d.fromDegrees(45), RPM.of(4500), Seconds.of(1.88575))
+          };
 
-    public static final Time nzTOFAdjustment = Seconds.of(0.0);
-    public static final LinearInterpolationDataPoint[] nzLinearInterpolationDataPoints =
-        new LinearInterpolationDataPoint[] {
-          new LinearInterpolationDataPoint(
-              Meters.of(7.270), Rotation2d.fromDegrees(45), RPM.of(3900.0), Seconds.of(1.425)),
-          new LinearInterpolationDataPoint(
-              Meters.of(5.650), Rotation2d.fromDegrees(45), RPM.of(3300.0), Seconds.of(1.330)),
-          new LinearInterpolationDataPoint(
-              Meters.of(4.410), Rotation2d.fromDegrees(45), RPM.of(2800.0), Seconds.of(1.150)),
-          new LinearInterpolationDataPoint(
-              Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2400.0), Seconds.of(1.0)),
-        };
+      public static Time nzTOFAdjustment = Seconds.of(0.0);
+      public static final LinearInterpolationDataPoint[] nzLinearInterpolationDataPoints =
+          new LinearInterpolationDataPoint[] {
+            new LinearInterpolationDataPoint(
+                Meters.of(7.270), Rotation2d.fromDegrees(45), RPM.of(3900.0), Seconds.of(1.425)),
+            new LinearInterpolationDataPoint(
+                Meters.of(5.650), Rotation2d.fromDegrees(45), RPM.of(3300.0), Seconds.of(1.330)),
+            new LinearInterpolationDataPoint(
+                Meters.of(4.410), Rotation2d.fromDegrees(45), RPM.of(2800.0), Seconds.of(1.150)),
+            new LinearInterpolationDataPoint(
+                Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2400.0), Seconds.of(1.0)),
+          };
+    }
+    // #endregion
 
     public static record LinearInterpolationDataPoint(
         Distance distance,
@@ -531,9 +533,9 @@ public final class Constants {
       public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
 
       // Fraction of target speed at which kicker triggers and robot starts shooting
-      public static final double flywheelThresholdFactor = 0.99;
+      public static double flywheelThresholdFactor = 0.99;
       // Default starting speed for shots using dashboard settings
-      public static final AngularVelocity flywheelManualSpeed = RPM.of(3000);
+      public static AngularVelocity flywheelManualSpeed = RPM.of(3000);
 
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       public static double flywheelKp = 6.1453E-07; // From SysId: 0.0000025794
@@ -561,9 +563,9 @@ public final class Constants {
       public static final Rotation2d hoodMaxAngle = Rotation2d.fromDegrees(45.0);
 
       // Default hood angle for shots using dashboard settings
-      public static final Rotation2d hoodManualAngle = hoodMinAngle;
+      public static Rotation2d hoodManualAngle = hoodMinAngle;
       // Speed of manually moving hood up and down
-      public static final Rotation2d hoodManualIncrement = Rotation2d.fromDegrees(2.0);
+      public static Rotation2d hoodManualIncrement = Rotation2d.fromDegrees(2.0);
 
       public static double hoodKp = 20.0;
       public static double hoodKi = 0.0;
@@ -594,30 +596,30 @@ public final class Constants {
       public static final double turretMaxAngleRot = Units.degreesToRotations(360);
 
       // Turret shooting over the back of the robot
-      public static final double turretRezeroLocationRot = Units.degreesToRotations(180);
-      public static final double turretShootingToleranceRot = Units.degreesToRotations(20.0);
+      public static double turretRezeroLocationRot = Units.degreesToRotations(180);
+      public static double turretShootingToleranceRot = Units.degreesToRotations(20.0);
 
       // Speed of manually moving turret CW/CCW
-      public static final double turretManualIncrementRot = Units.degreesToRotations(2.0);
+      public static double turretManualIncrementRot = Units.degreesToRotations(2.0);
 
       public static double turretPositionToleranceRot = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position
-      public static final double turretCableRetractorStartRot = Units.degreesToRotations(115);
-      public static final Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
-      public static final Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
+      public static double turretCableRetractorStartRot = Units.degreesToRotations(115);
+      // Feedforward for retractor when turret is moving clockwise (against the retractor)
+      public static Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
+      // Feedforward for retractor when turret is moving counterclockwise (with the retractor)
+      public static Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
 
       public static double turretKp = 3.0;
       public static double turretKi = 0.0;
       public static double turretKd = 0.0;
 
-      public static double turretIMaxAccum = Units.degreesToRotations(10) * 1000;
-      public static double turretIZone = Units.degreesToRotations(20);
+      public static double turretIMaxAccumRot = Units.degreesToRotations(10) * 1000;
+      public static double turretIZoneRot = Units.degreesToRotations(20);
 
       public static double turretKs = 0.16;
       public static double turretKv = 0.0;
       public static double turretKa = 0.0;
-
-      public static double robotYawKv = 0.08;
 
       public static final int turretSetpointFilterSize = 1;
 
@@ -636,8 +638,8 @@ public final class Constants {
     public static final int minTagCountMT1 = 2;
     public static final int minTagCountMT2 = 1;
 
-    public static final double maxDistanceStdDev = 1.2;
-    public static final double maxAngleStdDev = 999999;
+    public static double distanceStdDev = 1.2;
+    public static double angleStdDev = 999999;
 
     // * AprilTag Locations:
     // *

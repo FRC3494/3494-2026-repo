@@ -70,6 +70,10 @@ public class AprilTagCamera {
         position.getRotation().getMeasureZ().in(Degrees));
 
     LimelightHelpers.SetFiducialIDFiltersOverride(name, enabledAprilTags);
+
+    Logger.recordOutput(
+        "Vision/" + name + "/CameraPoseRobotSpace",
+        LimelightHelpers.getCameraPose3d_RobotSpace(name));
   }
 
   // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
@@ -129,9 +133,6 @@ public class AprilTagCamera {
         "Vision/" + name + "/" + tagType + "/PoseTimestamp", poseEstimate.timestampSeconds);
     Logger.recordOutput(
         "Vision/" + name + "/" + tagType + "/RawFiducials", poseEstimate.rawFiducials.toString());
-    Logger.recordOutput(
-        "Vision/" + name + "/" + tagType + "/CameraPoseRobotSpace",
-        LimelightHelpers.getCameraPose3d_RobotSpace(name));
   }
 
   private boolean isMeasurementValid(PoseEstimate poseEstimate, String tagType) {
@@ -155,11 +156,11 @@ public class AprilTagCamera {
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
-    double standardDeviationX = maxDistanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
+    double standardDeviationX = distanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
     // maxTagDistance.in(Meters));
-    double standardDeviationY = maxDistanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
+    double standardDeviationY = distanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
     // maxTagDistance.in(Meters));
-    double standardDeviationTheta = maxAngleStdDev; // maxAngleStdDev *
+    double standardDeviationTheta = angleStdDev; // maxAngleStdDev *
     // Math.abs(poseEstimate.pose.getRotation().minus(drive.getRotation()).getRadians() / (2 *
     // Math.PI)));
 
