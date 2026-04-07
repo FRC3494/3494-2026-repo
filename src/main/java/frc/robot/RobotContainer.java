@@ -327,16 +327,33 @@ public class RobotContainer {
         () -> DriveCommands.linearWheelRadiusCharacterization(drive));
     autoChooser.addCmd(
         "Drive Simple FF Characterization", () -> DriveCommands.feedforwardCharacterization(drive));
+
     autoChooser.addCmd(
         "Drive SysId (Quasistatic Forward)",
-        () -> drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        () -> drive.driveSysIdQuasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
         "Drive SysId (Quasistatic Reverse)",
-        () -> drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        () -> drive.driveSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     autoChooser.addCmd(
-        "Drive SysId (Dynamic Forward)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        "Drive SysId (Dynamic Forward)",
+        () -> drive.driveSysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addCmd(
-        "Drive SysId (Dynamic Reverse)", () -> drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        "Drive SysId (Dynamic Reverse)",
+        () -> drive.driveSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addCmd(
+        "Turn SysId (Quasistatic Forward)",
+        () -> drive.turnSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Turn SysId (Quasistatic Reverse)",
+        () -> drive.turnSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addCmd(
+        "Turn SysId (Dynamic Forward)",
+        () -> drive.turnSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addCmd(
+        "Turn SysId (Dynamic Reverse)",
+        () -> drive.turnSysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
