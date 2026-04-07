@@ -1,6 +1,6 @@
 {
   "version": 1.0,
-  "grid_size": 30,
+  "grid_size": 20,
   "tabs": [
     {
       "name": "Autonomous",
@@ -9,10 +9,10 @@
         "containers": [
           {
             "title": "Auto Chooser",
-            "x": 390.0,
-            "y": 330.0,
-            "width": 450.0,
-            "height": 150.0,
+            "x": 420.0,
+            "y": 0.0,
+            "width": 460.0,
+            "height": 160.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/Auto Chooser",
@@ -22,15 +22,42 @@
           },
           {
             "title": "EnableTuningAutos",
-            "x": 240.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 150.0,
+            "x": 260.0,
+            "y": 0.0,
+            "width": 160.0,
+            "height": 160.0,
             "type": "Toggle Switch",
             "properties": {
               "topic": "/AdvantageKit/NetworkInputs/SmartDashboard/EnableTuningAutos",
               "period": 0.06,
               "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Turret Position",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 160.0,
+            "height": 160.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Shooter/Turret/RelPosition",
+              "period": 0.06,
+              "data_type": "double"
+            }
+          },
+          {
+            "title": "RezeroTurret",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 300.0,
+            "height": 160.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Buttons/RezeroTurret",
+              "period": 0.06,
+              "show_type": true,
+              "maximize_button_space": false
             }
           }
         ]
@@ -39,463 +66,1294 @@
     {
       "name": "Teleoperated",
       "grid_layout": {
-        "layouts": [],
+        "layouts": [
+          {
+            "title": "List Layout",
+            "x": 780.0,
+            "y": 140.0,
+            "width": 220.0,
+            "height": 240.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "HIDDEN"
+            },
+            "children": [
+              {
+                "title": "Valid",
+                "x": 900.0,
+                "y": 180.0,
+                "width": 140.0,
+                "height": 100.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Vision/limelight-angle/Valid",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Valid",
+                "x": 900.0,
+                "y": 240.0,
+                "width": 140.0,
+                "height": 100.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Vision/limelight-cube/Valid",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Valid",
+                "x": 880.0,
+                "y": 240.0,
+                "width": 140.0,
+                "height": 100.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Vision/limelight-kvale/Valid",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              },
+              {
+                "title": "Valid",
+                "x": 940.0,
+                "y": 220.0,
+                "width": 140.0,
+                "height": 100.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/AdvantageKit/RealOutputs/Vision/limelight-square/Valid",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          }
+        ],
         "containers": [
           {
-            "title": "HoodIncrementDeg",
-            "x": 330.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
+            "title": "Turret Position",
+            "x": 0.0,
+            "y": 260.0,
+            "width": 120.0,
+            "height": 120.0,
+            "type": "Large Text Display",
             "properties": {
-              "topic": "Tunable/HoodIncrementDeg",
+              "topic": "/AdvantageKit/RealOutputs/Shooter/Turret/RelPosition",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
+              "data_type": "double"
             }
           },
           {
-            "title": "Hood - kP",
-            "x": 810.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
+            "title": "RezeroTurret",
+            "x": 120.0,
+            "y": 260.0,
+            "width": 260.0,
+            "height": 120.0,
+            "type": "Command",
             "properties": {
-              "topic": "Tunable/Hood/kP",
+              "topic": "/SmartDashboard/Buttons/RezeroTurret",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
+              "show_type": false,
+              "maximize_button_space": false
             }
           },
           {
-            "title": "kI",
-            "x": 960.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Hood/kI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kD",
-            "x": 1110.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Hood/kD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Flywheel - kP",
-            "x": 810.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Flywheel/kP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kI",
-            "x": 960.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Flywheel/kI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kD",
-            "x": 1110.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Flywheel/kD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "SpindexerRPM",
-            "x": 30.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/SpindexerRPM",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "FlywheelRPM",
-            "x": 180.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/FlywheelRPM",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "FlywheelThreshold",
-            "x": 180.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/FlywheelThreshold",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "HoodAngle",
-            "x": 330.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/HoodAngle",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "IntakeRPM",
-            "x": 30.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/IntakeRPM",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "ClimberUpPos",
-            "x": 480.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/ClimberUpPos",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "ClimberDownPos",
-            "x": 480.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/ClimberDownPos",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "KickerSpeedFactor",
-            "x": 630.0,
-            "y": 330.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/KickerSpeedFactor",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Climber - kP",
-            "x": 810.0,
-            "y": 240.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Climber/kP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kI",
-            "x": 960.0,
-            "y": 240.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Climber/kI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kD",
-            "x": 1110.0,
-            "y": 240.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Climber/kD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Turret - kP",
-            "x": 810.0,
-            "y": 150.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Turret/kP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kI",
-            "x": 960.0,
-            "y": 150.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Turret/kI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kD",
-            "x": 1110.0,
-            "y": 150.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Turret/kD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Spindexer - kP",
-            "x": 810.0,
-            "y": 60.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Spindexer/kP",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kI",
-            "x": 960.0,
-            "y": 60.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Spindexer/kI",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "kD",
-            "x": 1110.0,
-            "y": 60.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Spindexer/kD",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "ClimberMidFactor",
-            "x": 630.0,
-            "y": 420.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/ClimberMidFactor",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurretManualSpeed",
-            "x": 30.0,
-            "y": 240.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/TurretManualSpeed",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "AngleStdDev",
-            "x": 330.0,
-            "y": 240.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Vision/AngleStdDev",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "DistanceStdDev",
-            "x": 180.0,
-            "y": 240.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "Tunable/Vision/DistanceStdDev",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "TurretTrimDeg",
-            "x": 630.0,
+            "title": "WonAutoIndicator",
+            "x": 780.0,
             "y": 0.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
+            "width": 220.0,
+            "height": 140.0,
+            "type": "Single Color View",
             "properties": {
-              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/TurretTrimDeg",
+              "topic": "/AdvantageKit/RealOutputs/OI/WonAutoIndicator",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
+              "data_type": "string"
             }
           },
           {
-            "title": "HoodTrimDeg",
-            "x": 480.0,
+            "title": "RobotField",
+            "x": 0.0,
             "y": 0.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
+            "width": 500.0,
+            "height": 260.0,
+            "type": "Field",
             "properties": {
-              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/HoodTrimDeg",
+              "topic": "/SmartDashboard/RobotField",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
+              "field_game": "Rebuilt",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
             }
           },
           {
-            "title": "FlywheelTrimRPM",
-            "x": 330.0,
+            "title": "MatchTime",
+            "x": 1000.0,
             "y": 0.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
+            "width": 260.0,
+            "height": 140.0,
+            "type": "Match Time",
             "properties": {
-              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/FlywheelTrimRPM",
+              "topic": "/AdvantageKit/DriverStation/MatchTime",
               "period": 0.06,
               "data_type": "double",
-              "show_submit_button": true
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 20,
+              "yellow_start_time": 30
             }
           },
           {
-            "title": "DistanceTrimInches",
-            "x": 180.0,
-            "y": 0.0,
-            "width": 150.0,
-            "height": 90.0,
-            "type": "Text Display",
+            "title": "AZDistanceTrim",
+            "x": 500.0,
+            "y": 260.0,
+            "width": 140.0,
+            "height": 120.0,
+            "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/NetworkInputs/Tunable/Trim/DistanceTrimInches",
+              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/AZDistanceTrim",
+              "period": 0.06,
+              "data_type": "double"
+            }
+          },
+          {
+            "title": "NZDistanceTrim",
+            "x": 640.0,
+            "y": 260.0,
+            "width": 140.0,
+            "height": 120.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/NZDistanceTrim",
+              "period": 0.06,
+              "data_type": "double"
+            }
+          },
+          {
+            "title": "SpindexerCurrent",
+            "x": 1000.0,
+            "y": 140.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "Graph",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Hopper/Spindexer/Motor/Current",
+              "period": 0.033,
+              "data_type": "double",
+              "time_displayed": 5.0,
+              "min_value": 0.0,
+              "max_value": 35.0,
+              "color": 4294967040,
+              "line_width": 20.0
+            }
+          },
+          {
+            "title": "SpindexerSpeed",
+            "x": 380.0,
+            "y": 260.0,
+            "width": 120.0,
+            "height": 120.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Hopper/SpindexerSpeedRounded",
+              "period": 0.06,
+              "data_type": "int"
+            }
+          },
+          {
+            "title": "TurretTrim",
+            "x": 500.0,
+            "y": 0.0,
+            "width": 280.0,
+            "height": 260.0,
+            "type": "Radial Gauge",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/TurretTrim",
               "period": 0.06,
               "data_type": "double",
-              "show_submit_button": true
+              "start_angle": -180.0,
+              "end_angle": 180.0,
+              "min_value": -180.0,
+              "max_value": 180.0,
+              "number_of_labels": 8,
+              "wrap_value": true,
+              "show_pointer": true,
+              "show_ticks": false
             }
           }
         ]
       }
     },
     {
-      "name": "Testing",
+      "name": "Tuning (Shoot)",
       "grid_layout": {
-        "layouts": [],
+        "layouts": [
+          {
+            "title": "Kicker",
+            "x": 820.0,
+            "y": 0.0,
+            "width": 340.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Kicker/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Kicker/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Kicker/Speed",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Flywheel",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 340.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Manual Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Flywheel/Manual Speed",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Flywheel/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Flywheel/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Threshold Factor",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Flywheel/Threshold Factor",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Hood",
+            "x": 340.0,
+            "y": 0.0,
+            "width": 240.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Manual Angle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Hood/Manual Angle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Manual Increment",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Hood/Manual Increment",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Hood/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Hood/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "ToZero PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Hood/ToZero PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Turret",
+            "x": 580.0,
+            "y": 0.0,
+            "width": 240.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Cable Retractor CCW FF",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/Cable Retractor CCW FF",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Cable Retractor CW FF",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/Cable Retractor CW FF",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Cable Retractor Start Location",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/Cable Retractor Start Location",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "IMaxAccum (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/IMaxAccum (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "IZone (deg)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/IZone (deg)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Manual Increment",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/Manual Increment",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rezero Location",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/Rezero Location",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Shooting Tolerance",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Turret/Shooting Tolerance",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          }
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Tuning (Intake)",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Spindexer",
+            "x": 600.0,
+            "y": 0.0,
+            "width": 320.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Current Limit",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/Current Limit",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Speed (RPM)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/Speed (RPM)",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Speed while Intaking",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/Speed while Intaking",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "SpinnySpinny",
+            "x": 260.0,
+            "y": 0.0,
+            "width": 340.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/SpinnySpinny/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/SpinnySpinny/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Speed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/SpinnySpinny/Speed",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "UppyDowny",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 260.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Jostle Intake Down Time",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/Jostle Intake Down Time",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Jostle Intake Up Time",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/Jostle Intake Up Time",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Lower RPM",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/Lower RPM",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Raise RPM",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/Raise RPM",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Climber",
+            "x": 920.0,
+            "y": 0.0,
+            "width": 200.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Climb Position Factor",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Climb Position Factor",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Down Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Down Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Normal Current Limit",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Normal Current Limit",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Ramp Rate (ms)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Ramp Rate (ms)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Tolerance",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Tolerance",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Up Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Up Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          }
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Tuning (Drive/LERP Math)",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Drive",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 360.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Auto Angular PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Auto Angular PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Auto Linear PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Auto Linear PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Drive PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Drive PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Drive SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Drive SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Turn PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Turn PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "AimShooterMathLinear",
+            "x": 400.0,
+            "y": 0.0,
+            "width": 240.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "AZ Distance Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Distance Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Distance Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Turret Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/Turret Trim",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "AimShooterMathLinear",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 240.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "AZ Flywheel Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Flywheel Trim",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ Hood Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Hood Trim",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ TOF Adjustment",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ TOF Adjustment",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ X Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ X Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ Y Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Y Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Flywheel Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Flywheel Trim",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Hood Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Hood Trim",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ TOF Adjustment",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ TOF Adjustment",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ X Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ X Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Y Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Y Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Robot Yaw kV",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/Robot Yaw kV",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          }
+        ],
         "containers": []
       }
     },
@@ -508,8 +1366,8 @@
             "title": "limelight-angle",
             "x": 0.0,
             "y": 0.0,
-            "width": 660.0,
-            "height": 300.0,
+            "width": 300.0,
+            "height": 360.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-angle",
@@ -519,10 +1377,10 @@
           },
           {
             "title": "limelight-cube",
-            "x": 660.0,
+            "x": 320.0,
             "y": 0.0,
-            "width": 600.0,
-            "height": 300.0,
+            "width": 300.0,
+            "height": 360.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-cube",
@@ -532,10 +1390,10 @@
           },
           {
             "title": "limelight-kvale",
-            "x": 0.0,
-            "y": 300.0,
-            "width": 660.0,
-            "height": 270.0,
+            "x": 640.0,
+            "y": 0.0,
+            "width": 300.0,
+            "height": 360.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-kvale",
@@ -545,10 +1403,10 @@
           },
           {
             "title": "limelight-square",
-            "x": 660.0,
-            "y": 300.0,
-            "width": 600.0,
-            "height": 270.0,
+            "x": 960.0,
+            "y": 0.0,
+            "width": 300.0,
+            "height": 360.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-square",
