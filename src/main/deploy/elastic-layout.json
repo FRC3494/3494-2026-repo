@@ -9,10 +9,10 @@
         "containers": [
           {
             "title": "Auto Chooser",
-            "x": 420.0,
+            "x": 160.0,
             "y": 0.0,
             "width": 460.0,
-            "height": 160.0,
+            "height": 120.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/Auto Chooser",
@@ -22,10 +22,10 @@
           },
           {
             "title": "EnableTuningAutos",
-            "x": 260.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 160.0,
-            "height": 160.0,
+            "height": 120.0,
             "type": "Toggle Switch",
             "properties": {
               "topic": "/AdvantageKit/NetworkInputs/SmartDashboard/EnableTuningAutos",
@@ -35,10 +35,10 @@
           },
           {
             "title": "Turret Position",
-            "x": 0.0,
-            "y": 0.0,
+            "x": 620.0,
+            "y": 60.0,
             "width": 160.0,
-            "height": 160.0,
+            "height": 120.0,
             "type": "Large Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Shooter/Turret/RelPosition",
@@ -48,16 +48,93 @@
           },
           {
             "title": "RezeroTurret",
-            "x": 960.0,
-            "y": 0.0,
-            "width": 300.0,
-            "height": 160.0,
+            "x": 520.0,
+            "y": 180.0,
+            "width": 260.0,
+            "height": 120.0,
             "type": "Command",
             "properties": {
               "topic": "/SmartDashboard/Buttons/RezeroTurret",
               "period": 0.06,
               "show_type": true,
               "maximize_button_space": false
+            }
+          },
+          {
+            "title": "ResetOdoLeftBump",
+            "x": 0.0,
+            "y": 240.0,
+            "width": 260.0,
+            "height": 120.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/ResetOdoLeftBump",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": false
+            }
+          },
+          {
+            "title": "ResetOdoLeftTrench",
+            "x": 0.0,
+            "y": 120.0,
+            "width": 260.0,
+            "height": 120.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/ResetOdoLeftTrench",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": false
+            }
+          },
+          {
+            "title": "ResetOdoRightBump",
+            "x": 260.0,
+            "y": 240.0,
+            "width": 260.0,
+            "height": 120.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/ResetOdoRightBump",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": false
+            }
+          },
+          {
+            "title": "ResetOdoRightTrench",
+            "x": 260.0,
+            "y": 120.0,
+            "width": 260.0,
+            "height": 120.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/ResetOdoRightTrench",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": false
+            }
+          },
+          {
+            "title": "RobotField",
+            "x": 780.0,
+            "y": 0.0,
+            "width": 480.0,
+            "height": 260.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/RobotField",
+              "period": 0.06,
+              "field_game": "Rebuilt",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
             }
           }
         ]
@@ -677,7 +754,7 @@
       }
     },
     {
-      "name": "Tuning (Intake)",
+      "name": "Tuning (Intake/Climb)",
       "grid_layout": {
         "layouts": [
           {
@@ -811,6 +888,20 @@
                 "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Intake/SpinnySpinny/Speed",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "ShootingSpeed",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/SpinnySpinny/ShootingSpeed",
                   "period": 0.06,
                   "data_type": "int",
                   "show_submit_button": true
