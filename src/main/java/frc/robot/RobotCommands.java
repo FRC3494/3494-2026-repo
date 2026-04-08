@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -30,8 +29,6 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
-
-import java.util.Set;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -505,22 +502,21 @@ public class RobotCommands {
             intake));
   }
 
-  private Command upDownCommand(){
-    return
-        repeatingSequence(
-            run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
-                .withTimeout(jostleIntakeDownTime),
-            run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
-                .withTimeout(jostleIntakeUpTime));
+  private Command upDownCommand() {
+    return repeatingSequence(
+        run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
+            .withTimeout(jostleIntakeDownTime),
+        run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
+            .withTimeout(jostleIntakeUpTime));
   }
 
   public Command runIntakeJostle() {
     // Start by moving up (-RPM) first so we move away from the bottom hard stop
     return sequence(
-            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
-            waitSeconds(0.15),
-            deferredProxy(this::upDownCommand)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero())));
+        runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
+        waitSeconds(0.15),
+        deferredProxy(this::upDownCommand)
+            .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero())));
   }
 
   public Command stopIntakeJostle() {
