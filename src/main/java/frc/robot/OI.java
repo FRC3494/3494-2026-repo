@@ -77,10 +77,6 @@ public final class OI {
   }
 
   // #region WHOLE ROBOT
-  public static Trigger rezeroMechanisms() {
-    // Just hit individual buttons lol
-    return new Trigger(() -> false);
-  }
   // #endregion
 
   // #region CLIMBER

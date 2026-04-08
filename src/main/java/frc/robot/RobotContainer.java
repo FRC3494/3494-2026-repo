@@ -454,8 +454,6 @@ public class RobotContainer {
 
     // #region WHOLE ROBOT
 
-    OI.rezeroMechanisms().onTrue(robotCommands.rezeroMechanisms());
-
     OI.RumbleOI.shiftRumbleWindow().whileTrue(OI.RumbleOI.shiftRumbleSequence());
 
     SmartDashboard.putData("ResetOdoLeftTrench", Autos.resetOdoLeftTrench(drive));

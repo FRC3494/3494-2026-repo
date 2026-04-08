@@ -79,11 +79,6 @@ public class RobotCommands {
 
   // #region WHOLE ROBOT
 
-  public Command rezeroMechanisms() {
-    return parallel(rezeroClimber(), rezeroHood());
-    // TODO: intake uppy downy
-  }
-
   // #endregion
 
   // #region CLIMBER
