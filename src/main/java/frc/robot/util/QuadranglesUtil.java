@@ -28,4 +28,18 @@ public final class QuadranglesUtil {
       return blueTranslation;
     }
   }
+
+  /** Returns `true` if `inputTranslation` is closer to `a`, `false` if closer to `b`. */
+  public static boolean closerTo(Translation2d a, Translation2d b, Translation2d inputTranslation) {
+    double distanceToA = inputTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(a));
+    double distanceToB = inputTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(b));
+
+    return distanceToA <= distanceToB;
+  }
+
+  /** Same as `closerTo()` but `a` and `b` are both blue-side poses. */
+  public static boolean closerToWithFlip(
+      Translation2d a, Translation2d b, Translation2d inputTranslation) {
+    return closerTo(a, b, toAllianceTranslation(inputTranslation));
+  }
 }
