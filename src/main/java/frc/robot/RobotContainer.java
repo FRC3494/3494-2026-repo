@@ -477,7 +477,7 @@ public class RobotContainer {
             either(
                 robotCommands.runClimberMidWithCurrent(),
                 robotCommands.runClimberDown(),
-                () -> climber.getPosition() <= climberDownPosition * climbPositionFactor - 0.05));
+                () -> climber.getPosition() >= climberClimbPosition + 0.05));
 
     ClimberOI.climberAllTheWayDown().onTrue(robotCommands.runClimberDown());
 

@@ -92,7 +92,7 @@ public class RobotCommands {
               climber.setPosition(climberUpPosition);
             },
             climber),
-        waitUntil(() -> climber.getPosition() < climberUpPosition + climberTolerance),
+        waitUntil(() -> climber.getPosition() > climberUpPosition - climberTolerance),
         stopClimber());
   }
 
@@ -119,19 +119,13 @@ public class RobotCommands {
             climber),
         runOnce(
             () -> {
-              climber.setPosition(climberDownPosition * climbPositionFactor);
+              climber.setPosition(climberClimbPosition);
             },
             climber),
         either(
-            waitUntil(
-                () ->
-                    climber.getPosition()
-                        > climberDownPosition * climbPositionFactor - climberTolerance),
-            waitUntil(
-                () ->
-                    climber.getPosition()
-                        < climberDownPosition * climbPositionFactor + climberTolerance),
-            () -> climber.getPosition() <= climberDownPosition * climbPositionFactor),
+            waitUntil(() -> climber.getPosition() > climberClimbPosition - climberTolerance),
+            waitUntil(() -> climber.getPosition() < climberClimbPosition + climberTolerance),
+            () -> climber.getPosition() <= climberClimbPosition),
         stopClimber());
   }
 
@@ -140,7 +134,7 @@ public class RobotCommands {
             runOnce(
                 () -> {
                   climber.setCurrentLimit(Amps.of(30));
-                  climber.setOpenLoop(Volts.of(5));
+                  climber.setOpenLoop(Volts.of(-5));
                 },
                 climber),
             waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
@@ -153,7 +147,7 @@ public class RobotCommands {
             runClimberMid())
         .finallyDo(
             () -> {
-              climber.setOpenLoop(Volts.of(0));
+              climber.setOpenLoop(Volts.zero());
               climber.setCurrentLimit(climberCurrentLimit);
             });
   }
@@ -170,7 +164,7 @@ public class RobotCommands {
               climber.setPosition(climberDownPosition);
             },
             climber),
-        waitUntil(() -> climber.getPosition() > climberDownPosition - climberTolerance),
+        waitUntil(() -> climber.getPosition() < climberDownPosition + climberTolerance),
         stopClimber());
   }
 
@@ -179,13 +173,13 @@ public class RobotCommands {
             runOnce(
                 () -> {
                   climber.setCurrentLimit(Amps.of(20));
-                  climber.setOpenLoop(Volts.of(2));
+                  climber.setOpenLoop(Volts.of(-4));
                 },
                 climber),
             waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(19))),
             runOnce(
                 () -> {
-                  climber.setOpenLoop(Volts.of(0));
+                  climber.setOpenLoop(Volts.zero());
                   climber.setRelativeEncoderPosition(climberDownPosition);
                 },
                 climber),
@@ -197,7 +191,7 @@ public class RobotCommands {
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
-              climber.setOpenLoop(Volts.of(0));
+              climber.setOpenLoop(Volts.zero());
               climber.setCurrentLimit(climberCurrentLimit);
             });
   }
@@ -205,7 +199,7 @@ public class RobotCommands {
   public Command stopClimber() {
     return runOnce(
         () -> {
-          climber.setOpenLoop(Volts.of(0));
+          climber.setOpenLoop(Volts.zero());
         },
         climber);
   }
@@ -214,10 +208,10 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setOpenLoop(Volts.of(-2));
+              climber.setOpenLoop(Volts.of(2));
             },
             climber),
-        waitUntil(() -> climber.getPosition() <= climberUpPosition + 0.05),
+        waitUntil(() -> climber.getPosition() >= climberUpPosition - 0.05),
         stopClimber());
   }
 
@@ -225,10 +219,10 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setOpenLoop(Volts.of(2));
+              climber.setOpenLoop(Volts.of(-2));
             },
             climber),
-        waitUntil(() -> climber.getPosition() >= climberDownPosition - 0.05),
+        waitUntil(() -> climber.getPosition() <= climberDownPosition + 0.05),
         stopClimber());
   }
 
