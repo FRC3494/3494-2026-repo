@@ -364,6 +364,19 @@ public final class Constants {
       public static final Pose2d climbPoseOutpost = ChoreoVars.Poses.ClimbOutpost;
       public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
       public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
+
+      public static final Translation2d leftPreTrenchAZ =
+          ChoreoVars.Poses.LeftTrench.getTranslation()
+              .minus(new Translation2d(Feet.of(3), Feet.zero()));
+      public static final Translation2d leftPreTrenchNZ =
+          ChoreoVars.Poses.LeftTrench.getTranslation()
+              .plus(new Translation2d(Feet.of(3), Feet.zero()));
+      public static final Translation2d rightPreTrenchAZ =
+          ChoreoVars.Poses.RightTrench.getTranslation()
+              .minus(new Translation2d(Feet.of(3), Feet.zero()));
+      public static final Translation2d rightPreTrenchNZ =
+          ChoreoVars.Poses.RightTrench.getTranslation()
+              .plus(new Translation2d(Feet.of(3), Feet.zero()));
     }
   }
   // #endregion

@@ -136,6 +136,20 @@ public record ChoreoTraj(
 	    new Pose2d(3.08, 7.502, Rotation2d.fromRadians(0)),
 	    new Pose2d(6.908, 3.961, Rotation2d.fromRadians(-1.571))
 	);
+	public static final ChoreoTraj LeftTrenchToCloseNZ_BLUE = new ChoreoTraj(
+	    "LeftTrenchToCloseNZ_BLUE",
+	    OptionalInt.empty(),
+	    5.6426,
+	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(6.251, 4.379, Rotation2d.fromRadians(-1.047))
+	);
+	public static final ChoreoTraj LeftTrenchToCloseNZ_RED = new ChoreoTraj(
+	    "LeftTrenchToCloseNZ_RED",
+	    OptionalInt.empty(),
+	    5.6426,
+	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(6.251, 4.379, Rotation2d.fromRadians(-1.047))
+	);
 	public static final ChoreoTraj LeftTrenchToNZ_BLUE = new ChoreoTraj(
 	    "LeftTrenchToNZ_BLUE",
 	    OptionalInt.empty(),
@@ -262,6 +276,20 @@ public record ChoreoTraj(
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.053, 2.957, Rotation2d.fromRadians(-1.571))
 	);
+	public static final ChoreoTraj RightTrenchToCloseNZ_BLUE = new ChoreoTraj(
+	    "RightTrenchToCloseNZ_BLUE",
+	    OptionalInt.empty(),
+	    5.6426,
+	    new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(6.251, 3.69, Rotation2d.fromRadians(1.047))
+	);
+	public static final ChoreoTraj RightTrenchToCloseNZ_RED = new ChoreoTraj(
+	    "RightTrenchToCloseNZ_RED",
+	    OptionalInt.empty(),
+	    5.6426,
+	    new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(6.251, 3.69, Rotation2d.fromRadians(1.047))
+	);
 	public static final ChoreoTraj RightTrenchToNZ_BLUE = new ChoreoTraj(
 	    "RightTrenchToNZ_BLUE",
 	    OptionalInt.empty(),
@@ -275,34 +303,6 @@ public record ChoreoTraj(
 	    4.94525,
 	    new Pose2d(4.476, 0.473, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(7.775, 2.471, Rotation2d.fromRadians(1.833))
-	);
-	public static final ChoreoTraj LeftTrenchToCloseNZ_BLUE = new ChoreoTraj(
-	    "LeftTrenchToCloseNZ_BLUE",
-	    OptionalInt.empty(),
-	    5.6426,
-	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(6.251, 4.379, Rotation2d.fromRadians(-1.047))
-	);
-	public static final ChoreoTraj LeftTrenchToCloseNZ_RED = new ChoreoTraj(
-	    "LeftTrenchToCloseNZ_RED",
-	    OptionalInt.empty(),
-	    5.6426,
-	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(6.251, 4.379, Rotation2d.fromRadians(-1.047))
-	);
-	public static final ChoreoTraj RightTrenchToCloseNZ_RED = new ChoreoTraj(
-	    "RightTrenchToCloseNZ_RED",
-	    OptionalInt.empty(),
-	    5.6426,
-	    new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(6.251, 3.69, Rotation2d.fromRadians(1.047))
-	);
-	public static final ChoreoTraj RightTrenchToCloseNZ_BLUE = new ChoreoTraj(
-	    "RightTrenchToCloseNZ_BLUE",
-	    OptionalInt.empty(),
-	    5.6426,
-	    new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(6.251, 3.69, Rotation2d.fromRadians(1.047))
 	);
 
     /**
@@ -326,6 +326,8 @@ public record ChoreoTraj(
 		Map.entry("LeftNZLoop_RED", LeftNZLoop_RED),
 		Map.entry("LeftShootToNZ_BLUE", LeftShootToNZ_BLUE),
 		Map.entry("LeftShootToNZ_RED", LeftShootToNZ_RED),
+		Map.entry("LeftTrenchToCloseNZ_BLUE", LeftTrenchToCloseNZ_BLUE),
+		Map.entry("LeftTrenchToCloseNZ_RED", LeftTrenchToCloseNZ_RED),
 		Map.entry("LeftTrenchToNZ_BLUE", LeftTrenchToNZ_BLUE),
 		Map.entry("LeftTrenchToNZ_RED", LeftTrenchToNZ_RED),
 		Map.entry("MiddleNZToLeftClimb_BLUE", MiddleNZToLeftClimb_BLUE),
@@ -344,12 +346,10 @@ public record ChoreoTraj(
 		Map.entry("RightShootToNZ_RED", RightShootToNZ_RED),
 		Map.entry("RightTrenchToClimb_BLUE", RightTrenchToClimb_BLUE),
 		Map.entry("RightTrenchToClimb_RED", RightTrenchToClimb_RED),
-		Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
-		Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-		Map.entry("LeftTrenchToCloseNZ_BLUE", LeftTrenchToCloseNZ_BLUE),
-		Map.entry("LeftTrenchToCloseNZ_RED", LeftTrenchToCloseNZ_RED),
+		Map.entry("RightTrenchToCloseNZ_BLUE", RightTrenchToCloseNZ_BLUE),
 		Map.entry("RightTrenchToCloseNZ_RED", RightTrenchToCloseNZ_RED),
-		Map.entry("RightTrenchToCloseNZ_BLUE", RightTrenchToCloseNZ_BLUE)
+		Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
+		Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED)
     );
 
     /**

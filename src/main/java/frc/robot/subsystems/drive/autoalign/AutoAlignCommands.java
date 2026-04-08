@@ -5,7 +5,6 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.OI.DriveOI;
 import frc.robot.RobotCommands;
@@ -28,19 +27,11 @@ public class AutoAlignCommands {
                     new AutoAlignCommand(climbSetupPoseDepot, drive),
                     new AutoAlignCommand(climbPoseDepot, drive),
                     robotCommands.creepBackward())),
-        () -> closerToOutpostClimb(drive.getPose().getTranslation()));
-  }
-
-  // TODO: make generic closerTo and closerToBlueTranslations in QuadranglesUtil
-  private static boolean closerToOutpostClimb(Translation2d robotLocation) {
-    double distanceToOutpostPose =
-        robotLocation.getDistance(
-            QuadranglesUtil.toAllianceTranslation(climbSetupPoseOutpost.getTranslation()));
-    double distanceToDepotPose =
-        robotLocation.getDistance(
-            QuadranglesUtil.toAllianceTranslation(climbSetupPoseDepot.getTranslation()));
-
-    return distanceToOutpostPose < distanceToDepotPose;
+        () ->
+            QuadranglesUtil.closerToWithFlip(
+                climbSetupPoseOutpost.getTranslation(),
+                climbSetupPoseDepot.getTranslation(),
+                drive.getPose().getTranslation()));
   }
 
   public static Command driveThroughTrench(Drive drive) {
