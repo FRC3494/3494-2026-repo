@@ -144,10 +144,14 @@ public class RobotContainer {
         new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret, shooterAimModel);
 
     RobotModeTriggers.autonomous()
-        .onTrue(runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString())));
+        .onTrue(
+            runOnce(() -> Elastic.selectTab(ElasticTab.Autonomous.toString()))
+                .ignoringDisable(true));
 
     RobotModeTriggers.autonomous()
-        .onFalse(runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString())));
+        .onFalse(
+            runOnce(() -> Elastic.selectTab(ElasticTab.Teleoperated.toString()))
+                .ignoringDisable(true));
 
     // Set up auto routines
     autoChooser = new AutoChooser();
