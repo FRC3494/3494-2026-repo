@@ -34,7 +34,7 @@ public class Autos {
   private static Command resetOdoForAuto(Drive drive, Pose2d pose) {
     return runOnce(
             () -> {
-              drive.setPose(pose);
+              drive.setPose(QuadranglesUtil.toAlliancePose(pose));
             },
             drive)
         .ignoringDisable(true);
