@@ -5,27 +5,60 @@ import static frc.robot.Constants.DriveConstants.*;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public final class QuadranglesUtil {
+  public static Pose2d flipPose(Pose2d pose) {
+    return new Pose2d(flipTranslation(pose.getTranslation()), flipAngle(pose.getRotation()));
+  }
+
   public static Pose2d toAlliancePose(Pose2d bluePose) {
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red) {
-      return new Pose2d(
-          toAllianceTranslation(bluePose.getTranslation()),
-          bluePose.getRotation().rotateBy(Rotation2d.k180deg));
-    } else {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
       return bluePose;
+    } else {
+      return flipPose(bluePose);
     }
   }
 
+  public static Translation2d flipTranslation(Translation2d translation) {
+    return fieldSize.minus(translation);
+  }
+
   public static Translation2d toAllianceTranslation(Translation2d blueTranslation) {
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red) {
-      return fieldSize.minus(blueTranslation);
-    } else {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
       return blueTranslation;
+    } else {
+      return flipTranslation(blueTranslation);
+    }
+  }
+
+  public static Rotation2d flipAngle(Rotation2d angle) {
+    return angle.rotateBy(Rotation2d.k180deg);
+  }
+
+  public static Rotation2d toAllianceAngle(Rotation2d blueAngle) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return blueAngle;
+    } else {
+      return flipAngle(blueAngle);
+    }
+  }
+
+  public static Distance toAllianceX(Distance blueX) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return blueX;
+    } else {
+      return fieldLength.minus(blueX);
+    }
+  }
+
+  public static Distance toAllianceY(Distance blueY) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return blueY;
+    } else {
+      return fieldWidth.minus(blueY);
     }
   }
 
