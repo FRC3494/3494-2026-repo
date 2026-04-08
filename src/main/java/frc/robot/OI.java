@@ -148,6 +148,10 @@ public final class OI {
     public static Trigger autoAlignClimb() {
       return primaryController.leftBumper(eventLoop);
     }
+
+    public static Trigger autoDriveThroughTrench() {
+      return primaryController.povLeft();
+    }
   }
   // #endregion
 

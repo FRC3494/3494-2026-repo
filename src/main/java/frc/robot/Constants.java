@@ -27,6 +27,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
+import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
 
 /**
@@ -365,18 +366,20 @@ public final class Constants {
       public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
       public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
 
-      public static final Translation2d leftPreTrenchAZ =
-          ChoreoVars.Poses.LeftTrench.getTranslation()
-              .minus(new Translation2d(Feet.of(3), Feet.zero()));
-      public static final Translation2d leftPreTrenchNZ =
-          ChoreoVars.Poses.LeftTrench.getTranslation()
-              .plus(new Translation2d(Feet.of(3), Feet.zero()));
-      public static final Translation2d rightPreTrenchAZ =
-          ChoreoVars.Poses.RightTrench.getTranslation()
-              .minus(new Translation2d(Feet.of(3), Feet.zero()));
-      public static final Translation2d rightPreTrenchNZ =
-          ChoreoVars.Poses.RightTrench.getTranslation()
-              .plus(new Translation2d(Feet.of(3), Feet.zero()));
+      // X value beyond which we align to the opposite alliance's trenches
+      public static final Distance closerToOppositeTrenchLine =
+          fieldLength.div(2.0).plus(Feet.of(5.0));
+      public static final Distance preTrenchOffset = Feet.of(3);
+      public static final Distance postTrenchOffset = Feet.of(6);
+
+      public static final Translation2d closeLeftTrench =
+          ChoreoVars.Poses.LeftTrench.getTranslation();
+      public static final Translation2d closeRightTrench =
+          ChoreoVars.Poses.RightTrench.getTranslation();
+      public static final Translation2d farLeftTrench =
+          QuadranglesUtil.flipTranslation(ChoreoVars.Poses.LeftTrench.getTranslation());
+      public static final Translation2d farRightTrench =
+          QuadranglesUtil.flipTranslation(ChoreoVars.Poses.RightTrench.getTranslation());
     }
   }
   // #endregion

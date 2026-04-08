@@ -1,6 +1,8 @@
 package frc.robot.subsystems.drive.autoalign;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.wpilibj2.command.Commands.deferredProxy;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -10,6 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.QuadranglesUtil;
+import java.util.Arrays;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -83,5 +86,17 @@ public class AutoAlignCommand extends Command {
   @Override
   public boolean isFinished() {
     return xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint();
+  }
+
+  public static Command alignSequence(Drive drive, Pose2d... poses) {
+    return sequence(
+        Arrays.stream(poses)
+            .map((Pose2d pose) -> new AutoAlignCommand(pose, drive))
+            .toArray(AutoAlignCommand[]::new));
+  }
+
+  /** Wrapper for `alignSequence` that makes it a DeferredCommand. */
+  public static Command alignSequenceDeferred(Drive drive, Pose2d... poses) {
+    return deferredProxy(() -> alignSequence(drive, poses));
   }
 }

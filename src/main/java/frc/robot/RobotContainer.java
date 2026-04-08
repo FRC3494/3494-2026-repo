@@ -53,7 +53,7 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.subsystems.drive.autoalign.AutoAlignCommands;
+import frc.robot.subsystems.drive.autoalign.AutoAlignToTargetCommands;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
@@ -513,7 +513,10 @@ public class RobotContainer {
                 OI.DriveOI::joystickDriveY,
                 () -> Rotation2d.kPi.div(4)));
 
-    DriveOI.autoAlignClimb().whileTrue(AutoAlignCommands.autoAlignToTower(drive, robotCommands));
+    DriveOI.autoAlignClimb()
+        .whileTrue(AutoAlignToTargetCommands.autoAlignToTower(drive, robotCommands));
+    DriveOI.autoDriveThroughTrench()
+        .whileTrue(AutoAlignToTargetCommands.autoDriveThroughTrench(drive));
 
     // #endregion
 
