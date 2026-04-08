@@ -477,18 +477,25 @@ public final class Constants {
     public static class AimShooterMathLinearConstants {
       public static double robotYawKv = 0.08;
 
-      public static double turretTrimRot = Units.degreesToRotations(0.0);
+      public static final double turretTrimDefaultRot = Units.degreesToRotations(0.0);
+      public static double turretTrimRot = turretTrimDefaultRot;
+      public static final double turretTrimIncrementRot = Units.degreesToRotations(1.0);
 
       public static Rotation2d azHoodTrim = Rotation2d.kZero;
       public static Rotation2d nzHoodTrim = Rotation2d.kZero;
       public static AngularVelocity azFlywheelTrim = RPM.zero();
       public static AngularVelocity nzFlywheelTrim = RPM.zero();
 
-      public static Distance azDistanceTrim = Inches.of(30.0);
+      public static final Distance distanceTrimIncrement = Inches.of(5.0);
+      public static final Distance xyTrimIncrement = Inches.of(5.0);
+
+      public static Distance azDistanceTrimDefault = Inches.of(30.0);
+      public static Distance azDistanceTrim = azDistanceTrimDefault;
       public static Distance azXTrim = Inches.zero();
       public static Distance azYTrim = Inches.zero();
 
-      public static Distance nzDistanceTrim = Inches.of(30.0);
+      public static Distance nzDistanceTrimDefault = Inches.of(30.0);
+      public static Distance nzDistanceTrim = nzDistanceTrimDefault;
       public static Distance nzXTrim = Inches.zero();
       public static Distance nzYTrim = Inches.zero();
 

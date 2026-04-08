@@ -581,28 +581,98 @@ public class RobotCommands {
 
   public Command resetDistanceTrim() {
     return runOnce(
-        () -> {
-          if (shooterAimModel.isInAllianceZone()) {
-            azDistanceTrim = Inches.of(0.0);
-          } else {
-            nzDistanceTrim = Inches.of(0.0);
-          }
-        },
-        shooterAimModel);
+            () -> {
+              if (shooterAimModel.isInAllianceZone()) {
+                azDistanceTrim = azDistanceTrimDefault;
+              } else {
+                nzDistanceTrim = nzDistanceTrimDefault;
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
+  }
+
+  public Command increaseDistanceTrim() {
+    return runOnce(
+            () -> {
+              if (shooterAimModel.isInAllianceZone()) {
+                azDistanceTrim = azDistanceTrim.plus(distanceTrimIncrement);
+              } else {
+                nzDistanceTrim = nzDistanceTrim.plus(distanceTrimIncrement);
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
+  }
+
+  public Command decreaseDistanceTrim() {
+    return runOnce(
+            () -> {
+              if (shooterAimModel.isInAllianceZone()) {
+                azDistanceTrim = azDistanceTrim.minus(distanceTrimIncrement);
+              } else {
+                nzDistanceTrim = nzDistanceTrim.minus(distanceTrimIncrement);
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
   }
 
   public Command resetXYTrim() {
     return runOnce(
-        () -> {
-          if (shooterAimModel.isInAllianceZone()) {
-            azXTrim = Inches.of(0.0);
-            azYTrim = Inches.of(0.0);
-          } else {
-            nzXTrim = Inches.of(0.0);
-            nzYTrim = Inches.of(0.0);
-          }
-        },
-        shooterAimModel);
+            () -> {
+              if (shooterAimModel.isInAllianceZone()) {
+                azXTrim = Inches.of(0.0);
+                azYTrim = Inches.of(0.0);
+              } else {
+                nzXTrim = Inches.of(0.0);
+                nzYTrim = Inches.of(0.0);
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
+  }
+
+  public Command changeXTrim(boolean increment) {
+    return runOnce(
+            () -> {
+              if (increment) {
+                if (shooterAimModel.isInAllianceZone()) {
+                  azXTrim = azXTrim.plus(distanceTrimIncrement);
+                } else {
+                  nzXTrim = nzXTrim.plus(distanceTrimIncrement);
+                }
+              } else {
+                if (shooterAimModel.isInAllianceZone()) {
+                  azXTrim = azXTrim.minus(distanceTrimIncrement);
+                } else {
+                  nzXTrim = nzXTrim.minus(distanceTrimIncrement);
+                }
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
+  }
+
+  public Command changeYTrim(boolean increment) {
+    return runOnce(
+            () -> {
+              if (increment) {
+                if (shooterAimModel.isInAllianceZone()) {
+                  azYTrim = azYTrim.plus(distanceTrimIncrement);
+                } else {
+                  nzYTrim = nzYTrim.plus(distanceTrimIncrement);
+                }
+              } else {
+                if (shooterAimModel.isInAllianceZone()) {
+                  azYTrim = azYTrim.minus(distanceTrimIncrement);
+                } else {
+                  nzYTrim = nzYTrim.minus(distanceTrimIncrement);
+                }
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
   }
 
   public Command enableAutoShooterSettings() {
@@ -842,10 +912,24 @@ public class RobotCommands {
 
   public Command resetTurretTrim() {
     return runOnce(
-        () -> {
-          turretTrimRot = Units.degreesToRotations(0.0);
-        },
-        shooterAimModel);
+            () -> {
+              turretTrimRot = turretTrimDefaultRot;
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
+  }
+
+  public Command changeTurretTrim(boolean increment) {
+    return runOnce(
+            () -> {
+              if (increment) {
+                turretTrimRot += turretTrimIncrementRot;
+              } else {
+                turretTrimRot -= turretTrimIncrementRot;
+              }
+            },
+            shooterAimModel)
+        .ignoringDisable(true);
   }
 
   public Command runTurretManualCCW() {

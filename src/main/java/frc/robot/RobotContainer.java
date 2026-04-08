@@ -16,7 +16,6 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -632,70 +631,34 @@ public class RobotContainer {
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
-    ShooterOI.increaseDistanceTrim()
-        .whileTrue(
-            run(
-                () -> {
-                  shooterAimModel.setDistanceTrim(
-                      shooterAimModel.getDistanceTrim().plus(Inches.of(1)));
-                },
-                shooterAimModel));
-    ShooterOI.decreaseDistanceTrim()
-        .whileTrue(
-            run(
-                () -> {
-                  shooterAimModel.setDistanceTrim(
-                      shooterAimModel.getDistanceTrim().minus(Inches.of(1)));
-                },
-                shooterAimModel));
+    ShooterOI.increaseDistanceTrim().onTrue(robotCommands.increaseDistanceTrim());
+    ShooterOI.decreaseDistanceTrim().onTrue(robotCommands.decreaseDistanceTrim());
     ShooterOI.resetDistanceTrim().onTrue(robotCommands.resetDistanceTrim());
 
-    Distance xyTrimSensitivity = Inches.of(1.0);
     ShooterOI.trimRight()
-        .whileTrue(
-            run(
-                () -> {
-                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().minus(xyTrimSensitivity));
-                  } else {
-                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().plus(xyTrimSensitivity));
-                  }
-                },
-                shooterAimModel));
+        .onTrue(
+            either(
+                robotCommands.changeYTrim(false),
+                robotCommands.changeYTrim(true),
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     ShooterOI.trimLeft()
-        .whileTrue(
-            run(
-                () -> {
-                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().plus(xyTrimSensitivity));
-                  } else {
-                    shooterAimModel.setYTrim(shooterAimModel.getYTrim().minus(xyTrimSensitivity));
-                  }
-                },
-                shooterAimModel));
+        .onTrue(
+            either(
+                robotCommands.changeYTrim(true),
+                robotCommands.changeYTrim(false),
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     ShooterOI.trimForward()
-        .whileTrue(
-            run(
-                () -> {
-                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().plus(xyTrimSensitivity));
-                  } else {
-                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().minus(xyTrimSensitivity));
-                  }
-                },
-                shooterAimModel));
+        .onTrue(
+            either(
+                robotCommands.changeXTrim(true),
+                robotCommands.changeXTrim(false),
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     ShooterOI.trimBack()
-        .whileTrue(
-            run(
-                () -> {
-                  if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().minus(xyTrimSensitivity));
-                  } else {
-                    shooterAimModel.setXTrim(shooterAimModel.getXTrim().plus(xyTrimSensitivity));
-                  }
-                },
-                shooterAimModel));
-
+        .onTrue(
+            either(
+                robotCommands.changeXTrim(false),
+                robotCommands.changeXTrim(true),
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
     ShooterOI.resetXYTrim().onTrue(robotCommands.resetXYTrim());
 
     // #endregion
@@ -769,31 +732,9 @@ public class RobotContainer {
     TurretOI.turretManualCCW().whileTrue(robotCommands.runTurretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.runTurretManualCW());
 
-    TurretOI.resetTurretTrim()
-        .onTrue(
-            runOnce(
-                    () -> {
-                      shooterAimModel.setTurretTrim(Units.degreesToRotations(0.0));
-                    },
-                    shooterAimModel)
-                .ignoringDisable(true));
-
-    TurretOI.increaseTurretTrim()
-        .whileTrue(
-            run(
-                () -> {
-                  shooterAimModel.setTurretTrim(
-                      shooterAimModel.getTurretTrimRot() + Units.degreesToRotations(1));
-                },
-                shooterAimModel));
-    TurretOI.decreaseTurretTrim()
-        .whileTrue(
-            run(
-                () -> {
-                  shooterAimModel.setTurretTrim(
-                      shooterAimModel.getTurretTrimRot() - Units.degreesToRotations(1));
-                },
-                shooterAimModel));
+    TurretOI.resetTurretTrim().onTrue(robotCommands.resetTurretTrim());
+    TurretOI.increaseTurretTrim().onTrue(robotCommands.changeTurretTrim(true));
+    TurretOI.decreaseTurretTrim().onTrue(robotCommands.changeTurretTrim(false));
 
     TurretOI.lockTurret().onTrue(robotCommands.lockTurret());
     TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());

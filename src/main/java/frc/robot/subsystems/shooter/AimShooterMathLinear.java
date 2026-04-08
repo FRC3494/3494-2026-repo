@@ -137,6 +137,14 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         "AZ Distance Trim (in)",
         () -> azDistanceTrim.in(Inches),
         (double value) -> azDistanceTrim = Inches.of(value));
+
+    builder.addDoubleProperty(
+        "AZ Distance Trim Default (in)",
+        () -> azDistanceTrimDefault.in(Inches),
+        (double value) -> {
+          azDistanceTrimDefault = Inches.of(value);
+          azDistanceTrim = Inches.of(value);
+        });
     builder.addDoubleProperty(
         "AZ X Trim (in)", () -> azXTrim.in(Inches), (double value) -> azXTrim = Inches.of(value));
     builder.addDoubleProperty(
@@ -146,6 +154,13 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         "NZ Distance Trim (in)",
         () -> nzDistanceTrim.in(Inches),
         (double value) -> nzDistanceTrim = Inches.of(value));
+    builder.addDoubleProperty(
+        "NZ Distance Trim Default (in)",
+        () -> nzDistanceTrimDefault.in(Inches),
+        (double value) -> {
+          nzDistanceTrimDefault = Inches.of(value);
+          nzDistanceTrim = Inches.of(value);
+        });
     builder.addDoubleProperty(
         "NZ X Trim (in)", () -> nzXTrim.in(Inches), (double value) -> nzXTrim = Inches.of(value));
     builder.addDoubleProperty(
@@ -172,10 +187,12 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     Logger.recordOutput("AimShooterMathLinear/NZFlywheelTrim", nzFlywheelTrim);
 
     Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", azDistanceTrim);
+    Logger.recordOutput("AimShooterMathLinear/AZDistanceTrimDefault", azDistanceTrimDefault);
     Logger.recordOutput("AimShooterMathLinear/AZXTrim", azXTrim);
     Logger.recordOutput("AimShooterMathLinear/AZYTrim", azYTrim);
 
     Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", nzDistanceTrim);
+    Logger.recordOutput("AimShooterMathLinear/NZDistanceTrimDefault", nzDistanceTrimDefault);
     Logger.recordOutput("AimShooterMathLinear/NZXTrim", nzXTrim);
     Logger.recordOutput("AimShooterMathLinear/NZYTrim", nzYTrim);
 
