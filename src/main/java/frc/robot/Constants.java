@@ -446,11 +446,11 @@ public final class Constants {
     public static double uppyDownyKv = 0.007;
     public static double uppyDownyKa = 0.0;
 
-    public static double uppyDownyRaiseRPM = -500.0;
+    public static double uppyDownyRaiseRPM = -800.0;
     public static double uppyDownyLowerRPM = 150.0;
 
-    public static double jostleIntakeUpTime = 0.75;
-    public static double jostleIntakeDownTime = 0.5;
+    public static double jostleIntakeUpTime = 1.0;
+    public static double jostleIntakeDownTime = 0.6;
   }
   // #endregion
 
