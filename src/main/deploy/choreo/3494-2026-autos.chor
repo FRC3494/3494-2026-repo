@@ -183,12 +183,12 @@
    },
    "Hub":{
     "x":{
-     "exp":"181.90625 in",
-     "val":4.62041875
+     "exp":"158.6 in + (47 in / 2)",
+     "val":4.62534
     },
     "y":{
-     "exp":"158.84375 in",
-     "val":4.0346312499999994
+     "exp":"FieldWidth / 2",
+     "val":4.0346
     },
     "heading":{
      "exp":"0 deg",
@@ -249,6 +249,20 @@
     "heading":{
      "exp":"90 deg",
      "val":1.5707963267948966
+    }
+   },
+   "LeftTrench":{
+    "x":{
+     "exp":"158.6 in + (47 in / 2)",
+     "val":4.62534
+    },
+    "y":{
+     "exp":"FieldWidth - (50.34 in / 2)",
+     "val":7.429882
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
     }
    },
    "LeftTrenchStartingPosition":{
@@ -347,6 +361,20 @@
     "heading":{
      "exp":"-90 deg",
      "val":-1.5707963267948966
+    }
+   },
+   "RightTrench":{
+    "x":{
+     "exp":"158.6 in + (47 in / 2)",
+     "val":4.62534
+    },
+    "y":{
+     "exp":"50.34 in / 2",
+     "val":0.639318
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
     }
    },
    "RightTrenchStartingPosition":{
