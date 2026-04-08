@@ -454,6 +454,14 @@ public class RobotCommands {
         intake);
   }
 
+  public Command startIntakeForShoot() {
+    return runOnce(
+        () -> {
+          intake.setSpinnySpinnyVelocity(intakeSpinnySpinnyShootingSpeed);
+        },
+        intake);
+  }
+
   public Command startIntakeReverse() {
     return runOnce(
         () -> {
@@ -533,7 +541,7 @@ public class RobotCommands {
     return sequence(
         startHood(),
         startFlywheel(),
-        // startIntake(),
+        startIntakeForShoot(),
         startSpindexer(),
         waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
         waitUntil(turret::withinShootingTolerance),
@@ -548,7 +556,7 @@ public class RobotCommands {
     return sequence(
         startHood(),
         startFlywheel(),
-        startIntake(),
+        startIntakeForShoot(),
         startSpindexer(),
         waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
         waitUntil(turret::withinShootingTolerance),

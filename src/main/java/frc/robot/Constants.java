@@ -419,6 +419,7 @@ public final class Constants {
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
 
     public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
+    public static AngularVelocity intakeSpinnySpinnyShootingSpeed = RPM.of(1000);
 
     public static double spinnySpinnyKp = 3.1048E-05;
     public static double spinnySpinnyKi = 0.0;

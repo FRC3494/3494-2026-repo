@@ -95,6 +95,10 @@ public class Intake extends SubsystemBase {
         "SpinnySpinny/Speed",
         () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
         (long value) -> intakeSpinnySpinnySpeed = RPM.of(value));
+    builder.addIntegerProperty(
+        "SpinnySpinny/ShootingSpeed",
+        () -> ((long) intakeSpinnySpinnyShootingSpeed.in(RPM)),
+        (long value) -> intakeSpinnySpinnyShootingSpeed = RPM.of(value));
 
     builder.addDoubleArrayProperty(
         "SpinnySpinny/PID",
@@ -134,6 +138,7 @@ public class Intake extends SubsystemBase {
 
   private void logSendableValues() {
     Logger.recordOutput("SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
+    Logger.recordOutput("SpinnySpinny/ShootingSpeed", intakeSpinnySpinnyShootingSpeed);
 
     Logger.recordOutput("SpinnySpinny/PID/kP", spinnySpinnyKp);
     Logger.recordOutput("SpinnySpinny/PID/kI", spinnySpinnyKi);
