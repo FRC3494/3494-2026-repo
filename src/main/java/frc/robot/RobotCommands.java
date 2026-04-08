@@ -366,7 +366,7 @@ public class RobotCommands {
   }
 
   public Command startKickerWithTrenchSafety() {
-    return isUnderTrench() ? stopKicker() : startKicker();
+    return either(stopKicker(), startKicker(), this::isUnderTrench);
   }
 
   public Command startKickerReverse() {
@@ -686,7 +686,7 @@ public class RobotCommands {
     return runOnce(
         () -> {
           flywheel.setDefaultCommand(autoFlywheelCommand());
-          hood.setDefaultCommand(autoHoodCommand());
+          hood.setDefaultCommand(autoHoodCommandWithTrenchSafety());
         },
         flywheel,
         hood);
