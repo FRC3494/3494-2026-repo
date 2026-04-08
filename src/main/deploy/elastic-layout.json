@@ -1157,6 +1157,20 @@
                 }
               },
               {
+                "title": "AZ Distance Trim Default (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Distance Trim Default (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
                 "title": "NZ Distance Trim (in)",
                 "x": 0.0,
                 "y": 0.0,
@@ -1165,6 +1179,20 @@
                 "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Distance Trim Default (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim Default (in)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true

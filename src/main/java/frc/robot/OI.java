@@ -400,7 +400,6 @@ public final class OI {
   }
 
   // #region RUMBLE
-
   public static final class RumbleOI {
     private static LoggedNetworkBoolean shiftRumbleEnabledEntry =
         new LoggedNetworkBoolean("Tunable/ShiftRumbleEnabled", shiftRumbleEnabled);
@@ -460,7 +459,5 @@ public final class OI {
           });
     }
   }
-
   // #endregion
-
 }
