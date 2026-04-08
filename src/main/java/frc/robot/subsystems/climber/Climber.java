@@ -142,8 +142,8 @@ public class Climber extends SubsystemBase {
     return (1 - fraction) * climberUpPosition;
   }
 
-  public void setOpenLoop(Voltage voltage) {
-    climberMotor.setVoltage(voltage);
+  public void setVoltage(Voltage voltage) {
+    climberMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public void setCurrentLimit(Current limit) {

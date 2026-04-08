@@ -134,7 +134,7 @@ public class RobotCommands {
             runOnce(
                 () -> {
                   climber.setCurrentLimit(Amps.of(30));
-                  climber.setOpenLoop(Volts.of(-5));
+                  climber.setVoltage(Volts.of(-5));
                 },
                 climber),
             waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(25))),
@@ -147,7 +147,7 @@ public class RobotCommands {
             runClimberMid())
         .finallyDo(
             () -> {
-              climber.setOpenLoop(Volts.zero());
+              climber.setVoltage(Volts.zero());
               climber.setCurrentLimit(climberCurrentLimit);
             });
   }
@@ -173,13 +173,13 @@ public class RobotCommands {
             runOnce(
                 () -> {
                   climber.setCurrentLimit(Amps.of(20));
-                  climber.setOpenLoop(Volts.of(-4));
+                  climber.setVoltage(Volts.of(-4));
                 },
                 climber),
             waitUntil(() -> climber.getFilteredCurrent().gte(Amps.of(19))),
             runOnce(
                 () -> {
-                  climber.setOpenLoop(Volts.zero());
+                  climber.setVoltage(Volts.zero());
                   climber.setRelativeEncoderPosition(climberDownPosition);
                 },
                 climber),
@@ -191,7 +191,7 @@ public class RobotCommands {
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
-              climber.setOpenLoop(Volts.zero());
+              climber.setVoltage(Volts.zero());
               climber.setCurrentLimit(climberCurrentLimit);
             });
   }
@@ -199,7 +199,7 @@ public class RobotCommands {
   public Command stopClimber() {
     return runOnce(
         () -> {
-          climber.setOpenLoop(Volts.zero());
+          climber.setVoltage(Volts.zero());
         },
         climber);
   }
@@ -208,7 +208,7 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setOpenLoop(Volts.of(2));
+              climber.setVoltage(Volts.of(2));
             },
             climber),
         waitUntil(() -> climber.getPosition() >= climberUpPosition - 0.05),
@@ -219,7 +219,7 @@ public class RobotCommands {
     return sequence(
         runOnce(
             () -> {
-              climber.setOpenLoop(Volts.of(-2));
+              climber.setVoltage(Volts.of(-2));
             },
             climber),
         waitUntil(() -> climber.getPosition() <= climberDownPosition + 0.05),
