@@ -16,11 +16,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.robot.Constants.DriveConstants.AutoAlignConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
-import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.hopper.Hopper;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.ShooterAimModel;
@@ -274,41 +272,6 @@ public class RobotCommands {
         () -> {
           drive.runVelocity(
               new ChassisSpeeds(MetersPerSecond.of(-10.0), MetersPerSecond.of(0), RPM.of(0)));
-        },
-        drive);
-  }
-
-  public Command autoAlignToTower() {
-    return runOnce(
-        () -> {
-          double distanceToOutpostPose =
-              drive
-                  .getPose()
-                  .getTranslation()
-                  .getDistance(
-                      QuadranglesUtil.toAllianceTranslation(
-                          AutoAlignConstants.climbSetupPoseOutpost.getTranslation()));
-          double distanceToDepotPose =
-              drive
-                  .getPose()
-                  .getTranslation()
-                  .getDistance(
-                      QuadranglesUtil.toAllianceTranslation(
-                          AutoAlignConstants.climbSetupPoseDepot.getTranslation()));
-
-          if (distanceToOutpostPose < distanceToDepotPose) {
-            drive.setDefaultCommand(
-                sequence(
-                    new AutoAlignCommand(AutoAlignConstants.climbSetupPoseOutpost, drive),
-                    new AutoAlignCommand(AutoAlignConstants.climbPoseOutpost, drive),
-                    creepBackward()));
-          } else {
-            drive.setDefaultCommand(
-                sequence(
-                    new AutoAlignCommand(AutoAlignConstants.climbSetupPoseDepot, drive),
-                    new AutoAlignCommand(AutoAlignConstants.climbPoseDepot, drive),
-                    creepBackward()));
-          }
         },
         drive);
   }
