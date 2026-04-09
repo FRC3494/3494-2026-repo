@@ -485,12 +485,8 @@ public class RobotContainer {
 
     ClimberOI.rezeroClimber().onTrue(robotCommands.rezeroClimber());
 
-    ClimberOI.climberManualUp()
-        .onTrue(robotCommands.climberManualUp())
-        .onFalse(robotCommands.stopClimber());
-    ClimberOI.climberManualDown()
-        .onTrue(robotCommands.climberManualDown())
-        .onFalse(robotCommands.stopClimber());
+    ClimberOI.climberManualUp().whileTrue(robotCommands.climberManualUp());
+    ClimberOI.climberManualDown().whileTrue(robotCommands.climberManualDown());
 
     // #endregion
 

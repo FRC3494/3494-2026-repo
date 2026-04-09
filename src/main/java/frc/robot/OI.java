@@ -104,12 +104,13 @@ public final class OI {
     }
 
     public static Trigger climberManualUp() {
-      // Just use climber rezero
-      return new Trigger(() -> false);
+      return primaryController.povUp();
+      // return new Trigger(() -> false);
     }
 
     public static Trigger climberManualDown() {
-      return new Trigger(() -> false);
+      return primaryController.povDown();
+      // return new Trigger(() -> false);
     }
   }
   // #endregion

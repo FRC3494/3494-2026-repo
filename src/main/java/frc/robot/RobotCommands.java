@@ -206,24 +206,34 @@ public class RobotCommands {
 
   public Command climberManualUp() {
     return sequence(
-        runOnce(
+            runOnce(
+                () -> {
+                  climber.setVoltage(Volts.of(2));
+                },
+                climber),
+            waitUntil(() -> climber.getPosition() >= climberUpPosition - 0.05),
+            stopClimber())
+        .finallyDo(
             () -> {
-              climber.setVoltage(Volts.of(2));
-            },
-            climber),
-        waitUntil(() -> climber.getPosition() >= climberUpPosition - 0.05),
-        stopClimber());
+              climber.setVoltage(Volts.zero());
+            })
+        .withName("ClimberManualUp");
   }
 
   public Command climberManualDown() {
     return sequence(
-        runOnce(
+            runOnce(
+                () -> {
+                  climber.setVoltage(Volts.of(-2));
+                },
+                climber),
+            waitUntil(() -> climber.getPosition() <= climberDownPosition + 0.05),
+            stopClimber())
+        .finallyDo(
             () -> {
-              climber.setVoltage(Volts.of(-2));
-            },
-            climber),
-        waitUntil(() -> climber.getPosition() <= climberDownPosition + 0.05),
-        stopClimber());
+              climber.setVoltage(Volts.zero());
+            })
+        .withName("ClimberManualDown");
   }
 
   // #endregion
