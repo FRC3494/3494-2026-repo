@@ -23,12 +23,12 @@ public class AutoAlignCommand extends Command {
 
   @Getter @AutoLogOutput private final Pose2d targetPose;
 
-  private final PIDController xController =
-      new PIDController(autoAlignLinearKp, autoAlignLinearKi, autoAlignLinearKd);
-  private final PIDController yController =
-      new PIDController(autoAlignLinearKp, autoAlignLinearKi, autoAlignLinearKd);
-  private final PIDController headingController =
-      new PIDController(autoAlignAngularKp, autoAlignAngularKi, autoAlignAngularKd);
+  private final PIDController xController;
+  private final PIDController yController;
+  private final PIDController headingController;
+
+  private final Distance linearTolerance;
+  private final Rotation2d angularTolerance;
 
   public AutoAlignCommand(
       Pose2d targetPose, Drive drive, Distance linearTolerance, Rotation2d angularTolerance) {
@@ -37,10 +37,15 @@ public class AutoAlignCommand extends Command {
 
     addRequirements(drive);
 
-    xController.setTolerance(linearTolerance.in(Meters));
-    yController.setTolerance(linearTolerance.in(Meters));
-    headingController.setTolerance(angularTolerance.getRadians());
+    xController = new PIDController(autoAlignLinearKp, autoAlignLinearKi, autoAlignLinearKd);
+    yController = new PIDController(autoAlignLinearKp, autoAlignLinearKi, autoAlignLinearKd);
+    headingController =
+        new PIDController(autoAlignAngularKp, autoAlignAngularKi, autoAlignAngularKd);
+
     headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+    this.linearTolerance = linearTolerance;
+    this.angularTolerance = angularTolerance;
   }
 
   public AutoAlignCommand(Pose2d targetPose, Drive drive) {
@@ -91,7 +96,20 @@ public class AutoAlignCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint();
+    Pose2d currentPose = drive.getPose();
+
+    boolean xAtSetpoint =
+        currentPose.getMeasureX().isNear(targetPose.getMeasureX(), linearTolerance);
+    Logger.recordOutput("Drive/AutoAlign/XAtSetpoint", xAtSetpoint);
+    boolean yAtSetpoint =
+        currentPose.getMeasureY().isNear(targetPose.getMeasureY(), linearTolerance);
+    Logger.recordOutput("Drive/AutoAlign/YAtSetpoint", yAtSetpoint);
+    boolean headingAtSetpoint =
+        (currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians())
+            <= angularTolerance.getRadians();
+    Logger.recordOutput("Drive/AutoAlign/HeadingAtSetpoint", headingAtSetpoint);
+
+    return xAtSetpoint && yAtSetpoint && headingAtSetpoint;
   }
 
   public static Command alignSequence(Drive drive, Pose2d... poses) {
