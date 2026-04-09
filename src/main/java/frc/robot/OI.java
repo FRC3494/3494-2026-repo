@@ -162,7 +162,8 @@ public final class OI {
     }
 
     public static Trigger jiggleRobot() {
-      return primaryController.povLeft();
+      // return primaryController.povLeft();
+      return new Trigger(() -> false);
     }
   }
   // #endregion
