@@ -32,33 +32,41 @@ public class AutoAlignToTargetCommands {
         .withName("AutoAlignTower");
   }
 
-  public static Command autoDriveThroughTrench(Drive drive) {
-    return either(
-            autoDriveTrench(drive, closeLeftTrench, closeRightTrench),
-            autoDriveTrench(drive, farLeftTrench, farRightTrench),
-            () ->
-                QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX())
-                    .lt(closerToOppositeTrenchLine))
+  public static Command autoDriveThroughTrench(Drive drive, RobotCommands robotCommands) {
+    return sequence(
+            robotCommands.stopShootNoDelay(),
+            either(
+                autoDriveTrench(drive, robotCommands, closeLeftTrench, closeRightTrench),
+                autoDriveTrench(drive, robotCommands, farLeftTrench, farRightTrench),
+                () ->
+                    QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX())
+                        .lt(closerToOppositeTrenchLine)))
         .withName("AutoDriveThruTrench");
   }
 
   private static Command autoDriveTrench(
-      Drive drive, Translation2d leftTrench, Translation2d rightTrench) {
+      Drive drive,
+      RobotCommands robotCommands,
+      Translation2d leftTrench,
+      Translation2d rightTrench) {
     return either(
-        autoDriveTrench(drive, leftTrench),
-        autoDriveTrench(drive, rightTrench),
+        autoDriveTrench(drive, robotCommands, leftTrench),
+        autoDriveTrench(drive, robotCommands, rightTrench),
         () ->
             QuadranglesUtil.closerToWithFlip(
                 leftTrench, rightTrench, drive.getPose().getTranslation()));
   }
 
-  private static Command autoDriveTrench(Drive drive, Translation2d trench) {
+  private static Command autoDriveTrench(
+      Drive drive, RobotCommands robotCommands, Translation2d trench) {
     return either(
         sequence(
             defer(
                 () ->
                     AutoAlignCommand.alignSequence(
                         drive,
+                        trenchLinearTolerance,
+                        trenchAngularTolerance,
                         new Pose2d(
                             trench.minus(new Translation2d(preTrenchOffset, Meters.zero())),
                             closestTrenchOrientation(drive.getRotation())),
@@ -66,12 +74,15 @@ public class AutoAlignToTargetCommands {
                             trench.plus(new Translation2d(postTrenchOffset, Meters.zero())),
                             closestTrenchOrientation(drive.getRotation()))),
                 Set.of(drive)),
+            robotCommands.stopDrive(),
             run(() -> {})),
         sequence(
             defer(
                 () ->
                     AutoAlignCommand.alignSequence(
                         drive,
+                        trenchLinearTolerance,
+                        trenchAngularTolerance,
                         new Pose2d(
                             trench.plus(new Translation2d(preTrenchOffset, Meters.zero())),
                             closestTrenchOrientation(drive.getRotation())),
@@ -79,12 +90,13 @@ public class AutoAlignToTargetCommands {
                             trench.minus(new Translation2d(postTrenchOffset, Meters.zero())),
                             closestTrenchOrientation(drive.getRotation()))),
                 Set.of(drive)),
+            robotCommands.stopDrive(),
             run(() -> {})),
         () -> QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX()).lt(trench.getMeasureX()));
   }
 
   private static Rotation2d closestTrenchOrientation(Rotation2d robotYaw) {
-    if (Math.abs(MathUtil.angleModulus(robotYaw.getRadians())) < Math.PI / 4.0) {
+    if (Math.abs(MathUtil.angleModulus(robotYaw.getRadians())) < Math.PI / 2.0) {
       return QuadranglesUtil.toAllianceAngle(Rotation2d.kZero);
     } else {
       return QuadranglesUtil.toAllianceAngle(Rotation2d.k180deg);

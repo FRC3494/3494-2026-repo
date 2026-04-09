@@ -495,7 +495,7 @@ public class RobotContainer {
     DriveOI.autoAlignClimb()
         .whileTrue(AutoAlignToTargetCommands.autoAlignToTower(drive, robotCommands));
     DriveOI.autoDriveThroughTrench()
-        .whileTrue(AutoAlignToTargetCommands.autoDriveThroughTrench(drive));
+        .whileTrue(AutoAlignToTargetCommands.autoDriveThroughTrench(drive, robotCommands));
 
     // #endregion
 

@@ -348,6 +348,7 @@ public final class Constants {
 
     public static final Translation2d fieldSize = new Translation2d(fieldLength, fieldWidth);
 
+    // #region AUTOALIGN
     public static class AutoAlignConstants {
       // Tuned with Ziegler-Nichols for classic PID
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
@@ -367,11 +368,14 @@ public final class Constants {
       public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
       public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
 
+      public static final Distance trenchLinearTolerance = Inches.of(3.0);
+      public static final Rotation2d trenchAngularTolerance = Rotation2d.fromDegrees(1.0);
+
       // X value beyond which we align to the opposite alliance's trenches
       public static final Distance closerToOppositeTrenchLine =
           fieldLength.div(2.0).plus(Feet.of(5.0));
       public static final Distance preTrenchOffset = Feet.of(3);
-      public static final Distance postTrenchOffset = Feet.of(6);
+      public static final Distance postTrenchOffset = Feet.of(8);
 
       public static final Translation2d closeLeftTrench =
           ChoreoVars.Poses.LeftTrench.getTranslation();
@@ -383,6 +387,7 @@ public final class Constants {
           QuadranglesUtil.flipTranslation(ChoreoVars.Poses.RightTrench.getTranslation());
     }
   }
+  // #endregion
   // #endregion
 
   // #region HOPPER

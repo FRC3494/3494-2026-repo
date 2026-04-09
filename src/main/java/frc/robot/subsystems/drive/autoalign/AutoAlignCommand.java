@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.QuadranglesUtil;
@@ -29,16 +30,21 @@ public class AutoAlignCommand extends Command {
   private final PIDController headingController =
       new PIDController(autoAlignAngularKp, autoAlignAngularKi, autoAlignAngularKd);
 
-  public AutoAlignCommand(Pose2d targetPose, Drive drive) {
+  public AutoAlignCommand(
+      Pose2d targetPose, Drive drive, Distance linearTolerance, Rotation2d angularTolerance) {
     this.targetPose = QuadranglesUtil.toAlliancePose(targetPose);
     this.drive = drive;
 
     addRequirements(drive);
 
-    xController.setTolerance(autoAlignLinearTolerance.in(Meters));
-    yController.setTolerance(autoAlignLinearTolerance.in(Meters));
-    headingController.setTolerance(autoAlignAngularTolerance.getRadians());
+    xController.setTolerance(linearTolerance.in(Meters));
+    yController.setTolerance(linearTolerance.in(Meters));
+    headingController.setTolerance(angularTolerance.getRadians());
     headingController.enableContinuousInput(-Math.PI, Math.PI);
+  }
+
+  public AutoAlignCommand(Pose2d targetPose, Drive drive) {
+    this(targetPose, drive, autoAlignLinearTolerance, autoAlignAngularTolerance);
   }
 
   @Override
@@ -95,8 +101,24 @@ public class AutoAlignCommand extends Command {
             .toArray(AutoAlignCommand[]::new));
   }
 
+  public static Command alignSequence(
+      Drive drive, Distance linearTolerance, Rotation2d angularTolerance, Pose2d... poses) {
+    return sequence(
+        Arrays.stream(poses)
+            .map(
+                (Pose2d pose) ->
+                    new AutoAlignCommand(pose, drive, linearTolerance, angularTolerance))
+            .toArray(AutoAlignCommand[]::new));
+  }
+
   /** Wrapper for `alignSequence` that makes it a DeferredCommand. */
   public static Command alignSequenceDeferred(Drive drive, Pose2d... poses) {
     return defer(() -> alignSequence(drive, poses), Set.of(drive));
+  }
+
+  public static Command alignSequenceDeferred(
+      Drive drive, Distance linearTolerance, Rotation2d angularTolerance, Pose2d... poses) {
+    return defer(
+        () -> alignSequence(drive, linearTolerance, angularTolerance, poses), Set.of(drive));
   }
 }
