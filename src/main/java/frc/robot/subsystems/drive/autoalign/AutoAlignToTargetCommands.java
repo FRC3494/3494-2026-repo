@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.QuadranglesUtil;
+import java.util.Set;
 
 public class AutoAlignToTargetCommands {
   public static Command autoAlignToTower(Drive drive, RobotCommands robotCommands) {
@@ -53,26 +54,32 @@ public class AutoAlignToTargetCommands {
 
   private static Command autoDriveTrench(Drive drive, Translation2d trench) {
     return either(
-        deferredProxy(
-            () ->
-                AutoAlignCommand.alignSequence(
-                    drive,
-                    new Pose2d(
-                        trench.minus(new Translation2d(preTrenchOffset, Meters.zero())),
-                        closestTrenchOrientation(drive.getRotation())),
-                    new Pose2d(
-                        trench.plus(new Translation2d(postTrenchOffset, Meters.zero())),
-                        closestTrenchOrientation(drive.getRotation())))),
-        deferredProxy(
-            () ->
-                AutoAlignCommand.alignSequence(
-                    drive,
-                    new Pose2d(
-                        trench.plus(new Translation2d(preTrenchOffset, Meters.zero())),
-                        closestTrenchOrientation(drive.getRotation())),
-                    new Pose2d(
-                        trench.minus(new Translation2d(postTrenchOffset, Meters.zero())),
-                        closestTrenchOrientation(drive.getRotation())))),
+        sequence(
+            defer(
+                () ->
+                    AutoAlignCommand.alignSequence(
+                        drive,
+                        new Pose2d(
+                            trench.minus(new Translation2d(preTrenchOffset, Meters.zero())),
+                            closestTrenchOrientation(drive.getRotation())),
+                        new Pose2d(
+                            trench.plus(new Translation2d(postTrenchOffset, Meters.zero())),
+                            closestTrenchOrientation(drive.getRotation()))),
+                Set.of(drive)),
+            run(() -> {})),
+        sequence(
+            defer(
+                () ->
+                    AutoAlignCommand.alignSequence(
+                        drive,
+                        new Pose2d(
+                            trench.plus(new Translation2d(preTrenchOffset, Meters.zero())),
+                            closestTrenchOrientation(drive.getRotation())),
+                        new Pose2d(
+                            trench.minus(new Translation2d(postTrenchOffset, Meters.zero())),
+                            closestTrenchOrientation(drive.getRotation()))),
+                Set.of(drive)),
+            run(() -> {})),
         () -> QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX()).lt(trench.getMeasureX()));
   }
 

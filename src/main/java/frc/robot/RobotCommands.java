@@ -496,7 +496,7 @@ public class RobotCommands {
     return sequence(
             runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
             waitSeconds(0.15),
-            deferredProxy(this::upDownCommand)
+            defer(this::upDownCommand, this.upDownCommand().getRequirements())
                 .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero())))
         .withName("RunIntakeJostle");
   }
