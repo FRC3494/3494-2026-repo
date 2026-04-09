@@ -1,7 +1,8 @@
 package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDepot;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
+import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -60,18 +61,24 @@ public class DepotAndClimbAuto {
         .done()
         .onTrue(
             sequence(
-                parallel(
-                    robotCommands.shoot(),
-                    sequence(
-                        new AutoAlignCommand(climbPoseDepot, drive), robotCommands.creepBackward()),
-                    sequence(
-                        waitUntil(() -> Timer.getMatchTime() <= 3),
-                        robotCommands.runClimberMidWithCurrent(),
-                        runOnce(
-                            () -> {
-                              shooterAimModel.setTurretTrim(Units.degreesToRotations(-10.0));
-                            },
-                            shooterAimModel)))));
+                    parallel(
+                        robotCommands.shoot(),
+                        sequence(
+                            new AutoAlignCommand(climbPoseDepot, drive),
+                            robotCommands.creepBackward()),
+                        sequence(
+                            waitUntil(() -> Timer.getMatchTime() <= 3),
+                            robotCommands.runClimberMidWithCurrent(),
+                            runOnce(
+                                () -> {
+                                  shooterAimModel.setTurretTrim(
+                                      turretTrimDefaultRot + Units.degreesToRotations(-10.0));
+                                },
+                                shooterAimModel))))
+                .finallyDo(
+                    () -> {
+                      shooterAimModel.setTurretTrim(turretTrimDefaultRot);
+                    }));
 
     return routine;
   }

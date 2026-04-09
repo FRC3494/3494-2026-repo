@@ -27,6 +27,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -182,17 +183,17 @@ public final class Constants {
 
   // #region CLIMBER
   public static class ClimberConstants {
-    public static final boolean climberInverted = false;
+    public static final boolean climberInverted = true;
     public static Current climberCurrentLimit = Amps.of(70);
     public static Time climberRampRate = Milliseconds.of(10);
     public static final double climberGearRatio = (1.0 / 5.0) * (1.0 / 9.0);
 
     public static final int climberCurrentSensingFilterSize = 10;
 
-    public static double climberUpPosition = 0.4;
-    public static double climberDownPosition = 2.443155 + 0.5;
-    // Fraction of the way DOWN the climb position is
-    public static double climbPositionFactor = 0.8;
+    public static double climberUpPosition = 3.067;
+    public static double climberDownPosition = 0.0;
+    // Climber should go 80% of the way DOWN when robot is climbing
+    public static double climberClimbPosition = Climber.percentClimbedPosition(0.8);
 
     public static double climberTolerance = 0.01;
 
@@ -265,7 +266,7 @@ public final class Constants {
     public static double driveKp = 7.43E-06;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
-    public static double driveKs = 0.14126175;
+    public static double driveKs = 0.11;
     public static double driveKv = 0.1179175;
     public static double driveKa = 0.02385725;
     public static final double driveSimP = 0.05;

@@ -87,11 +87,6 @@ public final class OI {
     }
 
     public static Trigger climberDown() {
-      return new Trigger(() -> false);
-      // return primaryController.a(eventLoop);
-    }
-
-    public static Trigger climberAllTheWayDown() {
       return rightButtonBoard.button(5, eventLoop).castTo(Trigger::new);
     }
 
@@ -104,12 +99,13 @@ public final class OI {
     }
 
     public static Trigger climberManualUp() {
-      // Just use climber rezero
-      return new Trigger(() -> false);
+      return primaryController.povUp();
+      // return new Trigger(() -> false);
     }
 
     public static Trigger climberManualDown() {
-      return new Trigger(() -> false);
+      return primaryController.povDown();
+      // return new Trigger(() -> false);
     }
   }
   // #endregion
@@ -138,11 +134,6 @@ public final class OI {
 
     public static Trigger stopWithX() {
       return primaryController.rightBumper(eventLoop);
-    }
-
-    public static Trigger lockTo45() {
-      // return primaryController.a(eventLoop);
-      return new Trigger(() -> false);
     }
 
     public static Trigger autoAlignClimb() {
@@ -191,10 +182,6 @@ public final class OI {
     public static Trigger toggleIntake() {
       return new Trigger(() -> false);
       // return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
-    }
-
-    public static Trigger rezeroIntakeUppyDowny() {
-      return new Trigger(() -> false);
     }
 
     public static Trigger jostleIntake() {
@@ -410,11 +397,13 @@ public final class OI {
 
     private static Command rumbleOn() {
       return Commands.runOnce(
-          () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity));
+              () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity))
+          .withName("ControllerRumbleOff");
     }
 
     private static Command rumbleOff() {
-      return Commands.runOnce(() -> primaryController.setRumble(RumbleType.kBothRumble, 0.0));
+      return Commands.runOnce(() -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
+          .withName("ControllerRumbleOn");
     }
 
     public static Command shiftRumbleSequence() {
@@ -425,17 +414,20 @@ public final class OI {
                   rumbleOff(),
                   Commands.waitSeconds(shiftRumblePulseOffSeconds))
               .repeatedly()
-              .withTimeout(shiftRumbleTimeOffsetSeconds - shiftRumbleContinuousSeconds);
+              .withTimeout(shiftRumbleTimeOffsetSeconds - shiftRumbleContinuousSeconds)
+              .withName("ControllerRumblePulses");
 
       Command continuous =
           Commands.startEnd(
                   () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity),
                   () -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
-              .withTimeout(shiftRumbleContinuousSeconds);
+              .withTimeout(shiftRumbleContinuousSeconds)
+              .withName("ControllerRumbleContinuous");
 
       return Commands.sequence(pulses, continuous)
           .finallyDo(() -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
-          .ignoringDisable(false);
+          .ignoringDisable(false)
+          .withName("ControllerRumble");
     }
 
     /** True while we are inside the rumble window leading up to any shift. */

@@ -16,26 +16,29 @@ import frc.robot.util.QuadranglesUtil;
 public class AutoAlignToTargetCommands {
   public static Command autoAlignToTower(Drive drive, RobotCommands robotCommands) {
     return either(
-        sequence(
-            AutoAlignCommand.alignSequenceDeferred(drive, climbSetupPoseOutpost, climbPoseOutpost),
-            robotCommands.creepBackward()),
-        sequence(
-            AutoAlignCommand.alignSequenceDeferred(drive, climbSetupPoseDepot, climbPoseDepot),
-            robotCommands.creepBackward()),
-        () ->
-            QuadranglesUtil.closerToWithFlip(
-                climbSetupPoseOutpost.getTranslation(),
-                climbSetupPoseDepot.getTranslation(),
-                drive.getPose().getTranslation()));
+            sequence(
+                AutoAlignCommand.alignSequenceDeferred(
+                    drive, climbSetupPoseOutpost, climbPoseOutpost),
+                robotCommands.creepBackward()),
+            sequence(
+                AutoAlignCommand.alignSequenceDeferred(drive, climbSetupPoseDepot, climbPoseDepot),
+                robotCommands.creepBackward()),
+            () ->
+                QuadranglesUtil.closerToWithFlip(
+                    climbSetupPoseOutpost.getTranslation(),
+                    climbSetupPoseDepot.getTranslation(),
+                    drive.getPose().getTranslation()))
+        .withName("AutoAlignTower");
   }
 
   public static Command autoDriveThroughTrench(Drive drive) {
     return either(
-        autoDriveTrench(drive, closeLeftTrench, closeRightTrench),
-        autoDriveTrench(drive, farLeftTrench, farRightTrench),
-        () ->
-            QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX())
-                .lt(closerToOppositeTrenchLine));
+            autoDriveTrench(drive, closeLeftTrench, closeRightTrench),
+            autoDriveTrench(drive, farLeftTrench, farRightTrench),
+            () ->
+                QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX())
+                    .lt(closerToOppositeTrenchLine))
+        .withName("AutoDriveThruTrench");
   }
 
   private static Command autoDriveTrench(

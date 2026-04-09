@@ -70,6 +70,10 @@ public class Hood extends SubsystemBase {
 
     setRelativeEncoderPosition(hoodMinAngle);
 
+    if (Math.abs(hoodMotor.getEncoder().getPosition()) <= 1E-5) {
+      setRelativeEncoderPosition(hoodMinAngle);
+    }
+
     SmartDashboard.putData("Shooter/Hood", this);
   }
 

@@ -53,7 +53,9 @@ public class Climber extends SubsystemBase {
     climberMotor.configure(
         climberConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    setRelativeEncoderPosition(climberDownPosition);
+    if (Math.abs(climberMotor.getEncoder().getPosition()) <= 1E-5) {
+      setRelativeEncoderPosition(climberDownPosition);
+    }
 
     SmartDashboard.putData("Climber", this);
   }
@@ -67,8 +69,8 @@ public class Climber extends SubsystemBase {
         "Down Position", () -> climberDownPosition, (double value) -> climberDownPosition = value);
     builder.addDoubleProperty(
         "Climb Position Factor",
-        () -> climbPositionFactor,
-        (double value) -> climbPositionFactor = value);
+        () -> 1.0 - (climberClimbPosition / climberUpPosition),
+        (double value) -> climberClimbPosition = percentClimbedPosition(value));
     builder.addDoubleProperty(
         "Tolerance", () -> climberTolerance, (double value) -> climberTolerance = value);
 
@@ -98,7 +100,7 @@ public class Climber extends SubsystemBase {
   private void logSendableValues() {
     Logger.recordOutput("Climber/Setpoints/UpPosition", climberUpPosition);
     Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
-    Logger.recordOutput("Climber/Setpoints/ClimbPositionFactor", climbPositionFactor);
+    Logger.recordOutput("Climber/Setpoints/ClimbPosition", climberClimbPosition);
     Logger.recordOutput("Climber/Setpoints/Tolerance", climberTolerance);
 
     Logger.recordOutput("Climber/PID/kP", climberKp);
@@ -125,20 +127,25 @@ public class Climber extends SubsystemBase {
     return climberMotor.getEncoder().getPosition();
   }
 
-  // Climber down is positive
   public void setPosition(double setpoint) {
-    // Min position is ~2.4 and Max position is 0, since positive is "climb" direction -> climber
-    // moves down
     climberSetpoint = setpoint;
-    climberSetpointClamped = MathUtil.clamp(setpoint, climberUpPosition, climberDownPosition);
+    climberSetpointClamped = MathUtil.clamp(setpoint, climberDownPosition, climberUpPosition);
 
     climberMotor
         .getClosedLoopController()
         .setSetpoint(climberSetpointClamped, ControlType.kPosition);
   }
 
-  public void setOpenLoop(Voltage voltage) {
-    climberMotor.setVoltage(voltage);
+  /**
+   * @param fraction Percent of the way DOWN (climbed) the climber is
+   * @return Climb position at `fraction` percentage climbed
+   */
+  public static double percentClimbedPosition(double fraction) {
+    return (1 - fraction) * climberUpPosition;
+  }
+
+  public void setVoltage(Voltage voltage) {
+    climberMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public void setCurrentLimit(Current limit) {

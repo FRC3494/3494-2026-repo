@@ -471,26 +471,13 @@ public class RobotContainer {
     // #region CLIMBER
 
     ClimberOI.climberUp().onTrue(robotCommands.runClimberUp());
-
-    ClimberOI.climberDown()
-        .onTrue(
-            either(
-                robotCommands.runClimberMidWithCurrent(),
-                robotCommands.runClimberDown(),
-                () -> climber.getPosition() <= climberDownPosition * climbPositionFactor - 0.05));
-
-    ClimberOI.climberAllTheWayDown().onTrue(robotCommands.runClimberDown());
-
+    ClimberOI.climberDown().onTrue(robotCommands.runClimberDown());
     ClimberOI.actuallyClimb().onTrue(robotCommands.runClimberMidWithCurrent());
 
     ClimberOI.rezeroClimber().onTrue(robotCommands.rezeroClimber());
 
-    ClimberOI.climberManualUp()
-        .onTrue(robotCommands.climberManualUp())
-        .onFalse(robotCommands.stopClimber());
-    ClimberOI.climberManualDown()
-        .onTrue(robotCommands.climberManualDown())
-        .onFalse(robotCommands.stopClimber());
+    ClimberOI.climberManualUp().whileTrue(robotCommands.climberManualUp());
+    ClimberOI.climberManualDown().whileTrue(robotCommands.climberManualDown());
 
     // #endregion
 
@@ -498,20 +485,12 @@ public class RobotContainer {
 
     drive.setDefaultCommand(robotCommands.joystickDriveCommand);
 
-    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true));
+    DriveOI.resetYaw().onTrue(runOnce(drive::resetYaw).ignoringDisable(true).withName("ResetYaw"));
     DriveOI.rezeroSwerveTurnEncoders()
-        .onTrue(runOnce(drive::rezeroTurnEncoders).ignoringDisable(true));
+        .onTrue(
+            runOnce(drive::rezeroTurnEncoders).ignoringDisable(true).withName("RezeroSwerveTurn"));
 
-    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive));
-
-    // ! Currently disabled
-    DriveOI.lockTo45()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                OI.DriveOI::joystickDriveX,
-                OI.DriveOI::joystickDriveY,
-                () -> Rotation2d.kPi.div(4)));
+    DriveOI.stopWithX().onTrue(runOnce(drive::stopWithX, drive).withName("StopWithX"));
 
     DriveOI.autoAlignClimb()
         .whileTrue(AutoAlignToTargetCommands.autoAlignToTower(drive, robotCommands));
@@ -541,14 +520,16 @@ public class RobotContainer {
     IntakeOI.intake()
         .onTrue(
             either(
-                sequence(robotCommands.stopIntakeJostle(), robotCommands.startIntake()),
-                robotCommands.intake(),
-                ShooterOI.shoot()::getAsBoolean))
+                    sequence(robotCommands.stopIntakeJostle(), robotCommands.startIntake()),
+                    robotCommands.intake(),
+                    ShooterOI.shoot()::getAsBoolean)
+                .withName("IntakeButtonPress"))
         .whileFalse(
             either(
-                robotCommands.runIntakeJostle(),
-                robotCommands.spinDownFromIntake(),
-                ShooterOI.shoot()::getAsBoolean));
+                    robotCommands.runIntakeJostle(),
+                    robotCommands.spinDownFromIntake(),
+                    ShooterOI.shoot()::getAsBoolean)
+                .withName("IntakeButtonRelease"));
     IntakeOI.outtake()
         .onTrue(robotCommands.startIntakeReverse())
         .onFalse(robotCommands.stopIntake());
@@ -556,14 +537,12 @@ public class RobotContainer {
     IntakeOI.toggleIntake()
         .onTrue(
             either(
-                robotCommands.intake(),
-                robotCommands.spinDownFromIntake(),
-                () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.of(0))));
-
-    IntakeOI.rezeroIntakeUppyDowny().onTrue(robotCommands.rezeroIntakeUppyDowny());
+                    robotCommands.intake(),
+                    robotCommands.spinDownFromIntake(),
+                    () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.zero()))
+                .withName("ToggleIntake"));
 
     IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManualUp());
-
     IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManualDown());
 
     // #endregion
@@ -580,84 +559,98 @@ public class RobotContainer {
     ShooterOI.shoot()
         .whileTrue(
             either(
-                robotCommands.shootWithoutIntakeJostle(),
-                robotCommands.shoot(),
-                IntakeOI.intake()::getAsBoolean))
+                    robotCommands.shootWithoutIntakeJostle(),
+                    robotCommands.shoot(),
+                    IntakeOI.intake()::getAsBoolean)
+                .withName("ShootButtonPress"))
         .onFalse(
             either(
-                sequence(robotCommands.spinDownFromShoot(), robotCommands.intake()),
-                robotCommands.spinDownFromShoot(),
-                IntakeOI.intake()::getAsBoolean));
+                    sequence(robotCommands.spinDownFromShoot(), robotCommands.intake()),
+                    robotCommands.spinDownFromShoot(),
+                    IntakeOI.intake()::getAsBoolean)
+                .withName("ShootButtonRelease"));
 
     ShooterOI.shootClose()
-        .whileTrue(sequence(robotCommands.setCloseShot(false), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setCloseShot(false), robotCommands.shoot())
+                .withName("ShootClose"))
+        .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootCloseWithTrim()
-        .whileTrue(sequence(robotCommands.setCloseShot(true), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setCloseShot(true), robotCommands.shoot())
+                .withName("ShootCloseWithTrim"))
+        .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootMedium()
-        .whileTrue(sequence(robotCommands.setMediumShot(false), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setMediumShot(false), robotCommands.shoot())
+                .withName("ShootMedium"))
+        .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootMediumWithTrim()
-        .whileTrue(sequence(robotCommands.setMediumShot(true), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setMediumShot(true), robotCommands.shoot())
+                .withName("ShootMediumWithTrim"))
+        .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootFar()
-        .whileTrue(sequence(robotCommands.setFarShot(false), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setFarShot(false), robotCommands.shoot()).withName("ShootFar"))
+        .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootFarWithTrim()
-        .whileTrue(sequence(robotCommands.setFarShot(true), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setFarShot(true), robotCommands.shoot())
+                .withName("ShootFarWithTrim"))
+        .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootNeutralZone()
-        .whileTrue(sequence(robotCommands.setNeutralZoneShot(false), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setNeutralZoneShot(false), robotCommands.shoot())
+                .withName("ShootNZ"))
+        .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootNeutralZoneWithTrim()
-        .whileTrue(sequence(robotCommands.setNeutralZoneShot(true), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setNeutralZoneShot(true), robotCommands.shoot())
+                .withName("ShootNZWithTrim"))
+        .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootDashboard()
-        .whileTrue(sequence(robotCommands.setDashboardShot(), robotCommands.shoot()))
-        .onFalse(
-            sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
+        .whileTrue(
+            sequence(robotCommands.setDashboardShot(), robotCommands.shoot())
+                .withName("ShootDashboard"))
+        .onFalse(robotCommands.manualShootRelease());
 
-    ShooterOI.increaseDistanceTrim().onTrue(robotCommands.increaseDistanceTrim());
-    ShooterOI.decreaseDistanceTrim().onTrue(robotCommands.decreaseDistanceTrim());
+    ShooterOI.increaseDistanceTrim().whileTrue(robotCommands.changeDistanceTrim(true));
+    ShooterOI.decreaseDistanceTrim().whileTrue(robotCommands.changeDistanceTrim(false));
     ShooterOI.resetDistanceTrim().onTrue(robotCommands.resetDistanceTrim());
 
     ShooterOI.trimRight()
-        .onTrue(
+        .whileTrue(
             either(
-                robotCommands.changeYTrim(false),
-                robotCommands.changeYTrim(true),
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
+                    robotCommands.changeYTrim(false),
+                    robotCommands.changeYTrim(true),
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                .withName("TrimRight"));
     ShooterOI.trimLeft()
-        .onTrue(
+        .whileTrue(
             either(
-                robotCommands.changeYTrim(true),
-                robotCommands.changeYTrim(false),
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
+                    robotCommands.changeYTrim(true),
+                    robotCommands.changeYTrim(false),
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                .withName("TrimLeft"));
     ShooterOI.trimForward()
-        .onTrue(
+        .whileTrue(
             either(
-                robotCommands.changeXTrim(true),
-                robotCommands.changeXTrim(false),
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
+                    robotCommands.changeXTrim(true),
+                    robotCommands.changeXTrim(false),
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                .withName("TrimForward"));
     ShooterOI.trimBack()
-        .onTrue(
+        .whileTrue(
             either(
-                robotCommands.changeXTrim(false),
-                robotCommands.changeXTrim(true),
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue));
+                    robotCommands.changeXTrim(false),
+                    robotCommands.changeXTrim(true),
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                .withName("TrimBack"));
     ShooterOI.resetXYTrim().onTrue(robotCommands.resetXYTrim());
 
     // #endregion
@@ -673,19 +666,21 @@ public class RobotContainer {
     FlywheelOI.increaseFlywheelTrim()
         .whileTrue(
             run(
-                () -> {
-                  shooterAimModel.setFlywheelTrim(
-                      shooterAimModel.getFlywheelTrim().plus(RPM.of(5)));
-                },
-                shooterAimModel));
+                    () -> {
+                      shooterAimModel.setFlywheelTrim(
+                          shooterAimModel.getFlywheelTrim().plus(RPM.of(5)));
+                    },
+                    shooterAimModel)
+                .withName("IncreaseFlywheelTrim"));
     FlywheelOI.decreaseFlywheelTrim()
         .whileTrue(
             run(
-                () -> {
-                  shooterAimModel.setFlywheelTrim(
-                      shooterAimModel.getFlywheelTrim().minus(RPM.of(5)));
-                },
-                shooterAimModel));
+                    () -> {
+                      shooterAimModel.setFlywheelTrim(
+                          shooterAimModel.getFlywheelTrim().minus(RPM.of(5)));
+                    },
+                    shooterAimModel)
+                .withName("DecreaseFlywheelTrim"));
 
     // #endregion
 
@@ -698,19 +693,21 @@ public class RobotContainer {
     HoodOI.increaseHoodTrim()
         .whileTrue(
             run(
-                () -> {
-                  shooterAimModel.setHoodTrim(
-                      shooterAimModel.getHoodTrim().plus(Rotation2d.fromDegrees(0.5)));
-                },
-                shooterAimModel));
+                    () -> {
+                      shooterAimModel.setHoodTrim(
+                          shooterAimModel.getHoodTrim().plus(Rotation2d.fromDegrees(0.5)));
+                    },
+                    shooterAimModel)
+                .withName("IncreaseHoodTrim"));
     HoodOI.decreaseHoodTrim()
         .whileTrue(
             run(
-                () -> {
-                  shooterAimModel.setHoodTrim(
-                      shooterAimModel.getHoodTrim().minus(Rotation2d.fromDegrees(0.5)));
-                },
-                shooterAimModel));
+                    () -> {
+                      shooterAimModel.setHoodTrim(
+                          shooterAimModel.getHoodTrim().minus(Rotation2d.fromDegrees(0.5)));
+                    },
+                    shooterAimModel)
+                .withName("DecreaseHoodTrim"));
 
     HoodOI.hoodManualUp().whileTrue(robotCommands.runHoodManualUp());
     HoodOI.hoodManualDown().whileTrue(robotCommands.runHoodManualDown());
@@ -720,13 +717,6 @@ public class RobotContainer {
     // #region TURRET
 
     turret.setDefaultCommand(robotCommands.autoTurretCommand());
-    RobotModeTriggers.teleop()
-        .onTrue(
-            runOnce(
-                () -> {
-                  shooterAimModel.setTurretTrim(Units.degreesToRotations(0.0));
-                },
-                shooterAimModel));
 
     TurretOI.turretManualCCW().whileTrue(robotCommands.runTurretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.runTurretManualCW());
