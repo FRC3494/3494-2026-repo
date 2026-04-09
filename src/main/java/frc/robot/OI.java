@@ -133,15 +133,15 @@ public final class OI {
     }
 
     public static Trigger stopWithX() {
-      return primaryController.rightBumper(eventLoop);
+      return primaryController.povLeft();
     }
 
     public static Trigger autoAlignClimb() {
-      return primaryController.leftBumper(eventLoop);
+      return primaryController.rightBumper(eventLoop);
     }
 
     public static Trigger autoDriveThroughTrench() {
-      return primaryController.povLeft();
+      return primaryController.leftBumper();
     }
   }
   // #endregion
