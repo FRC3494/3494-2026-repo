@@ -167,20 +167,20 @@ public class Drive extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty(
-        "Max Drive Speed (ft/s)",
+        "Max Drive Speed (FtPerSec)",
         () -> Units.metersToFeet(maxSpeedMetersPerSec),
         (double value) -> maxSpeedMetersPerSec = Units.feetToMeters(value));
     builder.addDoubleProperty(
-        "Max Angular Speed (deg/s)",
+        "Max Angular Speed (DegPerSec)",
         () -> Units.radiansToDegrees(maxAngularSpeedRadPerSec),
         (double value) -> maxAngularSpeedRadPerSec = Units.degreesToRadians(value));
 
     builder.addDoubleProperty(
-        "Max Shooting Drive Speed (ft/s)",
+        "Max Shooting Drive Speed (FtPerSec)",
         () -> Units.metersToFeet(maxShootingSpeedMetersPerSec),
         (double value) -> maxShootingSpeedMetersPerSec = Units.feetToMeters(value));
     builder.addDoubleProperty(
-        "Max Shooting Angular Speed (deg/s)",
+        "Max Shooting Angular Speed (DegPerSec)",
         () -> Units.radiansToDegrees(maxShootingAngularSpeedRadPerSec),
         (double value) -> maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(value));
 
