@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -165,6 +166,24 @@ public class Drive extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty(
+        "Max Drive Speed (ft/s)",
+        () -> Units.metersToFeet(maxSpeedMetersPerSec),
+        (double value) -> maxSpeedMetersPerSec = Units.feetToMeters(value));
+    builder.addDoubleProperty(
+        "Max Angular Speed (deg/s)",
+        () -> Units.radiansToDegrees(maxAngularSpeedRadPerSec),
+        (double value) -> maxAngularSpeedRadPerSec = Units.degreesToRadians(value));
+
+    builder.addDoubleProperty(
+        "Max Shooting Drive Speed (ft/s)",
+        () -> Units.metersToFeet(maxShootingSpeedMetersPerSec),
+        (double value) -> maxShootingSpeedMetersPerSec = Units.feetToMeters(value));
+    builder.addDoubleProperty(
+        "Max Shooting Angular Speed (deg/s)",
+        () -> Units.radiansToDegrees(maxShootingAngularSpeedRadPerSec),
+        (double value) -> maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(value));
+
     builder.addDoubleArrayProperty(
         "Auto Linear PID",
         () -> new double[] {autoLinearKp, autoLinearKi, autoLinearKd},
@@ -189,6 +208,14 @@ public class Drive extends SubsystemBase {
   }
 
   private void logSendableValues() {
+    Logger.recordOutput("Drive/MaxDriveSpeed", MetersPerSecond.of(maxSpeedMetersPerSec));
+    Logger.recordOutput("Drive/MaxAngularSpeed", RadiansPerSecond.of(maxAngularSpeedRadPerSec));
+
+    Logger.recordOutput(
+        "Drive/MaxShootingDriveSpeed", MetersPerSecond.of(maxShootingSpeedMetersPerSec));
+    Logger.recordOutput(
+        "Drive/MaxShootingAngularSpeed", RadiansPerSecond.of(maxShootingAngularSpeedRadPerSec));
+
     Logger.recordOutput("Drive/AutoLinearPID/kP", autoLinearKp);
     Logger.recordOutput("Drive/AutoLinearPID/kI", autoLinearKi);
     Logger.recordOutput("Drive/AutoLinearPID/kD", autoLinearKd);
@@ -537,12 +564,12 @@ public class Drive extends SubsystemBase {
       case DEMO -> {
         return !OI.ShooterOI.shoot().getAsBoolean()
             ? maxAngularSpeedRadPerSec * demoModeSpeedFactor
-            : maxAngularShootingSpeedRadPerSec * demoModeSpeedFactor;
+            : maxShootingAngularSpeedRadPerSec * demoModeSpeedFactor;
       }
       default -> {
         return !OI.ShooterOI.shoot().getAsBoolean()
             ? maxAngularSpeedRadPerSec
-            : maxAngularShootingSpeedRadPerSec;
+            : maxShootingAngularSpeedRadPerSec;
       }
     }
   }
