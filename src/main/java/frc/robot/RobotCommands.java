@@ -821,10 +821,8 @@ public class RobotCommands {
             () -> {
               if (isUnderTrench()) {
                 hood.setShooting(false);
-              } else {
-                hood.setShooting(true);
-                hood.setPosition(shooterAimModel.getHoodAngle());
               }
+              hood.setPosition(shooterAimModel.getHoodAngle());
             },
             hood)
         .withName("AutoHoodWithTrenchSafety");
