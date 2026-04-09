@@ -64,8 +64,8 @@ public final class QuadranglesUtil {
 
   /** Returns `true` if `inputTranslation` is closer to `a`, `false` if closer to `b`. */
   public static boolean closerTo(Translation2d a, Translation2d b, Translation2d inputTranslation) {
-    double distanceToA = inputTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(a));
-    double distanceToB = inputTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(b));
+    double distanceToA = inputTranslation.getDistance(a);
+    double distanceToB = inputTranslation.getDistance(b);
 
     return distanceToA <= distanceToB;
   }
