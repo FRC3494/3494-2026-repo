@@ -265,7 +265,7 @@ public final class Constants {
     public static double driveKp = 7.43E-06;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
-    public static double driveKs = 0.14126175;
+    public static double driveKs = 0.11;
     public static double driveKv = 0.1179175;
     public static double driveKa = 0.02385725;
     public static final double driveSimP = 0.05;
