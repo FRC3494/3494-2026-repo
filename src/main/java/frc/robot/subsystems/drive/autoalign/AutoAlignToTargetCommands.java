@@ -85,9 +85,9 @@ public class AutoAlignToTargetCommands {
 
   private static Rotation2d closestTrenchOrientation(Rotation2d robotYaw) {
     if (Math.abs(MathUtil.angleModulus(robotYaw.getRadians())) < Math.PI / 4.0) {
-      return Rotation2d.kZero;
+      return QuadranglesUtil.toAllianceAngle(Rotation2d.kZero);
     } else {
-      return Rotation2d.k180deg;
+      return QuadranglesUtil.toAllianceAngle(Rotation2d.k180deg);
     }
   }
 }
