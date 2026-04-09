@@ -53,7 +53,9 @@ public class Climber extends SubsystemBase {
     climberMotor.configure(
         climberConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
-    setRelativeEncoderPosition(climberDownPosition);
+    if (Math.abs(climberMotor.getEncoder().getPosition()) <= 1E-5) {
+      setRelativeEncoderPosition(climberDownPosition);
+    }
 
     SmartDashboard.putData("Climber", this);
   }
