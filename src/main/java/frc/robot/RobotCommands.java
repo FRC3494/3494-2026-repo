@@ -571,7 +571,13 @@ public class RobotCommands {
   }
 
   public Command stopShootNoDelay() {
-    return sequence(stopSpindexer(), stopKicker(), stopIntake(), stopHood(), stopFlywheel())
+    return sequence(
+            stopSpindexer(),
+            stopKicker(),
+            stopIntake(),
+            stopHood(),
+            stopIntakeJostle(),
+            stopFlywheel())
         .withName("StopShootNoDelay");
   }
 
