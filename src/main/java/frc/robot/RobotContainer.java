@@ -553,8 +553,6 @@ public class RobotContainer {
                 robotCommands.spinDownFromIntake(),
                 () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.of(0))));
 
-    IntakeOI.rezeroIntakeUppyDowny().onTrue(robotCommands.rezeroIntakeUppyDowny());
-
     IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManualUp());
 
     IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManualDown());
@@ -623,8 +621,8 @@ public class RobotContainer {
         .onFalse(
             sequence(robotCommands.spinDownFromShoot(), robotCommands.enableAutoShooterSettings()));
 
-    ShooterOI.increaseDistanceTrim().onTrue(robotCommands.increaseDistanceTrim());
-    ShooterOI.decreaseDistanceTrim().onTrue(robotCommands.decreaseDistanceTrim());
+    ShooterOI.increaseDistanceTrim().onTrue(robotCommands.changeDistanceTrim(true));
+    ShooterOI.decreaseDistanceTrim().onTrue(robotCommands.changeDistanceTrim(false));
     ShooterOI.resetDistanceTrim().onTrue(robotCommands.resetDistanceTrim());
 
     ShooterOI.trimRight()

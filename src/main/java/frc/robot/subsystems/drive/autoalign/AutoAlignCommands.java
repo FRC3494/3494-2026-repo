@@ -11,22 +11,23 @@ import frc.robot.util.QuadranglesUtil;
 public class AutoAlignCommands {
   public static Command autoAlignToTower(Drive drive, RobotCommands robotCommands) {
     return either(
-        deferredProxy(
+            deferredProxy(
+                () ->
+                    sequence(
+                        new AutoAlignCommand(climbSetupPoseOutpost, drive),
+                        new AutoAlignCommand(climbPoseOutpost, drive),
+                        robotCommands.creepBackward())),
+            deferredProxy(
+                () ->
+                    sequence(
+                        new AutoAlignCommand(climbSetupPoseDepot, drive),
+                        new AutoAlignCommand(climbPoseDepot, drive),
+                        robotCommands.creepBackward())),
             () ->
-                sequence(
-                    new AutoAlignCommand(climbSetupPoseOutpost, drive),
-                    new AutoAlignCommand(climbPoseOutpost, drive),
-                    robotCommands.creepBackward())),
-        deferredProxy(
-            () ->
-                sequence(
-                    new AutoAlignCommand(climbSetupPoseDepot, drive),
-                    new AutoAlignCommand(climbPoseDepot, drive),
-                    robotCommands.creepBackward())),
-        () ->
-            QuadranglesUtil.closerToWithFlip(
-                climbSetupPoseOutpost.getTranslation(),
-                climbSetupPoseDepot.getTranslation(),
-                drive.getPose().getTranslation()));
+                QuadranglesUtil.closerToWithFlip(
+                    climbSetupPoseOutpost.getTranslation(),
+                    climbSetupPoseDepot.getTranslation(),
+                    drive.getPose().getTranslation()))
+        .withName("AutoAlignTower");
   }
 }

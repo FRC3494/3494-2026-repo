@@ -190,10 +190,6 @@ public final class OI {
       // return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
     }
 
-    public static Trigger rezeroIntakeUppyDowny() {
-      return new Trigger(() -> false);
-    }
-
     public static Trigger jostleIntake() {
       return primaryController.b(eventLoop);
     }
