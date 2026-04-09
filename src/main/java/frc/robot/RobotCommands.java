@@ -575,6 +575,11 @@ public class RobotCommands {
         .withName("StopShootNoDelay");
   }
 
+  public Command manualShootRelease() {
+    return sequence(spinDownFromShoot(), enableAutoShooterSettings())
+        .withName("ManualShootRelease");
+  }
+
   public Command resetDistanceTrim() {
     return runOnce(
             () -> {
@@ -965,7 +970,7 @@ public class RobotCommands {
               turret.setPosition(rotations);
             },
             turret)
-        .withName("TurretToPosition");
+        .withName("TurretTo" + Units.rotationsToDegrees(rotations));
   }
 
   public Command lockTurret() {

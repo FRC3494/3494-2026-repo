@@ -37,22 +37,27 @@ public class Autos {
               drive.setPose(QuadranglesUtil.toAlliancePose(pose));
             },
             drive)
-        .ignoringDisable(true);
+        .ignoringDisable(true)
+        .withName("ResetOdoForAuto");
   }
 
   public static Command resetOdoLeftTrench(Drive drive) {
-    return resetOdoForAuto(drive, ChoreoVars.Poses.LeftTrenchStartingPosition);
+    return resetOdoForAuto(drive, ChoreoVars.Poses.LeftTrenchStartingPosition)
+        .withName("ResetOdoLeftTrench");
   }
 
   public static Command resetOdoRightTrench(Drive drive) {
-    return resetOdoForAuto(drive, ChoreoVars.Poses.RightTrenchStartingPosition);
+    return resetOdoForAuto(drive, ChoreoVars.Poses.RightTrenchStartingPosition)
+        .withName("ResetOdoRightTrench");
   }
 
   public static Command resetOdoLeftBump(Drive drive) {
-    return resetOdoForAuto(drive, ChoreoVars.Poses.LeftBumpStartingPosition);
+    return resetOdoForAuto(drive, ChoreoVars.Poses.LeftBumpStartingPosition)
+        .withName("ResetOdoLeftBump");
   }
 
   public static Command resetOdoRightBump(Drive drive) {
-    return resetOdoForAuto(drive, ChoreoVars.Poses.RightBumpStartingPosition);
+    return resetOdoForAuto(drive, ChoreoVars.Poses.RightBumpStartingPosition)
+        .withName("ResetOdoRightBump");
   }
 }
