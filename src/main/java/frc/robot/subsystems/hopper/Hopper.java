@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -29,12 +30,13 @@ public class Hopper extends SubsystemBase {
   private SparkFlex spindexerMotor;
   private SparkFlex kickerMotor;
 
-  @AutoLogOutput private AngularVelocity spindexerSetpointRPM = RPM.of(0.0);
-  @AutoLogOutput private AngularVelocity kickerSetpointRPM = RPM.of(0.0);
+  @AutoLogOutput private AngularVelocity spindexerSetpoint = RPM.zero();
+  @AutoLogOutput private AngularVelocity kickerSetpoint = RPM.zero();
+  @AutoLogOutput private AngularVelocity kickerSetpointClamped = RPM.zero();
 
   @Getter
   @AutoLogOutput(key = "Hopper/SpindexerFilteredMotorCurrent")
-  private Current spindexerFilteredCurrent = Amps.of(0);
+  private Current spindexerFilteredCurrent = Amps.zero();
 
   private final MedianFilter spindexerCurrentFilter =
       new MedianFilter(spindexerCurrentSensingFilterSize);
@@ -183,7 +185,7 @@ public class Hopper extends SubsystemBase {
   }
 
   public void setSpindexerVelocity(AngularVelocity velocity) {
-    spindexerSetpointRPM = velocity;
+    spindexerSetpoint = velocity;
     if (!velocity.isEquivalent(RPM.of(0))) {
       spindexerMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
     } else {
@@ -192,9 +194,14 @@ public class Hopper extends SubsystemBase {
   }
 
   public void setKickerVelocity(AngularVelocity velocity) {
-    kickerSetpointRPM = velocity;
-    if (!velocity.isEquivalent(RPM.of(0))) {
-      kickerMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
+    kickerSetpoint = velocity;
+    kickerSetpointClamped =
+        RPM.of(MathUtil.clamp(velocity.in(RPM), -kickerMaxSpeed.in(RPM), kickerMaxSpeed.in(RPM)));
+
+    if (!kickerSetpointClamped.isEquivalent(RPM.zero())) {
+      kickerMotor
+          .getClosedLoopController()
+          .setSetpoint(kickerSetpointClamped.in(RPM), ControlType.kVelocity);
     } else {
       kickerMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
     }
