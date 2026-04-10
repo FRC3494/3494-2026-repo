@@ -368,7 +368,8 @@ public final class Constants {
       public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
       public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
 
-      public static final Distance trenchLinearTolerance = Inches.of(5.0);
+      public static final Distance trenchXTolerance = fieldLength;
+      public static final Distance trenchYTolerance = Inches.of(5.0);
       public static final Rotation2d trenchAngularTolerance = Rotation2d.fromDegrees(5.0);
 
       // X value beyond which we align to the opposite alliance's trenches
