@@ -34,6 +34,7 @@ import frc.robot.OI.ShooterOI;
 import frc.robot.OI.ShooterOI.FlywheelOI;
 import frc.robot.OI.ShooterOI.HoodOI;
 import frc.robot.OI.ShooterOI.TurretOI;
+import frc.robot.OI.WonAutoState;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.autos.LeftCloseNZAuto;
@@ -459,6 +460,7 @@ public class RobotContainer {
 
     // #region WHOLE ROBOT
 
+    RobotModeTriggers.teleop().onTrue(runOnce(() -> OI.setWonAutoState(WonAutoState.Unknown)));
     OI.RumbleOI.shiftRumbleWindow().whileTrue(OI.RumbleOI.shiftRumbleSequence());
 
     SmartDashboard.putData("ResetOdoLeftTrench", Autos.resetOdoLeftTrench(drive));

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -394,28 +395,38 @@ public final class OI {
 
     private static Command rumbleOn() {
       return Commands.runOnce(
-              () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity))
+              () -> {
+                primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity);
+                Logger.recordOutput("OI/ControllerRumble", true);
+              })
+          .ignoringDisable(true)
           .withName("ControllerRumbleOff");
     }
 
     private static Command rumbleOff() {
-      return Commands.runOnce(() -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
+      return Commands.runOnce(
+              () -> {
+                primaryController.setRumble(RumbleType.kBothRumble, 0.0);
+                Logger.recordOutput("OI/ControllerRumble", false);
+              })
+          .ignoringDisable(true)
           .withName("ControllerRumbleOn");
     }
 
     public static Command shiftRumbleSequence() {
       Command pulses =
-          Commands.sequence(
+          sequence(
                   rumbleOn(),
                   Commands.waitSeconds(shiftRumblePulseOnSeconds),
                   rumbleOff(),
                   Commands.waitSeconds(shiftRumblePulseOffSeconds))
               .repeatedly()
-              .withTimeout(shiftRumbleTimeOffsetSeconds - shiftRumbleContinuousSeconds)
+              .withTimeout(
+                  shiftRumblePulseCount * (shiftRumblePulseOnSeconds + shiftRumblePulseOffSeconds))
               .withName("ControllerRumblePulses");
 
       Command continuous =
-          Commands.startEnd(
+          startEnd(
                   () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity),
                   () -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
               .withTimeout(shiftRumbleContinuousSeconds)
@@ -433,19 +444,25 @@ public final class OI {
           .and(
               () -> {
                 double matchTime = DriverStation.getMatchTime();
-                if (matchTime < 0) return false;
+                if (matchTime <= 0) return false;
 
                 if (!shiftRumbleEnabledEntry.get()) return false;
 
-                double endOfTeleop = shiftTimeSeconds[shiftTimeSeconds.length - 1];
-                for (double shiftElapsed : shiftTimeSeconds) {
-                  // getMatchTime() counts down; convert each shift's elapsed time to its countdown
-                  double shiftCountdown = endOfTeleop - shiftElapsed;
-                  if (matchTime <= shiftCountdown + shiftRumbleTimeOffsetSeconds
-                      && matchTime >= shiftCountdown) {
-                    return true;
+                for (double shiftTime : shiftRumbleTimesSeconds) {
+                  if (matchTime
+                      > shiftTime
+                          + shiftRumbleTimeOffsetSeconds
+                          + shiftRumbleContinuousSeconds
+                          + shiftRumblePulseCount
+                              * (shiftRumblePulseOnSeconds + shiftRumblePulseOffSeconds)) {
+                    // Rumble for shiftTime has not yet started
+                    // shiftTimesSeconds is descending, so no need to check other cases
+                    return false;
                   }
+
+                  if (matchTime >= shiftTime) return true;
                 }
+
                 return false;
               });
     }

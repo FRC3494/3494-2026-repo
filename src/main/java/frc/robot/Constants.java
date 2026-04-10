@@ -30,6 +30,8 @@ import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -163,21 +165,51 @@ public final class Constants {
     public static final double controllerStickDeadband = 0.05;
     public static final double controllerTriggerDeadband = 0.25;
 
-    public static final boolean shiftRumbleEnabled = true;
-    public static final double shiftRumbleIntensity = 0.50;
-    public static final double shiftRumbleTimeOffsetSeconds = 5.0;
-    public static final double shiftRumbleContinuousSeconds = 2.0;
-    public static final double shiftRumblePulseOnSeconds = 0.25;
-    public static final double shiftRumblePulseOffSeconds = 0.75;
-
     // SHIFT 0 10 Seconds 2:20 – 2:10
     // SHIFT 1 25 Seconds 2:10 - 1:45
     // SHIFT 2 25 Seconds 1:45 - 1:20
     // SHIFT 3 25 Seconds 1:20 - 0:55
     // SHIFT 4 25 Seconds 0:55 - 0:30
     // END GAME 30 Seconds 0:30 - 0:00
-    public static final double[] shiftTimeSeconds =
-        new double[] {10.0, 35.0, 60.0, 85.0, 110.0, 135.0};
+    // ! This should not be changed. It is for calculating how much time is left in the given match
+    // ! period. To change when controller rumbles, change shiftRumbleTimesSeconds.
+    public static final double[] shiftTimesSeconds =
+        new double[] {
+          130, // 2:10
+          105, // 1:45
+          80, // 1:20
+          55, // 0:55
+          30, // 0:30
+          0 // 0:00
+        };
+
+    // ! Timestamps when the controller STOPS rumbling.
+    // (At the shift changes, and in endgame)
+    public static final double[] shiftRumbleTimesSeconds =
+        Arrays.stream(
+                new double[] {
+                  130, // 2:10
+                  105, // 1:45
+                  80, // 1:20
+                  55, // 0:55
+                  30, // 0:30
+                  10 // 0:10
+                })
+            // ! MUST be descending order for OI.shiftRumbleWindow() to work
+            .boxed()
+            .sorted(Collections.reverseOrder())
+            .mapToDouble(Double::doubleValue)
+            .toArray();
+
+    public static final boolean shiftRumbleEnabled = true;
+    public static final double shiftRumbleIntensity = 0.50;
+    // Since match time FLOORS instead of ROUNDS, offset by 1s to make rumble seem like it starts at
+    // the right time
+    public static final double shiftRumbleTimeOffsetSeconds = 1.0;
+    public static final double shiftRumbleContinuousSeconds = 2.0;
+    public static final double shiftRumblePulseOnSeconds = 0.25;
+    public static final double shiftRumblePulseOffSeconds = 0.75;
+    public static final int shiftRumblePulseCount = 3;
   }
   // #endregion
 
