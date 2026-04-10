@@ -27,11 +27,16 @@ public class AutoAlignCommand extends Command {
   private final PIDController yController;
   private final PIDController headingController;
 
-  private final Distance linearTolerance;
+  private final Distance xTolerance;
+  private final Distance yTolerance;
   private final Rotation2d angularTolerance;
 
   public AutoAlignCommand(
-      Pose2d targetPose, Drive drive, Distance linearTolerance, Rotation2d angularTolerance) {
+      Pose2d targetPose,
+      Drive drive,
+      Distance xTolerance,
+      Distance yTolerance,
+      Rotation2d angularTolerance) {
     this.targetPose = QuadranglesUtil.toAlliancePose(targetPose);
     this.drive = drive;
 
@@ -44,8 +49,14 @@ public class AutoAlignCommand extends Command {
 
     headingController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.linearTolerance = linearTolerance;
+    this.xTolerance = xTolerance;
+    this.yTolerance = yTolerance;
     this.angularTolerance = angularTolerance;
+  }
+
+  public AutoAlignCommand(
+      Pose2d targetPose, Drive drive, Distance linearTolerance, Rotation2d angularTolerance) {
+    this(targetPose, drive, linearTolerance, linearTolerance, angularTolerance);
   }
 
   public AutoAlignCommand(Pose2d targetPose, Drive drive) {
@@ -98,11 +109,9 @@ public class AutoAlignCommand extends Command {
   public boolean isFinished() {
     Pose2d currentPose = drive.getPose();
 
-    boolean xAtSetpoint =
-        currentPose.getMeasureX().isNear(targetPose.getMeasureX(), linearTolerance);
+    boolean xAtSetpoint = currentPose.getMeasureX().isNear(targetPose.getMeasureX(), xTolerance);
     Logger.recordOutput("Drive/AutoAlign/XAtSetpoint", xAtSetpoint);
-    boolean yAtSetpoint =
-        currentPose.getMeasureY().isNear(targetPose.getMeasureY(), linearTolerance);
+    boolean yAtSetpoint = currentPose.getMeasureY().isNear(targetPose.getMeasureY(), yTolerance);
     Logger.recordOutput("Drive/AutoAlign/YAtSetpoint", yAtSetpoint);
     boolean headingAtSetpoint =
         (currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians())
@@ -120,6 +129,20 @@ public class AutoAlignCommand extends Command {
   }
 
   public static Command alignSequence(
+      Drive drive,
+      Distance xTolerance,
+      Distance yTolerance,
+      Rotation2d angularTolerance,
+      Pose2d... poses) {
+    return sequence(
+        Arrays.stream(poses)
+            .map(
+                (Pose2d pose) ->
+                    new AutoAlignCommand(pose, drive, xTolerance, yTolerance, angularTolerance))
+            .toArray(AutoAlignCommand[]::new));
+  }
+
+  public static Command alignSequence(
       Drive drive, Distance linearTolerance, Rotation2d angularTolerance, Pose2d... poses) {
     return sequence(
         Arrays.stream(poses)
@@ -132,6 +155,16 @@ public class AutoAlignCommand extends Command {
   /** Wrapper for `alignSequence` that makes it a DeferredCommand. */
   public static Command alignSequenceDeferred(Drive drive, Pose2d... poses) {
     return defer(() -> alignSequence(drive, poses), Set.of(drive));
+  }
+
+  public static Command alignSequenceDeferred(
+      Drive drive,
+      Distance xTolerance,
+      Distance yTolerance,
+      Rotation2d angularTolerance,
+      Pose2d... poses) {
+    return defer(
+        () -> alignSequence(drive, xTolerance, yTolerance, angularTolerance, poses), Set.of(drive));
   }
 
   public static Command alignSequenceDeferred(
