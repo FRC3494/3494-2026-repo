@@ -9,6 +9,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 
 import choreo.trajectory.SwerveSample;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -205,6 +206,32 @@ public class Drive extends SubsystemBase {
         "Turn PID",
         () -> new double[] {turnKp, turnKi, turnKd},
         (double[] values) -> setTurnPID(values[0], values[1], values[2]));
+
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/XTolerance (ft)",
+        () -> trenchXTolerance.in(Feet),
+        (double value) -> trenchXTolerance = Feet.of(value));
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/YTolerance (ft)",
+        () -> trenchYTolerance.in(Feet),
+        (double value) -> trenchYTolerance = Feet.of(value));
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/AngularTolerance (deg)",
+        () -> trenchAngularTolerance.getDegrees(),
+        (double value) -> trenchAngularTolerance = Rotation2d.fromDegrees(value));
+
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/OppositeTrenchOffset (ft)",
+        () -> closerToOppositeTrenchLine.minus(fieldLength.div(2.0)).in(Feet),
+        (double value) -> closerToOppositeTrenchLine = fieldLength.div(2.0).plus(Feet.of(value)));
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/PreTrenchOffset (ft)",
+        () -> preTrenchOffset.in(Feet),
+        (double value) -> preTrenchOffset = Feet.of(value));
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/PostTrenchOffset (ft)",
+        () -> postTrenchOffset.in(Feet),
+        (double value) -> postTrenchOffset = Feet.of(value));
   }
 
   private void logSendableValues() {
@@ -233,6 +260,15 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/TurnPID/kP", turnKp);
     Logger.recordOutput("Drive/TurnPID/kI", turnKi);
     Logger.recordOutput("Drive/TurnPID/kD", turnKd);
+
+    Logger.recordOutput("Drive/AutoAlign/Trench/XTolerance", trenchXTolerance);
+    Logger.recordOutput("Drive/AutoAlign/Trench/YTolerance", trenchYTolerance);
+    Logger.recordOutput("Drive/AutoAlign/Trench/AngularTolerance", trenchAngularTolerance);
+
+    Logger.recordOutput(
+        "Drive/AutoAlign/Trench/CloserToOppositeTrenchLine", closerToOppositeTrenchLine);
+    Logger.recordOutput("Drive/AutoAlign/Trench/PreTrenchOffset", preTrenchOffset);
+    Logger.recordOutput("Drive/AutoAlign/Trench/PostTrenchOffset", postTrenchOffset);
   }
 
   // @codescene (disable: "Bumpy Road Ahead", disable: "Complex Method")
