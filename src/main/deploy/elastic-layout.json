@@ -754,7 +754,403 @@
       }
     },
     {
-      "name": "Tuning (Intake/Climb)",
+      "name": "Tuning (LERP Math/Climber)",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "AimShooterMathLinear",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 260.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "AZ Distance Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Distance Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ Distance Trim Default (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Distance Trim Default (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Distance Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Distance Trim Default (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim Default (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Turret Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/Turret Trim",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "AimShooterMathLinear",
+            "x": 260.0,
+            "y": 0.0,
+            "width": 260.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "AZ Flywheel Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Flywheel Trim",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ Hood Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Hood Trim",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ TOF Adjustment",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ TOF Adjustment",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ X Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ X Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "AZ Y Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Y Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Flywheel Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Flywheel Trim",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Hood Trim",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Hood Trim",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ TOF Adjustment",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ TOF Adjustment",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ X Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ X Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "NZ Y Trim (in)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Y Trim (in)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Robot Yaw kV",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/AimShooterMathLinear/Robot Yaw kV",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Climber",
+            "x": 560.0,
+            "y": 0.0,
+            "width": 260.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Climb Position Factor",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Climb Position Factor",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Down Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Down Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Normal Current Limit",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Normal Current Limit",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Ramp Rate (ms)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Ramp Rate (ms)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Tolerance",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Tolerance",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Up Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Up Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "title": "Scheduler",
+            "x": 980.0,
+            "y": 0.0,
+            "width": 280.0,
+            "height": 360.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Scheduler",
+              "period": 0.06
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tuning (Intake)",
       "grid_layout": {
         "layouts": [
           {
@@ -1005,138 +1401,13 @@
                 }
               }
             ]
-          },
-          {
-            "title": "Climber",
-            "x": 920.0,
-            "y": 0.0,
-            "width": 200.0,
-            "height": 360.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Climb Position Factor",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/Climb Position Factor",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Down Position",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/Down Position",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Normal Current Limit",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/Normal Current Limit",
-                  "period": 0.06,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "PID",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/PID",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Ramp Rate (ms)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/Ramp Rate (ms)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "SVA",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/SVA",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Tolerance",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/Tolerance",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Up Position",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Climber/Up Position",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              }
-            ]
           }
         ],
         "containers": []
       }
     },
     {
-      "name": "Tuning (Drive/LERP Math)",
+      "name": "Tuning (Drive/Auto Align)",
       "grid_layout": {
         "layouts": [
           {
@@ -1151,30 +1422,58 @@
             },
             "children": [
               {
-                "title": "Auto Angular PID",
+                "title": "Max Drive Speed (FtPerSec)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive/Auto Angular PID",
+                  "topic": "/SmartDashboard/Drive/Max Drive Speed (FtPerSec)",
                   "period": 0.06,
-                  "data_type": "double[]",
+                  "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "Auto Linear PID",
+                "title": "Max Angular Speed (DegPerSec)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Drive/Auto Linear PID",
+                  "topic": "/SmartDashboard/Drive/Max Angular Speed (DegPerSec)",
                   "period": 0.06,
-                  "data_type": "double[]",
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max Shooting Drive Speed (FtPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max Shooting Drive Speed (FtPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max Shooting Angular Speed (DegPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max Shooting Angular Speed (DegPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
                   "show_submit_button": true
                 }
               },
@@ -1219,12 +1518,40 @@
                   "data_type": "double[]",
                   "show_submit_button": true
                 }
+              },
+              {
+                "title": "Auto Linear PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Auto Linear PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Auto Angular PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Auto Angular PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
               }
             ]
           },
           {
-            "title": "AimShooterMathLinear",
-            "x": 400.0,
+            "title": "AutoAlign",
+            "x": 380.0,
             "y": 0.0,
             "width": 240.0,
             "height": 360.0,
@@ -1234,70 +1561,28 @@
             },
             "children": [
               {
-                "title": "AZ Distance Trim (in)",
+                "title": "AngularTolerance (deg)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Distance Trim (in)",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/AngularTolerance (deg)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "AZ Distance Trim Default (in)",
+                "title": "LinearTolerance (in)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Distance Trim Default (in)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "NZ Distance Trim (in)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim (in)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "NZ Distance Trim Default (in)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Distance Trim Default (in)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Turret Trim",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/Turret Trim",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/LinearTolerance (in)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
@@ -1306,10 +1591,10 @@
             ]
           },
           {
-            "title": "AimShooterMathLinear",
-            "x": 640.0,
+            "title": "Trench",
+            "x": 620.0,
             "y": 0.0,
-            "width": 240.0,
+            "width": 260.0,
             "height": 360.0,
             "type": "List Layout",
             "properties": {
@@ -1317,154 +1602,84 @@
             },
             "children": [
               {
-                "title": "AZ Flywheel Trim",
+                "title": "AngularTolerance (deg)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Flywheel Trim",
-                  "period": 0.06,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "AZ Hood Trim",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Hood Trim",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/Trench/AngularTolerance (deg)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "AZ TOF Adjustment",
+                "title": "OppositeTrenchOffset (ft)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ TOF Adjustment",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/Trench/OppositeTrenchOffset (ft)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "AZ X Trim (in)",
+                "title": "PostTrenchOffset (ft)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ X Trim (in)",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/Trench/PostTrenchOffset (ft)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "AZ Y Trim (in)",
+                "title": "PreTrenchOffset (ft)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/AZ Y Trim (in)",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/Trench/PreTrenchOffset (ft)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "NZ Flywheel Trim",
+                "title": "XTolerance (ft)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Flywheel Trim",
-                  "period": 0.06,
-                  "data_type": "int",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "NZ Hood Trim",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Hood Trim",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/Trench/XTolerance (ft)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
                 }
               },
               {
-                "title": "NZ TOF Adjustment",
+                "title": "YTolerance (ft)",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ TOF Adjustment",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "NZ X Trim (in)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ X Trim (in)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "NZ Y Trim (in)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/NZ Y Trim (in)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Robot Yaw kV",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/AimShooterMathLinear/Robot Yaw kV",
+                  "topic": "/SmartDashboard/Drive/AutoAlign/Trench/YTolerance (ft)",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
@@ -1473,7 +1688,20 @@
             ]
           }
         ],
-        "containers": []
+        "containers": [
+          {
+            "title": "Scheduler",
+            "x": 980.0,
+            "y": 0.0,
+            "width": 280.0,
+            "height": 360.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Scheduler",
+              "period": 0.06
+            }
+          }
+        ]
       }
     },
     {
