@@ -5,7 +5,6 @@ import static frc.robot.Constants.OIConstants.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -13,6 +12,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -392,10 +392,6 @@ public final class OI {
     private static LoggedNetworkBoolean shiftRumbleEnabledEntry =
         new LoggedNetworkBoolean("Tunable/ShiftRumbleEnabled", shiftRumbleEnabled);
 
-    private static boolean matchTimeIsValid() {
-      return DriverStation.isFMSAttached() || DriverStation.getMatchType() == MatchType.Practice;
-    }
-
     private static Command rumbleOn() {
       return Commands.runOnce(
               () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity))
@@ -433,23 +429,25 @@ public final class OI {
 
     /** True while we are inside the rumble window leading up to any shift. */
     public static Trigger shiftRumbleWindow() {
-      return new Trigger(
-          () -> {
-            if (!shiftRumbleEnabledEntry.get()) return false;
-            if (!matchTimeIsValid()) return false;
+      return RobotModeTriggers.teleop()
+          .and(
+              () -> {
+                double matchTime = DriverStation.getMatchTime();
+                if (matchTime < 0) return false;
 
-            double endOfTeleop = shiftTimeSeconds[shiftTimeSeconds.length - 1];
-            double matchTime = DriverStation.getMatchTime();
-            for (double shiftElapsed : shiftTimeSeconds) {
-              // getMatchTime() counts down; convert each shift's elapsed time to its countdown
-              double shiftCountdown = endOfTeleop - shiftElapsed;
-              if (matchTime <= shiftCountdown + shiftRumbleTimeOffsetSeconds
-                  && matchTime >= shiftCountdown) {
-                return true;
-              }
-            }
-            return false;
-          });
+                if (!shiftRumbleEnabledEntry.get()) return false;
+
+                double endOfTeleop = shiftTimeSeconds[shiftTimeSeconds.length - 1];
+                for (double shiftElapsed : shiftTimeSeconds) {
+                  // getMatchTime() counts down; convert each shift's elapsed time to its countdown
+                  double shiftCountdown = endOfTeleop - shiftElapsed;
+                  if (matchTime <= shiftCountdown + shiftRumbleTimeOffsetSeconds
+                      && matchTime >= shiftCountdown) {
+                    return true;
+                  }
+                }
+                return false;
+              });
     }
   }
   // #endregion
