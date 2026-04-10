@@ -208,6 +208,15 @@ public class Drive extends SubsystemBase {
         (double[] values) -> setTurnPID(values[0], values[1], values[2]));
 
     builder.addDoubleProperty(
+        "AutoAlign/LinearTolerance (in)",
+        () -> autoAlignLinearTolerance.in(Inches),
+        (double value) -> autoAlignLinearTolerance = Inches.of(value));
+    builder.addDoubleProperty(
+        "AutoAlign/AngularTolerance (deg)",
+        () -> autoAlignAngularTolerance.getDegrees(),
+        (double value) -> autoAlignAngularTolerance = Rotation2d.fromDegrees(value));
+
+    builder.addDoubleProperty(
         "AutoAlign/Trench/XTolerance (ft)",
         () -> trenchXTolerance.in(Feet),
         (double value) -> trenchXTolerance = Feet.of(value));
@@ -260,6 +269,9 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/TurnPID/kP", turnKp);
     Logger.recordOutput("Drive/TurnPID/kI", turnKi);
     Logger.recordOutput("Drive/TurnPID/kD", turnKd);
+
+    Logger.recordOutput("Drive/AutoAlign/LinearTolerance", autoAlignLinearTolerance);
+    Logger.recordOutput("Drive/AutoAlign/AngularTolerance", autoAlignAngularTolerance);
 
     Logger.recordOutput("Drive/AutoAlign/Trench/XTolerance", trenchXTolerance);
     Logger.recordOutput("Drive/AutoAlign/Trench/YTolerance", trenchYTolerance);
