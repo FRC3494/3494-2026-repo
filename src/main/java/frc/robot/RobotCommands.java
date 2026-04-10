@@ -25,8 +25,6 @@ import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
-import frc.robot.util.QuadranglesUtil;
-import frc.robot.util.choreo.ChoreoVars;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -353,7 +351,10 @@ public class RobotCommands {
   }
 
   public Command startKickerWithTrenchSafety() {
-    return either(stopKicker(), startKicker(), this::isUnderTrench)
+    return either(
+            stopKicker(),
+            startKicker(),
+            () -> hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("StartKickerWithTrenchSafety");
   }
 
@@ -527,33 +528,39 @@ public class RobotCommands {
   // #region SHOOTER
 
   public Command shoot() {
-    return sequence(
-            startHood(),
-            startFlywheel(),
-            startIntakeForShoot(),
-            startSpindexer(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-            waitUntil(turret::withinShootingTolerance),
-            parallel(
-                autoFlywheelCommand(),
-                autoHoodCommandWithTrenchSafety(),
-                runIntakeJostle(),
-                runSpindexerAndKicker(() -> spindexerSpeed)))
+    return either(
+            sequence(
+                startHood(),
+                startFlywheel(),
+                startIntakeForShoot(),
+                startSpindexer(),
+                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+                waitUntil(turret::withinShootingTolerance),
+                parallel(
+                    autoFlywheelCommand(),
+                    autoHoodCommandWithTrenchSafety(),
+                    runIntakeJostle(),
+                    runSpindexerAndKicker(() -> spindexerSpeed))),
+            none(),
+            () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("Shoot");
   }
 
   public Command shootWithoutIntakeJostle() {
-    return sequence(
-            startHood(),
-            startFlywheel(),
-            startIntakeForShoot(),
-            startSpindexer(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-            waitUntil(turret::withinShootingTolerance),
-            parallel(
-                autoFlywheelCommand(),
-                autoHoodCommandWithTrenchSafety(),
-                runSpindexerAndKicker(() -> spindexerSpeed)))
+    return either(
+            sequence(
+                startHood(),
+                startFlywheel(),
+                startIntakeForShoot(),
+                startSpindexer(),
+                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+                waitUntil(turret::withinShootingTolerance),
+                parallel(
+                    autoFlywheelCommand(),
+                    autoHoodCommandWithTrenchSafety(),
+                    runSpindexerAndKicker(() -> spindexerSpeed))),
+            none(),
+            () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWoIntakeJostle");
   }
 
@@ -819,7 +826,7 @@ public class RobotCommands {
   public Command autoHoodCommandWithTrenchSafety() {
     return run(
             () -> {
-              if (isUnderTrench()) {
+              if (hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())) {
                 hood.setShooting(false);
               }
               hood.setPosition(shooterAimModel.getHoodAngle());
@@ -1002,17 +1009,4 @@ public class RobotCommands {
   }
 
   // #endregion
-
-  // #region UTIL
-
-  public boolean isUnderTrench() {
-    double robotBlueX =
-        QuadranglesUtil.toAllianceTranslation(drive.getPose().getTranslation()).getX();
-    double hubX = ChoreoVars.Poses.Hub.getX();
-    double speedX = drive.getChassisSpeeds().vxMetersPerSecond;
-    double dynamicBuffer = trenchSafetyBufferMeters + speedX * trenchSafetyLookaheadSeconds;
-    return Math.abs(robotBlueX - hubX) < dynamicBuffer;
-  }
-  // #endregion
-
 }

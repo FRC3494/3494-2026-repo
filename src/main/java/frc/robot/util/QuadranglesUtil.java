@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -54,11 +55,27 @@ public final class QuadranglesUtil {
     }
   }
 
+  public static double toAllianceXMeters(double blueXMeters) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return blueXMeters;
+    } else {
+      return fieldLength.in(Meters) - blueXMeters;
+    }
+  }
+
   public static Distance toAllianceY(Distance blueY) {
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
       return blueY;
     } else {
       return fieldWidth.minus(blueY);
+    }
+  }
+
+  public static double toAllianceYMeters(double blueYMeters) {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+      return blueYMeters;
+    } else {
+      return fieldWidth.in(Meters) - blueYMeters;
     }
   }
 

@@ -652,8 +652,8 @@ public final class Constants {
 
       public static final double hoodRezeroTimeoutSeconds = 10.0;
 
-      public static final double trenchSafetyBufferMeters = 0.5;
-      public static final double trenchSafetyLookaheadSeconds = 0.5;
+      public static double trenchSafetyBufferMeters = 0.5;
+      public static double trenchSafetyLookaheadSeconds = 0.5;
     }
     // #endregion
 
