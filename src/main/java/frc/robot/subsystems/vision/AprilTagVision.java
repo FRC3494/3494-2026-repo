@@ -43,7 +43,7 @@ public class AprilTagVision extends SubsystemBase {
       camera.setRobotYaw(drive.getRotation());
       camera.setRobotYawVelocity(RadiansPerSecond.of(drive.getYawVelocityRadPerSec()));
 
-      camera.periodic();
+      camera.update();
 
       int limelightsBeingUsed = 0;
       if (camera.isValidMeasurement()) {

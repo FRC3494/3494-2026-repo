@@ -77,7 +77,7 @@ public class AprilTagCamera {
   }
 
   // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
-  public void periodic() {
+  public void update() {
     // Determine whether Limelight is connected
     double newHeartbeat = LimelightHelpers.getHeartbeat(name);
     Logger.recordOutput(
