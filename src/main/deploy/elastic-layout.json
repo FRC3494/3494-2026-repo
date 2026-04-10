@@ -35,9 +35,9 @@
           },
           {
             "title": "Turret Position",
-            "x": 620.0,
-            "y": 60.0,
-            "width": 160.0,
+            "x": 520.0,
+            "y": 120.0,
+            "width": 260.0,
             "height": 120.0,
             "type": "Large Text Display",
             "properties": {
@@ -49,7 +49,7 @@
           {
             "title": "RezeroTurret",
             "x": 520.0,
-            "y": 180.0,
+            "y": 240.0,
             "width": 260.0,
             "height": 120.0,
             "type": "Command",
@@ -135,6 +135,22 @@
               "robot_color": 4294198070,
               "trajectory_color": 4294967295,
               "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "MatchTime",
+            "x": 620.0,
+            "y": 0.0,
+            "width": 160.0,
+            "height": 120.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/AdvantageKit/DriverStation/MatchTime",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 20,
+              "yellow_start_time": 30
             }
           }
         ]
