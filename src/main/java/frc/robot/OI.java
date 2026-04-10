@@ -4,6 +4,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -15,11 +17,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
-public final class OI {
+public final class OI implements Sendable {
   private static EventLoop eventLoop = new EventLoop();
   private static CommandXboxController primaryController =
       new CommandXboxController(primaryControllerPort);
@@ -27,6 +31,47 @@ public final class OI {
   private static Joystick rightButtonBoard = new Joystick(rightButtonBoardPort);
 
   private static WonAutoState wonAutoState = WonAutoState.Unknown;
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addIntegerArrayProperty(
+        "Rumble End Times",
+        () -> ((long[]) shiftRumbleTimesSeconds),
+        (long[] value) ->
+            shiftRumbleTimesSeconds =
+                Arrays.stream(value)
+                    .boxed()
+                    .sorted(Collections.reverseOrder())
+                    .mapToLong(Long::longValue)
+                    .toArray());
+
+    builder.addBooleanProperty(
+        "Rumble Enabled", () -> shiftRumbleEnabled, (boolean value) -> shiftRumbleEnabled = value);
+    builder.addDoubleProperty(
+        "Rumble Intensity",
+        () -> shiftRumbleIntensity,
+        (double value) -> shiftRumbleIntensity = value);
+    builder.addDoubleProperty(
+        "Rumble Offset",
+        () -> shiftRumbleOffsetSeconds,
+        (double value) -> shiftRumbleOffsetSeconds = value);
+    builder.addDoubleProperty(
+        "Rumble Continuous Time",
+        () -> shiftRumbleContinuousSeconds,
+        (double value) -> shiftRumbleContinuousSeconds = value);
+    builder.addDoubleProperty(
+        "Rumble Pulse On Time",
+        () -> shiftRumblePulseOnSeconds,
+        (double value) -> shiftRumblePulseOnSeconds = value);
+    builder.addDoubleProperty(
+        "Rumble Pulse Off Time",
+        () -> shiftRumblePulseOffSeconds,
+        (double value) -> shiftRumblePulseOffSeconds = value);
+    builder.addIntegerProperty(
+        "Rumble Pulse Count",
+        () -> shiftRumblePulseCount,
+        (long value) -> shiftRumblePulseCount = ((int) value));
+  }
 
   public static void update() {
     eventLoop.poll();
@@ -60,10 +105,10 @@ public final class OI {
     Color indicatorColor = Color.kBlack;
     switch (state) {
       case Won:
-        indicatorColor = Color.kGreen;
+        indicatorColor = Color.kCyan;
         break;
       case Lost:
-        indicatorColor = Color.kRed;
+        indicatorColor = Color.kMagenta;
         break;
       case Unknown:
         break;
@@ -390,9 +435,6 @@ public final class OI {
 
   // #region RUMBLE
   public static final class RumbleOI {
-    private static LoggedNetworkBoolean shiftRumbleEnabledEntry =
-        new LoggedNetworkBoolean("Tunable/ShiftRumbleEnabled", shiftRumbleEnabled);
-
     private static Command rumbleOn() {
       return Commands.runOnce(
               () -> {
@@ -415,26 +457,34 @@ public final class OI {
 
     public static Command shiftRumbleSequence() {
       Command pulses =
-          sequence(
-                  rumbleOn(),
-                  Commands.waitSeconds(shiftRumblePulseOnSeconds),
-                  rumbleOff(),
-                  Commands.waitSeconds(shiftRumblePulseOffSeconds))
-              .repeatedly()
-              .withTimeout(
-                  shiftRumblePulseCount * (shiftRumblePulseOnSeconds + shiftRumblePulseOffSeconds))
+          defer(
+                  () ->
+                      sequence(
+                              rumbleOn(),
+                              Commands.waitSeconds(shiftRumblePulseOnSeconds),
+                              rumbleOff(),
+                              Commands.waitSeconds(shiftRumblePulseOffSeconds))
+                          .repeatedly()
+                          .withTimeout(
+                              shiftRumblePulseCount
+                                  * (shiftRumblePulseOnSeconds + shiftRumblePulseOffSeconds)),
+                  Set.of())
               .withName("ControllerRumblePulses");
 
       Command continuous =
-          startEnd(
-                  () -> primaryController.setRumble(RumbleType.kBothRumble, shiftRumbleIntensity),
-                  () -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
-              .withTimeout(shiftRumbleContinuousSeconds)
+          defer(
+                  () ->
+                      sequence(rumbleOn(), waitSeconds(shiftRumbleContinuousSeconds), rumbleOff()),
+                  Set.of())
               .withName("ControllerRumbleContinuous");
 
       return Commands.sequence(pulses, continuous)
-          .finallyDo(() -> primaryController.setRumble(RumbleType.kBothRumble, 0.0))
-          .ignoringDisable(false)
+          .finallyDo(
+              () -> {
+                primaryController.setRumble(RumbleType.kBothRumble, 0.0);
+                Logger.recordOutput("OI/ControllerRumble", false);
+              })
+          .ignoringDisable(true)
           .withName("ControllerRumble");
     }
 
@@ -446,12 +496,12 @@ public final class OI {
                 double matchTime = DriverStation.getMatchTime();
                 if (matchTime <= 0) return false;
 
-                if (!shiftRumbleEnabledEntry.get()) return false;
+                if (!shiftRumbleEnabled) return false;
 
                 for (double shiftTime : shiftRumbleTimesSeconds) {
                   if (matchTime
                       > shiftTime
-                          + shiftRumbleTimeOffsetSeconds
+                          + shiftRumbleOffsetSeconds
                           + shiftRumbleContinuousSeconds
                           + shiftRumblePulseCount
                               * (shiftRumblePulseOnSeconds + shiftRumblePulseOffSeconds)) {

@@ -9,7 +9,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 
 import choreo.auto.AutoChooser;
@@ -73,6 +72,8 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  public final OI oi;
+
   // Subsystems
   private final Drive drive;
   private final AprilTagVision aprilTagVision;
@@ -96,6 +97,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    oi = new OI();
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations

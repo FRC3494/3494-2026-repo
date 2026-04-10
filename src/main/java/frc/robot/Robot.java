@@ -94,6 +94,7 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
+    SmartDashboard.putData("OI", robotContainer.oi);
     OI.setWonAutoState(WonAutoState.Unknown);
   }
 

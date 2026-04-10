@@ -185,9 +185,9 @@ public final class Constants {
 
     // ! Timestamps when the controller STOPS rumbling.
     // (At the shift changes, and in endgame)
-    public static final double[] shiftRumbleTimesSeconds =
+    public static long[] shiftRumbleTimesSeconds =
         Arrays.stream(
-                new double[] {
+                new long[] {
                   130, // 2:10
                   105, // 1:45
                   80, // 1:20
@@ -198,18 +198,18 @@ public final class Constants {
             // ! MUST be descending order for OI.shiftRumbleWindow() to work
             .boxed()
             .sorted(Collections.reverseOrder())
-            .mapToDouble(Double::doubleValue)
+            .mapToLong(Long::longValue)
             .toArray();
 
-    public static final boolean shiftRumbleEnabled = true;
-    public static final double shiftRumbleIntensity = 0.50;
+    public static boolean shiftRumbleEnabled = true;
+    public static double shiftRumbleIntensity = 0.50;
     // Since match time FLOORS instead of ROUNDS, offset by 1s to make rumble seem like it starts at
     // the right time
-    public static final double shiftRumbleTimeOffsetSeconds = 1.0;
-    public static final double shiftRumbleContinuousSeconds = 2.0;
-    public static final double shiftRumblePulseOnSeconds = 0.25;
-    public static final double shiftRumblePulseOffSeconds = 0.75;
-    public static final int shiftRumblePulseCount = 3;
+    public static double shiftRumbleOffsetSeconds = 1.0;
+    public static double shiftRumbleContinuousSeconds = 2.0;
+    public static double shiftRumblePulseOnSeconds = 0.25;
+    public static double shiftRumblePulseOffSeconds = 0.75;
+    public static int shiftRumblePulseCount = 3;
   }
   // #endregion
 

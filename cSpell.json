@@ -143,6 +143,7 @@
     "rspitch",
     "rsroll",
     "rsyaw",
+    "Sendables",
     "setlocal",
     "shellness",
     "simgui",
