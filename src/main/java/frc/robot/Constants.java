@@ -164,6 +164,7 @@ public final class Constants {
 
     public static final double controllerStickDeadband = 0.05;
     public static final double controllerTriggerDeadband = 0.25;
+    public static final double buttonBoardStickDeadband = 0.05;
 
     // SHIFT 0 10 Seconds 2:20 – 2:10
     // SHIFT 1 25 Seconds 2:10 - 1:45

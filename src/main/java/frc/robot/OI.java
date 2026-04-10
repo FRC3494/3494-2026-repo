@@ -145,12 +145,18 @@ public final class OI implements Sendable {
     }
 
     public static Trigger climberManualUp() {
-      return primaryController.povUp();
+      // Right button board joystick UP
+      return rightButtonBoard
+          .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
+          .castTo(Trigger::new);
       // return new Trigger(() -> false);
     }
 
     public static Trigger climberManualDown() {
-      return primaryController.povDown();
+      // Right button board joystick DOWN
+      return rightButtonBoard
+          .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
+          .castTo(Trigger::new);
       // return new Trigger(() -> false);
     }
   }
@@ -235,14 +241,18 @@ public final class OI implements Sendable {
       return primaryController.b(eventLoop);
     }
 
-    // L3 (push in on left stick)
     public static Trigger raiseIntake() {
-      return primaryController.button(9, eventLoop);
+      // Right button board joystick LEFT
+      return rightButtonBoard
+          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
     }
 
-    // R3 (push in on right stick)
     public static Trigger lowerIntake() {
-      return primaryController.button(10, eventLoop);
+      // Right button board joystick RIGHT
+      return rightButtonBoard
+          .axisLessThan(0, -controllerStickDeadband, eventLoop)
+          .castTo(Trigger::new);
     }
   }
   // #endregion
@@ -297,14 +307,16 @@ public final class OI implements Sendable {
     }
 
     public static Trigger increaseDistanceTrim() {
+      // Left button board joystick UP
       return leftButtonBoard
-          .axisLessThan(1, -controllerStickDeadband, eventLoop)
+          .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
 
     public static Trigger decreaseDistanceTrim() {
+      // Left button board joystick DOWN
       return leftButtonBoard
-          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
+          .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
 
@@ -313,31 +325,41 @@ public final class OI implements Sendable {
     }
 
     public static Trigger trimRight() {
-      return rightButtonBoard
-          .axisLessThan(0, -controllerStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // // Right button board joystick RIGHT
+      // return rightButtonBoard
+      //     .axisLessThan(0, -buttonBoardStickDeadband, eventLoop)
+      //     .castTo(Trigger::new);
     }
 
     public static Trigger trimLeft() {
-      return rightButtonBoard
-          .axisGreaterThan(0, controllerStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // // Right button board joystick LEFT
+      // return rightButtonBoard
+      //     .axisGreaterThan(0, buttonBoardStickDeadband, eventLoop)
+      //     .castTo(Trigger::new);
     }
 
     public static Trigger trimForward() {
-      return rightButtonBoard
-          .axisGreaterThan(1, controllerStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // // Right button board joystick UP
+      // return rightButtonBoard
+      //     .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
+      //     .castTo(Trigger::new);
     }
 
     public static Trigger trimBack() {
-      return rightButtonBoard
-          .axisLessThan(1, -controllerStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // // Right button board joystick DOWN
+      // return rightButtonBoard
+      //     .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
+      //     .castTo(Trigger::new);
     }
 
+    // TODO: assign this button
     public static Trigger resetXYTrim() {
-      return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+      return new Trigger(() -> false);
+      // return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
     }
 
     // #region FLYWHEEL
@@ -411,14 +433,16 @@ public final class OI implements Sendable {
       }
 
       public static Trigger increaseTurretTrim() {
+        // Left button board joystick LEFT
         return leftButtonBoard
-            .axisLessThan(0, -controllerStickDeadband, eventLoop)
+            .axisLessThan(0, -buttonBoardStickDeadband, eventLoop)
             .castTo(Trigger::new);
       }
 
       public static Trigger decreaseTurretTrim() {
+        // Left button board joystick RIGHT
         return leftButtonBoard
-            .axisGreaterThan(0, controllerStickDeadband, eventLoop)
+            .axisGreaterThan(0, buttonBoardStickDeadband, eventLoop)
             .castTo(Trigger::new);
       }
 
