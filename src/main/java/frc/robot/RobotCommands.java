@@ -306,6 +306,15 @@ public class RobotCommands {
         .withName("StartSpindexer");
   }
 
+  public Command startSpindexerWithSpeed(Supplier<AngularVelocity> speed) {
+    return runOnce(
+            () -> {
+              hopper.setSpindexerVelocity(speed.get().times(spindexerInverted ? -1 : 1));
+            },
+            hopper)
+        .withName("StartSpindexerWithSpeed");
+  }
+
   public Command startSpindexerReverse() {
     return runOnce(
             () -> {
@@ -383,7 +392,7 @@ public class RobotCommands {
 
   public Command runSpindexerWithStallDetection(Supplier<AngularVelocity> velocity) {
     return repeatingSequence(
-            startSpindexer(),
+            startSpindexerWithSpeed(velocity),
             waitUntil(
                 () ->
                     hopper
@@ -397,7 +406,7 @@ public class RobotCommands {
         .withName("RunSpindexerWithStallDetection");
   }
 
-  public Command runSpindexerAndKicker(Supplier<AngularVelocity> velocity) {
+  public Command runSpindexerAndKicker() {
     return sequence(
             startSpindexer(),
             startKickerWithTrenchSafety(),
@@ -408,11 +417,16 @@ public class RobotCommands {
                             || hopper
                                 .getSpindexerFilteredCurrent()
                                 .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))
-                            || !turret.withinShootingTolerance()),
+                            || !turret.withinShootingTolerance()
+                            || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
                 either(
                     sequence(
                         stopKicker(),
-                        waitUntil(turret::withinShootingTolerance),
+                        waitUntil(
+                            () ->
+                                turret.withinShootingTolerance()
+                                    && !hood.isUnderTrench(
+                                        drive.getPose(), drive.getChassisSpeeds())),
                         startKickerWithTrenchSafety()),
                     sequence(
                         invertSpindexer(),
@@ -420,7 +434,9 @@ public class RobotCommands {
                         stopKicker(),
                         waitSeconds(0.1),
                         startKickerWithTrenchSafety()),
-                    () -> !turret.withinShootingTolerance())))
+                    () ->
+                        !turret.withinShootingTolerance()
+                            || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))))
         .finallyDo(
             () -> {
               spindexerInverted = false;
@@ -540,7 +556,7 @@ public class RobotCommands {
                     autoFlywheelCommand(),
                     autoHoodCommandWithTrenchSafety(),
                     runIntakeJostle(),
-                    runSpindexerAndKicker(() -> spindexerSpeed))),
+                    runSpindexerAndKicker())),
             none(),
             () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("Shoot");
@@ -555,7 +571,7 @@ public class RobotCommands {
                 startSpindexer(),
                 waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
                 waitUntil(turret::withinShootingTolerance),
-                parallel(runIntakeJostle(), runSpindexerAndKicker(() -> spindexerSpeed))),
+                parallel(runIntakeJostle(), runSpindexerAndKicker())),
             none(),
             () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWithManualSettings");
@@ -573,7 +589,7 @@ public class RobotCommands {
                 parallel(
                     autoFlywheelCommand(),
                     autoHoodCommandWithTrenchSafety(),
-                    runSpindexerAndKicker(() -> spindexerSpeed))),
+                    runSpindexerAndKicker())),
             none(),
             () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWoIntakeJostle");
