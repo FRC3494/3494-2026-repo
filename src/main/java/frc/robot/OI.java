@@ -123,6 +123,10 @@ public final class OI implements Sendable {
   }
 
   // #region WHOLE ROBOT
+
+  // ! Controls diagram:
+  // https://docs.google.com/presentation/d/1mfv_crlgL2eGVPxGNyDs3AgyXwphpArrcRNlA2G3lDw/edit?usp=sharing
+
   // #endregion
 
   // #region CLIMBER
@@ -185,7 +189,7 @@ public final class OI implements Sendable {
     }
 
     public static Trigger stopWithX() {
-      return primaryController.povLeft();
+      return primaryController.a(eventLoop);
     }
 
     public static Trigger autoAlignClimb() {
@@ -201,7 +205,7 @@ public final class OI implements Sendable {
   // #region HOPPER
   public static final class HopperOI {
     public static Trigger spindexerBackwards() {
-      return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+      return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
     }
 
     public static Trigger runKicker() {
@@ -225,20 +229,16 @@ public final class OI implements Sendable {
     public static Trigger intake() {
       return primaryController
           .rightTrigger(controllerTriggerDeadband, eventLoop)
-          .or(rightButtonBoard.button(10, eventLoop));
+          .or(rightButtonBoard.button(9, eventLoop));
     }
 
-    public static Trigger outtake() {
-      return primaryController.x(eventLoop).or(rightButtonBoard.button(3, eventLoop));
+    public static Trigger intakeReverse() {
+      return primaryController.x(eventLoop).or(rightButtonBoard.button(10, eventLoop));
     }
 
     public static Trigger toggleIntake() {
       return new Trigger(() -> false);
       // return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
-    }
-
-    public static Trigger jostleIntake() {
-      return primaryController.b(eventLoop);
     }
 
     public static Trigger raiseIntake() {
@@ -356,7 +356,6 @@ public final class OI implements Sendable {
       //     .castTo(Trigger::new);
     }
 
-    // TODO: assign this button
     public static Trigger resetXYTrim() {
       return new Trigger(() -> false);
       // return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
@@ -425,7 +424,7 @@ public final class OI implements Sendable {
 
       public static Trigger enableAutoTurret() {
         // return new Trigger(() -> false);
-        return rightButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+        return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger resetTurretTrim() {
@@ -447,7 +446,7 @@ public final class OI implements Sendable {
       }
 
       public static Trigger lockTurret() {
-        return leftButtonBoard.button(6, eventLoop).castTo(Trigger::new);
+        return leftButtonBoard.button(5, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger rezeroTurret() {

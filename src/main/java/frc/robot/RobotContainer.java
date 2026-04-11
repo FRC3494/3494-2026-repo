@@ -535,7 +535,7 @@ public class RobotContainer {
                     robotCommands.spinDownFromIntake(),
                     ShooterOI.shoot()::getAsBoolean)
                 .withName("IntakeButtonRelease"));
-    IntakeOI.outtake()
+    IntakeOI.intakeReverse()
         .onTrue(robotCommands.startIntakeReverse())
         .onFalse(robotCommands.stopIntake());
 
