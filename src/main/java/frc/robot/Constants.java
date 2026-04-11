@@ -254,7 +254,7 @@ public final class Constants {
     public static double maxShootingSpeedMetersPerSec = Units.feetToMeters(4.0);
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
     public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 72);
-    public static double maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(45);
+    public static double maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(110);
     public static final double demoModeSpeedFactor = 0.15;
 
     public static final double odometryFrequency = 100.0; // Hz
