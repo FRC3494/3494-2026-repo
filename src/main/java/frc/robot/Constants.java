@@ -433,7 +433,7 @@ public final class Constants {
 
     public static final int spindexerCurrentSensingFilterSize = 10;
 
-    public static AngularVelocity spindexerSpeed = RPM.of(80);
+    public static AngularVelocity spindexerSpeed = RPM.of(90);
     public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
 
     public static double spindexerKp = 3.0357E-05;
