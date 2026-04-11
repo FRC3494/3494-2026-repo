@@ -311,12 +311,12 @@ public final class Constants {
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
-    public static final int[] turnMotorCurrentLimit = new int[] {40, 40, 35, 35};
+    public static final int[] turnMotorCurrentLimit = new int[] {40, 40, 40, 40};
     public static final Time turnRampRate = Milliseconds.of(10);
     public static final double[] turnMotorReduction =
         new double[] {
-          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
-          ((150.0 / 7.0) / (2.0 * Math.PI)), // Mk4i // 21.4285714285714
+          ((18.75) / (2.0 * Math.PI)), // Mk4i w/ 16t adapter
+          ((18.75) / (2.0 * Math.PI)), // Mk4i w/ 16t adapter
           ((18.75) / (2.0 * Math.PI)), // Mk4n
           ((18.75) / (2.0 * Math.PI)) // Mk4n
         };
