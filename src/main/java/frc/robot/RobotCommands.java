@@ -546,6 +546,21 @@ public class RobotCommands {
         .withName("Shoot");
   }
 
+  public Command shootWithManualSettings() {
+    return either(
+            sequence(
+                startHood(),
+                startFlywheel(),
+                startIntakeForShoot(),
+                startSpindexer(),
+                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+                waitUntil(turret::withinShootingTolerance),
+                parallel(runIntakeJostle(), runSpindexerAndKicker(() -> spindexerSpeed))),
+            none(),
+            () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+        .withName("Shoot");
+  }
+
   public Command shootWithoutIntakeJostle() {
     return either(
             sequence(

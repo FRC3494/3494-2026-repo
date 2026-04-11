@@ -577,50 +577,54 @@ public class RobotContainer {
 
     ShooterOI.shootClose()
         .whileTrue(
-            sequence(robotCommands.setCloseShot(false), robotCommands.shoot())
+            sequence(robotCommands.setCloseShot(false), robotCommands.shootWithManualSettings())
                 .withName("ShootClose"))
         .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootCloseWithTrim()
         .whileTrue(
-            sequence(robotCommands.setCloseShot(true), robotCommands.shoot())
+            sequence(robotCommands.setCloseShot(true), robotCommands.shootWithManualSettings())
                 .withName("ShootCloseWithTrim"))
         .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootMedium()
         .whileTrue(
-            sequence(robotCommands.setMediumShot(false), robotCommands.shoot())
+            sequence(robotCommands.setMediumShot(false), robotCommands.shootWithManualSettings())
                 .withName("ShootMedium"))
         .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootMediumWithTrim()
         .whileTrue(
-            sequence(robotCommands.setMediumShot(true), robotCommands.shoot())
+            sequence(robotCommands.setMediumShot(true), robotCommands.shootWithManualSettings())
                 .withName("ShootMediumWithTrim"))
         .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootFar()
         .whileTrue(
-            sequence(robotCommands.setFarShot(false), robotCommands.shoot()).withName("ShootFar"))
+            sequence(robotCommands.setFarShot(false), robotCommands.shootWithManualSettings())
+                .withName("ShootFar"))
         .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootFarWithTrim()
         .whileTrue(
-            sequence(robotCommands.setFarShot(true), robotCommands.shoot())
+            sequence(robotCommands.setFarShot(true), robotCommands.shootWithManualSettings())
                 .withName("ShootFarWithTrim"))
         .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootNeutralZone()
         .whileTrue(
-            sequence(robotCommands.setNeutralZoneShot(false), robotCommands.shoot())
+            sequence(
+                    robotCommands.setNeutralZoneShot(false),
+                    robotCommands.shootWithManualSettings())
                 .withName("ShootNZ"))
         .onFalse(robotCommands.manualShootRelease());
     ShooterOI.shootNeutralZoneWithTrim()
         .whileTrue(
-            sequence(robotCommands.setNeutralZoneShot(true), robotCommands.shoot())
+            sequence(
+                    robotCommands.setNeutralZoneShot(true), robotCommands.shootWithManualSettings())
                 .withName("ShootNZWithTrim"))
         .onFalse(robotCommands.manualShootRelease());
 
     ShooterOI.shootDashboard()
         .whileTrue(
-            sequence(robotCommands.setDashboardShot(), robotCommands.shoot())
+            sequence(robotCommands.setDashboardShot(), robotCommands.shootWithManualSettings())
                 .withName("ShootDashboard"))
         .onFalse(robotCommands.manualShootRelease());
 
