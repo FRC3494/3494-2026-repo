@@ -558,7 +558,7 @@ public class RobotCommands {
                 parallel(runIntakeJostle(), runSpindexerAndKicker(() -> spindexerSpeed))),
             none(),
             () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
-        .withName("Shoot");
+        .withName("ShootWithManualSettings");
   }
 
   public Command shootWithoutIntakeJostle() {
