@@ -407,7 +407,7 @@
         "layouts": [
           {
             "title": "Kicker",
-            "x": 820.0,
+            "x": 880.0,
             "y": 0.0,
             "width": 340.0,
             "height": 360.0,
@@ -464,7 +464,7 @@
             "title": "Flywheel",
             "x": 0.0,
             "y": 0.0,
-            "width": 340.0,
+            "width": 360.0,
             "height": 360.0,
             "type": "List Layout",
             "properties": {
@@ -531,9 +531,9 @@
           },
           {
             "title": "Hood",
-            "x": 340.0,
+            "x": 360.0,
             "y": 0.0,
-            "width": 240.0,
+            "width": 260.0,
             "height": 360.0,
             "type": "List Layout",
             "properties": {
@@ -614,9 +614,9 @@
           },
           {
             "title": "Turret",
-            "x": 580.0,
+            "x": 620.0,
             "y": 0.0,
-            "width": 240.0,
+            "width": 260.0,
             "height": 360.0,
             "type": "List Layout",
             "properties": {
@@ -1413,6 +1413,130 @@
                   "topic": "/SmartDashboard/Intake/UppyDowny/SVA",
                   "period": 0.06,
                   "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "OI",
+            "x": 940.0,
+            "y": 0.0,
+            "width": 320.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Rumble Continuous Time",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Continuous Time",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rumble Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Rumble End Times",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble End Times",
+                  "period": 0.06,
+                  "data_type": "int[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rumble Intensity",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Intensity",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rumble Offset",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Offset",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rumble Pulse Count",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Pulse Count",
+                  "period": 0.06,
+                  "data_type": "int",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rumble Pulse Off Time",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Pulse Off Time",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Rumble Pulse On Time",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/OI/Rumble Pulse On Time",
+                  "period": 0.06,
+                  "data_type": "double",
                   "show_submit_button": true
                 }
               }
