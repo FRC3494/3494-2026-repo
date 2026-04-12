@@ -74,19 +74,11 @@ public class AutoAlignCommand extends Command {
 
     Pose2d currentPose = drive.getPose();
 
-    double xSpeed =
-        !xController.atSetpoint()
-            ? xController.calculate(currentPose.getX(), targetPose.getX())
-            : 0;
-    double ySpeed =
-        !yController.atSetpoint()
-            ? yController.calculate(currentPose.getY(), targetPose.getY())
-            : 0;
+    double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
+    double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
     double omega =
-        !headingController.atSetpoint()
-            ? headingController.calculate(
-                currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians())
-            : 0;
+        headingController.calculate(
+            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
     ChassisSpeeds chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omega, drive.getRotation());
