@@ -436,16 +436,16 @@ public final class Constants {
     public static AngularVelocity spindexerSpeed = RPM.of(90);
     public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
 
-    public static double spindexerKp = 3.0357E-05;
+    public static double spindexerKp = 2.342E-07;
     public static double spindexerKi = 0.0;
     public static double spindexerKd = 0.0;
 
     public static double spindexerIMaxAccum = 1.0;
     public static double spindexerIZone = 50;
 
-    public static double spindexerKs = 0.05342;
-    public static double spindexerKv = 0.064507;
-    public static double spindexerKa = 0.0047122; // 0.28273
+    public static double spindexerKs = 0.086873;
+    public static double spindexerKv = 0.063322;
+    public static double spindexerKa = 0.0028565;
 
     // Kicker constants
     public static final boolean kickerInverted = false;
