@@ -457,13 +457,13 @@ public final class Constants {
     // public static double kickerSpeedFactor = 1.0;
     public static AngularVelocity kickerSpeed = RPM.of(4000);
 
-    public static double kickerKp = 2.8084E-08;
+    public static double kickerKp = 6.9449E-08;
     public static double kickerKi = 0.0;
     public static double kickerKd = 0.0;
 
-    public static double kickerKs = 0.12681;
-    public static double kickerKv = 0.0017874;
-    public static double kickerKa = 0.00010453;
+    public static double kickerKs = 0.11154;
+    public static double kickerKv = 0.0017758;
+    public static double kickerKa = 0.00012735;
   }
   // #endregion
 
