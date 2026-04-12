@@ -178,7 +178,7 @@ public class Hopper extends SubsystemBase {
     logMotorStats("Hopper/Kicker/Motor", kickerMotor, false);
     logSendableValues();
     Logger.recordOutput(
-        "Hopper/SpindexerSpeedRounded", Math.round(spindexerMotor.getEncoder().getVelocity()));
+        "Hopper/SpindexerSpeedRounded", ((int) spindexerMotor.getEncoder().getVelocity()));
 
     spindexerFilteredCurrent =
         Amps.of(spindexerCurrentFilter.calculate(spindexerMotor.getOutputCurrent()));
