@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -24,7 +25,7 @@ import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public final class OI implements Sendable {
-  private static EventLoop eventLoop = new EventLoop();
+  private static EventLoop eventLoop = CommandScheduler.getInstance().getDefaultButtonLoop();
   private static CommandXboxController primaryController =
       new CommandXboxController(primaryControllerPort);
   private static Joystick leftButtonBoard = new Joystick(leftButtonBoardPort);
@@ -74,8 +75,6 @@ public final class OI implements Sendable {
   }
 
   public static void update() {
-    eventLoop.poll();
-
     Logger.recordOutput("OI/JoystickDriveX", DriveOI.joystickDriveX());
     Logger.recordOutput("OI/JoystickDriveY", DriveOI.joystickDriveY());
     Logger.recordOutput("OI/JoystickDriveOmega", DriveOI.joystickDriveOmega());
