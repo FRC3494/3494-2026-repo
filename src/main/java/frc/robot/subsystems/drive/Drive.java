@@ -70,7 +70,6 @@ public class Drive extends SubsystemBase {
   private final Field2d robotField2d = new Field2d();
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
-  // TODO: fix this to fix init yaw?
   private Rotation2d rawGyroRotation = Rotation2d.kZero;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
