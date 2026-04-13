@@ -272,9 +272,9 @@
           },
           {
             "title": "WonAutoIndicator",
-            "x": 780.0,
+            "x": 920.0,
             "y": 0.0,
-            "width": 220.0,
+            "width": 200.0,
             "height": 140.0,
             "type": "Single Color View",
             "properties": {
@@ -306,9 +306,9 @@
           },
           {
             "title": "MatchTime",
-            "x": 1000.0,
+            "x": 1120.0,
             "y": 0.0,
-            "width": 260.0,
+            "width": 140.0,
             "height": 140.0,
             "type": "Match Time",
             "properties": {
@@ -316,8 +316,8 @@
               "period": 0.06,
               "data_type": "double",
               "time_display_mode": "Minutes and Seconds",
-              "red_start_time": 20,
-              "yellow_start_time": 30
+              "red_start_time": 30,
+              "yellow_start_time": 0
             }
           },
           {
@@ -396,6 +396,22 @@
               "wrap_value": true,
               "show_pointer": true,
               "show_ticks": false
+            }
+          },
+          {
+            "title": "ShiftTime",
+            "x": 780.0,
+            "y": 0.0,
+            "width": 140.0,
+            "height": 140.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/OI/ShiftTime",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 0,
+              "yellow_start_time": 30
             }
           }
         ]

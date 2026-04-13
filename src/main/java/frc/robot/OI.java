@@ -95,6 +95,8 @@ public final class OI implements Sendable {
         }
       }
     }
+
+    Logger.recordOutput("OI/ShiftTime", timeLeftInShift());
   }
 
   public static void setWonAutoState(WonAutoState state) {
@@ -113,6 +115,18 @@ public final class OI implements Sendable {
         break;
     }
     Logger.recordOutput("OI/WonAutoIndicator", indicatorColor.toHexString());
+  }
+
+  private static double timeLeftInShift() {
+    double matchTime = DriverStation.getMatchTime();
+
+    if (matchTime < 0) return -1;
+
+    for (double shiftTime : shiftTimesSeconds) {
+      if (matchTime >= shiftTime) return matchTime - shiftTime;
+    }
+
+    return 0;
   }
 
   public static enum WonAutoState {
