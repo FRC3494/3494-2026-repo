@@ -132,8 +132,9 @@ public class AprilTagCamera {
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagSpan", poseEstimate.tagSpan);
     Logger.recordOutput(
         "Vision/" + name + "/" + tagType + "/PoseTimestamp", poseEstimate.timestampSeconds);
-    Logger.recordOutput(
-        "Vision/" + name + "/" + tagType + "/RawFiducials", poseEstimate.rawFiducials.toString());
+    // Logger.recordOutput(
+    //     "Vision/" + name + "/" + tagType + "/RawFiducials",
+    // poseEstimate.rawFiducials.toString());
   }
 
   private boolean isMeasurementValid(PoseEstimate poseEstimate, String tagType) {
