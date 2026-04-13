@@ -106,67 +106,102 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    // Spindexer
+    // Spindexer Speeds
     builder.addIntegerProperty(
         "Spindexer/Speed (RPM)",
         () -> ((long) spindexerSpeed.in(RPM)),
-        (long value) -> spindexerSpeed = RPM.of(value));
+        (long value) -> {
+          spindexerSpeed = RPM.of(value);
+          Logger.recordOutput("Hopper/Spindexer/Speed", RPM.of(value));
+        });
+    Logger.recordOutput("Hopper/Spindexer/Speed", spindexerSpeed);
+
     builder.addIntegerProperty(
         "Spindexer/Speed while Intaking",
         () -> (long) spindexerIntakingSpeed.in(RPM),
-        (long value) -> spindexerIntakingSpeed = RPM.of(value));
+        (long value) -> {
+          spindexerIntakingSpeed = RPM.of(value);
+          Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", RPM.of(value));
+        });
+    Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", spindexerIntakingSpeed);
 
+    // Spindexer PID
     builder.addDoubleArrayProperty(
         "Spindexer/PID",
         () -> new double[] {spindexerKp, spindexerKi, spindexerKd},
-        (double[] values) -> setSpindexerPID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "Spindexer/SVA",
-        () -> new double[] {spindexerKs, spindexerKv, spindexerKa},
-        (double[] values) -> setSpindexerSVA(values[0], values[1], values[2]));
-
-    builder.addIntegerProperty(
-        "Spindexer/Current Limit",
-        () -> ((long) spindexerCurrentLimit.in(Amps)),
-        (long value) -> setSpindexerCurrentLimit(Amps.of(value)));
-
-    // Kicker
-    // builder.addDoubleProperty(
-    //     "Kicker/Speed Factor",
-    //     () -> kickerSpeedFactor,
-    //     (double value) -> kickerSpeedFactor = value);
-    builder.addIntegerProperty(
-        "Kicker/Speed",
-        () -> ((long) kickerSpeed.in(RPM)),
-        (long value) -> kickerSpeed = RPM.of(value));
-
-    builder.addDoubleArrayProperty(
-        "Kicker/PID",
-        () -> new double[] {kickerKp, kickerKi, kickerKd},
-        (double[] values) -> setKickerPID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "Kicker/SVA",
-        () -> new double[] {kickerKs, kickerKv, kickerKa},
-        (double[] values) -> setKickerSVA(values[0], values[1], values[2]));
-  }
-
-  private void logSendableValues() {
-    Logger.recordOutput("Hopper/Spindexer/Speed", spindexerSpeed);
-    Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", spindexerIntakingSpeed);
-
+        (double[] values) -> {
+          setSpindexerPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Hopper/Spindexer/PID/kP", values[0]);
+          Logger.recordOutput("Hopper/Spindexer/PID/kI", values[1]);
+          Logger.recordOutput("Hopper/Spindexer/PID/kD", values[2]);
+        });
     Logger.recordOutput("Hopper/Spindexer/PID/kP", spindexerKp);
     Logger.recordOutput("Hopper/Spindexer/PID/kI", spindexerKi);
     Logger.recordOutput("Hopper/Spindexer/PID/kD", spindexerKd);
+
+    builder.addDoubleArrayProperty(
+        "Spindexer/SVA",
+        () -> new double[] {spindexerKs, spindexerKv, spindexerKa},
+        (double[] values) -> {
+          setSpindexerSVA(values[0], values[1], values[2]);
+          Logger.recordOutput("Hopper/Spindexer/PID/kS", values[0]);
+          Logger.recordOutput("Hopper/Spindexer/PID/kV", values[1]);
+          Logger.recordOutput("Hopper/Spindexer/PID/kA", values[2]);
+        });
     Logger.recordOutput("Hopper/Spindexer/PID/kS", spindexerKs);
     Logger.recordOutput("Hopper/Spindexer/PID/kV", spindexerKv);
     Logger.recordOutput("Hopper/Spindexer/PID/kA", spindexerKa);
 
+    builder.addIntegerProperty(
+        "Spindexer/Current Limit",
+        () -> ((long) spindexerCurrentLimit.in(Amps)),
+        (long value) -> {
+          setSpindexerCurrentLimit(Amps.of(value));
+          Logger.recordOutput("Hopper/Spindexer/CurrentLimit", Amps.of(value));
+        });
+    Logger.recordOutput("Hopper/Spindexer/CurrentLimit", spindexerCurrentLimit);
+
+    // Kicker Speed
+    // builder.addDoubleProperty(
+    //     "Kicker/Speed Factor",
+    //     () -> kickerSpeedFactor,
+    //     (double value) -> {
+    //       kickerSpeedFactor = value;
+    //       Logger.recordOutput("Hopper/Kicker/SpeedFactor", value);
+    //     });
     // Logger.recordOutput("Hopper/Kicker/SpeedFactor", kickerSpeedFactor);
+
+    builder.addIntegerProperty(
+        "Kicker/Speed",
+        () -> ((long) kickerSpeed.in(RPM)),
+        (long value) -> {
+          kickerSpeed = RPM.of(value);
+          Logger.recordOutput("Hopper/Kicker/Speed", RPM.of(value));
+        });
     Logger.recordOutput("Hopper/Kicker/Speed", kickerSpeed);
 
+    builder.addDoubleArrayProperty(
+        "Kicker/PID",
+        () -> new double[] {kickerKp, kickerKi, kickerKd},
+        (double[] values) -> {
+          setKickerPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Hopper/Kicker/PID/kP", values[0]);
+          Logger.recordOutput("Hopper/Kicker/PID/kI", values[1]);
+          Logger.recordOutput("Hopper/Kicker/PID/kD", values[2]);
+        });
     Logger.recordOutput("Hopper/Kicker/PID/kP", kickerKp);
     Logger.recordOutput("Hopper/Kicker/PID/kI", kickerKi);
     Logger.recordOutput("Hopper/Kicker/PID/kD", kickerKd);
+
+    builder.addDoubleArrayProperty(
+        "Kicker/SVA",
+        () -> new double[] {kickerKs, kickerKv, kickerKa},
+        (double[] values) -> {
+          setKickerSVA(values[0], values[1], values[2]);
+          Logger.recordOutput("Hopper/Kicker/PID/kS", values[0]);
+          Logger.recordOutput("Hopper/Kicker/PID/kV", values[1]);
+          Logger.recordOutput("Hopper/Kicker/PID/kA", values[2]);
+        });
     Logger.recordOutput("Hopper/Kicker/PID/kS", kickerKs);
     Logger.recordOutput("Hopper/Kicker/PID/kV", kickerKv);
     Logger.recordOutput("Hopper/Kicker/PID/kA", kickerKa);
@@ -176,7 +211,6 @@ public class Hopper extends SubsystemBase {
   public void periodic() {
     logMotorStats("Hopper/Spindexer/Motor", spindexerMotor, false);
     logMotorStats("Hopper/Kicker/Motor", kickerMotor, false);
-    logSendableValues();
     Logger.recordOutput(
         "Hopper/SpindexerSpeedRounded", ((int) spindexerMotor.getEncoder().getVelocity()));
 
