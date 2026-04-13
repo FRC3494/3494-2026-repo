@@ -75,29 +75,48 @@ public class Flywheel extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Flywheel Settings
     builder.addDoubleProperty(
         "Threshold Factor",
         () -> flywheelThresholdFactor,
-        (double value) -> flywheelThresholdFactor = value);
+        (double value) -> {
+          flywheelThresholdFactor = value;
+          Logger.recordOutput("Shooter/Flywheel/ThresholdFactor", value);
+        });
+    Logger.recordOutput("Shooter/Flywheel/ThresholdFactor", flywheelThresholdFactor);
+
     builder.addIntegerProperty(
         "Manual Speed",
         () -> ((long) flywheelManualSpeed.in(RPM)),
-        (long value) -> flywheelManualSpeed = RPM.of(value));
+        (long value) -> {
+          flywheelManualSpeed = RPM.of(value);
+          Logger.recordOutput("Shooter/Flywheel/ManualSpeed", RPM.of(value));
+        });
+    Logger.recordOutput("Shooter/Flywheel/ManualSpeed", flywheelManualSpeed);
 
+    // Flywheel PID
     builder.addDoubleArrayProperty(
         "PID",
         () -> new double[] {flywheelKp, flywheelKi, flywheelKd},
-        (double[] values) -> setPID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "SVA",
-        () -> new double[] {flywheelKs, flywheelKv, flywheelKa},
-        (double[] values) -> setSVA(values[0], values[1], values[2]));
-  }
-
-  private void logSendableValues() {
+        (double[] values) -> {
+          setPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Flywheel/PID/kP", values[0]);
+          Logger.recordOutput("Shooter/Flywheel/PID/kI", values[1]);
+          Logger.recordOutput("Shooter/Flywheel/PID/kD", values[2]);
+        });
     Logger.recordOutput("Shooter/Flywheel/PID/kP", flywheelKp);
     Logger.recordOutput("Shooter/Flywheel/PID/kI", flywheelKi);
     Logger.recordOutput("Shooter/Flywheel/PID/kD", flywheelKd);
+
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {flywheelKs, flywheelKv, flywheelKa},
+        (double[] values) -> {
+          setSVA(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Flywheel/PID/kS", values[0]);
+          Logger.recordOutput("Shooter/Flywheel/PID/kV", values[1]);
+          Logger.recordOutput("Shooter/Flywheel/PID/kA", values[2]);
+        });
     Logger.recordOutput("Shooter/Flywheel/PID/kS", flywheelKs);
     Logger.recordOutput("Shooter/Flywheel/PID/kV", flywheelKv);
     Logger.recordOutput("Shooter/Flywheel/PID/kA", flywheelKa);
@@ -107,7 +126,6 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
     logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
-    logSendableValues();
   }
 
   public void setVelocity(AngularVelocity velocity) {
