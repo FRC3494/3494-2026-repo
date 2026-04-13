@@ -85,53 +85,82 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Hood Positions
     builder.addDoubleProperty(
         "Manual Angle",
         () -> hoodManualAngle.getDegrees(),
-        (double value) -> hoodManualAngle = Rotation2d.fromDegrees(value));
+        (double value) -> {
+          hoodManualAngle = Rotation2d.fromDegrees(value);
+          Logger.recordOutput("Shooter/Hood/ManualAngle", Rotation2d.fromDegrees(value));
+        });
+    Logger.recordOutput("Shooter/Hood/ManualAngle", hoodManualAngle);
+
     builder.addDoubleProperty(
         "Manual Increment",
         () -> hoodManualIncrement.getDegrees(),
-        (double value) -> hoodManualIncrement = Rotation2d.fromDegrees(value));
+        (double value) -> {
+          hoodManualIncrement = Rotation2d.fromDegrees(value);
+          Rotation2d.fromDegrees(value);
+        });
+    Logger.recordOutput("Shooter/Hood/ManualIncrement", hoodManualIncrement);
 
+    // Hood PIDs
     builder.addDoubleArrayProperty(
         "PID",
         () -> new double[] {hoodKp, hoodKi, hoodKd},
-        (double[] values) -> setPID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "ToZero PID",
-        () -> new double[] {hoodToZeroKp, hoodToZeroKi, hoodToZeroKd},
-        (double[] values) -> setToZeroPID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "SVA",
-        () -> new double[] {hoodKs, hoodKv, hoodKa},
-        (double[] values) -> setSVA(values[0], values[1], values[2]));
-
-    builder.addDoubleProperty(
-        "Trench Safety Buffer (ft)",
-        () -> Units.metersToFeet(trenchSafetyBufferMeters),
-        (double value) -> trenchSafetyBufferMeters = Units.feetToMeters(value));
-    builder.addDoubleProperty(
-        "Trench Safety Lookahead (s)",
-        () -> trenchSafetyLookaheadSeconds,
-        (double value) -> trenchSafetyLookaheadSeconds = value);
-  }
-
-  private void logSendableValues() {
-    Logger.recordOutput("Shooter/Hood/ManualAngle", hoodManualAngle);
-    Logger.recordOutput("Shooter/Hood/ManualIncrement", hoodManualIncrement);
-
+        (double[] values) -> {
+          setPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Hood/PID/kP", values[0]);
+          Logger.recordOutput("Shooter/Hood/PID/kI", values[1]);
+          Logger.recordOutput("Shooter/Hood/PID/kD", values[2]);
+        });
     Logger.recordOutput("Shooter/Hood/PID/kP", hoodKp);
     Logger.recordOutput("Shooter/Hood/PID/kI", hoodKi);
     Logger.recordOutput("Shooter/Hood/PID/kD", hoodKd);
+
+    builder.addDoubleArrayProperty(
+        "ToZero PID",
+        () -> new double[] {hoodToZeroKp, hoodToZeroKi, hoodToZeroKd},
+        (double[] values) -> {
+          setToZeroPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Hood/ToZeroPID/kP", values[0]);
+          Logger.recordOutput("Shooter/Hood/ToZeroPID/kI", values[1]);
+          Logger.recordOutput("Shooter/Hood/ToZeroPID/kD", values[2]);
+        });
     Logger.recordOutput("Shooter/Hood/ToZeroPID/kP", hoodKp);
     Logger.recordOutput("Shooter/Hood/ToZeroPID/kI", hoodKi);
     Logger.recordOutput("Shooter/Hood/ToZeroPID/kD", hoodKd);
+
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {hoodKs, hoodKv, hoodKa},
+        (double[] values) -> {
+          setSVA(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Hood/PID/kS", values[0]);
+          Logger.recordOutput("Shooter/Hood/PID/kV", values[1]);
+          Logger.recordOutput("Shooter/Hood/PID/kA", values[2]);
+        });
     Logger.recordOutput("Shooter/Hood/PID/kS", hoodKs);
     Logger.recordOutput("Shooter/Hood/PID/kV", hoodKv);
     Logger.recordOutput("Shooter/Hood/PID/kA", hoodKa);
 
+    // Trench Safety Settings
+    builder.addDoubleProperty(
+        "Trench Safety Buffer (ft)",
+        () -> Units.metersToFeet(trenchSafetyBufferMeters),
+        (double value) -> {
+          trenchSafetyBufferMeters = Units.feetToMeters(value);
+          Logger.recordOutput("Shooter/Hood/TrenchSafetyBuffer", Feet.of(value));
+        });
     Logger.recordOutput("Shooter/Hood/TrenchSafetyBuffer", Meters.of(trenchSafetyBufferMeters));
+
+    builder.addDoubleProperty(
+        "Trench Safety Lookahead (s)",
+        () -> trenchSafetyLookaheadSeconds,
+        (double value) -> {
+          trenchSafetyLookaheadSeconds = value;
+          Logger.recordOutput("Shooter/Hood/TrenchSafetyLookahead", Seconds.of(value));
+        });
     Logger.recordOutput(
         "Shooter/Hood/TrenchSafetyLookahead", Seconds.of(trenchSafetyLookaheadSeconds));
   }
@@ -139,7 +168,6 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
-    logSendableValues();
 
     filteredCurrent = Amps.of(currentFilter.calculate(hoodMotor.getOutputCurrent()));
   }
