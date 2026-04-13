@@ -546,7 +546,7 @@ public final class Constants {
       public static final Distance distanceTrimIncrement = Inches.of(5.0);
       public static final Distance xyTrimIncrement = Inches.of(5.0);
 
-      public static Distance azDistanceTrimDefault = Inches.of(30.0);
+      public static Distance azDistanceTrimDefault = Inches.of(40.0);
       public static Distance azDistanceTrim = azDistanceTrimDefault;
       public static Distance azXTrim = Inches.zero();
       public static Distance azYTrim = Inches.zero();
@@ -556,53 +556,49 @@ public final class Constants {
       public static Distance nzXTrim = Inches.zero();
       public static Distance nzYTrim = Inches.zero();
 
-      // *
-      // https://docs.google.com/spreadsheets/d/14hwlqJER8P0QzwcH5v36mP58clVzJN8zftQV1oThM_0/edit?usp=sharing
-      public static Time azTOFAdjustment = Seconds.of(0.3);
+      // ! Spreadsheet with data points & extrapolation work
+      // https://docs.google.com/spreadsheets/d/1F3wifhI_nVvJh-EjeXkzgORYJy9NPVHc9NdVFYBNev0/edit?usp=sharing
+      public static Time azTOFAdjustment = Seconds.of(0.0);
       public static final LinearInterpolationDataPoint[] azLinearInterpolationDataPoints =
           new LinearInterpolationDataPoint[] {
-            // * Tuned front towards hub
-            new LinearInterpolationDataPoint(
-                Meters.of(1.111),
-                Rotation2d.fromDegrees(24.2238027),
-                RPM.of(2700),
-                Seconds.of(0.910875)),
-            new LinearInterpolationDataPoint(
-                Meters.of(1.868), Rotation2d.fromDegrees(27), RPM.of(2900), Seconds.of(1.0055)),
-            new LinearInterpolationDataPoint(
-                Meters.of(2.054), Rotation2d.fromDegrees(29), RPM.of(2950), Seconds.of(1.02875)),
-            new LinearInterpolationDataPoint(
-                Meters.of(2.235), Rotation2d.fromDegrees(30), RPM.of(2975), Seconds.of(1.051375)),
-            new LinearInterpolationDataPoint(
-                Meters.of(2.633), Rotation2d.fromDegrees(32), RPM.of(3050), Seconds.of(1.101125)),
-            new LinearInterpolationDataPoint(
-                Meters.of(2.852), Rotation2d.fromDegrees(33), RPM.of(3100), Seconds.of(1.1285)),
-            new LinearInterpolationDataPoint(
-                Meters.of(3.125), Rotation2d.fromDegrees(34), RPM.of(3150), Seconds.of(1.162625)),
             // * Tuned side towards hub
             new LinearInterpolationDataPoint(
-                Meters.of(3.268), Rotation2d.fromDegrees(33), RPM.of(3100), Seconds.of(1.1805)),
+                Meters.of(2.09),
+                Rotation2d.fromDegrees(24.2238027),
+                RPM.of(2800),
+                Seconds.of(1.033)),
+            // * Tuned back towards hub
             new LinearInterpolationDataPoint(
-                Meters.of(3.546), Rotation2d.fromDegrees(34), RPM.of(3175), Seconds.of(1.21525)),
+                Meters.of(2.85), Rotation2d.fromDegrees(30), RPM.of(3000), Seconds.of(1.034)),
             new LinearInterpolationDataPoint(
-                Meters.of(3.66), Rotation2d.fromDegrees(33), RPM.of(3300), Seconds.of(1.2295)),
+                Meters.of(3.27), Rotation2d.fromDegrees(32), RPM.of(3100), Seconds.of(1.033)),
             new LinearInterpolationDataPoint(
-                Meters.of(3.695), Rotation2d.fromDegrees(32), RPM.of(3425), Seconds.of(1.233875)),
+                Meters.of(3.53), Rotation2d.fromDegrees(34), RPM.of(3150), Seconds.of(1.033)),
             new LinearInterpolationDataPoint(
-                Meters.of(3.826), Rotation2d.fromDegrees(35), RPM.of(3275), Seconds.of(1.25025)),
+                Meters.of(3.77), Rotation2d.fromDegrees(35), RPM.of(3200), Seconds.of(1.066)),
             new LinearInterpolationDataPoint(
-                Meters.of(4.045), Rotation2d.fromDegrees(35), RPM.of(3350), Seconds.of(1.277625)),
+                Meters.of(3.98), Rotation2d.fromDegrees(37), RPM.of(3300), Seconds.of(1.1)),
             new LinearInterpolationDataPoint(
-                Meters.of(4.23), Rotation2d.fromDegrees(35), RPM.of(3440), Seconds.of(1.30075)),
+                Meters.of(4.2), Rotation2d.fromDegrees(37), RPM.of(3325), Seconds.of(1.099)),
             new LinearInterpolationDataPoint(
-                Meters.of(4.64), Rotation2d.fromDegrees(36), RPM.of(3550), Seconds.of(1.352)),
+                Meters.of(4.4), Rotation2d.fromDegrees(36), RPM.of(3400), Seconds.of(1.167)),
             new LinearInterpolationDataPoint(
-                Meters.of(5.24), Rotation2d.fromDegrees(38), RPM.of(3600), Seconds.of(1.427)),
-            // ! Last points extrapolated from:  https://www.desmos.com/calculator/lvx3alcbyt
+                Meters.of(4.71), Rotation2d.fromDegrees(37.5), RPM.of(3500), Seconds.of(1.166)),
             new LinearInterpolationDataPoint(
-                Meters.of(7.37), Rotation2d.fromDegrees(45), RPM.of(4150), Seconds.of(1.69325)),
+                Meters.of(4.92), Rotation2d.fromDegrees(38), RPM.of(3550), Seconds.of(1.197)),
             new LinearInterpolationDataPoint(
-                Meters.of(8.91), Rotation2d.fromDegrees(45), RPM.of(4500), Seconds.of(1.88575))
+                Meters.of(5.26), Rotation2d.fromDegrees(39), RPM.of(3600), Seconds.of(1.216)),
+            // ! Last points extrapolated
+            new LinearInterpolationDataPoint(
+                Meters.of(6.29545454545455),
+                Rotation2d.fromDegrees(45),
+                RPM.of(3890.11363636364),
+                Seconds.of(1.26786818181818)),
+            new LinearInterpolationDataPoint(
+                Meters.of(14.3793103448276),
+                Rotation2d.fromDegrees(45),
+                RPM.of(6000),
+                Seconds.of(1.82242068965517)),
           };
 
       public static Time nzTOFAdjustment = Seconds.of(0.0);
