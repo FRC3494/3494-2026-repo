@@ -242,11 +242,11 @@ public class Hopper extends SubsystemBase {
   }
 
   public void setSpindexerOpenLoop(Voltage voltage) {
-    spindexerMotor.setVoltage(voltage);
+    spindexerMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public void setKickerOpenLoop(Voltage voltage) {
-    kickerMotor.setVoltage(voltage);
+    kickerMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public double getSpindexerCurrent() {

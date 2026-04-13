@@ -223,7 +223,9 @@ public class Intake extends SubsystemBase {
   }
 
   public void setSpinnySpinnyOpenLoop(Voltage voltage) {
-    spinnySpinnyMotor.setVoltage(voltage);
+    spinnySpinnyMotor
+        .getClosedLoopController()
+        .setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public Command spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -252,7 +254,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setUppyDownyOpenLoop(Voltage voltage) {
-    uppyDownyMotor.setVoltage(voltage);
+    uppyDownyMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public void setUppyDownyCurrentLimit(Current limit) {

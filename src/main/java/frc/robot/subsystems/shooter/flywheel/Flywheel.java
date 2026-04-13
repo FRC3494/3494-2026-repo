@@ -161,7 +161,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setOpenLoop(Voltage voltage) {
-    leftMotor.setVoltage(voltage);
+    leftMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   private void setPID(double p, double i, double d) {

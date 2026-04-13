@@ -204,7 +204,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void setOpenLoop(Voltage voltage) {
-    hoodMotor.setVoltage(voltage);
+    hoodMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
 
   public void setCurrentLimit(Current limit) {
