@@ -549,6 +549,9 @@ public class RobotContainer {
 
     IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManualUp());
     IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManualDown());
+    IntakeOI.jostleIntake()
+        .whileTrue(robotCommands.runIntakeJostle())
+        .onFalse(robotCommands.stopIntakeJostle());
 
     // #endregion
 

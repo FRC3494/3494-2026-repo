@@ -253,6 +253,10 @@ public final class OI implements Sendable {
           .axisLessThan(0, -controllerStickDeadband, eventLoop)
           .castTo(Trigger::new);
     }
+
+    public static Trigger jostleIntake() {
+      return primaryController.b(eventLoop);
+    }
   }
   // #endregion
 
