@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.azLine;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import choreo.trajectory.SwerveSample;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -49,7 +50,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.OI;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.QuadranglesUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -667,13 +667,13 @@ public class Drive extends SubsystemBase {
     switch (Constants.driveMode) {
       case DEMO -> {
         return !OI.ShooterOI.shoot().getAsBoolean()
-                || QuadranglesUtil.toAllianceX(getPose().getMeasureX()).gt(azLine)
+                || toAllianceX(getPose().getMeasureX()).gt(azLine)
             ? maxSpeedMetersPerSec * demoModeSpeedFactor
             : maxShootingSpeedMetersPerSec * demoModeSpeedFactor;
       }
       default -> {
         return !OI.ShooterOI.shoot().getAsBoolean()
-                || QuadranglesUtil.toAllianceX(getPose().getMeasureX()).gt(azLine)
+                || toAllianceX(getPose().getMeasureX()).gt(azLine)
             ? maxSpeedMetersPerSec
             : maxShootingSpeedMetersPerSec;
       }
@@ -685,13 +685,13 @@ public class Drive extends SubsystemBase {
     switch (Constants.driveMode) {
       case DEMO -> {
         return !OI.ShooterOI.shoot().getAsBoolean()
-                || QuadranglesUtil.toAllianceX(getPose().getMeasureX()).gt(azLine)
+                || toAllianceX(getPose().getMeasureX()).gt(azLine)
             ? maxAngularSpeedRadPerSec * demoModeSpeedFactor
             : maxShootingAngularSpeedRadPerSec * demoModeSpeedFactor;
       }
       default -> {
         return !OI.ShooterOI.shoot().getAsBoolean()
-                || QuadranglesUtil.toAllianceX(getPose().getMeasureX()).gt(azLine)
+                || toAllianceX(getPose().getMeasureX()).gt(azLine)
             ? maxAngularSpeedRadPerSec
             : maxShootingAngularSpeedRadPerSec;
       }

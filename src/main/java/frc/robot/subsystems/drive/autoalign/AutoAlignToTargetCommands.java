@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive.autoalign;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.QuadranglesUtil;
 import java.util.Set;
 
 public class AutoAlignToTargetCommands {
@@ -25,7 +25,7 @@ public class AutoAlignToTargetCommands {
                 AutoAlignCommand.alignSequenceDeferred(drive, climbSetupPoseDepot, climbPoseDepot),
                 robotCommands.creepBackward()),
             () ->
-                QuadranglesUtil.closerToWithFlip(
+                closerToWithFlip(
                     climbSetupPoseOutpost.getTranslation(),
                     climbSetupPoseDepot.getTranslation(),
                     drive.getPose().getTranslation()))
@@ -42,9 +42,7 @@ public class AutoAlignToTargetCommands {
             either(
                 autoDriveTrench(drive, robotCommands, closeLeftTrench, closeRightTrench),
                 autoDriveTrench(drive, robotCommands, farLeftTrench, farRightTrench),
-                () ->
-                    QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX())
-                        .lt(closerToOppositeTrenchLine)))
+                () -> toAllianceX(drive.getPose().getMeasureX()).lt(closerToOppositeTrenchLine)))
         .withName("AutoDriveThruTrench");
   }
 
@@ -56,9 +54,7 @@ public class AutoAlignToTargetCommands {
     return either(
         autoDriveTrench(drive, robotCommands, leftTrench),
         autoDriveTrench(drive, robotCommands, rightTrench),
-        () ->
-            QuadranglesUtil.closerToWithFlip(
-                leftTrench, rightTrench, drive.getPose().getTranslation()));
+        () -> closerToWithFlip(leftTrench, rightTrench, drive.getPose().getTranslation()));
   }
 
   private static Command autoDriveTrench(
@@ -102,14 +98,14 @@ public class AutoAlignToTargetCommands {
                             drive)),
                 Set.of(drive)),
             robotCommands.stopDrive()),
-        () -> QuadranglesUtil.toAllianceX(drive.getPose().getMeasureX()).lt(trench.getMeasureX()));
+        () -> toAllianceX(drive.getPose().getMeasureX()).lt(trench.getMeasureX()));
   }
 
   private static Rotation2d closestTrenchOrientation(Rotation2d robotYaw) {
     if (Math.abs(MathUtil.angleModulus(robotYaw.getRadians())) < Math.PI / 2.0) {
-      return QuadranglesUtil.toAllianceAngle(Rotation2d.kZero);
+      return toAllianceAngle(Rotation2d.kZero);
     } else {
-      return QuadranglesUtil.toAllianceAngle(Rotation2d.k180deg);
+      return toAllianceAngle(Rotation2d.k180deg);
     }
   }
 }

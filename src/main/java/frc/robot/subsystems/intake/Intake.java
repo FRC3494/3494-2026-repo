@@ -2,7 +2,7 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.IntakeConstants.*;
-import static frc.robot.util.SparkUtil.logMotorStats;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;

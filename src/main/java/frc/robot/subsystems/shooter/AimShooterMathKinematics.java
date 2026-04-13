@@ -3,8 +3,9 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.*;
-import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
-import static frc.robot.Constants.ShooterConstants.TurretConstants.turretMinAngleRot;
+import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
+import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,7 +29,6 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.FlywheelConstants;
 import frc.robot.Constants.ShooterConstants.HoodConstants;
 import frc.robot.Constants.ShooterConstants.TurretConstants;
-import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
 import lombok.Setter;
@@ -114,7 +114,7 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   // AutoLogOutput and used by the aim math below. Keep this simple and documented so
   // other contributors can change the target at runtime.
   @Getter @Setter @AutoLogOutput
-  private Translation2d shooterTarget = QuadranglesUtil.toAllianceTranslation(hubLocation);
+  private Translation2d shooterTarget = toAllianceTranslation(hubLocation);
 
   @Getter
   private Setpoints setpoints =
@@ -209,7 +209,7 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
     Pose3d shooterPose3d = robotPose3d.transformBy(shooterTransform);
 
     Translation2d shooterTranslation = shooterPose3d.getTranslation().toTranslation2d();
-    Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
+    Translation2d allianceHubLocation = toAllianceTranslation(hubLocation);
     boolean inAllianceZone = isInAllianceZone(shooterTranslation, azLineOffset);
     Translation2d target2d =
         getTargetLocation(shooterTranslation, inAllianceZone, allianceHubLocation);
@@ -499,13 +499,12 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
   /** Chooses the closer of the two predefined neutral-zone shooting targets. */
   private static Translation2d getNZShootingTarget(Translation2d robotTranslation) {
     boolean closerToDepot =
-        robotTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget))
-            < robotTranslation.getDistance(
-                QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget));
+        robotTranslation.getDistance(toAllianceTranslation(nzDepotShootingTarget))
+            < robotTranslation.getDistance(toAllianceTranslation(nzOutpostShootingTarget));
     if (closerToDepot) {
-      return QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget);
+      return toAllianceTranslation(nzDepotShootingTarget);
     } else {
-      return QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget);
+      return toAllianceTranslation(nzOutpostShootingTarget);
     }
   }
 

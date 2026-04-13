@@ -9,6 +9,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.fieldWidth;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
@@ -28,7 +29,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.subsystems.climber.Climber;
-import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
 import java.util.Arrays;
 import java.util.Collections;
@@ -415,9 +415,9 @@ public final class Constants {
       public static final Translation2d closeRightTrench =
           ChoreoVars.Poses.RightTrench.getTranslation();
       public static final Translation2d farLeftTrench =
-          QuadranglesUtil.flipTranslation(ChoreoVars.Poses.LeftTrench.getTranslation());
+          flipTranslation(ChoreoVars.Poses.LeftTrench.getTranslation());
       public static final Translation2d farRightTrench =
-          QuadranglesUtil.flipTranslation(ChoreoVars.Poses.RightTrench.getTranslation());
+          flipTranslation(ChoreoVars.Poses.RightTrench.getTranslation());
     }
   }
   // #endregion

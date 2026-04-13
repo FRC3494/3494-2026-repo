@@ -2,7 +2,7 @@ package frc.robot.subsystems.shooter.hood;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
-import static frc.robot.util.SparkUtil.logMotorStats;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
-import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -184,7 +183,7 @@ public class Hood extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/Hood/IsUnderTrench")
   public boolean isUnderTrench(Pose2d robotPose, ChassisSpeeds robotRelativeSpeeds) {
-    double robotBlueX = QuadranglesUtil.toAllianceXMeters(robotPose.getX());
+    double robotBlueX = toAllianceXMeters(robotPose.getX());
     double hubX = ChoreoVars.Poses.Hub.getX();
     double speedX =
         ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, robotPose.getRotation())

@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive.autoalign;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,7 +12,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.QuadranglesUtil;
 import java.util.Arrays;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
@@ -35,7 +35,7 @@ public class AutoAlignCommand extends Command {
       Distance xTolerance,
       Distance yTolerance,
       Rotation2d angularTolerance) {
-    this.targetPose = QuadranglesUtil.toAlliancePose(targetPose);
+    this.targetPose = toAlliancePose(targetPose);
     this.drive = drive;
 
     addRequirements(drive);

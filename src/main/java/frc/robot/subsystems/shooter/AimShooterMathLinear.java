@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,7 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.LinearInterpolationDataPoint;
-import frc.robot.util.QuadranglesUtil;
 import java.util.function.Supplier;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -254,7 +254,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         "AimShooterMathLinear/shooterTranslation",
         new Pose2d(shooterTranslation, Rotation2d.kZero));
 
-    Translation2d allianceHubLocation = QuadranglesUtil.toAllianceTranslation(hubLocation);
+    Translation2d allianceHubLocation = toAllianceTranslation(hubLocation);
 
     inAllianceZone = isInAllianceZone(shooterTranslation, azLine);
 
@@ -368,7 +368,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   /** Returns whether the shooter is inside the alliance zone. */
   private boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLineBlue) {
     // ! Flips the robot location AGAIN (back to alliance-relative coordinates essentially)
-    return QuadranglesUtil.toAllianceTranslation(shooterTranslation).getMeasureX().lte(azLineBlue);
+    return toAllianceTranslation(shooterTranslation).getMeasureX().lte(azLineBlue);
   }
 
   /**
@@ -389,15 +389,14 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   /** Chooses the closer of the predefined neutral-zone shooting targets. */
   private Translation2d getNZShootingTarget(Translation2d robotTranslation) {
     boolean closerToDepot =
-        robotTranslation.getDistance(QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget))
-            < robotTranslation.getDistance(
-                QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget));
+        robotTranslation.getDistance(toAllianceTranslation(nzDepotShootingTarget))
+            < robotTranslation.getDistance(toAllianceTranslation(nzOutpostShootingTarget));
     if (closerToDepot) {
       currentTarget = "Depot";
-      return QuadranglesUtil.toAllianceTranslation(nzDepotShootingTarget);
+      return toAllianceTranslation(nzDepotShootingTarget);
     } else {
       currentTarget = "Outpost";
-      return QuadranglesUtil.toAllianceTranslation(nzOutpostShootingTarget);
+      return toAllianceTranslation(nzOutpostShootingTarget);
     }
   }
 

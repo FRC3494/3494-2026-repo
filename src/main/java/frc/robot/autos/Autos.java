@@ -2,13 +2,13 @@ package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.QuadranglesUtil;
 import frc.robot.util.choreo.ChoreoVars;
 import org.littletonrobotics.junction.Logger;
 
@@ -26,7 +26,7 @@ public class Autos {
     Pose2d[] originalTrajPoses = trajectory.getPoses();
     Pose2d[] flippedTrajPoses = new Pose2d[originalTrajPoses.length];
     for (int i = 0; i < flippedTrajPoses.length; i++) {
-      flippedTrajPoses[i] = QuadranglesUtil.toAlliancePose(originalTrajPoses[i]);
+      flippedTrajPoses[i] = toAlliancePose(originalTrajPoses[i]);
     }
     Logger.recordOutput("Choreo/TrajPoses", flippedTrajPoses);
   }
@@ -34,7 +34,7 @@ public class Autos {
   private static Command resetOdoForAuto(Drive drive, Pose2d pose) {
     return runOnce(
             () -> {
-              drive.setPose(QuadranglesUtil.toAlliancePose(pose));
+              drive.setPose(toAlliancePose(pose));
             },
             drive)
         .ignoringDisable(true)
