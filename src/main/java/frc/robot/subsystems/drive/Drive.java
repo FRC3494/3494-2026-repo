@@ -34,6 +34,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -166,124 +167,195 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putData("Drive", this);
   }
 
+  // #region initSendable()
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Max Speeds
     builder.addDoubleProperty(
         "Max Drive Speed (FtPerSec)",
         () -> Units.metersToFeet(maxSpeedMetersPerSec),
-        (double value) -> maxSpeedMetersPerSec = Units.feetToMeters(value));
+        (double value) -> {
+          maxSpeedMetersPerSec = Units.feetToMeters(value);
+          Logger.recordOutput("Drive/MaxDriveSpeed", FeetPerSecond.of(value));
+        });
+    Logger.recordOutput("Drive/MaxDriveSpeed", MetersPerSecond.of(maxSpeedMetersPerSec));
+
     builder.addDoubleProperty(
         "Max Angular Speed (DegPerSec)",
         () -> Units.radiansToDegrees(maxAngularSpeedRadPerSec),
-        (double value) -> maxAngularSpeedRadPerSec = Units.degreesToRadians(value));
+        (double value) -> {
+          maxAngularSpeedRadPerSec = Units.degreesToRadians(value);
+          Logger.recordOutput("Drive/MaxAngularSpeed", DegreesPerSecond.of(value));
+        });
+    Logger.recordOutput("Drive/MaxAngularSpeed", RadiansPerSecond.of(maxAngularSpeedRadPerSec));
 
     builder.addDoubleProperty(
         "Max Shooting Drive Speed (FtPerSec)",
         () -> Units.metersToFeet(maxShootingSpeedMetersPerSec),
-        (double value) -> maxShootingSpeedMetersPerSec = Units.feetToMeters(value));
+        (double value) -> {
+          maxShootingSpeedMetersPerSec = Units.feetToMeters(value);
+          Logger.recordOutput("Drive/MaxShootingDriveSpeed", FeetPerSecond.of(value));
+        });
+    Logger.recordOutput(
+        "Drive/MaxShootingDriveSpeed", MetersPerSecond.of(maxShootingSpeedMetersPerSec));
+
     builder.addDoubleProperty(
         "Max Shooting Angular Speed (DegPerSec)",
         () -> Units.radiansToDegrees(maxShootingAngularSpeedRadPerSec),
-        (double value) -> maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(value));
-
-    builder.addDoubleArrayProperty(
-        "Auto Linear PID",
-        () -> new double[] {autoLinearKp, autoLinearKi, autoLinearKd},
-        (double[] values) -> setAutoLinearPID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "Auto Angular PID",
-        () -> new double[] {autoAngularKp, autoAngularKi, autoAngularKd},
-        (double[] values) -> setAutoAngularPID(values[0], values[1], values[2]));
-
-    builder.addDoubleArrayProperty(
-        "Drive PID",
-        () -> new double[] {driveKp, driveKi, driveKd},
-        (double[] values) -> setDrivePID(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "Drive SVA",
-        () -> new double[] {driveKs, driveKv, driveKa},
-        (double[] values) -> setDriveSVA(values[0], values[1], values[2]));
-    builder.addDoubleArrayProperty(
-        "Turn PID",
-        () -> new double[] {turnKp, turnKi, turnKd},
-        (double[] values) -> setTurnPID(values[0], values[1], values[2]));
-
-    builder.addDoubleProperty(
-        "AutoAlign/LinearTolerance (in)",
-        () -> autoAlignLinearTolerance.in(Inches),
-        (double value) -> autoAlignLinearTolerance = Inches.of(value));
-    builder.addDoubleProperty(
-        "AutoAlign/AngularTolerance (deg)",
-        () -> autoAlignAngularTolerance.getDegrees(),
-        (double value) -> autoAlignAngularTolerance = Rotation2d.fromDegrees(value));
-
-    builder.addDoubleProperty(
-        "AutoAlign/Trench/XTolerance (ft)",
-        () -> trenchXTolerance.in(Feet),
-        (double value) -> trenchXTolerance = Feet.of(value));
-    builder.addDoubleProperty(
-        "AutoAlign/Trench/YTolerance (ft)",
-        () -> trenchYTolerance.in(Feet),
-        (double value) -> trenchYTolerance = Feet.of(value));
-    builder.addDoubleProperty(
-        "AutoAlign/Trench/AngularTolerance (deg)",
-        () -> trenchAngularTolerance.getDegrees(),
-        (double value) -> trenchAngularTolerance = Rotation2d.fromDegrees(value));
-
-    builder.addDoubleProperty(
-        "AutoAlign/Trench/OppositeTrenchOffset (ft)",
-        () -> closerToOppositeTrenchLine.minus(fieldLength.div(2.0)).in(Feet),
-        (double value) -> closerToOppositeTrenchLine = fieldLength.div(2.0).plus(Feet.of(value)));
-    builder.addDoubleProperty(
-        "AutoAlign/Trench/PreTrenchOffset (ft)",
-        () -> preTrenchOffset.in(Feet),
-        (double value) -> preTrenchOffset = Feet.of(value));
-    builder.addDoubleProperty(
-        "AutoAlign/Trench/PostTrenchOffset (ft)",
-        () -> postTrenchOffset.in(Feet),
-        (double value) -> postTrenchOffset = Feet.of(value));
-  }
-
-  private void logSendableValues() {
-    Logger.recordOutput("Drive/MaxDriveSpeed", MetersPerSecond.of(maxSpeedMetersPerSec));
-    Logger.recordOutput("Drive/MaxAngularSpeed", RadiansPerSecond.of(maxAngularSpeedRadPerSec));
-
-    Logger.recordOutput(
-        "Drive/MaxShootingDriveSpeed", MetersPerSecond.of(maxShootingSpeedMetersPerSec));
+        (double value) -> {
+          maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(value);
+          Logger.recordOutput("Drive/MaxShootingAngularSpeed", DegreesPerSecond.of(value));
+        });
     Logger.recordOutput(
         "Drive/MaxShootingAngularSpeed", RadiansPerSecond.of(maxShootingAngularSpeedRadPerSec));
 
+    // Auto PID
+    builder.addDoubleArrayProperty(
+        "Auto Linear PID",
+        () -> new double[] {autoLinearKp, autoLinearKi, autoLinearKd},
+        (double[] values) -> {
+          setAutoLinearPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Drive/AutoLinearPID/kP", values[0]);
+          Logger.recordOutput("Drive/AutoLinearPID/kI", values[1]);
+          Logger.recordOutput("Drive/AutoLinearPID/kD", values[2]);
+        });
     Logger.recordOutput("Drive/AutoLinearPID/kP", autoLinearKp);
     Logger.recordOutput("Drive/AutoLinearPID/kI", autoLinearKi);
     Logger.recordOutput("Drive/AutoLinearPID/kD", autoLinearKd);
+
+    builder.addDoubleArrayProperty(
+        "Auto Angular PID",
+        () -> new double[] {autoAngularKp, autoAngularKi, autoAngularKd},
+        (double[] values) -> {
+          setAutoAngularPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Drive/AutoAngularPID/kP", values[0]);
+          Logger.recordOutput("Drive/AutoAngularPID/kI", values[1]);
+          Logger.recordOutput("Drive/AutoAngularPID/kD", values[2]);
+        });
     Logger.recordOutput("Drive/AutoAngularPID/kP", autoAngularKp);
     Logger.recordOutput("Drive/AutoAngularPID/kI", autoAngularKi);
     Logger.recordOutput("Drive/AutoAngularPID/kD", autoAngularKd);
 
+    // Module PIDs
+    builder.addDoubleArrayProperty(
+        "Drive PID",
+        () -> new double[] {driveKp, driveKi, driveKd},
+        (double[] values) -> {
+          setDrivePID(values[0], values[1], values[2]);
+          Logger.recordOutput("Drive/DrivePID/kP", values[0]);
+          Logger.recordOutput("Drive/DrivePID/kI", values[1]);
+          Logger.recordOutput("Drive/DrivePID/kD", values[2]);
+        });
     Logger.recordOutput("Drive/DrivePID/kP", driveKp);
     Logger.recordOutput("Drive/DrivePID/kI", driveKi);
     Logger.recordOutput("Drive/DrivePID/kD", driveKd);
+
+    builder.addDoubleArrayProperty(
+        "Drive SVA",
+        () -> new double[] {driveKs, driveKv, driveKa},
+        (double[] values) -> {
+          setDriveSVA(values[0], values[1], values[2]);
+          Logger.recordOutput("Drive/DrivePID/kS", values[0]);
+          Logger.recordOutput("Drive/DrivePID/kV", values[1]);
+          Logger.recordOutput("Drive/DrivePID/kA", values[2]);
+        });
     Logger.recordOutput("Drive/DrivePID/kS", driveKs);
     Logger.recordOutput("Drive/DrivePID/kV", driveKv);
     Logger.recordOutput("Drive/DrivePID/kA", driveKa);
 
+    builder.addDoubleArrayProperty(
+        "Turn PID",
+        () -> new double[] {turnKp, turnKi, turnKd},
+        (double[] values) -> {
+          setTurnPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Drive/TurnPID/kP", values[0]);
+          Logger.recordOutput("Drive/TurnPID/kI", values[1]);
+          Logger.recordOutput("Drive/TurnPID/kD", values[2]);
+        });
     Logger.recordOutput("Drive/TurnPID/kP", turnKp);
     Logger.recordOutput("Drive/TurnPID/kI", turnKi);
     Logger.recordOutput("Drive/TurnPID/kD", turnKd);
 
+    // Auto Align Tolerances
+    builder.addDoubleProperty(
+        "AutoAlign/LinearTolerance (in)",
+        () -> autoAlignLinearTolerance.in(Inches),
+        (double value) -> {
+          autoAlignLinearTolerance = Inches.of(value);
+          Logger.recordOutput("Drive/AutoAlign/LinearTolerance", Inches.of(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/LinearTolerance", autoAlignLinearTolerance);
+
+    builder.addDoubleProperty(
+        "AutoAlign/AngularTolerance (deg)",
+        () -> autoAlignAngularTolerance.getDegrees(),
+        (double value) -> {
+          autoAlignAngularTolerance = Rotation2d.fromDegrees(value);
+          Logger.recordOutput("Drive/AutoAlign/AngularTolerance", Rotation2d.fromDegrees(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/AngularTolerance", autoAlignAngularTolerance);
 
+    // Trench Auto Align Settings
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/XTolerance (in)",
+        () -> trenchXTolerance.in(Inches),
+        (double value) -> {
+          trenchXTolerance = Inches.of(value);
+          Logger.recordOutput("Drive/AutoAlign/Trench/XTolerance", Inches.of(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/Trench/XTolerance", trenchXTolerance);
+
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/YTolerance (in)",
+        () -> trenchYTolerance.in(Inches),
+        (double value) -> {
+          trenchYTolerance = Inches.of(value);
+          Logger.recordOutput("Drive/AutoAlign/Trench/YTolerance", Inches.of(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/Trench/YTolerance", trenchYTolerance);
+
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/AngularTolerance (deg)",
+        () -> trenchAngularTolerance.getDegrees(),
+        (double value) -> {
+          trenchAngularTolerance = Rotation2d.fromDegrees(value);
+          Logger.recordOutput(
+              "Drive/AutoAlign/Trench/AngularTolerance", Rotation2d.fromDegrees(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/Trench/AngularTolerance", trenchAngularTolerance);
 
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/OppositeTrenchOffset (ft)",
+        () -> closerToOppositeTrenchLine.minus(fieldLength.div(2.0)).in(Feet),
+        (double value) -> {
+          Distance newLine = fieldLength.div(2.0).plus(Feet.of(value));
+          closerToOppositeTrenchLine = newLine;
+          Logger.recordOutput("Drive/AutoAlign/Trench/CloserToOppositeTrenchLine", newLine);
+        });
     Logger.recordOutput(
         "Drive/AutoAlign/Trench/CloserToOppositeTrenchLine", closerToOppositeTrenchLine);
+
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/PreTrenchOffset (ft)",
+        () -> preTrenchOffset.in(Feet),
+        (double value) -> {
+          preTrenchOffset = Feet.of(value);
+          Logger.recordOutput("Drive/AutoAlign/Trench/PreTrenchOffset", Feet.of(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/Trench/PreTrenchOffset", preTrenchOffset);
+
+    builder.addDoubleProperty(
+        "AutoAlign/Trench/PostTrenchOffset (ft)",
+        () -> postTrenchOffset.in(Feet),
+        (double value) -> {
+          postTrenchOffset = Feet.of(value);
+          Logger.recordOutput("Drive/AutoAlign/Trench/PostTrenchOffset", Feet.of(value));
+        });
     Logger.recordOutput("Drive/AutoAlign/Trench/PostTrenchOffset", postTrenchOffset);
   }
+  // #endregion
 
+  // #region periodic()
   // @codescene (disable: "Bumpy Road Ahead", disable: "Complex Method")
   @Override
   public void periodic() {
@@ -294,8 +366,6 @@ public class Drive extends SubsystemBase {
       module.periodic();
     }
     odometryLock.unlock();
-
-    logSendableValues();
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -345,6 +415,7 @@ public class Drive extends SubsystemBase {
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
+  // #endregion
 
   /**
    * Runs the drive at the desired velocity.
