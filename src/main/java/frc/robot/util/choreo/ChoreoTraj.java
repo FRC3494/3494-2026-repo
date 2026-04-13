@@ -70,8 +70,8 @@ public record ChoreoTraj(
 	    "LeftClimb_BLUE",
 	    OptionalInt.empty(),
 	    2.13185,
-	    new Pose2d(1.028, 4.9, Rotation2d.fromRadians(1.571)),
-	    new Pose2d(1.028, 4.484, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.053, 4.9, Rotation2d.fromRadians(1.571)),
+	    new Pose2d(1.053, 4.484, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj LeftClimb_RED = new ChoreoTraj(
 	    "LeftClimb_RED",
