@@ -698,7 +698,7 @@ public class RobotContainer {
 
     // #region HOOD
 
-    hood.setDefaultCommand(robotCommands.autoHoodCommandWithTrenchSafety());
+    hood.setDefaultCommand(robotCommands.autoHoodCommand());
 
     HoodOI.rezeroHood().onTrue(robotCommands.rezeroHood());
 

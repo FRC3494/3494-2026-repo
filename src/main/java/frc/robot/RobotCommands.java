@@ -546,7 +546,7 @@ public class RobotCommands {
   public Command shoot() {
     return either(
             sequence(
-                startHood(),
+                startHoodWithTrenchSafety(),
                 startFlywheel(),
                 startIntakeForShoot(),
                 startSpindexer(),
@@ -554,7 +554,7 @@ public class RobotCommands {
                 waitUntil(turret::withinShootingTolerance),
                 parallel(
                     autoFlywheelCommand(),
-                    autoHoodCommandWithTrenchSafety(),
+                    runAutoHood(),
                     runIntakeJostle(),
                     runSpindexerAndKicker())),
             none(),
@@ -565,13 +565,14 @@ public class RobotCommands {
   public Command shootWithManualSettings() {
     return either(
             sequence(
-                startHood(),
+                startHoodWithTrenchSafety(),
                 startFlywheel(),
                 startIntakeForShoot(),
                 startSpindexer(),
                 waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
                 waitUntil(turret::withinShootingTolerance),
-                parallel(runIntakeJostle(), runSpindexerAndKicker())),
+                parallel(
+                    runManualHoodWithTrenchSafety(), runIntakeJostle(), runSpindexerAndKicker())),
             none(),
             () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWithManualSettings");
@@ -580,16 +581,13 @@ public class RobotCommands {
   public Command shootWithoutIntakeJostle() {
     return either(
             sequence(
-                startHood(),
+                startHoodWithTrenchSafety(),
                 startFlywheel(),
                 startIntakeForShoot(),
                 startSpindexer(),
                 waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
                 waitUntil(turret::withinShootingTolerance),
-                parallel(
-                    autoFlywheelCommand(),
-                    autoHoodCommandWithTrenchSafety(),
-                    runSpindexerAndKicker())),
+                parallel(autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker())),
             none(),
             () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWoIntakeJostle");
@@ -710,7 +708,7 @@ public class RobotCommands {
     return runOnce(
             () -> {
               flywheel.setDefaultCommand(autoFlywheelCommand());
-              hood.setDefaultCommand(autoHoodCommandWithTrenchSafety());
+              hood.setDefaultCommand(autoHoodCommand());
             },
             flywheel,
             hood)
@@ -848,22 +846,32 @@ public class RobotCommands {
   public Command autoHoodCommand() {
     return run(
             () -> {
-              hood.setPosition(shooterAimModel.getHoodAngle());
-            },
-            hood)
-        .withName("AutoHoodCommand");
-  }
-
-  public Command autoHoodCommandWithTrenchSafety() {
-    return run(
-            () -> {
               if (hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())) {
                 hood.setShooting(false);
               }
               hood.setPosition(shooterAimModel.getHoodAngle());
             },
             hood)
+        .withName("AutoHoodCommand");
+  }
+
+  public Command runAutoHood() {
+    return run(
+            () -> {
+              hood.setShooting(!hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()));
+              hood.setPosition(shooterAimModel.getHoodAngle());
+            },
+            hood)
         .withName("AutoHoodWithTrenchSafety");
+  }
+
+  public Command runManualHoodWithTrenchSafety() {
+    return run(
+            () -> {
+              hood.setShooting(!hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()));
+            },
+            hood)
+        .withName("ManualHoodWithTrenchSafety");
   }
 
   public Command startHood() {
@@ -873,6 +881,15 @@ public class RobotCommands {
             },
             hood)
         .withName("StartHood");
+  }
+
+  public Command startHoodWithTrenchSafety() {
+    return runOnce(
+            () -> {
+              hood.setShooting(!hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()));
+            },
+            hood)
+        .withName("StartHoodWithTrenchSafety");
   }
 
   public Command stopHood() {
