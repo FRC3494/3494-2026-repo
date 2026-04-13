@@ -119,6 +119,9 @@ public class Hood extends SubsystemBase {
   }
 
   private void logSendableValues() {
+    Logger.recordOutput("Shooter/Hood/ManualAngle", hoodManualAngle);
+    Logger.recordOutput("Shooter/Hood/ManualIncrement", hoodManualIncrement);
+
     Logger.recordOutput("Shooter/Hood/PID/kP", hoodKp);
     Logger.recordOutput("Shooter/Hood/PID/kI", hoodKi);
     Logger.recordOutput("Shooter/Hood/PID/kD", hoodKd);
