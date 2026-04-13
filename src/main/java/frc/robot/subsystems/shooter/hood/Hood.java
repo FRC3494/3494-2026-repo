@@ -88,11 +88,11 @@ public class Hood extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty(
         "Manual Angle",
-        hoodManualAngle::getDegrees,
+        () -> hoodManualAngle.getDegrees(),
         (double value) -> hoodManualAngle = Rotation2d.fromDegrees(value));
     builder.addDoubleProperty(
         "Manual Increment",
-        hoodManualIncrement::getDegrees,
+        () -> hoodManualIncrement.getDegrees(),
         (double value) -> hoodManualIncrement = Rotation2d.fromDegrees(value));
 
     builder.addDoubleArrayProperty(
