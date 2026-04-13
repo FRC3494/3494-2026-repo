@@ -403,7 +403,7 @@ public final class Constants {
 
       public static Distance trenchXTolerance = fieldLength;
       public static Distance trenchYTolerance = Inches.of(5.0);
-      public static Rotation2d trenchAngularTolerance = Rotation2d.fromDegrees(5.0);
+      public static Rotation2d trenchAngularTolerance = Rotation2d.fromDegrees(2.0);
 
       // X value beyond which we align to the opposite alliance's trenches
       public static Distance closerToOppositeTrenchLine = fieldLength.div(2.0).plus(Feet.of(9.0));
