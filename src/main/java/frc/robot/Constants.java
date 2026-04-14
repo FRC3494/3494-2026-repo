@@ -556,7 +556,7 @@ public final class Constants {
       public static Distance azXTrim = Inches.zero();
       public static Distance azYTrim = Inches.zero();
 
-      public static Distance nzDistanceTrimDefault = Inches.of(30.0);
+      public static Distance nzDistanceTrimDefault = Inches.of(15.0);
       public static Distance nzDistanceTrim = nzDistanceTrimDefault;
       public static Distance nzXTrim = Inches.zero();
       public static Distance nzYTrim = Inches.zero();
