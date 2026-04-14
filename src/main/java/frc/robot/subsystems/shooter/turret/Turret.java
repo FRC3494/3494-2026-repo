@@ -210,14 +210,20 @@ public class Turret extends SubsystemBase {
   public void setPosition(double rotations) {
     turretSetpointRot = rotations;
 
-    while (rotations <= turretMinAngleRot) {
-      rotations += 1.0;
-    }
-    while (rotations >= turretMaxAngleRot) {
-      rotations -= 1.0;
-    }
+    // Wrap setpoint to [0, 1)
+    double wrappedRotations = rotations - Math.floor(rotations);
 
-    turretSetpointClampedRot = rotations;
+    if (wrappedRotations >= turretMinAngleRot + 1.0) {
+      turretSetpointClampedRot =
+          closerTo(wrappedRotations, wrappedRotations - 1.0, getPositionRot())
+              ? wrappedRotations
+              : wrappedRotations - 1.0;
+    } else if (wrappedRotations <= turretMaxAngleRot - 1.0) {
+      turretSetpointClampedRot =
+          closerTo(wrappedRotations, wrappedRotations + 1.0, getPositionRot())
+              ? wrappedRotations
+              : wrappedRotations + 1.0;
+    }
 
     runTurret();
   }

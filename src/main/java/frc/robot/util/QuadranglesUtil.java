@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import java.util.Arrays;
 import org.littletonrobotics.junction.Logger;
 
 public final class QuadranglesUtil {
@@ -95,6 +96,17 @@ public final class QuadranglesUtil {
   public static boolean closerToWithFlip(
       Translation2d a, Translation2d b, Translation2d inputTranslation) {
     return closerTo(a, b, toAllianceTranslation(inputTranslation));
+  }
+
+  public static boolean closerTo(double a, double b, double input) {
+    double distanceToA = Math.abs(a - input);
+    double distanceToB = Math.abs(b - input);
+
+    return distanceToA <= distanceToB;
+  }
+
+  public static double average(double... numbers) {
+    return Arrays.stream(numbers).sum() / numbers.length;
   }
 
   public static void logMotorStats(String key, SparkBase spark, boolean absoluteEncoder) {
