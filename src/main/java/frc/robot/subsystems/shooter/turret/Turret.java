@@ -85,70 +85,124 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Turret Position
     builder.addDoubleProperty(
         "Rezero Location",
         () -> Units.rotationsToDegrees(turretRezeroLocationRot),
-        (double value) -> turretRezeroLocationRot = Units.degreesToRotations(value));
+        (double value) -> {
+          turretRezeroLocationRot = Units.degreesToRotations(value);
+          Logger.recordOutput("Shooter/Turret/RezeroLocationRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput("Shooter/Turret/RezeroLocationRot", turretRezeroLocationRot);
+
+    builder.addDoubleProperty(
+        "Lock Location",
+        () -> Units.rotationsToDegrees(turretLockLocationRot),
+        (double value) -> {
+          turretLockLocationRot = Units.degreesToRotations(value);
+          Logger.recordOutput("Shooter/Turret/LockPositionRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput("Shooter/Turret/LockPositionRot", turretLockLocationRot);
+
     builder.addDoubleProperty(
         "Shooting Tolerance",
         () -> Units.rotationsToDegrees(turretShootingToleranceRot),
-        (double value) -> turretShootingToleranceRot = Units.degreesToRotations(value));
-
-    builder.addDoubleArrayProperty(
-        "PID",
-        () -> new double[] {turretKp, turretKi, turretKd},
-        (double[] values) -> setPID(values[0], values[1], values[2]));
-    builder.addDoubleProperty(
-        "IMaxAccum (deg)",
-        () -> Units.rotationsToDegrees(turretIMaxAccumRot),
-        (double value) -> setPIDIntegralConstants(Units.degreesToRotations(value), turretIZoneRot));
-    builder.addDoubleProperty(
-        "IZone (deg)",
-        () -> Units.rotationsToDegrees(turretIZoneRot),
-        (double value) ->
-            setPIDIntegralConstants(turretIMaxAccumRot, Units.degreesToRotations(value)));
-    builder.addDoubleArrayProperty(
-        "SVA",
-        () -> new double[] {turretKs, turretKv, turretKa},
-        (double[] values) -> setSVA(values[0], values[1], values[2]));
-
-    builder.addDoubleProperty(
-        "Cable Retractor Start Location",
-        () -> Units.rotationsToDegrees(turretCableRetractorStartRot),
-        (double value) -> turretCableRetractorStartRot = Units.degreesToRotations(value));
-    builder.addDoubleProperty(
-        "Cable Retractor CW FF",
-        () -> turretCableRetractorFFCW.in(Volts),
-        (double value) -> turretCableRetractorFFCW = Volts.of(value));
-    builder.addDoubleProperty(
-        "Cable Retractor CCW FF",
-        () -> turretCableRetractorFFCCW.in(Volts),
-        (double value) -> turretCableRetractorFFCCW = Volts.of(value));
+        (double value) -> {
+          turretShootingToleranceRot = Units.degreesToRotations(value);
+          Logger.recordOutput(
+              "Shooter/Turret/ShootingToleranceRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput("Shooter/Turret/ShootingToleranceRot", turretShootingToleranceRot);
 
     builder.addDoubleProperty(
         "Manual Increment",
         () -> Units.rotationsToDegrees(turretManualIncrementRot),
-        (double value) -> turretManualIncrementRot = Units.degreesToRotations(value));
-  }
+        (double value) -> {
+          turretManualIncrementRot = Units.degreesToRotations(value);
 
-  private void logSendableValues() {
-    Logger.recordOutput("Shooter/Turret/RezeroLocation", turretRezeroLocationRot);
-    Logger.recordOutput("Shooter/Turret/ShootingTolerance", turretShootingToleranceRot);
+          Logger.recordOutput("Shooter/Turret/ManualIncrementRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput("Shooter/Turret/ManualIncrementRot", turretManualIncrementRot);
 
+    // Turret PID
+    builder.addDoubleArrayProperty(
+        "PID",
+        () -> new double[] {turretKp, turretKi, turretKd},
+        (double[] values) -> {
+          setPID(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Turret/PID/kP", values[0]);
+          Logger.recordOutput("Shooter/Turret/PID/kI", values[1]);
+          Logger.recordOutput("Shooter/Turret/PID/kD", values[2]);
+        });
     Logger.recordOutput("Shooter/Turret/PID/kP", turretKp);
     Logger.recordOutput("Shooter/Turret/PID/kI", turretKi);
     Logger.recordOutput("Shooter/Turret/PID/kD", turretKd);
-    Logger.recordOutput("Shooter/Turret/PID/IMaxAccum", turretIMaxAccumRot);
-    Logger.recordOutput("Shooter/Turret/PID/IZone", turretIZoneRot);
+
+    builder.addDoubleProperty(
+        "IMaxAccum (deg)",
+        () -> Units.rotationsToDegrees(turretIMaxAccumRot),
+        (double value) -> {
+          setPIDIntegralConstants(Units.degreesToRotations(value), turretIZoneRot);
+          Logger.recordOutput("Shooter/Turret/PID/IMaxAccumRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput("Shooter/Turret/PID/IMaxAccumRot", turretIMaxAccumRot);
+
+    builder.addDoubleProperty(
+        "IZone (deg)",
+        () -> Units.rotationsToDegrees(turretIZoneRot),
+        (double value) -> {
+          setPIDIntegralConstants(turretIMaxAccumRot, Units.degreesToRotations(value));
+          Logger.recordOutput("Shooter/Turret/PID/IZoneRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput("Shooter/Turret/PID/IZoneRot", turretIZoneRot);
+
+    builder.addDoubleArrayProperty(
+        "SVA",
+        () -> new double[] {turretKs, turretKv, turretKa},
+        (double[] values) -> {
+          setSVA(values[0], values[1], values[2]);
+          Logger.recordOutput("Shooter/Turret/PID/kS", values[0]);
+          Logger.recordOutput("Shooter/Turret/PID/kV", values[1]);
+          Logger.recordOutput("Shooter/Turret/PID/kA", values[2]);
+        });
     Logger.recordOutput("Shooter/Turret/PID/kS", turretKs);
     Logger.recordOutput("Shooter/Turret/PID/kV", turretKv);
     Logger.recordOutput("Shooter/Turret/PID/kA", turretKa);
+
+    // Cable Retractor Feedforward
+    builder.addDoubleProperty(
+        "Cable Retractor Start Location",
+        () -> Units.rotationsToDegrees(turretCableRetractorStartRot),
+        (double value) -> {
+          turretCableRetractorStartRot = Units.degreesToRotations(value);
+          Logger.recordOutput(
+              "Shooter/Turret/CableRetractor/StartLocationRot", Units.degreesToRotations(value));
+        });
+    Logger.recordOutput(
+        "Shooter/Turret/CableRetractor/StartLocationRot", turretCableRetractorStartRot);
+
+    builder.addDoubleProperty(
+        "Cable Retractor CW FF",
+        () -> turretCableRetractorFFCW.in(Volts),
+        (double value) -> {
+          turretCableRetractorFFCW = Volts.of(value);
+          Logger.recordOutput("Shooter/Turret/CableRetractor/FeedforwardCW", Volts.of(value));
+        });
+    Logger.recordOutput("Shooter/Turret/CableRetractor/FeedforwardCW", turretCableRetractorFFCW);
+
+    builder.addDoubleProperty(
+        "Cable Retractor CCW FF",
+        () -> turretCableRetractorFFCCW.in(Volts),
+        (double value) -> {
+          turretCableRetractorFFCCW = Volts.of(value);
+          Logger.recordOutput("Shooter/Turret/CableRetractor/FeedforwardCW", Volts.of(value));
+        });
+    Logger.recordOutput("Shooter/Turret/CableRetractor/FeedforwardCCW", turretCableRetractorFFCCW);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Turret/Motor", turretMotor, false);
-    logSendableValues();
 
     runTurret();
   }

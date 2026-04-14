@@ -697,6 +697,7 @@ public final class Constants {
 
       // Turret shooting over the back of the robot
       public static double turretRezeroLocationRot = Units.degreesToRotations(180);
+      public static double turretLockLocationRot = Units.degreesToRotations(90.0);
       public static double turretShootingToleranceRot = Units.degreesToRotations(20.0);
 
       // Speed of manually moving turret CW/CCW

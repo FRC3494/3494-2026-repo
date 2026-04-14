@@ -1033,7 +1033,7 @@ public class RobotCommands {
   }
 
   public Command lockTurret() {
-    return turretToPosition(Units.degreesToRotations(90.0)).withName("LockTurret");
+    return turretToPosition(turretLockLocationRot).withName("LockTurret");
   }
 
   public Command enableAutoTurret() {
