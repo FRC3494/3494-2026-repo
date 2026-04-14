@@ -531,7 +531,8 @@ public class RobotContainer {
                 .withName("IntakeButtonPress"))
         .whileFalse(
             either(
-                    robotCommands.runIntakeJostle(),
+                    either(
+                        robotCommands.runIntakeJostle(), none(), shooterAimModel::isInAllianceZone),
                     robotCommands.spinDownFromIntake(),
                     ShooterOI.shoot()::getAsBoolean)
                 .withName("IntakeButtonRelease"));
@@ -569,7 +570,7 @@ public class RobotContainer {
             either(
                     robotCommands.shootWithoutIntakeJostle(),
                     robotCommands.shoot(),
-                    IntakeOI.intake()::getAsBoolean)
+                    () -> IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone())
                 .withName("ShootButtonPress"))
         .onFalse(
             either(
