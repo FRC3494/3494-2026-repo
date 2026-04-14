@@ -108,103 +108,168 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Turret Feedforward
     builder.addDoubleProperty(
-        "Robot Yaw kV", () -> robotYawKv, (double value) -> robotYawKv = value);
+        "Robot Yaw kV",
+        () -> robotYawKv,
+        (double value) -> {
+          robotYawKv = value;
+          Logger.recordOutput("AimShooterMath/RobotYawKv", value);
+        });
+    Logger.recordOutput("AimShooterMath/RobotYawKv", robotYawKv);
 
+    // Turret Trim
     builder.addDoubleProperty(
         "Turret Trim",
         () -> Units.rotationsToDegrees(turretTrimRot),
-        (double value) -> turretTrimRot = Units.degreesToRotations(value));
+        (double value) -> {
+          double rotations = Units.degreesToRotations(value);
+          turretTrimRot = rotations;
+          Logger.recordOutput("AimShooterMathLinear/TurretTrimRot", rotations);
+          Logger.recordOutput("AimShooterMathLinear/TurretTrimDeg", value);
+        });
+    Logger.recordOutput("AimShooterMathLinear/TurretTrimRot", turretTrimRot);
+    Logger.recordOutput(
+        "AimShooterMathLinear/TurretTrimDeg", Units.rotationsToDegrees(turretTrimRot));
 
+    // Hood Trim
     builder.addDoubleProperty(
         "AZ Hood Trim",
-        azHoodTrim::getDegrees,
-        (double value) -> azHoodTrim = Rotation2d.fromDegrees(value));
+        () -> azHoodTrim.getDegrees(),
+        (double value) -> {
+          azHoodTrim = Rotation2d.fromDegrees(value);
+          Logger.recordOutput("AimShooterMathLinear/AZHoodTrim", Rotation2d.fromDegrees(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/AZHoodTrim", azHoodTrim);
+
     builder.addDoubleProperty(
         "NZ Hood Trim",
-        nzHoodTrim::getDegrees,
-        (double value) -> nzHoodTrim = Rotation2d.fromDegrees(value));
+        () -> nzHoodTrim.getDegrees(),
+        (double value) -> {
+          nzHoodTrim = Rotation2d.fromDegrees(value);
+          Logger.recordOutput("AimShooterMathLinear/NZHoodTrim", Rotation2d.fromDegrees(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/NZHoodTrim", nzHoodTrim);
+
+    // Flywheel Trim
     builder.addIntegerProperty(
         "AZ Flywheel Trim",
         () -> ((long) azFlywheelTrim.in(RPM)),
-        (long value) -> azFlywheelTrim = RPM.of(value));
+        (long value) -> {
+          azFlywheelTrim = RPM.of(value);
+          Logger.recordOutput("AimShooterMathLinear/AZFlywheelTrim", RPM.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/AZFlywheelTrim", azFlywheelTrim);
+
     builder.addIntegerProperty(
         "NZ Flywheel Trim",
         () -> ((long) nzFlywheelTrim.in(RPM)),
-        (long value) -> nzFlywheelTrim = RPM.of(value));
+        (long value) -> {
+          nzFlywheelTrim = RPM.of(value);
+          Logger.recordOutput("AimShooterMathLinear/NZFlywheelTrim", RPM.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/NZFlywheelTrim", nzFlywheelTrim);
 
+    // Distance Trim
     builder.addDoubleProperty(
         "AZ Distance Trim (in)",
         () -> azDistanceTrim.in(Inches),
-        (double value) -> azDistanceTrim = Inches.of(value));
+        (double value) -> {
+          azDistanceTrim = Inches.of(value);
+          Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", Inches.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", azDistanceTrim);
 
     builder.addDoubleProperty(
         "AZ Distance Trim Default (in)",
         () -> azDistanceTrimDefault.in(Inches),
         (double value) -> {
-          azDistanceTrimDefault = Inches.of(value);
-          azDistanceTrim = Inches.of(value);
+          Distance trim = Inches.of(value);
+          azDistanceTrimDefault = trim;
+          azDistanceTrim = trim;
+          Logger.recordOutput("AimShooterMathLinear/AZDistanceTrimDefault", trim);
         });
-    builder.addDoubleProperty(
-        "AZ X Trim (in)", () -> azXTrim.in(Inches), (double value) -> azXTrim = Inches.of(value));
-    builder.addDoubleProperty(
-        "AZ Y Trim (in)", () -> azYTrim.in(Inches), (double value) -> azYTrim = Inches.of(value));
+    Logger.recordOutput("AimShooterMathLinear/AZDistanceTrimDefault", azDistanceTrimDefault);
 
     builder.addDoubleProperty(
         "NZ Distance Trim (in)",
         () -> nzDistanceTrim.in(Inches),
-        (double value) -> nzDistanceTrim = Inches.of(value));
+        (double value) -> {
+          nzDistanceTrim = Inches.of(value);
+          Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", Inches.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", nzDistanceTrim);
+
     builder.addDoubleProperty(
         "NZ Distance Trim Default (in)",
         () -> nzDistanceTrimDefault.in(Inches),
         (double value) -> {
-          nzDistanceTrimDefault = Inches.of(value);
-          nzDistanceTrim = Inches.of(value);
+          Distance trim = Inches.of(value);
+          nzDistanceTrimDefault = trim;
+          nzDistanceTrim = trim;
+          Logger.recordOutput("AimShooterMathLinear/NZDistanceTrimDefault", trim);
         });
-    builder.addDoubleProperty(
-        "NZ X Trim (in)", () -> nzXTrim.in(Inches), (double value) -> nzXTrim = Inches.of(value));
-    builder.addDoubleProperty(
-        "NZ Y Trim (in)", () -> nzYTrim.in(Inches), (double value) -> nzYTrim = Inches.of(value));
+    Logger.recordOutput("AimShooterMathLinear/NZDistanceTrimDefault", nzDistanceTrimDefault);
 
+    // XY Trim
+    builder.addDoubleProperty(
+        "AZ X Trim (in)",
+        () -> azXTrim.in(Inches),
+        (double value) -> {
+          azXTrim = Inches.of(value);
+          Logger.recordOutput("AimShooterMathLinear/AZXTrim", Inches.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/AZXTrim", azXTrim);
+
+    builder.addDoubleProperty(
+        "AZ Y Trim (in)",
+        () -> azYTrim.in(Inches),
+        (double value) -> {
+          azYTrim = Inches.of(value);
+          Logger.recordOutput("AimShooterMathLinear/AZYTrim", Inches.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/AZYTrim", azYTrim);
+
+    builder.addDoubleProperty(
+        "NZ X Trim (in)",
+        () -> nzXTrim.in(Inches),
+        (double value) -> {
+          nzXTrim = Inches.of(value);
+          Logger.recordOutput("AimShooterMathLinear/NZXTrim", Inches.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/NZXTrim", nzXTrim);
+
+    builder.addDoubleProperty(
+        "NZ Y Trim (in)",
+        () -> nzYTrim.in(Inches),
+        (double value) -> {
+          nzYTrim = Inches.of(value);
+          Logger.recordOutput("AimShooterMathLinear/NZYTrim", Inches.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/NZYTrim", nzYTrim);
+
+    // Time of Flight Adjustment
     builder.addDoubleProperty(
         "AZ TOF Adjustment",
         () -> azTOFAdjustment.in(Seconds),
-        (double value) -> azTOFAdjustment = Seconds.of(value));
+        (double value) -> {
+          azTOFAdjustment = Seconds.of(value);
+          Logger.recordOutput("AimShooterMathLinear/AzTofAdjustment", Seconds.of(value));
+        });
+    Logger.recordOutput("AimShooterMathLinear/AzTofAdjustment", azTOFAdjustment);
+
     builder.addDoubleProperty(
         "NZ TOF Adjustment",
         () -> nzTOFAdjustment.in(Seconds),
-        (double value) -> nzTOFAdjustment = Seconds.of(value));
-  }
-
-  private void logSendableValues() {
-    Logger.recordOutput("AimShooterMath/RobotYawKv", robotYawKv);
-
-    Logger.recordOutput("AimShooterMathLinear/TurretTrim", turretTrimRot);
-
-    Logger.recordOutput("AimShooterMathLinear/AZHoodTrim", azHoodTrim);
-    Logger.recordOutput("AimShooterMathLinear/NZHoodTrim", nzHoodTrim);
-    Logger.recordOutput("AimShooterMathLinear/AZFlywheelTrim", azFlywheelTrim);
-    Logger.recordOutput("AimShooterMathLinear/NZFlywheelTrim", nzFlywheelTrim);
-
-    Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", azDistanceTrim);
-    Logger.recordOutput("AimShooterMathLinear/AZDistanceTrimDefault", azDistanceTrimDefault);
-    Logger.recordOutput("AimShooterMathLinear/AZXTrim", azXTrim);
-    Logger.recordOutput("AimShooterMathLinear/AZYTrim", azYTrim);
-
-    Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", nzDistanceTrim);
-    Logger.recordOutput("AimShooterMathLinear/NZDistanceTrimDefault", nzDistanceTrimDefault);
-    Logger.recordOutput("AimShooterMathLinear/NZXTrim", nzXTrim);
-    Logger.recordOutput("AimShooterMathLinear/NZYTrim", nzYTrim);
-
-    Logger.recordOutput("AimShooterMathLinear/AzTofAdjustment", azTOFAdjustment);
+        (double value) -> {
+          nzTOFAdjustment = Seconds.of(value);
+          Logger.recordOutput("AimShooterMathLinear/NzTofAdjustment", Seconds.of(value));
+        });
     Logger.recordOutput("AimShooterMathLinear/NzTofAdjustment", nzTOFAdjustment);
   }
 
   @Override
   public void periodic() {
-    logSendableValues();
-    Logger.recordOutput(
-        "AimShooterMathLinear/TurretTrimDeg", Units.rotationsToDegrees(turretTrimRot));
 
     Pose2d currentRobotPose = robotPose.get();
     ChassisSpeeds robotSpeed = robotSpeeds.get();
