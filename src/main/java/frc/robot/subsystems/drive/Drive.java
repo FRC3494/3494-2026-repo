@@ -756,11 +756,10 @@ public class Drive extends SubsystemBase {
   }
 
   public void resetYaw() {
-    if (DriverStation.getAlliance().isPresent()
-        && DriverStation.getAlliance().get() == Alliance.Red) {
-      setRotation(Rotation2d.k180deg);
-    } else {
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
       setRotation(Rotation2d.kZero);
+    } else {
+      setRotation(Rotation2d.k180deg);
     }
   }
 }
