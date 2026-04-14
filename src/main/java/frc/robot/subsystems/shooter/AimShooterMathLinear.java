@@ -203,6 +203,8 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   @Override
   public void periodic() {
     logSendableValues();
+    Logger.recordOutput(
+        "AimShooterMathLinear/TurretTrimDeg", Units.rotationsToDegrees(turretTrimRot));
 
     Pose2d currentRobotPose = robotPose.get();
     ChassisSpeeds robotSpeed = robotSpeeds.get();

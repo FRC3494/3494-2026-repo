@@ -385,7 +385,7 @@
             "height": 260.0,
             "type": "Radial Gauge",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/TurretTrim",
+              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/TurretTrimDeg",
               "period": 0.06,
               "data_type": "double",
               "start_angle": -180.0,
