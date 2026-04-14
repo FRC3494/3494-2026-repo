@@ -48,7 +48,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.OI;
+import frc.robot.OI.DriveOI;
+import frc.robot.OI.ShooterOI;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -189,25 +190,46 @@ public class Drive extends SubsystemBase {
         });
     Logger.recordOutput("Drive/MaxAngularSpeed", RadiansPerSecond.of(maxAngularSpeedRadPerSec));
 
+    // Max Speeds While Shooting
     builder.addDoubleProperty(
-        "Max Shooting Drive Speed (FtPerSec)",
-        () -> Units.metersToFeet(maxShootingSpeedMetersPerSec),
+        "Max AZ Shooting Drive Speed (FtPerSec)",
+        () -> Units.metersToFeet(maxAZShootingSpeedMetersPerSec),
         (double value) -> {
-          maxShootingSpeedMetersPerSec = Units.feetToMeters(value);
-          Logger.recordOutput("Drive/MaxShootingDriveSpeed", FeetPerSecond.of(value));
+          maxAZShootingSpeedMetersPerSec = Units.feetToMeters(value);
+          Logger.recordOutput("Drive/MaxAZShootingDriveSpeed", FeetPerSecond.of(value));
         });
     Logger.recordOutput(
-        "Drive/MaxShootingDriveSpeed", MetersPerSecond.of(maxShootingSpeedMetersPerSec));
+        "Drive/MaxAZShootingDriveSpeed", MetersPerSecond.of(maxAZShootingSpeedMetersPerSec));
 
     builder.addDoubleProperty(
-        "Max Shooting Angular Speed (DegPerSec)",
-        () -> Units.radiansToDegrees(maxShootingAngularSpeedRadPerSec),
+        "Max AZ Shooting Angular Speed (DegPerSec)",
+        () -> Units.radiansToDegrees(maxAZShootingAngularSpeedRadPerSec),
         (double value) -> {
-          maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(value);
-          Logger.recordOutput("Drive/MaxShootingAngularSpeed", DegreesPerSecond.of(value));
+          maxAZShootingAngularSpeedRadPerSec = Units.degreesToRadians(value);
+          Logger.recordOutput("Drive/MaxAZShootingAngularSpeed", DegreesPerSecond.of(value));
         });
     Logger.recordOutput(
-        "Drive/MaxShootingAngularSpeed", RadiansPerSecond.of(maxShootingAngularSpeedRadPerSec));
+        "Drive/MaxAZShootingAngularSpeed", RadiansPerSecond.of(maxAZShootingAngularSpeedRadPerSec));
+
+    builder.addDoubleProperty(
+        "Max NZ Shooting Drive Speed (FtPerSec)",
+        () -> Units.metersToFeet(maxNZShootingSpeedMetersPerSec),
+        (double value) -> {
+          maxNZShootingSpeedMetersPerSec = Units.feetToMeters(value);
+          Logger.recordOutput("Drive/MaxNZShootingDriveSpeed", FeetPerSecond.of(value));
+        });
+    Logger.recordOutput(
+        "Drive/MaxNZShootingDriveSpeed", MetersPerSecond.of(maxNZShootingSpeedMetersPerSec));
+
+    builder.addDoubleProperty(
+        "Max NZ Shooting Angular Speed (DegPerSec)",
+        () -> Units.radiansToDegrees(maxNZShootingAngularSpeedRadPerSec),
+        (double value) -> {
+          maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(value);
+          Logger.recordOutput("Drive/MaxNZShootingAngularSpeed", DegreesPerSecond.of(value));
+        });
+    Logger.recordOutput(
+        "Drive/MaxNZShootingAngularSpeed", RadiansPerSecond.of(maxNZShootingAngularSpeedRadPerSec));
 
     // Auto PID
     builder.addDoubleArrayProperty(
@@ -666,16 +688,12 @@ public class Drive extends SubsystemBase {
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return !OI.ShooterOI.shoot().getAsBoolean()
-                || toAllianceX(getPose().getMeasureX()).gt(azLine)
-            ? maxSpeedMetersPerSec * demoModeSpeedFactor
-            : maxShootingSpeedMetersPerSec * demoModeSpeedFactor;
+        return maxSpeedMetersPerSec * demoModeSpeedFactor;
       }
       default -> {
-        return !OI.ShooterOI.shoot().getAsBoolean()
-                || toAllianceX(getPose().getMeasureX()).gt(azLine)
-            ? maxSpeedMetersPerSec
-            : maxShootingSpeedMetersPerSec;
+        return shootingDriveSpeed()
+            ? (inAllianceZone() ? maxAZShootingSpeedMetersPerSec : maxNZShootingSpeedMetersPerSec)
+            : maxSpeedMetersPerSec;
       }
     }
   }
@@ -684,18 +702,24 @@ public class Drive extends SubsystemBase {
   public double getMaxAngularSpeedRadPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return !OI.ShooterOI.shoot().getAsBoolean()
-                || toAllianceX(getPose().getMeasureX()).gt(azLine)
-            ? maxAngularSpeedRadPerSec * demoModeSpeedFactor
-            : maxShootingAngularSpeedRadPerSec * demoModeSpeedFactor;
+        return maxAngularSpeedRadPerSec * demoModeSpeedFactor;
       }
       default -> {
-        return !OI.ShooterOI.shoot().getAsBoolean()
-                || toAllianceX(getPose().getMeasureX()).gt(azLine)
-            ? maxAngularSpeedRadPerSec
-            : maxShootingAngularSpeedRadPerSec;
+        return shootingDriveSpeed()
+            ? (inAllianceZone()
+                ? maxAZShootingAngularSpeedRadPerSec
+                : maxNZShootingAngularSpeedRadPerSec)
+            : maxAngularSpeedRadPerSec;
       }
     }
+  }
+
+  private boolean shootingDriveSpeed() {
+    return ShooterOI.shoot().getAsBoolean() && !DriveOI.autoDriveThroughTrench().getAsBoolean();
+  }
+
+  private boolean inAllianceZone() {
+    return toAllianceX(getPose().getMeasureX()).lte(azLine);
   }
 
   public void rezeroTurnEncoders() {

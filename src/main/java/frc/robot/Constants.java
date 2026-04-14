@@ -251,11 +251,14 @@ public final class Constants {
     */
 
     public static double maxSpeedMetersPerSec = 4.62906; // 15.187 ft/s
-    public static double maxShootingSpeedMetersPerSec = Units.feetToMeters(4.0);
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
     public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 72);
-    public static double maxShootingAngularSpeedRadPerSec = Units.degreesToRadians(110);
     public static final double demoModeSpeedFactor = 0.15;
+
+    public static double maxAZShootingSpeedMetersPerSec = Units.feetToMeters(5.0);
+    public static double maxAZShootingAngularSpeedRadPerSec = Units.degreesToRadians(110);
+    public static double maxNZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
+    public static double maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(110);
 
     public static final double odometryFrequency = 100.0; // Hz
     public static final double trackWidth = Units.inchesToMeters(21.75);
