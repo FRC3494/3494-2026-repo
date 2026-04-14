@@ -42,13 +42,8 @@ public class AprilTagCamera {
   @AutoLogOutput(key = "Vision/{name}/RobotYawVelocity")
   private AngularVelocity robotYawVelocity = DegreesPerSecond.of(0.0);
 
-  @Getter
-  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement1")
-  private boolean validMeasurement1;
-
-  @Getter
-  @AutoLogOutput(key = "Vision/{name}/ValidMeasurement2")
-  private boolean validMeasurement2;
+  private boolean validMeasurement1 = false;
+  private boolean validMeasurement2 = false;
 
   @Getter private Pose2d pose;
   @Getter private double poseTimestamp;
@@ -68,12 +63,12 @@ public class AprilTagCamera {
         position.getRotation().getMeasureX().in(Degrees),
         position.getRotation().getMeasureY().in(Degrees),
         position.getRotation().getMeasureZ().in(Degrees));
-
-    LimelightHelpers.SetFiducialIDFiltersOverride(name, enabledAprilTags);
-
     Logger.recordOutput(
         "Vision/" + name + "/CameraPoseRobotSpace",
         LimelightHelpers.getCameraPose3d_RobotSpace(name));
+
+    LimelightHelpers.SetFiducialIDFiltersOverride(name, enabledAprilTags);
+    Logger.recordOutput("Vision" + name + "/EnabledTags", enabledAprilTags);
   }
 
   // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
@@ -84,44 +79,51 @@ public class AprilTagCamera {
         "Vision/" + name + "/Connected", connectedDebouncer.calculate(newHeartbeat != heartbeat));
     heartbeat = newHeartbeat;
 
-    // Give robot yaw info to Limelight
-    LimelightHelpers.SetRobotOrientation(
-        name, robotYaw.getDegrees(), robotYawVelocity.in(DegreesPerSecond), 0, 0, 0, 0);
+    if (megaTag2Enabled) {
+      // Give robot yaw info to Limelight
+      LimelightHelpers.SetRobotOrientation(
+          name, robotYaw.getDegrees(), robotYawVelocity.in(DegreesPerSecond), 0, 0, 0, 0);
 
-    // Get pose estimate from Limelight
-    PoseEstimate poseEstimate1;
-    PoseEstimate poseEstimate2;
-    // poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
-    poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+      PoseEstimate poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-    // logPoseEstimateStats(poseEstimate1, "MegaTag1");
-    logPoseEstimateStats(poseEstimate2, "MegaTag2");
+      logPoseEstimateStats(poseEstimate2, true);
 
-    // validMeasurement1 = isMeasurementValid(poseEstimate1, "MegaTag1");
-    validMeasurement2 = isMeasurementValid(poseEstimate2, "MegaTag2");
+      validMeasurement2 = isMeasurementValid(poseEstimate2, true);
+      Logger.recordOutput("Vision/" + name + "/ValidMeasurement2", validMeasurement2);
 
-    // Save pose estimate if valid
-    if (validMeasurement1 && !megaTag2Enabled) {
-      // pose = poseEstimate1.pose;
-      // poseTimestamp = poseEstimate1.timestampSeconds;
-      // stdDevs = getStdDevs(poseEstimate1);
-    } else if (validMeasurement2 && megaTag2Enabled) {
-      pose = poseEstimate2.pose;
-      poseTimestamp = poseEstimate2.timestampSeconds;
-      stdDevs = getStdDevs(poseEstimate2);
+      if (validMeasurement2) {
+        pose = poseEstimate2.pose;
+        poseTimestamp = poseEstimate2.timestampSeconds;
+        stdDevs = getStdDevs(poseEstimate2);
+      }
+    } else {
+      PoseEstimate poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+
+      logPoseEstimateStats(poseEstimate1, false);
+
+      validMeasurement1 = isMeasurementValid(poseEstimate1, false);
+      Logger.recordOutput("Vision/" + name + "/ValidMeasurement1", validMeasurement1);
+
+      if (validMeasurement1) {
+        pose = poseEstimate1.pose;
+        poseTimestamp = poseEstimate1.timestampSeconds;
+        stdDevs = getStdDevs(poseEstimate1);
+      }
     }
   }
 
   @AutoLogOutput(key = "Vision/{name}/Valid")
   public boolean isValidMeasurement() {
-    if (!megaTag2Enabled) {
-      return validMeasurement1;
-    } else {
+    if (megaTag2Enabled) {
       return validMeasurement2;
+    } else {
+      return validMeasurement1;
     }
   }
 
-  private void logPoseEstimateStats(PoseEstimate poseEstimate, String tagType) {
+  private void logPoseEstimateStats(PoseEstimate poseEstimate, boolean megaTag2) {
+    String tagType = megaTag2 ? "MegaTag2" : "MegaTag1";
+
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/AvgTagDist", poseEstimate.avgTagDist);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/AvgTagArea", poseEstimate.avgTagArea);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/Pose", poseEstimate.pose);
@@ -137,27 +139,29 @@ public class AprilTagCamera {
     // poseEstimate.rawFiducials.toString());
   }
 
-  private boolean isMeasurementValid(PoseEstimate poseEstimate, String tagType) {
+  private boolean isMeasurementValid(PoseEstimate poseEstimate, boolean megaTag2) {
     // TODO: use limelight's own measurement valid function
+    String tagType = megaTag2 ? "MegaTag2" : "MegaTag1";
 
     boolean estimateNotNull = poseEstimate != null;
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/EstimateNotNull", estimateNotNull);
 
     boolean tagCountValid =
-        megaTag2Enabled
+        megaTag2
             ? poseEstimate.tagCount >= minTagCountMT2
             : poseEstimate.tagCount >= minTagCountMT1;
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagCountValid", tagCountValid);
 
     boolean tagsWithinRange =
-        poseEstimate.avgTagDist
-            < (megaTag2Enabled ? maxTagDistanceMT2 : maxTagDistanceMT1).in(Meters);
+        poseEstimate.avgTagDist < (megaTag2 ? maxTagDistanceMT2 : maxTagDistanceMT1).in(Meters);
     Logger.recordOutput("Vision/" + name + "/" + tagType + "/TagsWithinRange", tagsWithinRange);
 
     return estimateNotNull && tagCountValid && tagsWithinRange;
   }
 
   private Matrix<N3, N1> getStdDevs(PoseEstimate poseEstimate) {
+    // TODO: different stdDevs for mt1/mt2
+
     double standardDeviationX = distanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
     // maxTagDistance.in(Meters));
     double standardDeviationY = distanceStdDev; // maxDistanceStdDev * (poseEstimate.avgTagDist /
