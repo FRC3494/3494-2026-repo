@@ -539,52 +539,42 @@ public class RobotCommands {
   // #region SHOOTER
 
   public Command shoot() {
-    return either(
-            sequence(
-                startHoodWithTrenchSafety(),
-                startFlywheel(),
-                startIntakeForShoot(),
-                startSpindexer(),
-                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-                waitUntil(turret::withinShootingTolerance),
-                parallel(
-                    autoFlywheelCommand(),
-                    runAutoHood(),
-                    runIntakeJostle(),
-                    runSpindexerAndKicker())),
-            none(),
-            () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+    return sequence(
+            startHoodWithTrenchSafety(),
+            startFlywheel(),
+            startIntakeForShoot(),
+            startSpindexer(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+            waitUntil(turret::withinShootingTolerance),
+            parallel(
+                autoFlywheelCommand(), runAutoHood(), runIntakeJostle(), runSpindexerAndKicker()))
+        .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("Shoot");
   }
 
   public Command shootWithManualSettings() {
-    return either(
-            sequence(
-                startHoodWithTrenchSafety(),
-                startFlywheel(),
-                startIntakeForShoot(),
-                startSpindexer(),
-                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-                waitUntil(turret::withinShootingTolerance),
-                parallel(
-                    runManualHoodWithTrenchSafety(), runIntakeJostle(), runSpindexerAndKicker())),
-            none(),
-            () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+    return sequence(
+            startHoodWithTrenchSafety(),
+            startFlywheel(),
+            startIntakeForShoot(),
+            startSpindexer(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+            waitUntil(turret::withinShootingTolerance),
+            parallel(runManualHoodWithTrenchSafety(), runIntakeJostle(), runSpindexerAndKicker()))
+        .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWithManualSettings");
   }
 
   public Command shootWithoutIntakeJostle() {
-    return either(
-            sequence(
-                startHoodWithTrenchSafety(),
-                startFlywheel(),
-                startIntakeForShoot(),
-                startSpindexer(),
-                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-                waitUntil(turret::withinShootingTolerance),
-                parallel(autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker())),
-            none(),
-            () -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+    return sequence(
+            startHoodWithTrenchSafety(),
+            startFlywheel(),
+            startIntakeForShoot(),
+            startSpindexer(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+            waitUntil(turret::withinShootingTolerance),
+            parallel(autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker()))
+        .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWoIntakeJostle");
   }
 

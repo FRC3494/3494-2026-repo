@@ -531,8 +531,7 @@ public class RobotContainer {
                 .withName("IntakeButtonPress"))
         .whileFalse(
             either(
-                    either(
-                        robotCommands.runIntakeJostle(), none(), shooterAimModel::isInAllianceZone),
+                    robotCommands.runIntakeJostle().onlyIf(shooterAimModel::isInAllianceZone),
                     robotCommands.spinDownFromIntake(),
                     ShooterOI.shoot()::getAsBoolean)
                 .withName("IntakeButtonRelease"));
