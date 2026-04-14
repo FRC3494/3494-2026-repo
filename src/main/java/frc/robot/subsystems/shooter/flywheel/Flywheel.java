@@ -6,7 +6,9 @@ import static frc.robot.util.QuadranglesUtil.*;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -120,44 +122,62 @@ public class Flywheel extends SubsystemBase {
     Logger.recordOutput("Shooter/Flywheel/PID/kS", flywheelKs);
     Logger.recordOutput("Shooter/Flywheel/PID/kV", flywheelKv);
     Logger.recordOutput("Shooter/Flywheel/PID/kA", flywheelKa);
+
+    builder.addDoubleProperty(
+        "Speedup kA",
+        () -> flywheelSpeedupKa,
+        (double value) -> {
+          flywheelSpeedupKa = value;
+          Logger.recordOutput("Shooter/Flywheel/SpeedupKa", value);
+        });
+    Logger.recordOutput("Shooter/Flywheel/SpeedupKa", flywheelSpeedupKa);
   }
 
   @Override
   public void periodic() {
     logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
     logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
+
+    runFlywheel();
   }
 
   public void setVelocity(AngularVelocity velocity) {
     flywheelSetpoint = velocity;
 
-    if (shooting) {
-      goToSetpoint(velocity);
-    } else {
-      goToSetpoint(RPM.of(0));
-    }
+    runFlywheel();
   }
 
   public void setShooting(boolean flywheelShouldRun) {
     shooting = flywheelShouldRun;
 
-    if (flywheelShouldRun) {
-      goToSetpoint(flywheelSetpoint);
-    } else {
-      goToSetpoint(RPM.of(0));
-    }
-  }
-
-  private void goToSetpoint(AngularVelocity velocity) {
-    if (!velocity.isEquivalent(RPM.of(0))) {
-      leftMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
-    } else {
-      leftMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
-    }
+    runFlywheel();
   }
 
   public boolean atVelocity(double threshold) {
     return getVelocity().gte(flywheelSetpoint.times(threshold));
+  }
+
+  private void runFlywheel() {
+    if (!shooting || flywheelSetpoint.isEquivalent(RPM.zero())) {
+      leftMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
+      return;
+    }
+
+    AngularVelocity currentVelocity = getVelocity();
+    if (currentVelocity.lt(flywheelSetpoint)) {
+      leftMotor
+          .getClosedLoopController()
+          .setSetpoint(flywheelSetpoint.in(RPM), ControlType.kVelocity);
+    } else {
+      leftMotor
+          .getClosedLoopController()
+          .setSetpoint(
+              flywheelSetpoint.in(RPM),
+              ControlType.kVelocity,
+              ClosedLoopSlot.kSlot0,
+              flywheelSpeedupKa * (flywheelSetpoint.minus(currentVelocity)).in(RPM),
+              ArbFFUnits.kVoltage);
+    }
   }
 
   public void setOpenLoop(Voltage voltage) {
