@@ -164,10 +164,11 @@ public class Hopper extends SubsystemBase {
 
     builder.addIntegerProperty(
         "Spindexer/Current Threshold",
-        () -> ((long) spindexerCurrentThreshold.in(Amps)),
+        () -> ((long) spindexerCurrentLimit.minus(spindexerCurrentThreshold).in(Amps)),
         (long value) -> {
-          spindexerCurrentThreshold = Amps.of(value);
-          Logger.recordOutput("Hopper/Spindexer/CurrentThreshold", Amps.of(value));
+          Current threshold = spindexerCurrentLimit.minus(Amps.of(value));
+          spindexerCurrentThreshold = threshold;
+          Logger.recordOutput("Hopper/Spindexer/CurrentThreshold", threshold);
         });
     Logger.recordOutput("Hopper/Spindexer/CurrentThreshold", spindexerCurrentThreshold);
 
