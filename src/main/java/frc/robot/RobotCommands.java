@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.subsystems.climber.Climber;
@@ -627,8 +628,11 @@ public class RobotCommands {
             () -> {
               if (shooterAimModel.isInAllianceZone()) {
                 azDistanceTrim = azDistanceTrimDefault;
+                Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", azDistanceTrimDefault);
+
               } else {
                 nzDistanceTrim = nzDistanceTrimDefault;
+                Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", nzDistanceTrimDefault);
               }
             },
             shooterAimModel)
@@ -640,15 +644,20 @@ public class RobotCommands {
     return runOnce(
             () -> {
               if (shooterAimModel.isInAllianceZone()) {
-                azDistanceTrim =
+                Distance trim =
                     increment
                         ? azDistanceTrim.plus(distanceTrimIncrement)
                         : azDistanceTrim.minus(distanceTrimIncrement);
+                azDistanceTrim = trim;
+                Logger.recordOutput("AimShooterMathLinear/AZDistanceTrim", trim);
+
               } else {
-                nzDistanceTrim =
+                Distance trim =
                     increment
                         ? nzDistanceTrim.plus(distanceTrimIncrement)
                         : nzDistanceTrim.minus(distanceTrimIncrement);
+                nzDistanceTrim = trim;
+                Logger.recordOutput("AimShooterMathLinear/NZDistanceTrim", trim);
               }
             },
             shooterAimModel)
@@ -980,6 +989,10 @@ public class RobotCommands {
     return runOnce(
             () -> {
               turretTrimRot = turretTrimDefaultRot;
+              Logger.recordOutput("AimShooterMathLinear/TurretTrimRot", turretTrimDefaultRot);
+              Logger.recordOutput(
+                  "AimShooterMathLinear/TurretTrimDeg",
+                  Units.rotationsToDegrees(turretTrimDefaultRot));
             },
             shooterAimModel)
         .ignoringDisable(true)
@@ -990,9 +1003,17 @@ public class RobotCommands {
     return runOnce(
             () -> {
               if (increment) {
-                turretTrimRot += turretTrimIncrementRot;
+                double trim = turretTrimRot + turretTrimIncrementRot;
+                turretTrimRot = trim;
+                Logger.recordOutput("AimShooterMathLinear/TurretTrimRot", trim);
+                Logger.recordOutput(
+                    "AimShooterMathLinear/TurretTrimDeg", Units.rotationsToDegrees(trim));
               } else {
-                turretTrimRot -= turretTrimIncrementRot;
+                double trim = turretTrimRot - turretTrimIncrementRot;
+                turretTrimRot = trim;
+                Logger.recordOutput("AimShooterMathLinear/TurretTrimRot", trim);
+                Logger.recordOutput(
+                    "AimShooterMathLinear/TurretTrimDeg", Units.rotationsToDegrees(trim));
               }
             },
             shooterAimModel)
