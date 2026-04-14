@@ -38,40 +38,81 @@ public final class OI implements Sendable {
     builder.addIntegerArrayProperty(
         "Rumble End Times",
         () -> ((long[]) shiftRumbleTimesSeconds),
-        (long[] value) ->
-            shiftRumbleTimesSeconds =
-                Arrays.stream(value)
-                    .boxed()
-                    .sorted(Collections.reverseOrder())
-                    .mapToLong(Long::longValue)
-                    .toArray());
+        (long[] value) -> {
+          long[] times =
+              Arrays.stream(value)
+                  .boxed()
+                  .sorted(Collections.reverseOrder())
+                  .mapToLong(Long::longValue)
+                  .toArray();
+          shiftRumbleTimesSeconds = times;
+          Logger.recordOutput("OI/Rumble/EndTimes", times);
+        });
+    Logger.recordOutput("OI/Rumble/EndTimes", shiftRumbleTimesSeconds);
 
     builder.addBooleanProperty(
-        "Rumble Enabled", () -> shiftRumbleEnabled, (boolean value) -> shiftRumbleEnabled = value);
+        "Rumble Enabled",
+        () -> shiftRumbleEnabled,
+        (boolean value) -> {
+          shiftRumbleEnabled = value;
+          Logger.recordOutput("OI/Rumble/Enabled", value);
+        });
+    Logger.recordOutput("OI/Rumble/Enabled", shiftRumbleEnabled);
+
     builder.addDoubleProperty(
         "Rumble Intensity",
         () -> shiftRumbleIntensity,
-        (double value) -> shiftRumbleIntensity = value);
+        (double value) -> {
+          shiftRumbleIntensity = value;
+          Logger.recordOutput("OI/Rumble/Intensity", value);
+        });
+    Logger.recordOutput("OI/Rumble/Intensity", shiftRumbleIntensity);
+
     builder.addDoubleProperty(
         "Rumble Offset",
         () -> shiftRumbleOffsetSeconds,
-        (double value) -> shiftRumbleOffsetSeconds = value);
+        (double value) -> {
+          shiftRumbleOffsetSeconds = value;
+          Logger.recordOutput("OI/Rumble/OffsetTime", value);
+        });
+    Logger.recordOutput("OI/Rumble/OffsetTime", shiftRumbleOffsetSeconds);
+
     builder.addDoubleProperty(
         "Rumble Continuous Time",
         () -> shiftRumbleContinuousSeconds,
-        (double value) -> shiftRumbleContinuousSeconds = value);
+        (double value) -> {
+          shiftRumbleContinuousSeconds = value;
+          Logger.recordOutput("OI/Rumble/ContinuousTime", value);
+        });
+    Logger.recordOutput("OI/Rumble/ContinuousTime", shiftRumbleContinuousSeconds);
+
     builder.addDoubleProperty(
         "Rumble Pulse On Time",
         () -> shiftRumblePulseOnSeconds,
-        (double value) -> shiftRumblePulseOnSeconds = value);
+        (double value) -> {
+          shiftRumblePulseOnSeconds = value;
+          Logger.recordOutput("OI/Rumble/PulseOnTime", value);
+        });
+    Logger.recordOutput("OI/Rumble/PulseOnTime", shiftRumblePulseOnSeconds);
+
     builder.addDoubleProperty(
         "Rumble Pulse Off Time",
         () -> shiftRumblePulseOffSeconds,
-        (double value) -> shiftRumblePulseOffSeconds = value);
+        (double value) -> {
+          shiftRumblePulseOffSeconds = value;
+          Logger.recordOutput("OI/Rumble/PulseOffTime", value);
+        });
+    Logger.recordOutput("OI/Rumble/PulseOffTime", shiftRumblePulseOffSeconds);
+
     builder.addIntegerProperty(
         "Rumble Pulse Count",
         () -> shiftRumblePulseCount,
-        (long value) -> shiftRumblePulseCount = ((int) value));
+        (long value) -> {
+          int count = ((int) value);
+          shiftRumblePulseCount = count;
+          Logger.recordOutput("OI/Rumble/PulseCount", count);
+        });
+    Logger.recordOutput("OI/Rumble/PulseCount", shiftRumblePulseCount);
   }
 
   public static void update() {
