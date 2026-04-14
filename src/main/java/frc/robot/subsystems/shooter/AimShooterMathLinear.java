@@ -330,14 +330,15 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     Logger.recordOutput(
         "AimShooterMathLinear/TargetLocation", new Pose2d(targetLocation, Rotation2d.kZero));
 
-    double distanceToTarget =
-        shooterTranslation.getDistance(targetLocation)
-            + (inAllianceZone ? azDistanceTrim.in(Meters) : nzDistanceTrim.in(Meters));
-    Logger.recordOutput("AimShooterMathLinear/Distance", Meters.of(distanceToTarget));
+    double distanceToTarget = shooterTranslation.getDistance(targetLocation);
+    Logger.recordOutput("AimShooterMathLinear/DistanceRaw", Meters.of(distanceToTarget));
+    double distanceToTargetTrimmed =
+        distanceToTarget + (inAllianceZone ? azDistanceTrim.in(Meters) : nzDistanceTrim.in(Meters));
+    Logger.recordOutput("AimShooterMathLinear/DistanceTrimmed", Meters.of(distanceToTargetTrimmed));
     double timeOfFlight =
         inAllianceZone
-            ? azTimeOfFlightMap.get(distanceToTarget) + azTOFAdjustment.in(Seconds)
-            : nzTimeOfFlightMap.get(distanceToTarget) + nzTOFAdjustment.in(Seconds);
+            ? azTimeOfFlightMap.get(distanceToTargetTrimmed) + azTOFAdjustment.in(Seconds)
+            : nzTimeOfFlightMap.get(distanceToTargetTrimmed) + nzTOFAdjustment.in(Seconds);
     timeOfFlight = Math.max(timeOfFlight, 0);
 
     Translation2d virtualTargetLocation = getVirtualGoal(timeOfFlight, robotSpeed, targetLocation);
@@ -356,7 +357,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         shooterTranslation,
         targetLocation,
         virtualTargetLocation,
-        distanceToTarget,
+        distanceToTargetTrimmed,
         virtualDistanceToTarget,
         timeOfFlight,
         inAllianceZone);

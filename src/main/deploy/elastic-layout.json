@@ -865,14 +865,14 @@
         ],
         "containers": [
           {
-            "title": "Distance",
+            "title": "DistanceRaw",
             "x": 1220.0,
             "y": 220.0,
             "width": 140.0,
             "height": 140.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/Distance",
+              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/DistanceRaw",
               "period": 0.06,
               "data_type": "double"
             }
