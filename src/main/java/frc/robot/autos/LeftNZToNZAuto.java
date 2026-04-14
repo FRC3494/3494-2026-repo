@@ -57,7 +57,7 @@ public class LeftNZToNZAuto {
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(10),
+                robotCommands.shoot().withTimeout(7),
                 robotCommands.stopShootNoDelay(),
                 robotCommands.startIntake(),
                 leftShootToNZ.cmd()));
