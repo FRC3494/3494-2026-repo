@@ -91,20 +91,20 @@ public class AprilTagCamera {
     // Get pose estimate from Limelight
     PoseEstimate poseEstimate1;
     PoseEstimate poseEstimate2;
-    poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
+    // poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
     poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-    logPoseEstimateStats(poseEstimate1, "MegaTag1");
+    // logPoseEstimateStats(poseEstimate1, "MegaTag1");
     logPoseEstimateStats(poseEstimate2, "MegaTag2");
 
-    validMeasurement1 = isMeasurementValid(poseEstimate1, "MegaTag1");
+    // validMeasurement1 = isMeasurementValid(poseEstimate1, "MegaTag1");
     validMeasurement2 = isMeasurementValid(poseEstimate2, "MegaTag2");
 
     // Save pose estimate if valid
     if (validMeasurement1 && !megaTag2Enabled) {
-      pose = poseEstimate1.pose;
-      poseTimestamp = poseEstimate1.timestampSeconds;
-      stdDevs = getStdDevs(poseEstimate1);
+      // pose = poseEstimate1.pose;
+      // poseTimestamp = poseEstimate1.timestampSeconds;
+      // stdDevs = getStdDevs(poseEstimate1);
     } else if (validMeasurement2 && megaTag2Enabled) {
       pose = poseEstimate2.pose;
       poseTimestamp = poseEstimate2.timestampSeconds;
