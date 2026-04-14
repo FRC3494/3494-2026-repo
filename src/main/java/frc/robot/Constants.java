@@ -600,10 +600,10 @@ public final class Constants {
                 RPM.of(3890.11363636364),
                 Seconds.of(1.26786818181818)),
             new LinearInterpolationDataPoint(
-                Meters.of(14.3793103448276),
+                Meters.of(13.22988506),
                 Rotation2d.fromDegrees(45),
-                RPM.of(6000),
-                Seconds.of(1.82242068965517)),
+                RPM.of(5700),
+                Seconds.of(1.743570115)),
           };
 
       public static Time nzTOFAdjustment = Seconds.of(0.0);
@@ -617,6 +617,9 @@ public final class Constants {
                 Meters.of(4.410), Rotation2d.fromDegrees(45), RPM.of(2800.0), Seconds.of(1.150)),
             new LinearInterpolationDataPoint(
                 Meters.of(3.220), Rotation2d.fromDegrees(45), RPM.of(2400.0), Seconds.of(1.0)),
+            // ! Extrapolated
+            new LinearInterpolationDataPoint(
+                Meters.of(12.09574), Rotation2d.fromDegrees(45), RPM.of(5700), Seconds.of(1.97199))
           };
 
       public static record LinearInterpolationDataPoint(
@@ -635,7 +638,7 @@ public final class Constants {
       public static final double flywheelRadius = Units.inchesToMeters(4) / 2.0;
 
       public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
-      public static final AngularVelocity flywheelMaxSpeed = RPM.of(6000.0);
+      public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
 
       // Fraction of target speed at which kicker triggers and robot starts shooting
       public static double flywheelThresholdFactor = 0.99;
