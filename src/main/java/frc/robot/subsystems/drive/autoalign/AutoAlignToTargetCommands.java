@@ -34,11 +34,11 @@ public class AutoAlignToTargetCommands {
 
   public static Command autoDriveThroughTrench(Drive drive, RobotCommands robotCommands) {
     return sequence(
-            robotCommands.stopSpindexer(),
+            robotCommands.stopSpindexer().asProxy(),
             robotCommands.stopKicker(),
             robotCommands.stopHood(),
             robotCommands.stopFlywheel(),
-            robotCommands.stopIntakeJostle(),
+            robotCommands.stopIntakeJostle().asProxy(),
             either(
                 autoDriveTrench(drive, robotCommands, closeLeftTrench, closeRightTrench),
                 autoDriveTrench(drive, robotCommands, farLeftTrench, farRightTrench),
