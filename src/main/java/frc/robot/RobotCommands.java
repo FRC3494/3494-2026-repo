@@ -397,7 +397,7 @@ public class RobotCommands {
                 () ->
                     hopper
                         .getSpindexerFilteredCurrent()
-                        .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))),
+                        .gt(spindexerCurrentLimit.minus(spindexerCurrentThreshold))),
             invertSpindexer())
         .finallyDo(
             () -> {
@@ -416,7 +416,7 @@ public class RobotCommands {
                         false
                             || hopper
                                 .getSpindexerFilteredCurrent()
-                                .gt(spindexerCurrentLimit.minus(Amps.of(2.0)))
+                                .gt(spindexerCurrentLimit.minus(spindexerCurrentThreshold))
                             || !turret.withinShootingTolerance()
                             || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
                 either(

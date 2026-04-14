@@ -152,6 +152,7 @@ public class Hopper extends SubsystemBase {
     Logger.recordOutput("Hopper/Spindexer/PID/kV", spindexerKv);
     Logger.recordOutput("Hopper/Spindexer/PID/kA", spindexerKa);
 
+    // Spindexer Current
     builder.addIntegerProperty(
         "Spindexer/Current Limit",
         () -> ((long) spindexerCurrentLimit.in(Amps)),
@@ -160,6 +161,15 @@ public class Hopper extends SubsystemBase {
           Logger.recordOutput("Hopper/Spindexer/CurrentLimit", Amps.of(value));
         });
     Logger.recordOutput("Hopper/Spindexer/CurrentLimit", spindexerCurrentLimit);
+
+    builder.addIntegerProperty(
+        "Spindexer/Current Threshold",
+        () -> ((long) spindexerCurrentThreshold.in(Amps)),
+        (long value) -> {
+          spindexerCurrentThreshold = Amps.of(value);
+          Logger.recordOutput("Hopper/Spindexer/CurrentThreshold", Amps.of(value));
+        });
+    Logger.recordOutput("Hopper/Spindexer/CurrentThreshold", spindexerCurrentThreshold);
 
     // Kicker Speed
     // builder.addDoubleProperty(
