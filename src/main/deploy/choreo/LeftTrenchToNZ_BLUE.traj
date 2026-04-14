@@ -196,5 +196,5 @@
   "splits":[0]
  },
  "events":[
-   {"name":"LeftNZIntake", "from":{"target":3, "targetTimestamp":1.76424, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
+   {"name":"NZIntake", "from":{"target":3, "targetTimestamp":1.76424, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }

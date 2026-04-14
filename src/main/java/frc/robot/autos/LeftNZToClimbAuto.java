@@ -52,7 +52,7 @@ public class LeftNZToClimbAuto {
                     leftTrenchToNZ.cmd()),
                 print("3")));
 
-    leftTrenchToNZ.atTime("LeftNZIntake").onTrue(robotCommands.intake());
+    leftTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
 
     leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToLeftClimb.cmd()));
 

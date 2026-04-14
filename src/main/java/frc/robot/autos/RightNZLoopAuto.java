@@ -51,7 +51,7 @@ public class RightNZLoopAuto {
                     rightTrenchToNZ.cmd()),
                 print("3")));
 
-    rightTrenchToNZ.atTime("LeftNZIntake").onTrue(robotCommands.intake());
+    rightTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
 
     rightTrenchToNZ.done().onTrue(rightNZLoop.cmd());
 
