@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 
 import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.Faults;
+import com.revrobotics.spark.SparkBase.Warnings;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -115,22 +117,53 @@ public final class QuadranglesUtil {
     Logger.recordOutput(key + "/Setpoint", spark.getClosedLoopController().getSetpoint());
     Logger.recordOutput(key + "/AtSetpoint", spark.getClosedLoopController().isAtSetpoint());
 
-    Logger.recordOutput(key + "/Faults/Can", spark.getFaults().can);
-    Logger.recordOutput(key + "/Faults/EscEeprom", spark.getFaults().escEeprom);
-    Logger.recordOutput(key + "/Faults/Firmware", spark.getFaults().firmware);
-    Logger.recordOutput(key + "/Faults/GateDriver", spark.getFaults().gateDriver);
-    Logger.recordOutput(key + "/Faults/MotorType", spark.getFaults().motorType);
-    Logger.recordOutput(key + "/Faults/Other", spark.getFaults().other);
-    Logger.recordOutput(key + "/Faults/Sensor", spark.getFaults().sensor);
-    Logger.recordOutput(key + "/Faults/Temperature", spark.getFaults().temperature);
+    Faults faults = spark.getFaults();
+    Logger.recordOutput(key + "/Faults/Can", faults.can);
+    Logger.recordOutput(key + "/Faults/EscEeprom", faults.escEeprom);
+    Logger.recordOutput(key + "/Faults/Firmware", faults.firmware);
+    Logger.recordOutput(key + "/Faults/GateDriver", faults.gateDriver);
+    Logger.recordOutput(key + "/Faults/MotorType", faults.motorType);
+    Logger.recordOutput(key + "/Faults/Other", faults.other);
+    Logger.recordOutput(key + "/Faults/Sensor", faults.sensor);
+    Logger.recordOutput(key + "/Faults/Temperature", faults.temperature);
 
-    Logger.recordOutput(key + "/Warnings/Brownout", spark.getWarnings().brownout);
-    Logger.recordOutput(key + "/Warnings/EscEeprom", spark.getWarnings().escEeprom);
-    Logger.recordOutput(key + "/Warnings/ExtEeprom", spark.getWarnings().extEeprom);
-    Logger.recordOutput(key + "/Warnings/HasReset", spark.getWarnings().hasReset);
-    Logger.recordOutput(key + "/Warnings/Other", spark.getWarnings().other);
-    Logger.recordOutput(key + "/Warnings/Overcurrent", spark.getWarnings().overcurrent);
-    Logger.recordOutput(key + "/Warnings/Sensor", spark.getWarnings().sensor);
-    Logger.recordOutput(key + "/Warnings/Stall", spark.getWarnings().stall);
+    Warnings warnings = spark.getWarnings();
+    Logger.recordOutput(key + "/Warnings/Brownout", warnings.brownout);
+    Logger.recordOutput(key + "/Warnings/EscEeprom", warnings.escEeprom);
+    Logger.recordOutput(key + "/Warnings/ExtEeprom", warnings.extEeprom);
+    Logger.recordOutput(key + "/Warnings/HasReset", warnings.hasReset);
+    Logger.recordOutput(key + "/Warnings/Other", warnings.other);
+    Logger.recordOutput(key + "/Warnings/Overcurrent", warnings.overcurrent);
+    Logger.recordOutput(key + "/Warnings/Sensor", warnings.sensor);
+    Logger.recordOutput(key + "/Warnings/Stall", warnings.stall);
+  }
+
+  public static void logMotorStatsNotCoveredByIO(String key, SparkBase spark) {
+    Logger.recordOutput(key + "/AppliedOutput", spark.getAppliedOutput());
+    Logger.recordOutput(key + "/BusVoltage", Volts.of(spark.getBusVoltage()));
+    Logger.recordOutput(key + "/Temp", Celsius.of(spark.getMotorTemperature()));
+
+    Logger.recordOutput(key + "/Setpoint", spark.getClosedLoopController().getSetpoint());
+    Logger.recordOutput(key + "/AtSetpoint", spark.getClosedLoopController().isAtSetpoint());
+
+    Faults faults = spark.getFaults();
+    Logger.recordOutput(key + "/Faults/Can", faults.can);
+    Logger.recordOutput(key + "/Faults/EscEeprom", faults.escEeprom);
+    Logger.recordOutput(key + "/Faults/Firmware", faults.firmware);
+    Logger.recordOutput(key + "/Faults/GateDriver", faults.gateDriver);
+    Logger.recordOutput(key + "/Faults/MotorType", faults.motorType);
+    Logger.recordOutput(key + "/Faults/Other", faults.other);
+    Logger.recordOutput(key + "/Faults/Sensor", faults.sensor);
+    Logger.recordOutput(key + "/Faults/Temperature", faults.temperature);
+
+    Warnings warnings = spark.getWarnings();
+    Logger.recordOutput(key + "/Warnings/Brownout", warnings.brownout);
+    Logger.recordOutput(key + "/Warnings/EscEeprom", warnings.escEeprom);
+    Logger.recordOutput(key + "/Warnings/ExtEeprom", warnings.extEeprom);
+    Logger.recordOutput(key + "/Warnings/HasReset", warnings.hasReset);
+    Logger.recordOutput(key + "/Warnings/Other", warnings.other);
+    Logger.recordOutput(key + "/Warnings/Overcurrent", warnings.overcurrent);
+    Logger.recordOutput(key + "/Warnings/Sensor", warnings.sensor);
+    Logger.recordOutput(key + "/Warnings/Stall", warnings.stall);
   }
 }
