@@ -11,8 +11,6 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.fieldWidth;
 import static frc.robot.util.QuadranglesUtil.*;
 
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -341,23 +339,6 @@ public final class Constants {
     public static final double turnSimD = 0.0;
     public static final double turnPIDMinInput = 0; // Radians
     public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
-
-    // PathPlanner configuration
-    public static final double robotMassKg = 74.088;
-    public static final double robotMOI = 6.883;
-    public static final double wheelCOF = 1.2;
-    public static final RobotConfig ppConfig =
-        new RobotConfig(
-            robotMassKg,
-            robotMOI,
-            new ModuleConfig(
-                wheelRadiusMeters,
-                maxSpeedMetersPerSec,
-                wheelCOF,
-                driveGearbox.withReduction(driveMotorReduction),
-                driveMotorCurrentLimit,
-                1),
-            moduleTranslations);
 
     // Pigeon config
     public static final double pigeonGyroTrimXDegPerRot = 0.0;
