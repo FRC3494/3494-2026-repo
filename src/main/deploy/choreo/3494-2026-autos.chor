@@ -73,13 +73,6 @@
      "exp":"4.63 m / s",
      "val":4.63
     }
-   },
-   "TrenchDropIntakeSpeed":{
-    "dimension":"LinVel",
-    "var":{
-     "exp":"0.5 m / s",
-     "val":0.5
-    }
    }
   },
   "poses":{

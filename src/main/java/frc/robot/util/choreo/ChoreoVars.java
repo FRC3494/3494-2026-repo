@@ -21,7 +21,6 @@ public final class ChoreoVars {
     public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(4.53);
     public static final Distance RobotBumperSize = Units.Meters.of(0.448);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.63);
-    public static final LinearVelocity TrenchDropIntakeSpeed = Units.MetersPerSecond.of(0.5);
 
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.623, 5.783, Rotation2d.kZero);
