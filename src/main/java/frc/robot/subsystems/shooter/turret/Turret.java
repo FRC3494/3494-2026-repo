@@ -223,6 +223,8 @@ public class Turret extends SubsystemBase {
           closerTo(wrappedRotations, wrappedRotations + 1.0, getPositionRot())
               ? wrappedRotations
               : wrappedRotations + 1.0;
+    } else {
+      turretSetpointClampedRot = wrappedRotations;
     }
 
     runTurret();
