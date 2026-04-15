@@ -49,8 +49,8 @@
    "NZMaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"4 m / s ^ 2",
-     "val":4.0
+     "exp":"8.779 m / s ^ 2",
+     "val":8.779
     }
    },
    "NZMaxVelocity":{
@@ -209,7 +209,7 @@
     },
     "y":{
      "exp":"LeftNZ.y - 5.5 ft",
-     "val":5.59792
+     "val":5.5674399999999995
     },
     "heading":{
      "exp":"LeftNZ.heading",
@@ -222,8 +222,8 @@
      "val":7.775111658477783
     },
     "y":{
-     "exp":"7 m + 0.9 ft",
-     "val":7.27432
+     "exp":"7 m + 0.8 ft",
+     "val":7.24384
     },
     "heading":{
      "exp":"-105 deg",
@@ -320,8 +320,8 @@
      "val":7.775111658477783
     },
     "y":{
-     "exp":"RightNZ.y + 5.5 ft",
-     "val":2.4712800000000006
+     "exp":"RightNZ.y + 5.6 ft",
+     "val":2.5322400000000003
     },
     "heading":{
      "exp":"RightNZ.heading",
@@ -334,8 +334,8 @@
      "val":7.775111658477783
     },
     "y":{
-     "exp":"FieldWidth - 7 m - 0.9 ft",
-     "val":0.7948800000000004
+     "exp":"FieldWidth - 7 m - 0.8 ft",
+     "val":0.8253600000000003
     },
     "heading":{
      "exp":"-LeftNZ.heading",
