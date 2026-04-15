@@ -466,6 +466,7 @@ public class Drive extends SubsystemBase {
                 + sample.omega
                 + headingController.calculate(pose.getRotation().getRadians(), sample.heading),
             getRotation());
+    ChassisSpeeds adjustedSpeeds = speeds.minus(getChassisSpeeds());
 
     Logger.recordOutput(
         "Choreo/VelocitySetpoint",
@@ -479,7 +480,7 @@ public class Drive extends SubsystemBase {
                         pose.getRotation().getRadians(), sample.heading))));
 
     // Apply the generated speeds
-    runVelocity(speeds);
+    runVelocity(adjustedSpeeds);
   }
 
   /** Runs the drive in a straight line with the specified drive output. */
