@@ -58,6 +58,7 @@ public class Climber extends SubsystemBase {
     }
 
     SmartDashboard.putData("Climber", this);
+    Logger.recordOutput("Climber/Motor/CurrentLimit", climberCurrentLimit);
   }
 
   @Override
