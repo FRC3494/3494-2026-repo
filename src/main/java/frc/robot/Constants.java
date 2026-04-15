@@ -286,7 +286,7 @@ public final class Constants {
     public static final Time driveRampRate = Milliseconds.of(10);
     // When using linear characterization: actual linear distance / wheel delta
     public static final double wheelRadiusMeters =
-        Units.inchesToMeters(2.00302745); // From rotational characterization
+        Units.inchesToMeters(1.74824982); // From rotational characterization
     public static final double driveMotorReduction =
         (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+ Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
