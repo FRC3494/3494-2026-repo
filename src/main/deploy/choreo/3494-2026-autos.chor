@@ -49,8 +49,8 @@
    "NZMaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"8.779 m / s ^ 2",
-     "val":8.779
+     "exp":"7.5 m / s ^ 2",
+     "val":7.5
     }
    },
    "NZMaxVelocity":{
@@ -106,8 +106,8 @@
    },
    "ClimbDepot":{
     "x":{
-     "exp":"1.155 m - 4 in",
-     "val":1.0534
+     "exp":"1.155 m - 3 in",
+     "val":1.0788
     },
     "y":{
      "exp":"FieldWidth - 3.56 m - 1 in",
@@ -121,7 +121,7 @@
    "ClimbOutpost":{
     "x":{
      "exp":"ClimbDepot.x",
-     "val":1.0534
+     "val":1.0788
     },
     "y":{
      "exp":"FieldWidth - 5.112 m",
@@ -135,7 +135,7 @@
    "ClimbSetupDepot":{
     "x":{
      "exp":"ClimbDepot.x",
-     "val":1.0534
+     "val":1.0788
     },
     "y":{
      "exp":"4.9 m",
@@ -149,7 +149,7 @@
    "ClimbSetupOutpost":{
     "x":{
      "exp":"ClimbOutpost.x",
-     "val":1.0534
+     "val":1.0788
     },
     "y":{
      "exp":"2.65 m",
@@ -205,11 +205,11 @@
    "LeftMiddleNZ":{
     "x":{
      "exp":"LeftNZ.x",
-     "val":7.775111658477783
+     "val":7.800511658477784
     },
     "y":{
      "exp":"LeftNZ.y - 5.5 ft",
-     "val":5.5674399999999995
+     "val":5.53696
     },
     "heading":{
      "exp":"LeftNZ.heading",
@@ -218,12 +218,12 @@
    },
    "LeftNZ":{
     "x":{
-     "exp":"7.622711658477783 m + 6 in",
-     "val":7.775111658477783
+     "exp":"7.622711658477783 m + 7 in",
+     "val":7.800511658477784
     },
     "y":{
-     "exp":"7 m + 0.8 ft",
-     "val":7.24384
+     "exp":"7 m + 0.7 ft",
+     "val":7.21336
     },
     "heading":{
      "exp":"-105 deg",
@@ -264,8 +264,8 @@
      "val":4.476115
     },
     "y":{
-     "exp":"FieldWidth - RobotBumperSize - 1 in",
-     "val":7.596125
+     "exp":"FieldWidth - RobotBumperSize - 2 in",
+     "val":7.570725
     },
     "heading":{
      "exp":"180 deg",

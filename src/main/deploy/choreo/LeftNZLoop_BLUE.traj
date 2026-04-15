@@ -17,7 +17,7 @@
  },
  "params":{
   "waypoints":[
-    {"x":{"exp":"LeftMiddleNZ.x", "val":7.775111658477783}, "y":{"exp":"LeftMiddleNZ.y", "val":5.5674399999999995}, "heading":{"exp":"LeftMiddleNZ.heading", "val":-1.832595714594046}, "intervals":61, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"LeftMiddleNZ.x", "val":7.800511658477784}, "y":{"exp":"LeftMiddleNZ.y", "val":5.53696}, "heading":{"exp":"LeftMiddleNZ.heading", "val":-1.832595714594046}, "intervals":61, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"6.8655171394348145 m", "val":6.8655171394348145}, "y":{"exp":"4.045953273773193 m", "val":4.045953273773193}, "heading":{"exp":"2.616797404755125 rad", "val":2.616797404755125}, "intervals":43, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"5.8153276443481445 m", "val":5.8153276443481445}, "y":{"exp":"4.6703901290893555 m", "val":4.6703901290893555}, "heading":{"exp":"90 deg", "val":1.5707963267948966}, "intervals":33, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"LeftNZLoopEnd.x", "val":5.801136016845703}, "y":{"exp":"LeftNZLoopEnd.y", "val":5.819921493530273}, "heading":{"exp":"LeftNZLoopEnd.heading", "val":1.5707963267948966}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
@@ -25,7 +25,7 @@
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"16.541 m", "val":16.541}, "h":{"exp":"8.0692 m", "val":8.0692}}}, "enabled":false},
-    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"NZMaxAcceleration", "val":8.779}}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"NZMaxAcceleration", "val":7.5}}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":{"exp":"IntakeMaxVelocity", "val":0.75}}}, "enabled":true}],
   "targetDt":{
    "exp":"0.05 s",
