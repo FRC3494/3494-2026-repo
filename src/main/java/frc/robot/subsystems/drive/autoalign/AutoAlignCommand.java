@@ -80,9 +80,8 @@ public class AutoAlignCommand extends Command {
 
     ChassisSpeeds chassisSpeeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, omega, drive.getRotation());
-    ChassisSpeeds adjustedSpeeds = chassisSpeeds.minus(drive.getChassisSpeeds());
 
-    drive.runVelocity(adjustedSpeeds);
+    drive.runVelocity(chassisSpeeds);
 
     Logger.recordOutput(
         "Drive/AutoAlign/VelocitySetpoint",
