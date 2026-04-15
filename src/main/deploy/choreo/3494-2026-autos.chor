@@ -28,8 +28,8 @@
    "IntakeMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"0.75 m / s",
-     "val":0.75
+     "exp":"1.25 m / s",
+     "val":1.25
     }
    },
    "MaxAcceleration":{
@@ -72,6 +72,13 @@
     "var":{
      "exp":"4.63 m / s",
      "val":4.63
+    }
+   },
+   "ShootingMaxSpeed":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"1 m / s",
+     "val":1.0
     }
    }
   },
@@ -208,8 +215,8 @@
      "val":7.800511658477784
     },
     "y":{
-     "exp":"LeftNZ.y - 5.5 ft",
-     "val":5.53696
+     "exp":"LeftNZ.y - 6.5 ft",
+     "val":5.38456
     },
     "heading":{
      "exp":"LeftNZ.heading",
@@ -222,8 +229,8 @@
      "val":7.800511658477784
     },
     "y":{
-     "exp":"7 m + 0.7 ft",
-     "val":7.21336
+     "exp":"7 m + 1.2 ft",
+     "val":7.36576
     },
     "heading":{
      "exp":"-105 deg",

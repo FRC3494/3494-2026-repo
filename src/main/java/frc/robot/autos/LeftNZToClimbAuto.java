@@ -38,43 +38,86 @@ public class LeftNZToClimbAuto {
         alliance == Alliance.Blue
             ? ChoreoTraj.LeftClimb_BLUE.asAutoTraj(routine)
             : ChoreoTraj.LeftClimb_RED.asAutoTraj(routine);
+    AutoTrajectory leftMiddleNZToShoot =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftMiddleNZToShoot_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftMiddleNZToShoot_RED.asAutoTraj(routine);
+    AutoTrajectory leftShootToClimb = ChoreoTraj.LeftShootToClimb.asAutoTraj(routine);
 
     routine
         .active()
         .onTrue(
             sequence(
-                print("1"),
                 leftTrenchToNZ.resetOdometry(),
-                print("2"),
                 parallel(
                     robotCommands.enableAutoShooterSettings(),
                     robotCommands.enableAutoTurret(),
-                    leftTrenchToNZ.cmd()),
-                print("3")));
+                    leftTrenchToNZ.cmd())));
 
-    leftTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
+    leftTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake().andThen(print("NZIntake")));
 
     leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToLeftClimb.cmd()));
 
-    middleNZToLeftClimb
-        .atPose("ClimberUp", Units.inchesToMeters(6), Math.PI)
-        .onTrue(robotCommands.startClimberUp());
-
-    middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
-
-    middleNZToLeftClimb.done().onTrue(leftClimb.cmd().deadlineFor(robotCommands.shoot()));
-
-    leftClimb
+    leftMiddleNZToShoot
         .done()
         .onTrue(
             sequence(
+                leftShootToClimb
+                    .cmd()
+                    .deadlineFor(
+                        parallel(
+                            sequence(waitSeconds(0.2), robotCommands.shoot()),
+                            robotCommands.runClimberUp()))));
+
+    leftShootToClimb
+        .done()
+        .onTrue(
+            parallel(
+                    robotCommands.shoot(),
+                    sequence(
+                        AutoAlignCommand.alignSequence(drive, climbSetupPoseDepot, climbPoseDepot),
+                        robotCommands.creepBackward()),
+                    sequence(
+                        waitUntil(() -> Timer.getMatchTime() <= 3),
+                        robotCommands.runClimberMidWithCurrent(),
+                        runOnce(
+                            () -> {
+                              shooterAimModel.setTurretTrim(
+                                  turretTrimDefaultRot + Units.degreesToRotations(-10.0));
+                            },
+                            shooterAimModel)))
+                .finallyDo(
+                    () -> {
+                      shooterAimModel.setTurretTrim(turretTrimDefaultRot);
+                    }));
+
+    // ======
+
+    // middleNZToLeftClimb
+    //     .atPose("ClimberUp", Units.inchesToMeters(12), Math.PI)
+    //     .onTrue(
+    //         robotCommands
+    //             .startClimberUp()
+    //             .andThen(
+    //                 print(
+    //                     "ClimberUp
+    // sntaoheusnaotheusntaoesunthoasenthusanotehusnatoehusntohaesuntah")));
+
+    middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+
+    middleNZToLeftClimb
+        .done()
+        .onTrue(
+            sequence(
+                    robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
                     parallel(
                         robotCommands.shoot(),
                         sequence(
-                            new AutoAlignCommand(climbPoseDepot, drive),
+                            AutoAlignCommand.alignSequence(
+                                drive, climbSetupPoseDepot, climbPoseDepot),
                             robotCommands.creepBackward()),
                         sequence(
-                            waitUntil(() -> Timer.getMatchTime() <= 3),
+                            waitUntil(() -> Timer.getMatchTime() <= 4),
                             robotCommands.runClimberMidWithCurrent(),
                             runOnce(
                                 () -> {
