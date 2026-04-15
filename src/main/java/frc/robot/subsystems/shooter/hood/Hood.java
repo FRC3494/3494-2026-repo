@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter.hood;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 import frc.robot.util.choreo.ChoreoVars;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -167,7 +169,9 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
+    if (Robot.loopCount % loggingFrequency == 0) {
+      logMotorStats("Shooter/Hood/Motor", hoodMotor, false);
+    }
 
     filteredCurrent = Amps.of(currentFilter.calculate(hoodMotor.getOutputCurrent()));
   }

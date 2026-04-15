@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter.turret;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
+import static frc.robot.Constants.loggingFrequency;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import com.revrobotics.PersistMode;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 import lombok.Getter;
 import lombok.Setter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -202,7 +204,9 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Shooter/Turret/Motor", turretMotor, false);
+    if (Robot.loopCount % loggingFrequency == 0) {
+      logMotorStats("Shooter/Turret/Motor", turretMotor, false);
+    }
 
     runTurret();
   }

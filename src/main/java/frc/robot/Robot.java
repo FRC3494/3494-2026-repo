@@ -36,6 +36,8 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
+  public static long loopCount = 0;
+
   public Robot() {
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -116,6 +118,8 @@ public class Robot extends LoggedRobot {
 
     // Return to non-RT thread priority (do not modify the first argument)
     Threads.setCurrentThreadPriority(false, 10);
+
+    loopCount++;
   }
 
   /** This function is called once when the robot is disabled. */

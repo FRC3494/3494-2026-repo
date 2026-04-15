@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -204,8 +206,10 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyMotor, false);
-    logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
+    if (Robot.loopCount % loggingFrequency == 0) {
+      logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyMotor, false);
+      logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
+    }
 
     uppyDownyFilteredCurrent =
         Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));

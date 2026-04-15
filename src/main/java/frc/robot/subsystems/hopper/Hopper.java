@@ -1,6 +1,7 @@
 package frc.robot.subsystems.hopper;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -220,10 +222,12 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Hopper/Spindexer/Motor", spindexerMotor, false);
-    logMotorStats("Hopper/Kicker/Motor", kickerMotor, false);
-    Logger.recordOutput(
-        "Hopper/SpindexerSpeedRounded", ((int) spindexerMotor.getEncoder().getVelocity()));
+    if (Robot.loopCount % loggingFrequency == 0) {
+      logMotorStats("Hopper/Spindexer/Motor", spindexerMotor, false);
+      logMotorStats("Hopper/Kicker/Motor", kickerMotor, false);
+      Logger.recordOutput(
+          "Hopper/SpindexerSpeedRounded", ((int) spindexerMotor.getEncoder().getVelocity()));
+    }
 
     spindexerFilteredCurrent =
         Amps.of(spindexerCurrentFilter.calculate(spindexerMotor.getOutputCurrent()));

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.VisionConstants.*;
 
 import edu.wpi.first.math.Matrix;
@@ -14,6 +15,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
+import frc.robot.Robot;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 import lombok.Getter;
@@ -86,10 +88,12 @@ public class AprilTagCamera {
 
       PoseEstimate poseEstimate2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(name);
 
-      logPoseEstimateStats(poseEstimate2, true);
-
       validMeasurement2 = isMeasurementValid(poseEstimate2, true);
-      Logger.recordOutput("Vision/" + name + "/ValidMeasurement2", validMeasurement2);
+
+      if (Robot.loopCount % loggingFrequency == 0) {
+        logPoseEstimateStats(poseEstimate2, true);
+        Logger.recordOutput("Vision/" + name + "/ValidMeasurement2", validMeasurement2);
+      }
 
       if (validMeasurement2) {
         pose = poseEstimate2.pose;
@@ -99,10 +103,12 @@ public class AprilTagCamera {
     } else {
       PoseEstimate poseEstimate1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(name);
 
-      logPoseEstimateStats(poseEstimate1, false);
-
       validMeasurement1 = isMeasurementValid(poseEstimate1, false);
-      Logger.recordOutput("Vision/" + name + "/ValidMeasurement1", validMeasurement1);
+
+      if (Robot.loopCount % loggingFrequency == 0) {
+        logPoseEstimateStats(poseEstimate1, false);
+        Logger.recordOutput("Vision/" + name + "/ValidMeasurement1", validMeasurement1);
+      }
 
       if (validMeasurement1) {
         pose = poseEstimate1.pose;
