@@ -34,11 +34,6 @@ public class LeftNZToClimbAuto {
         alliance == Alliance.Blue
             ? ChoreoTraj.MiddleNZToLeftClimb_BLUE.asAutoTraj(routine)
             : ChoreoTraj.MiddleNZToLeftClimb_RED.asAutoTraj(routine);
-    AutoTrajectory leftMiddleNZToShoot =
-        alliance == Alliance.Blue
-            ? ChoreoTraj.LeftMiddleNZToShoot_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.LeftMiddleNZToShoot_RED.asAutoTraj(routine);
-    AutoTrajectory leftShootToClimb = ChoreoTraj.LeftShootToClimb.asAutoTraj(routine);
 
     routine
         .active()
@@ -54,41 +49,6 @@ public class LeftNZToClimbAuto {
 
     leftTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToLeftClimb.cmd()));
 
-    leftMiddleNZToShoot
-        .done()
-        .onTrue(
-            sequence(
-                leftShootToClimb
-                    .cmd()
-                    .deadlineFor(
-                        parallel(
-                            sequence(waitSeconds(0.2), robotCommands.shoot()),
-                            robotCommands.runClimberUp()))));
-
-    leftShootToClimb
-        .done()
-        .onTrue(
-            parallel(
-                    robotCommands.shoot(),
-                    sequence(
-                        AutoAlignCommand.alignSequence(drive, climbSetupPoseDepot, climbPoseDepot),
-                        robotCommands.creepBackward()),
-                    sequence(
-                        waitUntil(() -> Timer.getMatchTime() <= 3),
-                        robotCommands.runClimberMidWithCurrent(),
-                        runOnce(
-                            () -> {
-                              shooterAimModel.setTurretTrim(
-                                  turretTrimDefaultRot + Units.degreesToRotations(-10.0));
-                            },
-                            shooterAimModel)))
-                .finallyDo(
-                    () -> {
-                      shooterAimModel.setTurretTrim(turretTrimDefaultRot);
-                    }));
-
-    // ======
-
     // middleNZToLeftClimb
     //     .atPose("ClimberUp", Units.inchesToMeters(12), Math.PI)
     //     .onTrue(
@@ -96,8 +56,7 @@ public class LeftNZToClimbAuto {
     //             .startClimberUp()
     //             .andThen(
     //                 print(
-    //                     "ClimberUp
-    // sntaoheusnaotheusntaoesunthoasenthusanotehusnatoehusntohaesuntah")));
+    //                     "ClimberUp")));
 
     middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
