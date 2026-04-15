@@ -153,14 +153,14 @@ public record ChoreoTraj(
 	public static final ChoreoTraj LeftTrenchToNZ_BLUE = new ChoreoTraj(
 	    "LeftTrenchToNZ_BLUE",
 	    OptionalInt.empty(),
-	    3.56835,
+	    3.57009,
 	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(-3.142)),
 	    new Pose2d(7.801, 5.537, Rotation2d.fromRadians(-1.833))
 	);
 	public static final ChoreoTraj LeftTrenchToNZ_RED = new ChoreoTraj(
 	    "LeftTrenchToNZ_RED",
 	    OptionalInt.empty(),
-	    3.56823,
+	    3.57009,
 	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(-3.142)),
 	    new Pose2d(7.801, 5.537, Rotation2d.fromRadians(-1.833))
 	);
