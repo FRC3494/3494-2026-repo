@@ -35,7 +35,7 @@
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"16.541 m", "val":16.541}, "h":{"exp":"8.0692 m", "val":8.0692}}}, "enabled":false},
     {"from":1, "to":4, "data":{"type":"MaxVelocity", "props":{"max":{"exp":"NZMaxVelocity", "val":4.53}}}, "enabled":true},
-    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"NZMaxAcceleration", "val":7.5}}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"NZMaxAcceleration", "val":5.0}}}, "enabled":true},
     {"from":"first", "to":1, "data":{"type":"MaxVelocity", "props":{"max":{"exp":"TrenchDropIntakeSpeed", "val":0.5}}}, "enabled":true},
     {"from":4, "to":"last", "data":{"type":"MaxVelocity", "props":{"max":{"exp":"IntakeMaxVelocity", "val":0.75}}}, "enabled":true},
     {"from":1, "to":3, "data":{"type":"PointAt", "props":{"x":{"exp":"3.047179698944092 m", "val":3.047179698944092}, "y":{"exp":"7.464839935302734 m", "val":7.464839935302734}, "tolerance":{"exp":"1 deg", "val":0.017453292519943295}, "flip":false}}, "enabled":true}],
