@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
 import frc.robot.OI.ClimberOI;
@@ -63,7 +62,6 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
-import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -91,9 +89,6 @@ public class RobotContainer {
   private final AutoFactory autoFactory;
 
   public final RobotCommands robotCommands;
-
-  private LoggedNetworkBoolean enableTuningAutos =
-      new LoggedNetworkBoolean("SmartDashboard/EnableTuningAutos", true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -315,12 +310,7 @@ public class RobotContainer {
 
     autoChooser.addCmd("=====================", () -> none());
 
-    // Set up SysId routines
-    if (enableTuningAutos.get()) {
-      configureTuningAutos();
-    } else {
-      new Trigger(enableTuningAutos::get).onTrue(runOnce(this::configureTuningAutos));
-    }
+    configureTuningAutos();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
