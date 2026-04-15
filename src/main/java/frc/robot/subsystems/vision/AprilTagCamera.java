@@ -68,7 +68,7 @@ public class AprilTagCamera {
         LimelightHelpers.getCameraPose3d_RobotSpace(name));
 
     LimelightHelpers.SetFiducialIDFiltersOverride(name, enabledAprilTags);
-    Logger.recordOutput("Vision" + name + "/EnabledTags", enabledAprilTags);
+    Logger.recordOutput("Vision/" + name + "/EnabledTags", enabledAprilTags);
   }
 
   // ! This fn MUST be manually called since AprilTagCamera is not a SubsystemBase
