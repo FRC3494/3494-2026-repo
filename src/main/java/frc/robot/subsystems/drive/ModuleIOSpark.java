@@ -9,6 +9,7 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.loggingFrequency;
 import static frc.robot.util.QuadranglesUtil.*;
 import static frc.robot.util.SparkUtil.*;
 
@@ -29,6 +30,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -245,8 +247,10 @@ public class ModuleIOSpark implements ModuleIO {
     drivePositionQueue.clear();
     turnPositionQueue.clear();
 
-    logMotorStatsNotCoveredByIO("Drive/Module" + moduleNumber + "/DriveMotor", driveSpark);
-    logMotorStatsNotCoveredByIO("Drive/Module" + moduleNumber + "/TurnMotor", turnSpark);
+    if (Robot.loopCount % loggingFrequency == 0) {
+      logMotorStatsNotCoveredByIO("Drive/Module" + moduleNumber + "/DriveMotor", driveSpark);
+      logMotorStatsNotCoveredByIO("Drive/Module" + moduleNumber + "/TurnMotor", turnSpark);
+    }
   }
 
   @Override

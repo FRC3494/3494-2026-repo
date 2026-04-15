@@ -59,6 +59,9 @@ public final class Constants {
     DEMO
   };
 
+  // How many loops logging runs for
+  public static final int loggingFrequency = 2;
+
   public static enum ElasticTab {
     Teleoperated,
     Autonomous,

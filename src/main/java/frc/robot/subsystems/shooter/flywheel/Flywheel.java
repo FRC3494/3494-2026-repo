@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter.flywheel;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
+import frc.robot.Robot;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -135,8 +137,10 @@ public class Flywheel extends SubsystemBase {
 
   @Override
   public void periodic() {
-    logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
-    logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
+    if (Robot.loopCount % loggingFrequency == 0) {
+      logMotorStats("Shooter/Flywheel/LeftMotor", leftMotor, false);
+      logMotorStats("Shooter/Flywheel/RightMotor", rightMotor, false);
+    }
 
     runFlywheel();
   }

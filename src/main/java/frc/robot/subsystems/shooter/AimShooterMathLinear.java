@@ -422,7 +422,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     Logger.recordOutput("AimShooterLinear/Setpoints/TurretFFVolts", set.turretFF().in(Volts));
   }
 
-  // ==================== CALCULATIONS ====================
+  // #region CALCULATIONS
   /** Returns the shooter's field-relative translation based on the robot pose. */
   private Translation2d getRobotShooterTranslation(Pose2d currentRobotPose) {
     Transform2d shooterTransform =
@@ -510,50 +510,51 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
       Translation2d virtualTargetLocation,
       double timeOfFlight,
       ChassisSpeeds robotSpeed) {
-    // Measure loop timing and TOF change so we can estimate first derivatives.
-    double currentTimestamp = Timer.getTimestamp();
-    double timeSinceLastLoop = currentTimestamp - lastLoopTimestamp;
-    double deltaTimeOfFlight = timeOfFlight - previousTOF;
-    lastLoopTimestamp = currentTimestamp;
-    previousTOF = timeOfFlight;
+    // // Measure loop timing and TOF change so we can estimate first derivatives.
+    // double currentTimestamp = Timer.getTimestamp();
+    // double timeSinceLastLoop = currentTimestamp - lastLoopTimestamp;
+    // double deltaTimeOfFlight = timeOfFlight - previousTOF;
+    // lastLoopTimestamp = currentTimestamp;
+    // previousTOF = timeOfFlight;
 
-    // Robot velocity/acceleration in the field plane.
+    // // Robot velocity/acceleration in the field plane.
     Translation2d robotSpeedTranslation =
         new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
-    Translation2d robotAcceleration =
-        robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
+    // Translation2d robotAcceleration =
+    //     robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
 
-    // Estimate how the motion-compensated ("virtual") target itself is moving.
-    // The virtual target shifts because robot velocity changes and because time of flight changes.
-    Translation2d virtualGoalVelocity =
-        robotAcceleration
-            .times(-timeOfFlight)
-            .minus(robotSpeedTranslation.times(deltaTimeOfFlight));
+    // // Estimate how the motion-compensated ("virtual") target itself is moving.
+    // // The virtual target shifts because robot velocity changes and because time of flight
+    // changes.
+    // Translation2d virtualGoalVelocity =
+    //     robotAcceleration
+    //         .times(-timeOfFlight)
+    //         .minus(robotSpeedTranslation.times(deltaTimeOfFlight));
 
-    // Relative translational motion between shooter and virtual goal.
-    Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
-    Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
-    double translationNormSquared = translationToVirtualGoal.getSquaredNorm();
+    // // Relative translational motion between shooter and virtual goal.
+    // Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
+    // Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
+    // double translationNormSquared = translationToVirtualGoal.getSquaredNorm();
 
-    // Angular rate of the line-of-sight vector to the virtual goal.
-    // For r = (x, y) and v = (vx, vy), d(theta)/dt = (x*vy - y*vx) / |r|^2.
-    double turretVelocity =
-        (translationToVirtualGoal.getX() * correctedVelocity.getY()
-                - translationToVirtualGoal.getY() * correctedVelocity.getX())
-            / translationNormSquared;
+    // // Angular rate of the line-of-sight vector to the virtual goal.
+    // // For r = (x, y) and v = (vx, vy), d(theta)/dt = (x*vy - y*vx) / |r|^2.
+    // double turretVelocity =
+    //     (translationToVirtualGoal.getX() * correctedVelocity.getY()
+    //             - translationToVirtualGoal.getY() * correctedVelocity.getX())
+    //         / translationNormSquared;
 
-    // Angular acceleration of that same line-of-sight vector.
-    // This is the time derivative of the angular-rate expression above.
-    double angularAccelerationNumerator =
-        (translationToVirtualGoal.getX() * robotAcceleration.getY()
-                - translationToVirtualGoal.getY() * robotAcceleration.getX())
-            / translationNormSquared;
-    double radialVelocityComponent =
-        (translationToVirtualGoal.getX() * correctedVelocity.getX()
-                + translationToVirtualGoal.getY() * correctedVelocity.getY())
-            / translationNormSquared;
-    double turretAcceleration =
-        angularAccelerationNumerator - (2.0 * turretVelocity * radialVelocityComponent);
+    // // Angular acceleration of that same line-of-sight vector.
+    // // This is the time derivative of the angular-rate expression above.
+    // double angularAccelerationNumerator =
+    //     (translationToVirtualGoal.getX() * robotAcceleration.getY()
+    //             - translationToVirtualGoal.getY() * robotAcceleration.getX())
+    //         / translationNormSquared;
+    // double radialVelocityComponent =
+    //     (translationToVirtualGoal.getX() * correctedVelocity.getX()
+    //             + translationToVirtualGoal.getY() * correctedVelocity.getY())
+    //         / translationNormSquared;
+    // double turretAcceleration =
+    //     angularAccelerationNumerator - (2.0 * turretVelocity * radialVelocityComponent);
 
     // Chassis yaw rotates the whole robot underneath the turret, so compensate that directly.
     Voltage robotYawVelocityFF =
@@ -586,8 +587,9 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
       return RPM.of(nzFlywheelSpeedMapRPM.get(distanceMeters));
     }
   }
+  // #endregion
 
-  // ==================== TRIM ====================
+  // #region TRIM
   /** Returns the turret trim in rotations. */
   public double getTurretTrimRot() {
     return turretTrimRot;
@@ -650,4 +652,5 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
   public Rotation2d applyHoodTrim(Rotation2d baseAngle) {
     return baseAngle.plus(getHoodTrim());
   }
+  // #endregion
 }
