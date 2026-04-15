@@ -36,7 +36,7 @@ public final class ChoreoVars {
         public static final Pose2d LeftNZ = new Pose2d(7.801, 7.213, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftNZLoopEnd = new Pose2d(5.801, 5.82, Rotation2d.fromRadians(1.571));
         public static final Pose2d LeftTrench = new Pose2d(4.625, 7.43, Rotation2d.kZero);
-        public static final Pose2d LeftTrenchStartingPosition = new Pose2d(4.476, 7.571, Rotation2d.fromRadians(3.142));
+        public static final Pose2d LeftTrenchStartingPosition = new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142));
         public static final Pose2d NZDepotShootingTarget = new Pose2d(1, 6.043, Rotation2d.kZero);
         public static final Pose2d NZOutpostShootingTarget = new Pose2d(1, 1.957, Rotation2d.kZero);
         public static final Pose2d RightBumpStartingPosition = new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142));
@@ -44,7 +44,7 @@ public final class ChoreoVars {
         public static final Pose2d RightNZ = new Pose2d(7.775, 0.825, Rotation2d.fromRadians(1.833));
         public static final Pose2d RightNZLoopEnd = new Pose2d(5.801, 2.249, Rotation2d.fromRadians(-1.571));
         public static final Pose2d RightTrench = new Pose2d(4.625, 0.639, Rotation2d.kZero);
-        public static final Pose2d RightTrenchStartingPosition = new Pose2d(4.476, 0.473, Rotation2d.fromRadians(3.142));
+        public static final Pose2d RightTrenchStartingPosition = new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142));
         public static final Pose2d ShootLeftTrench = new Pose2d(3.08, 7.502, Rotation2d.kZero);
         public static final Pose2d ShootRightTrench = new Pose2d(3.08, 0.567, Rotation2d.kZero);
 

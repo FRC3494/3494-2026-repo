@@ -264,8 +264,8 @@
      "val":4.476115
     },
     "y":{
-     "exp":"FieldWidth - RobotBumperSize - 2 in",
-     "val":7.570725
+     "exp":"FieldWidth - RobotBumperSize - 7 in",
+     "val":7.443725
     },
     "heading":{
      "exp":"180 deg",
@@ -376,8 +376,8 @@
      "val":4.476115
     },
     "y":{
-     "exp":"RobotBumperSize + 1 in",
-     "val":0.473075
+     "exp":"RobotBumperSize + 7 in",
+     "val":0.625475
     },
     "heading":{
      "exp":"LeftTrenchStartingPosition.heading",
