@@ -88,117 +88,123 @@ public class Intake extends SubsystemBase {
                 (state) -> Logger.recordOutput("Intake/SpinnySpinnySysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpinnySpinnyOpenLoop(voltage), null, this));
 
-    SmartDashboard.putData("Intake", this);
+    if (tuningMode) {
+      SmartDashboard.putData("Intake", this);
+    }
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    // Spinny Spinny Speeds
-    builder.addIntegerProperty(
-        "SpinnySpinny/Speed",
-        () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
-        (long value) -> {
-          intakeSpinnySpinnySpeed = RPM.of(value);
-          Logger.recordOutput("SpinnySpinny/Speed", RPM.of(value));
-        });
+    if (tuningMode) {
+      // Spinny Spinny Speeds
+      builder.addIntegerProperty(
+          "SpinnySpinny/Speed",
+          () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
+          (long value) -> {
+            intakeSpinnySpinnySpeed = RPM.of(value);
+            Logger.recordOutput("SpinnySpinny/Speed", RPM.of(value));
+          });
+
+      builder.addIntegerProperty(
+          "SpinnySpinny/ShootingSpeed",
+          () -> ((long) intakeSpinnySpinnyShootingSpeed.in(RPM)),
+          (long value) -> {
+            intakeSpinnySpinnyShootingSpeed = RPM.of(value);
+            Logger.recordOutput("SpinnySpinny/ShootingSpeed", RPM.of(value));
+          });
+
+      // Spinny Spinny PID
+      builder.addDoubleArrayProperty(
+          "SpinnySpinny/PID",
+          () -> new double[] {spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd},
+          (double[] values) -> {
+            setSpinnySpinnyPID(values[0], values[1], values[2]);
+            Logger.recordOutput("SpinnySpinny/PID/kP", values[0]);
+            Logger.recordOutput("SpinnySpinny/PID/kI", values[1]);
+            Logger.recordOutput("SpinnySpinny/PID/kD", values[2]);
+          });
+
+      builder.addDoubleArrayProperty(
+          "SpinnySpinny/SVA",
+          () -> new double[] {spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa},
+          (double[] values) -> {
+            setSpinnySpinnySVA(values[0], values[1], values[2]);
+            Logger.recordOutput("SpinnySpinny/PID/kS", values[0]);
+            Logger.recordOutput("SpinnySpinny/PID/kV", values[1]);
+            Logger.recordOutput("SpinnySpinny/PID/kA", values[2]);
+          });
+
+      // Uppy Downy Settings
+      builder.addDoubleProperty(
+          "UppyDowny/Raise RPM",
+          () -> uppyDownyRaiseRPM,
+          (double value) -> {
+            uppyDownyRaiseRPM = value;
+            Logger.recordOutput("UppyDowny/RaiseRPM", value);
+          });
+
+      builder.addDoubleProperty(
+          "UppyDowny/Lower RPM",
+          () -> uppyDownyLowerRPM,
+          (double value) -> {
+            uppyDownyLowerRPM = value;
+            Logger.recordOutput("UppyDowny/LowerRPM", value);
+          });
+
+      builder.addDoubleProperty(
+          "UppyDowny/Jostle Intake Up Time",
+          () -> jostleIntakeUpTime,
+          (double value) -> {
+            jostleIntakeUpTime = value;
+            Logger.recordOutput("UppyDowny/JostleIntakeUpTime", value);
+          });
+
+      builder.addDoubleProperty(
+          "UppyDowny/Jostle Intake Down Time",
+          () -> jostleIntakeDownTime,
+          (double value) -> {
+            jostleIntakeDownTime = value;
+            Logger.recordOutput("UppyDowny/JostleIntakeDownTime", value);
+          });
+
+      // Uppy Downy PID
+      builder.addDoubleArrayProperty(
+          "UppyDowny/PID",
+          () -> new double[] {uppyDownyKp, uppyDownyKi, uppyDownyKd},
+          (double[] values) -> {
+            setUppyDownyPID(values[0], values[1], values[2]);
+            Logger.recordOutput("UppyDowny/PID/kP", values[0]);
+            Logger.recordOutput("UppyDowny/PID/kI", values[1]);
+            Logger.recordOutput("UppyDowny/PID/kD", values[2]);
+          });
+
+      builder.addDoubleArrayProperty(
+          "UppyDowny/SVA",
+          () -> new double[] {uppyDownyKs, uppyDownyKv, uppyDownyKa},
+          (double[] values) -> {
+            setUppyDownySVA(values[0], values[1], values[2]);
+            Logger.recordOutput("UppyDowny/PID/kS", values[0]);
+            Logger.recordOutput("UppyDowny/PID/kV", values[1]);
+            Logger.recordOutput("UppyDowny/PID/kA", values[2]);
+          });
+    }
+
+    // Log initial values regardless of tuning mode
     Logger.recordOutput("SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
-
-    builder.addIntegerProperty(
-        "SpinnySpinny/ShootingSpeed",
-        () -> ((long) intakeSpinnySpinnyShootingSpeed.in(RPM)),
-        (long value) -> {
-          intakeSpinnySpinnyShootingSpeed = RPM.of(value);
-          Logger.recordOutput("SpinnySpinny/ShootingSpeed", RPM.of(value));
-        });
     Logger.recordOutput("SpinnySpinny/ShootingSpeed", intakeSpinnySpinnyShootingSpeed);
-
-    // Spinny Spinny PID
-    builder.addDoubleArrayProperty(
-        "SpinnySpinny/PID",
-        () -> new double[] {spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd},
-        (double[] values) -> {
-          setSpinnySpinnyPID(values[0], values[1], values[2]);
-          Logger.recordOutput("SpinnySpinny/PID/kP", values[0]);
-          Logger.recordOutput("SpinnySpinny/PID/kI", values[1]);
-          Logger.recordOutput("SpinnySpinny/PID/kD", values[2]);
-        });
     Logger.recordOutput("SpinnySpinny/PID/kP", spinnySpinnyKp);
     Logger.recordOutput("SpinnySpinny/PID/kI", spinnySpinnyKi);
     Logger.recordOutput("SpinnySpinny/PID/kD", spinnySpinnyKd);
-
-    builder.addDoubleArrayProperty(
-        "SpinnySpinny/SVA",
-        () -> new double[] {spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa},
-        (double[] values) -> {
-          setSpinnySpinnySVA(values[0], values[1], values[2]);
-          Logger.recordOutput("SpinnySpinny/PID/kS", values[0]);
-          Logger.recordOutput("SpinnySpinny/PID/kV", values[1]);
-          Logger.recordOutput("SpinnySpinny/PID/kA", values[2]);
-        });
     Logger.recordOutput("SpinnySpinny/PID/kS", spinnySpinnyKs);
     Logger.recordOutput("SpinnySpinny/PID/kV", spinnySpinnyKv);
     Logger.recordOutput("SpinnySpinny/PID/kA", spinnySpinnyKa);
-
-    // Uppy Downy Settings
-    builder.addDoubleProperty(
-        "UppyDowny/Raise RPM",
-        () -> uppyDownyRaiseRPM,
-        (double value) -> {
-          uppyDownyRaiseRPM = value;
-          Logger.recordOutput("UppyDowny/RaiseRPM", value);
-        });
     Logger.recordOutput("UppyDowny/RaiseRPM", uppyDownyRaiseRPM);
-
-    builder.addDoubleProperty(
-        "UppyDowny/Lower RPM",
-        () -> uppyDownyLowerRPM,
-        (double value) -> {
-          uppyDownyLowerRPM = value;
-          Logger.recordOutput("UppyDowny/LowerRPM", value);
-        });
     Logger.recordOutput("UppyDowny/LowerRPM", uppyDownyLowerRPM);
-
-    builder.addDoubleProperty(
-        "UppyDowny/Jostle Intake Up Time",
-        () -> jostleIntakeUpTime,
-        (double value) -> {
-          jostleIntakeUpTime = value;
-          Logger.recordOutput("UppyDowny/JostleIntakeUpTime", value);
-        });
     Logger.recordOutput("UppyDowny/JostleIntakeUpTime", jostleIntakeUpTime);
-
-    builder.addDoubleProperty(
-        "UppyDowny/Jostle Intake Down Time",
-        () -> jostleIntakeDownTime,
-        (double value) -> {
-          jostleIntakeDownTime = value;
-          Logger.recordOutput("UppyDowny/JostleIntakeDownTime", value);
-        });
     Logger.recordOutput("UppyDowny/JostleIntakeDownTime", jostleIntakeDownTime);
-
-    // Uppy Downy PID
-    builder.addDoubleArrayProperty(
-        "UppyDowny/PID",
-        () -> new double[] {uppyDownyKp, uppyDownyKi, uppyDownyKd},
-        (double[] values) -> {
-          setUppyDownyPID(values[0], values[1], values[2]);
-          Logger.recordOutput("UppyDowny/PID/kP", values[0]);
-          Logger.recordOutput("UppyDowny/PID/kI", values[1]);
-          Logger.recordOutput("UppyDowny/PID/kD", values[2]);
-        });
     Logger.recordOutput("UppyDowny/PID/kP", uppyDownyKp);
     Logger.recordOutput("UppyDowny/PID/kI", uppyDownyKi);
     Logger.recordOutput("UppyDowny/PID/kD", uppyDownyKd);
-
-    builder.addDoubleArrayProperty(
-        "UppyDowny/SVA",
-        () -> new double[] {uppyDownyKs, uppyDownyKv, uppyDownyKa},
-        (double[] values) -> {
-          setUppyDownySVA(values[0], values[1], values[2]);
-          Logger.recordOutput("UppyDowny/PID/kS", values[0]);
-          Logger.recordOutput("UppyDowny/PID/kV", values[1]);
-          Logger.recordOutput("UppyDowny/PID/kA", values[2]);
-        });
     Logger.recordOutput("UppyDowny/PID/kS", uppyDownyKs);
     Logger.recordOutput("UppyDowny/PID/kV", uppyDownyKv);
     Logger.recordOutput("UppyDowny/PID/kA", uppyDownyKa);
