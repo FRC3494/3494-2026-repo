@@ -22,6 +22,7 @@ public final class ChoreoVars {
     public static final Distance RobotBumperSize = Units.Meters.of(0.448);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.63);
     public static final LinearVelocity ShootingMaxSpeed = Units.MetersPerSecond.of(1);
+    public static final LinearVelocity DepotMaxVelocity = Units.MetersPerSecond.of(1);
 
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.623, 5.783, Rotation2d.kZero);
@@ -50,6 +51,7 @@ public final class ChoreoVars {
         public static final Pose2d ShootRightTrench = new Pose2d(3.08, 0.567, Rotation2d.kZero);
         public static final Pose2d LeftFarNZ = new Pose2d(8.41, 7.366, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftFarMiddleNZ = new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833));
+        public static final Pose2d DepotSide = new Pose2d(0.465, 7.197, Rotation2d.fromRadians(-1.571));
 
         private Poses() {}
     }

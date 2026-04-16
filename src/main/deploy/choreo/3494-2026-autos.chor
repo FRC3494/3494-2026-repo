@@ -11,6 +11,13 @@
      "val":0.5
     }
    },
+   "DepotMaxVelocity":{
+    "dimension":"LinVel",
+    "var":{
+     "exp":"1 m / s",
+     "val":1.0
+    }
+   },
    "FieldLength":{
     "dimension":"Length",
     "var":{
@@ -179,6 +186,20 @@
     "heading":{
      "exp":"180 deg",
      "val":3.141592653589793
+    }
+   },
+   "DepotSide":{
+    "x":{
+     "exp":"0.4650391638278961 m",
+     "val":0.4650391638278961
+    },
+    "y":{
+     "exp":"7.196521282196045 m",
+     "val":7.196521282196045
+    },
+    "heading":{
+     "exp":"-90 deg",
+     "val":-1.5707963267948966
     }
    },
    "Hub":{
