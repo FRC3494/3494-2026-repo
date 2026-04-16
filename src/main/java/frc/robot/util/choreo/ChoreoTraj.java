@@ -80,6 +80,20 @@ public record ChoreoTraj(
 	    new Pose2d(7.801, 5.385, Rotation2d.fromRadians(-1.833)),
 	    new Pose2d(2.928, 7.121, Rotation2d.fromRadians(0.524))
 	);
+	public static final ChoreoTraj LeftNZSecondPass = new ChoreoTraj(
+	    "LeftNZSecondPass",
+	    OptionalInt.empty(),
+	    4.16953,
+	    new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833)),
+	    new Pose2d(2.928, 7.121, Rotation2d.fromRadians(-2.618))
+	);
+	public static final ChoreoTraj LeftShootToDepot = new ChoreoTraj(
+	    "LeftShootToDepot",
+	    OptionalInt.empty(),
+	    4.09183,
+	    new Pose2d(2.928, 7.121, Rotation2d.fromRadians(0.524)),
+	    new Pose2d(0.465, 4.926, Rotation2d.fromRadians(-1.571))
+	);
 	public static final ChoreoTraj LeftShootToNZ_BLUE = new ChoreoTraj(
 	    "LeftShootToNZ_BLUE",
 	    OptionalInt.empty(),
@@ -93,6 +107,13 @@ public record ChoreoTraj(
 	    3.3001,
 	    new Pose2d(2.928, 7.121, Rotation2d.fromRadians(0.524)),
 	    new Pose2d(6.514, 2.844, Rotation2d.fromRadians(-1.744))
+	);
+	public static final ChoreoTraj LeftTrenchToFarNZ = new ChoreoTraj(
+	    "LeftTrenchToFarNZ",
+	    OptionalInt.empty(),
+	    3.68949,
+	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833))
 	);
 	public static final ChoreoTraj LeftTrenchToNZ_BLUE = new ChoreoTraj(
 	    "LeftTrenchToNZ_BLUE",
@@ -206,27 +227,6 @@ public record ChoreoTraj(
 	    new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(7.775, 2.532, Rotation2d.fromRadians(1.833))
 	);
-	public static final ChoreoTraj LeftTrenchToFarNZ = new ChoreoTraj(
-	    "LeftTrenchToFarNZ",
-	    OptionalInt.empty(),
-	    3.68949,
-	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833))
-	);
-	public static final ChoreoTraj LeftNZSecondPass = new ChoreoTraj(
-	    "LeftNZSecondPass",
-	    OptionalInt.empty(),
-	    4.16953,
-	    new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833)),
-	    new Pose2d(2.928, 7.121, Rotation2d.fromRadians(-2.618))
-	);
-	public static final ChoreoTraj LeftShootToDepot = new ChoreoTraj(
-	    "LeftShootToDepot",
-	    OptionalInt.empty(),
-	    4.09183,
-	    new Pose2d(2.928, 7.121, Rotation2d.fromRadians(0.524)),
-	    new Pose2d(0.465, 4.926, Rotation2d.fromRadians(-1.571))
-	);
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -241,8 +241,11 @@ public record ChoreoTraj(
 		Map.entry("LeftBumpToDepot_RED", LeftBumpToDepot_RED),
 		Map.entry("LeftMiddleNZToShoot_BLUE", LeftMiddleNZToShoot_BLUE),
 		Map.entry("LeftMiddleNZToShoot_RED", LeftMiddleNZToShoot_RED),
+		Map.entry("LeftNZSecondPass", LeftNZSecondPass),
+		Map.entry("LeftShootToDepot", LeftShootToDepot),
 		Map.entry("LeftShootToNZ_BLUE", LeftShootToNZ_BLUE),
 		Map.entry("LeftShootToNZ_RED", LeftShootToNZ_RED),
+		Map.entry("LeftTrenchToFarNZ", LeftTrenchToFarNZ),
 		Map.entry("LeftTrenchToNZ_BLUE", LeftTrenchToNZ_BLUE),
 		Map.entry("LeftTrenchToNZ_RED", LeftTrenchToNZ_RED),
 		Map.entry("MiddleNZToLeftClimb_BLUE", MiddleNZToLeftClimb_BLUE),
@@ -258,10 +261,7 @@ public record ChoreoTraj(
 		Map.entry("RightTrenchToClimb_BLUE", RightTrenchToClimb_BLUE),
 		Map.entry("RightTrenchToClimb_RED", RightTrenchToClimb_RED),
 		Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
-		Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-		Map.entry("LeftTrenchToFarNZ", LeftTrenchToFarNZ),
-		Map.entry("LeftNZSecondPass", LeftNZSecondPass),
-		Map.entry("LeftShootToDepot", LeftShootToDepot)
+		Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED)
     );
 
     /**

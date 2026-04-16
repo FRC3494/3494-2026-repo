@@ -58,7 +58,9 @@ public class LeftNZToClimbAuto {
     //                 print(
     //                     "ClimberUp")));
 
-    middleNZToLeftClimb.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+    middleNZToLeftClimb
+        .atTime("StartFlywheel")
+        .onTrue(robotCommands.startFlywheel().andThen(print("StartFlywheel")));
 
     middleNZToLeftClimb
         .done()

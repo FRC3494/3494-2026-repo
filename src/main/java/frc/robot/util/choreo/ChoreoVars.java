@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.*;
  */
 public final class ChoreoVars {
     public static final LinearVelocity ClimbMaxVelocity = Units.MetersPerSecond.of(0.5);
+    public static final LinearVelocity DepotMaxVelocity = Units.MetersPerSecond.of(1);
     public static final Distance FieldLength = Units.Meters.of(16.541);
     public static final Distance FieldWidth = Units.Meters.of(8.069);
     public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1.25);
@@ -22,7 +23,6 @@ public final class ChoreoVars {
     public static final Distance RobotBumperSize = Units.Meters.of(0.448);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.63);
     public static final LinearVelocity ShootingMaxSpeed = Units.MetersPerSecond.of(1);
-    public static final LinearVelocity DepotMaxVelocity = Units.MetersPerSecond.of(1);
 
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.623, 5.783, Rotation2d.kZero);
@@ -32,8 +32,11 @@ public final class ChoreoVars {
         public static final Pose2d ClimbSetupDepot = new Pose2d(1.079, 4.9, Rotation2d.fromRadians(1.571));
         public static final Pose2d ClimbSetupOutpost = new Pose2d(1.079, 2.65, Rotation2d.fromRadians(-1.571));
         public static final Pose2d DepotIntake = new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142));
+        public static final Pose2d DepotSide = new Pose2d(0.465, 7.197, Rotation2d.fromRadians(-1.571));
         public static final Pose2d Hub = new Pose2d(4.625, 4.035, Rotation2d.kZero);
         public static final Pose2d LeftBumpStartingPosition = new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142));
+        public static final Pose2d LeftFarMiddleNZ = new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833));
+        public static final Pose2d LeftFarNZ = new Pose2d(8.41, 7.366, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftMiddleNZ = new Pose2d(7.801, 5.385, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftNZ = new Pose2d(7.801, 7.366, Rotation2d.fromRadians(-1.833));
         public static final Pose2d LeftNZLoopEnd = new Pose2d(5.801, 5.82, Rotation2d.fromRadians(1.571));
@@ -49,9 +52,6 @@ public final class ChoreoVars {
         public static final Pose2d RightTrenchStartingPosition = new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142));
         public static final Pose2d ShootLeftTrench = new Pose2d(2.928, 7.121, Rotation2d.fromRadians(0.524));
         public static final Pose2d ShootRightTrench = new Pose2d(3.08, 0.567, Rotation2d.kZero);
-        public static final Pose2d LeftFarNZ = new Pose2d(8.41, 7.366, Rotation2d.fromRadians(-1.833));
-        public static final Pose2d LeftFarMiddleNZ = new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833));
-        public static final Pose2d DepotSide = new Pose2d(0.465, 7.197, Rotation2d.fromRadians(-1.571));
 
         private Poses() {}
     }
