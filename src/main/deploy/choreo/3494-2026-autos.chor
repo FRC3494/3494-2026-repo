@@ -209,6 +209,34 @@
      "val":3.141592653589793
     }
    },
+   "LeftFarMiddleNZ":{
+    "x":{
+     "exp":"LeftFarNZ.x",
+     "val":8.4096
+    },
+    "y":{
+     "exp":"LeftMiddleNZ.y",
+     "val":5.38456
+    },
+    "heading":{
+     "exp":"LeftMiddleNZ.heading",
+     "val":-1.832595714594046
+    }
+   },
+   "LeftFarNZ":{
+    "x":{
+     "exp":"7.8 m + 24 in",
+     "val":8.4096
+    },
+    "y":{
+     "exp":"LeftNZ.y",
+     "val":7.36576
+    },
+    "heading":{
+     "exp":"LeftNZ.heading",
+     "val":-1.832595714594046
+    }
+   },
    "LeftMiddleNZ":{
     "x":{
      "exp":"LeftNZ.x",

@@ -48,6 +48,8 @@ public final class ChoreoVars {
         public static final Pose2d RightTrenchStartingPosition = new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142));
         public static final Pose2d ShootLeftTrench = new Pose2d(2.928, 7.121, Rotation2d.fromRadians(0.524));
         public static final Pose2d ShootRightTrench = new Pose2d(3.08, 0.567, Rotation2d.kZero);
+        public static final Pose2d LeftFarNZ = new Pose2d(8.41, 7.366, Rotation2d.fromRadians(-1.833));
+        public static final Pose2d LeftFarMiddleNZ = new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833));
 
         private Poses() {}
     }
