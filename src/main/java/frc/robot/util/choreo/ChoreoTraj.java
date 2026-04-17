@@ -160,28 +160,28 @@ public record ChoreoTraj(
 	public static final ChoreoTraj OutpostToRightClimb = new ChoreoTraj(
 	    "OutpostToRightClimb",
 	    OptionalInt.empty(),
-	    1.49497,
+	    2.24809,
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571)),
-	    new Pose2d(1.104, 2.65, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.13, 2.65, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightMiddleNZToOutpost = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
 	    OptionalInt.empty(),
-	    6.25539,
+	    4.6237,
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightMiddleNZToOutpost$0 = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
 	    OptionalInt.of(0),
-	    3.00869,
+	    2.90487,
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
 	    new Pose2d(2.004, 1.079, Rotation2d.fromRadians(-0.709))
 	);
 	public static final ChoreoTraj RightMiddleNZToOutpost$1 = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
 	    OptionalInt.of(1),
-	    3.2467,
+	    1.7188300000000005,
 	    new Pose2d(2.004, 1.079, Rotation2d.fromRadians(-0.709)),
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571))
 	);
@@ -216,16 +216,16 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RightTrenchToClimb_BLUE = new ChoreoTraj(
 	    "RightTrenchToClimb_BLUE",
 	    OptionalInt.empty(),
-	    3.72442,
+	    3.71176,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.104, 2.957, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.13, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightTrenchToClimb_RED = new ChoreoTraj(
 	    "RightTrenchToClimb_RED",
 	    OptionalInt.empty(),
-	    3.72442,
+	    3.71176,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.104, 2.957, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.13, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightTrenchToNZ_BLUE = new ChoreoTraj(
 	    "RightTrenchToNZ_BLUE",
