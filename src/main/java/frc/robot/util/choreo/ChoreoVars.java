@@ -28,9 +28,9 @@ public final class ChoreoVars {
         public static final Pose2d BumpDepot = new Pose2d(4.623, 5.783, Rotation2d.kZero);
         public static final Pose2d BumpOutpost = new Pose2d(4.623, 2.286, Rotation2d.kZero);
         public static final Pose2d ClimbDepot = new Pose2d(1.104, 4.484, Rotation2d.fromRadians(1.571));
-        public static final Pose2d ClimbOutpost = new Pose2d(1.104, 2.957, Rotation2d.fromRadians(-1.571));
+        public static final Pose2d ClimbOutpost = new Pose2d(1.13, 2.957, Rotation2d.fromRadians(-1.571));
         public static final Pose2d ClimbSetupDepot = new Pose2d(1.104, 4.9, Rotation2d.fromRadians(1.571));
-        public static final Pose2d ClimbSetupOutpost = new Pose2d(1.104, 2.65, Rotation2d.fromRadians(-1.571));
+        public static final Pose2d ClimbSetupOutpost = new Pose2d(1.13, 2.65, Rotation2d.fromRadians(-1.571));
         public static final Pose2d DepotIntake = new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142));
         public static final Pose2d DepotSide = new Pose2d(0.465, 7.19, Rotation2d.fromRadians(-1.571));
         public static final Pose2d Hub = new Pose2d(4.625, 4.035, Rotation2d.kZero);
@@ -45,7 +45,7 @@ public final class ChoreoVars {
         public static final Pose2d NZDepotShootingTarget = new Pose2d(1, 6.043, Rotation2d.kZero);
         public static final Pose2d NZOutpostShootingTarget = new Pose2d(1, 1.957, Rotation2d.kZero);
         public static final Pose2d RightBumpStartingPosition = new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142));
-        public static final Pose2d RightMiddleNZ = new Pose2d(7.775, 2.532, Rotation2d.fromRadians(1.833));
+        public static final Pose2d RightMiddleNZ = new Pose2d(7.775, 2.807, Rotation2d.fromRadians(1.833));
         public static final Pose2d RightNZ = new Pose2d(7.775, 0.825, Rotation2d.fromRadians(1.833));
         public static final Pose2d RightNZLoopEnd = new Pose2d(5.801, 2.249, Rotation2d.fromRadians(-1.571));
         public static final Pose2d RightTrench = new Pose2d(4.625, 0.639, Rotation2d.kZero);
