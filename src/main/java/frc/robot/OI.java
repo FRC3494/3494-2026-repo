@@ -253,6 +253,10 @@ public final class OI implements Sendable {
     public static Trigger autoDriveThroughTrench() {
       return primaryController.leftBumper();
     }
+
+    public static Trigger slowDrive() {
+      return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
+    }
   }
   // #endregion
 
@@ -318,9 +322,7 @@ public final class OI implements Sendable {
   // #region SHOOTER
   public static final class ShooterOI {
     public static Trigger shoot() {
-      return primaryController
-          .leftTrigger(controllerTriggerDeadband, eventLoop)
-          .or(rightButtonBoard.button(8, eventLoop));
+      return primaryController.povRight().or(rightButtonBoard.button(8, eventLoop));
     }
 
     public static Trigger shootClose() {

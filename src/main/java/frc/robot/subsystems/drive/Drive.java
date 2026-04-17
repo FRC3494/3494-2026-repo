@@ -696,7 +696,10 @@ public class Drive extends SubsystemBase {
   }
 
   private boolean shootingDriveSpeed() {
-    return ShooterOI.shoot().getAsBoolean() && !DriveOI.autoDriveThroughTrench().getAsBoolean();
+    return inAllianceZone()
+        ? (ShooterOI.shoot().getAsBoolean() || DriveOI.slowDrive().getAsBoolean())
+            && !DriveOI.autoDriveThroughTrench().getAsBoolean()
+        : DriveOI.slowDrive().getAsBoolean() && !DriveOI.autoDriveThroughTrench().getAsBoolean();
   }
 
   private boolean inAllianceZone() {
