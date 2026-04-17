@@ -160,14 +160,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RightMiddleNZToShoot_BLUE = new ChoreoTraj(
 	    "RightMiddleNZToShoot_BLUE",
 	    OptionalInt.empty(),
-	    2.83633,
-	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
-	    new Pose2d(3.08, 0.69, Rotation2d.fromRadians(0))
-	);
-	public static final ChoreoTraj RightMiddleNZToShoot_RED = new ChoreoTraj(
-	    "RightMiddleNZToShoot_RED",
-	    OptionalInt.empty(),
-	    2.83633,
+	    2.88283,
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
 	    new Pose2d(3.08, 0.69, Rotation2d.fromRadians(0))
 	);
@@ -213,6 +206,13 @@ public record ChoreoTraj(
 	    new Pose2d(4.476, 0.625, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833))
 	);
+	public static final ChoreoTraj RightMiddleNZToShoot_RED = new ChoreoTraj(
+	    "RightMiddleNZToShoot_RED",
+	    OptionalInt.empty(),
+	    2.88283,
+	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
+	    new Pose2d(3.08, 0.69, Rotation2d.fromRadians(0))
+	);
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -239,13 +239,13 @@ public record ChoreoTraj(
 		Map.entry("MiddleNZToRightClimb_BLUE", MiddleNZToRightClimb_BLUE),
 		Map.entry("MiddleNZToRightClimb_RED", MiddleNZToRightClimb_RED),
 		Map.entry("RightMiddleNZToShoot_BLUE", RightMiddleNZToShoot_BLUE),
-		Map.entry("RightMiddleNZToShoot_RED", RightMiddleNZToShoot_RED),
 		Map.entry("RightShootToNZ_BLUE", RightShootToNZ_BLUE),
 		Map.entry("RightShootToNZ_RED", RightShootToNZ_RED),
 		Map.entry("RightTrenchToClimb_BLUE", RightTrenchToClimb_BLUE),
 		Map.entry("RightTrenchToClimb_RED", RightTrenchToClimb_RED),
 		Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
-		Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED)
+		Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
+		Map.entry("RightMiddleNZToShoot_RED", RightMiddleNZToShoot_RED)
     );
 
     /**
