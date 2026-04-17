@@ -394,7 +394,10 @@ public class RobotCommands {
   public Command runSpindexerWithStallDetection(Supplier<AngularVelocity> velocity) {
     return repeatingSequence(
             startSpindexerWithSpeed(velocity),
-            waitUntil(() -> hopper.getSpindexerFilteredCurrent().gt(spindexerCurrentThreshold)),
+            waitUntil(
+                () ->
+                    spindexerUnjamEnabled
+                        && hopper.getSpindexerFilteredCurrent().gt(spindexerCurrentThreshold)),
             invertSpindexer())
         .finallyDo(
             () -> {
@@ -411,7 +414,10 @@ public class RobotCommands {
                 waitUntil(
                     () ->
                         false
-                            || hopper.getSpindexerFilteredCurrent().gt(spindexerCurrentThreshold)
+                            || (spindexerUnjamEnabled
+                                && hopper
+                                    .getSpindexerFilteredCurrent()
+                                    .gt(spindexerCurrentThreshold))
                             || !turret.withinShootingTolerance()
                             || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
                 either(
