@@ -300,12 +300,12 @@ public final class Constants {
     // Wheel Rad/Sec
 
     // Drive PID configuration - From SysId
-    public static double driveKp = 7.43E-06;
+    public static double driveKp = 0.03044425;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
-    public static double driveKs = 0.11;
-    public static double driveKv = 0.1179175;
-    public static double driveKa = 0.02385725;
+    public static double driveKs = 0.113512;
+    public static double driveKv = 0.1129325;
+    public static double driveKa = 0.04365875;
     public static final double driveSimP = 0.05;
     public static final double driveSimI = 0.0;
     public static final double driveSimD = 0.0;
