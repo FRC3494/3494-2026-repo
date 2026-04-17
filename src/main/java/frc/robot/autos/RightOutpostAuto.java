@@ -55,35 +55,34 @@ public class RightOutpostAuto {
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(3),
+                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
                 outpostToRightClimb.cmd().deadlineFor(robotCommands.shoot())));
 
     outpostToRightClimb
         .done()
         .onTrue(
-            sequence(
-                    robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
-                    parallel(
-                        robotCommands.shoot(),
-                        sequence(
-                            AutoAlignCommand.alignSequence(
-                                drive, climbSetupPoseOutpost, climbPoseOutpost),
-                            robotCommands.creepBackward()),
-                        sequence(
-                            waitUntil(() -> Timer.getMatchTime() <= 4),
-                            runOnce(
-                                () -> {
-                                  shooterAimModel.setTurretTrim(
-                                      turretTrimDefaultRot + Units.degreesToRotations(5.0));
-                                },
-                                shooterAimModel),
-                            robotCommands.runClimberMidWithCurrent(),
-                            runOnce(
-                                () -> {
-                                  shooterAimModel.setTurretTrim(
-                                      turretTrimDefaultRot + Units.degreesToRotations(10.0));
-                                },
-                                shooterAimModel))))
+            parallel(
+                    robotCommands.shoot(),
+                    sequence(
+                        AutoAlignCommand.alignSequence(
+                            drive, climbSetupPoseOutpost, climbPoseOutpost),
+                        parallel(
+                            robotCommands.creepBackward(),
+                            sequence(
+                                waitUntil(() -> Timer.getMatchTime() <= 4),
+                                runOnce(
+                                    () -> {
+                                      shooterAimModel.setTurretTrim(
+                                          turretTrimDefaultRot + Units.degreesToRotations(5.0));
+                                    },
+                                    shooterAimModel),
+                                robotCommands.runClimberMidWithCurrent(),
+                                runOnce(
+                                    () -> {
+                                      shooterAimModel.setTurretTrim(
+                                          turretTrimDefaultRot + Units.degreesToRotations(10.0));
+                                    },
+                                    shooterAimModel)))))
                 .finallyDo(
                     () -> {
                       shooterAimModel.setTurretTrim(turretTrimDefaultRot);
