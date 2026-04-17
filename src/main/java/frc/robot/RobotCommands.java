@@ -543,7 +543,6 @@ public class RobotCommands {
             startHoodWithTrenchSafety(),
             startFlywheel(),
             startIntakeForShoot(),
-            startSpindexer(),
             waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             waitUntil(turret::withinShootingTolerance),
             parallel(
@@ -557,7 +556,6 @@ public class RobotCommands {
             startHoodWithTrenchSafety(),
             startFlywheel(),
             startIntakeForShoot(),
-            startSpindexer(),
             waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             waitUntil(turret::withinShootingTolerance),
             parallel(runManualHoodWithTrenchSafety(), runIntakeJostle(), runSpindexerAndKicker()))
@@ -570,7 +568,6 @@ public class RobotCommands {
             startHoodWithTrenchSafety(),
             startFlywheel(),
             startIntakeForShoot(),
-            startSpindexer(),
             waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             waitUntil(turret::withinShootingTolerance),
             parallel(autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker()))
