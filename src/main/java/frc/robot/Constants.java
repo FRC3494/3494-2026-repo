@@ -224,7 +224,7 @@ public final class Constants {
 
     public static final int climberCurrentSensingFilterSize = 10;
 
-    public static double climberUpPosition = 3.067;
+    public static double climberUpPosition = 3.25;
     public static double climberDownPosition = 0.0;
     // Climber should go 80% of the way DOWN when robot is climbing
     public static double climberClimbPosition = Climber.percentClimbedPosition(0.8);

@@ -175,7 +175,7 @@ public class Climber extends SubsystemBase {
    * @return Climb position at `fraction` percentage climbed
    */
   public static double percentClimbedPosition(double fraction) {
-    return (1 - fraction) * climberUpPosition;
+    return climberDownPosition + (1 - fraction) * Math.abs(climberUpPosition - climberDownPosition);
   }
 
   public void setVoltage(Voltage voltage) {
