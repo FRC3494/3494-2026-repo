@@ -356,6 +356,20 @@
      "val":0.0
     }
    },
+   "Outpost":{
+    "x":{
+     "exp":"0.44333720207214355 m",
+     "val":0.4433372020721435
+    },
+    "y":{
+     "exp":"0.7739970088005066 m",
+     "val":0.7739970088005066
+    },
+    "heading":{
+     "exp":"-90 deg",
+     "val":-1.5707963267948966
+    }
+   },
    "RightBumpStartingPosition":{
     "x":{
      "exp":"LeftBumpStartingPosition.x",

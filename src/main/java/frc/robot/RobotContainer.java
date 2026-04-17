@@ -40,6 +40,7 @@ import frc.robot.autos.LeftNZToNZAuto;
 import frc.robot.autos.RightClimbAuto;
 import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
+import frc.robot.autos.RightOutpostAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
@@ -261,6 +262,27 @@ public class RobotContainer {
         () ->
             RightClimbAuto.getRoutine(
                 "RightClimb_RED", Alliance.Red, autoFactory, robotCommands, drive));
+
+    autoChooser.addRoutine(
+        "RightOutpost_BLUE",
+        () ->
+            RightOutpostAuto.getRoutine(
+                "RightOutpost_BLUE",
+                Alliance.Blue,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
+    autoChooser.addRoutine(
+        "RightOutpost_RED",
+        () ->
+            RightOutpostAuto.getRoutine(
+                "RightOutpost_RED",
+                Alliance.Red,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
 
     autoChooser.addCmd("=====================", () -> none());
 
