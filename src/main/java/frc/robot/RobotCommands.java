@@ -549,8 +549,9 @@ public class RobotCommands {
             startHoodWithTrenchSafety(),
             startFlywheel(),
             startIntakeForShoot(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             waitUntil(turret::withinShootingTolerance),
+            startKickerWithTrenchSafety(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             parallel(
                 autoFlywheelCommand(), runAutoHood(), runIntakeJostle(), runSpindexerAndKicker()))
         .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
@@ -562,8 +563,9 @@ public class RobotCommands {
             startHoodWithTrenchSafety(),
             startFlywheel(),
             startIntakeForShoot(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             waitUntil(turret::withinShootingTolerance),
+            startKickerWithTrenchSafety(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             parallel(runManualHoodWithTrenchSafety(), runIntakeJostle(), runSpindexerAndKicker()))
         .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWithManualSettings");
@@ -574,8 +576,9 @@ public class RobotCommands {
             startHoodWithTrenchSafety(),
             startFlywheel(),
             startIntakeForShoot(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             waitUntil(turret::withinShootingTolerance),
+            startKickerWithTrenchSafety(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             parallel(autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker()))
         .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName("ShootWoIntakeJostle");
