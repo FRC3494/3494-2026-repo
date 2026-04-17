@@ -167,21 +167,21 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RightMiddleNZToOutpost = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
 	    OptionalInt.empty(),
-	    3.78867,
+	    6.25539,
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightMiddleNZToOutpost$0 = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
 	    OptionalInt.of(0),
-	    2.73864,
+	    3.00869,
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
 	    new Pose2d(2.004, 1.079, Rotation2d.fromRadians(-0.709))
 	);
 	public static final ChoreoTraj RightMiddleNZToOutpost$1 = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
 	    OptionalInt.of(1),
-	    1.05003,
+	    3.2467,
 	    new Pose2d(2.004, 1.079, Rotation2d.fromRadians(-0.709)),
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571))
 	);
