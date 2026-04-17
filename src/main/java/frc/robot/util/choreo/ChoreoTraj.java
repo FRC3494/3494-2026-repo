@@ -132,30 +132,30 @@ public record ChoreoTraj(
 	public static final ChoreoTraj MiddleNZToLeftClimb_BLUE = new ChoreoTraj(
 	    "MiddleNZToLeftClimb_BLUE",
 	    OptionalInt.empty(),
-	    4.91942,
+	    4.87234,
 	    new Pose2d(7.801, 5.385, Rotation2d.fromRadians(-1.833)),
-	    new Pose2d(1.079, 4.9, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.104, 4.9, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj MiddleNZToLeftClimb_RED = new ChoreoTraj(
 	    "MiddleNZToLeftClimb_RED",
 	    OptionalInt.empty(),
-	    4.91942,
+	    4.87234,
 	    new Pose2d(7.801, 5.385, Rotation2d.fromRadians(-1.833)),
-	    new Pose2d(1.079, 4.9, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.104, 4.9, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj MiddleNZToRightClimb_BLUE = new ChoreoTraj(
 	    "MiddleNZToRightClimb_BLUE",
 	    OptionalInt.empty(),
-	    3.63943,
+	    3.6249,
 	    new Pose2d(7.775, 2.532, Rotation2d.fromRadians(1.833)),
-	    new Pose2d(1.079, 2.65, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.104, 2.65, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj MiddleNZToRightClimb_RED = new ChoreoTraj(
 	    "MiddleNZToRightClimb_RED",
 	    OptionalInt.empty(),
-	    3.63943,
+	    3.6249,
 	    new Pose2d(7.775, 2.532, Rotation2d.fromRadians(1.833)),
-	    new Pose2d(1.079, 2.65, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.104, 2.65, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightMiddleNZToShoot_BLUE = new ChoreoTraj(
 	    "RightMiddleNZToShoot_BLUE",
@@ -188,16 +188,16 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RightTrenchToClimb_BLUE = new ChoreoTraj(
 	    "RightTrenchToClimb_BLUE",
 	    OptionalInt.empty(),
-	    3.73718,
+	    3.72442,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.079, 2.957, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.104, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightTrenchToClimb_RED = new ChoreoTraj(
 	    "RightTrenchToClimb_RED",
 	    OptionalInt.empty(),
-	    3.73718,
+	    3.72442,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.079, 2.957, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.104, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightTrenchToNZ_BLUE = new ChoreoTraj(
 	    "RightTrenchToNZ_BLUE",
