@@ -174,6 +174,15 @@ public class Hopper extends SubsystemBase {
         });
     Logger.recordOutput("Hopper/Spindexer/CurrentThreshold", spindexerCurrentThreshold);
 
+    builder.addBooleanProperty(
+        "Spindexer/Unjam Enabled",
+        () -> spindexerUnjamEnabled,
+        (boolean value) -> {
+          spindexerUnjamEnabled = value;
+          Logger.recordOutput("Hopper/Spindexer/UnjamEnabled", value);
+        });
+    Logger.recordOutput("Hopper/Spindexer/UnjamEnabled", spindexerUnjamEnabled);
+
     // Kicker Speed
     // builder.addDoubleProperty(
     //     "Kicker/Speed Factor",
