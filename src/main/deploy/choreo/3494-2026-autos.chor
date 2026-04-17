@@ -237,7 +237,7 @@
     },
     "y":{
      "exp":"LeftMiddleNZ.y",
-     "val":5.38456
+     "val":4.92736
     },
     "heading":{
      "exp":"LeftMiddleNZ.heading",
@@ -264,8 +264,8 @@
      "val":7.800511658477784
     },
     "y":{
-     "exp":"LeftNZ.y - 6.5 ft",
-     "val":5.38456
+     "exp":"LeftNZ.y - 8 ft",
+     "val":4.92736
     },
     "heading":{
      "exp":"LeftNZ.heading",
@@ -376,8 +376,8 @@
      "val":7.775111658477783
     },
     "y":{
-     "exp":"RightNZ.y + 6.5 ft",
-     "val":2.80656
+     "exp":"RightNZ.y + 8 ft",
+     "val":3.2637600000000004
     },
     "heading":{
      "exp":"RightNZ.heading",
