@@ -171,6 +171,20 @@ public record ChoreoTraj(
 	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571))
 	);
+	public static final ChoreoTraj RightMiddleNZToOutpost$0 = new ChoreoTraj(
+	    "RightMiddleNZToOutpost",
+	    OptionalInt.of(0),
+	    2.73864,
+	    new Pose2d(7.775, 3.264, Rotation2d.fromRadians(1.833)),
+	    new Pose2d(2.004, 1.079, Rotation2d.fromRadians(-0.709))
+	);
+	public static final ChoreoTraj RightMiddleNZToOutpost$1 = new ChoreoTraj(
+	    "RightMiddleNZToOutpost",
+	    OptionalInt.of(1),
+	    1.05003,
+	    new Pose2d(2.004, 1.079, Rotation2d.fromRadians(-0.709)),
+	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571))
+	);
 	public static final ChoreoTraj RightMiddleNZToShoot_BLUE = new ChoreoTraj(
 	    "RightMiddleNZToShoot_BLUE",
 	    OptionalInt.empty(),
@@ -254,6 +268,8 @@ public record ChoreoTraj(
 		Map.entry("MiddleNZToRightClimb_RED", MiddleNZToRightClimb_RED),
 		Map.entry("OutpostToRightClimb", OutpostToRightClimb),
 		Map.entry("RightMiddleNZToOutpost", RightMiddleNZToOutpost),
+		Map.entry("RightMiddleNZToOutpost$0", RightMiddleNZToOutpost$0),
+		Map.entry("RightMiddleNZToOutpost$1", RightMiddleNZToOutpost$1),
 		Map.entry("RightMiddleNZToShoot_BLUE", RightMiddleNZToShoot_BLUE),
 		Map.entry("RightMiddleNZToShoot_RED", RightMiddleNZToShoot_RED),
 		Map.entry("RightShootToNZ_BLUE", RightShootToNZ_BLUE),

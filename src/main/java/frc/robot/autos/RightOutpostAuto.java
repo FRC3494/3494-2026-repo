@@ -30,7 +30,10 @@ public class RightOutpostAuto {
         alliance == Alliance.Blue
             ? ChoreoTraj.RightTrenchToNZ_BLUE.asAutoTraj(routine)
             : ChoreoTraj.RightTrenchToNZ_RED.asAutoTraj(routine);
-    AutoTrajectory rightMiddleNZToOutpost = ChoreoTraj.RightMiddleNZToOutpost.asAutoTraj(routine);
+    AutoTrajectory rightMiddleNZToOutpost_0 =
+        ChoreoTraj.RightMiddleNZToOutpost.segment(0).asAutoTraj(routine);
+    AutoTrajectory rightMiddleNZToOutpost_1 =
+        ChoreoTraj.RightMiddleNZToOutpost.segment(1).asAutoTraj(routine);
     AutoTrajectory outpostToRightClimb = ChoreoTraj.OutpostToRightClimb.asAutoTraj(routine);
 
     routine
@@ -47,13 +50,15 @@ public class RightOutpostAuto {
 
     rightTrenchToNZ
         .done()
-        .onTrue(sequence(robotCommands.stopIntake(), rightMiddleNZToOutpost.cmd()));
+        .onTrue(sequence(robotCommands.stopIntake(), rightMiddleNZToOutpost_0.cmd()));
 
-    rightMiddleNZToOutpost.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+    rightMiddleNZToOutpost_0.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
-    rightMiddleNZToOutpost.atTime("Shoot").onTrue(robotCommands.shoot());
+    rightMiddleNZToOutpost_0
+        .done()
+        .onTrue(rightMiddleNZToOutpost_1.cmd().deadlineFor(robotCommands.shoot()));
 
-    rightMiddleNZToOutpost
+    rightMiddleNZToOutpost_1
         .done()
         .onTrue(
             sequence(
