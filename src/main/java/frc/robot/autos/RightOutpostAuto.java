@@ -51,6 +51,8 @@ public class RightOutpostAuto {
 
     rightMiddleNZToOutpost.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
 
+    rightMiddleNZToOutpost.atTime("Shoot").onTrue(robotCommands.shoot());
+
     rightMiddleNZToOutpost
         .done()
         .onTrue(
