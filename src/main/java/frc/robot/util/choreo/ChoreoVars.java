@@ -18,7 +18,7 @@ public final class ChoreoVars {
     public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1.25);
     public static final LinearAcceleration MaxAcceleration = Units.MetersPerSecondPerSecond.of(2);
     public static final LinearVelocity MaxVelocity = Units.MetersPerSecond.of(2);
-    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(4);
+    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(8);
     public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(4.53);
     public static final Distance RobotBumperSize = Units.Meters.of(0.448);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.63);
@@ -32,7 +32,7 @@ public final class ChoreoVars {
         public static final Pose2d ClimbSetupDepot = new Pose2d(1.079, 4.9, Rotation2d.fromRadians(1.571));
         public static final Pose2d ClimbSetupOutpost = new Pose2d(1.079, 2.65, Rotation2d.fromRadians(-1.571));
         public static final Pose2d DepotIntake = new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142));
-        public static final Pose2d DepotSide = new Pose2d(0.465, 7.197, Rotation2d.fromRadians(-1.571));
+        public static final Pose2d DepotSide = new Pose2d(0.465, 7.19, Rotation2d.fromRadians(-1.571));
         public static final Pose2d Hub = new Pose2d(4.625, 4.035, Rotation2d.kZero);
         public static final Pose2d LeftBumpStartingPosition = new Pose2d(3.582, 6.036, Rotation2d.fromRadians(3.142));
         public static final Pose2d LeftFarMiddleNZ = new Pose2d(8.41, 5.385, Rotation2d.fromRadians(-1.833));
