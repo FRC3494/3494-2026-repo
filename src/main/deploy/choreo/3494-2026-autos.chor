@@ -56,8 +56,8 @@
    "NZMaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"8 m / s ^ 2",
-     "val":8.0
+     "exp":"4 m / s ^ 2",
+     "val":4.0
     }
    },
    "NZMaxVelocity":{
