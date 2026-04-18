@@ -27,9 +27,9 @@ public final class ChoreoVars {
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.623, 5.783, Rotation2d.kZero);
         public static final Pose2d BumpOutpost = new Pose2d(4.623, 2.286, Rotation2d.kZero);
-        public static final Pose2d ClimbDepot = new Pose2d(1.066, 4.484, Rotation2d.fromRadians(1.571));
+        public static final Pose2d ClimbDepot = new Pose2d(1.041, 4.484, Rotation2d.fromRadians(1.571));
         public static final Pose2d ClimbOutpost = new Pose2d(1.066, 2.957, Rotation2d.fromRadians(-1.571));
-        public static final Pose2d ClimbSetupDepot = new Pose2d(1.066, 4.9, Rotation2d.fromRadians(1.571));
+        public static final Pose2d ClimbSetupDepot = new Pose2d(1.041, 4.9, Rotation2d.fromRadians(1.571));
         public static final Pose2d ClimbSetupOutpost = new Pose2d(1.066, 2.65, Rotation2d.fromRadians(-1.571));
         public static final Pose2d DepotIntake = new Pose2d(1.086, 5.969, Rotation2d.fromRadians(3.142));
         public static final Pose2d DepotSide = new Pose2d(0.465, 7.19, Rotation2d.fromRadians(-1.571));
