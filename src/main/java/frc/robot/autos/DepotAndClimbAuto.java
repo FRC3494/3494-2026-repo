@@ -71,7 +71,13 @@ public class DepotAndClimbAuto {
                                 drive),
                             robotCommands.creepBackward()),
                         sequence(
-                            waitUntil(() -> Timer.getMatchTime() <= 3),
+                            waitUntil(() -> Timer.getMatchTime() <= 4),
+                            runOnce(
+                                () -> {
+                                  shooterAimModel.setTurretTrim(
+                                      turretTrimDefaultRot + Units.degreesToRotations(-5.0));
+                                },
+                                shooterAimModel),
                             robotCommands.runClimberMidWithCurrent(),
                             runOnce(
                                 () -> {

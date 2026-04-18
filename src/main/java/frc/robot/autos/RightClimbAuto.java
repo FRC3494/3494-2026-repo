@@ -35,8 +35,7 @@ public class RightClimbAuto {
                 robotCommands.enableAutoTurret(),
                 waitSeconds(0.5),
                 robotCommands.runClimberUp(),
-                robotCommands.shoot(),
-                waitSeconds(3),
+                robotCommands.shoot().withTimeout(3),
                 parallel(rightClimb.cmd(), robotCommands.spinDownFromShoot())));
 
     rightClimb
