@@ -7,6 +7,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
@@ -27,10 +28,15 @@ public class AprilTagVision extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    builder.addDoubleProperty(
-        "Distance Std Dev", () -> distanceStdDev, (double value) -> distanceStdDev = value);
-    builder.addDoubleProperty(
-        "Angle Std Dev", () -> angleStdDev, (double value) -> angleStdDev = value);
+    if (Constants.tuningMode) {
+      builder.addDoubleProperty(
+          "Distance Std Dev", () -> distanceStdDev, (double value) -> distanceStdDev = value);
+      builder.addDoubleProperty(
+          "Angle Std Dev", () -> angleStdDev, (double value) -> angleStdDev = value);
+    }
+
+    Logger.recordOutput("Vision/DistanceStdDev", distanceStdDev);
+    Logger.recordOutput("Vision/AngleStdDev", angleStdDev);
   }
 
   @Override

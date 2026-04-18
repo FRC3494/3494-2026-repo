@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -57,7 +58,9 @@ public class Climber extends SubsystemBase {
       setRelativeEncoderPosition(climberDownPosition);
     }
 
-    SmartDashboard.putData("Climber", this);
+    if (true) {
+      SmartDashboard.putData("Climber", this);
+    }
     Logger.recordOutput("Climber/Motor/CurrentLimit", climberCurrentLimit);
   }
 
@@ -71,7 +74,6 @@ public class Climber extends SubsystemBase {
           climberUpPosition = value;
           Logger.recordOutput("Climber/Setpoints/UpPosition", value);
         });
-    Logger.recordOutput("Climber/Setpoints/UpPosition", climberUpPosition);
 
     builder.addDoubleProperty(
         "Down Position",
@@ -80,7 +82,6 @@ public class Climber extends SubsystemBase {
           climberDownPosition = value;
           Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
         });
-    Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
 
     builder.addDoubleProperty(
         "Climb Position Factor",
@@ -90,63 +91,69 @@ public class Climber extends SubsystemBase {
           climberClimbPosition = position;
           Logger.recordOutput("Climber/Setpoints/ClimbPosition", position);
         });
+
+    if (Constants.tuningMode) {
+      builder.addDoubleProperty(
+          "Tolerance",
+          () -> climberTolerance,
+          (double value) -> {
+            climberTolerance = value;
+            Logger.recordOutput("Climber/Setpoints/Tolerance", value);
+          });
+
+      // Climber PID
+      builder.addDoubleArrayProperty(
+          "PID",
+          () -> new double[] {climberKp, climberKi, climberKd},
+          (double[] values) -> {
+            setPID(values[0], values[1], values[2]);
+            Logger.recordOutput("Climber/PID/kP", values[0]);
+            Logger.recordOutput("Climber/PID/kI", values[1]);
+            Logger.recordOutput("Climber/PID/kD", values[2]);
+          });
+
+      builder.addDoubleArrayProperty(
+          "SVA",
+          () -> new double[] {climberKs, climberKv, climberKa},
+          (double[] values) -> {
+            setSVA(values[0], values[1], values[2]);
+            Logger.recordOutput("Climber/PID/kS", values[0]);
+            Logger.recordOutput("Climber/PID/kV", values[1]);
+            Logger.recordOutput("Climber/PID/kA", values[2]);
+          });
+
+      // Climber Current Limits
+      builder.addIntegerProperty(
+          "Normal Current Limit",
+          () -> ((long) climberCurrentLimit.in(Amps)),
+          (long value) -> {
+            Current limit = Amps.of(value);
+            climberCurrentLimit = limit;
+            setCurrentLimit(limit);
+            Logger.recordOutput("Climber/NormalCurrentLimit", limit);
+          });
+
+      builder.addDoubleProperty(
+          "Ramp Rate (ms)",
+          () -> climberRampRate.in(Milliseconds),
+          (double value) -> {
+            setRampRate(Milliseconds.of(value));
+            Logger.recordOutput("Climber/Motor/RampRate", Milliseconds.of(value));
+          });
+    }
+
+    // Log initial values regardless of tuning mode
+    Logger.recordOutput("Climber/Setpoints/UpPosition", climberUpPosition);
+    Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
     Logger.recordOutput("Climber/Setpoints/ClimbPosition", climberClimbPosition);
-
-    builder.addDoubleProperty(
-        "Tolerance",
-        () -> climberTolerance,
-        (double value) -> {
-          climberTolerance = value;
-          Logger.recordOutput("Climber/Setpoints/Tolerance", value);
-        });
     Logger.recordOutput("Climber/Setpoints/Tolerance", climberTolerance);
-
-    // Climber PID
-    builder.addDoubleArrayProperty(
-        "PID",
-        () -> new double[] {climberKp, climberKi, climberKd},
-        (double[] values) -> {
-          setPID(values[0], values[1], values[2]);
-          Logger.recordOutput("Climber/PID/kP", values[0]);
-          Logger.recordOutput("Climber/PID/kI", values[1]);
-          Logger.recordOutput("Climber/PID/kD", values[2]);
-        });
     Logger.recordOutput("Climber/PID/kP", climberKp);
     Logger.recordOutput("Climber/PID/kI", climberKi);
     Logger.recordOutput("Climber/PID/kD", climberKd);
-
-    builder.addDoubleArrayProperty(
-        "SVA",
-        () -> new double[] {climberKs, climberKv, climberKa},
-        (double[] values) -> {
-          setSVA(values[0], values[1], values[2]);
-          Logger.recordOutput("Climber/PID/kS", values[0]);
-          Logger.recordOutput("Climber/PID/kV", values[1]);
-          Logger.recordOutput("Climber/PID/kA", values[2]);
-        });
     Logger.recordOutput("Climber/PID/kS", climberKs);
     Logger.recordOutput("Climber/PID/kV", climberKv);
     Logger.recordOutput("Climber/PID/kA", climberKa);
-
-    // Climber Current Limits
-    builder.addIntegerProperty(
-        "Normal Current Limit",
-        () -> ((long) climberCurrentLimit.in(Amps)),
-        (long value) -> {
-          Current limit = Amps.of(value);
-          climberCurrentLimit = limit;
-          setCurrentLimit(limit);
-          Logger.recordOutput("Climber/NormalCurrentLimit", limit);
-        });
     Logger.recordOutput("Climber/NormalCurrentLimit", climberCurrentLimit);
-
-    builder.addDoubleProperty(
-        "Ramp Rate (ms)",
-        () -> climberRampRate.in(Milliseconds),
-        (double value) -> {
-          setRampRate(Milliseconds.of(value));
-          Logger.recordOutput("Climber/Motor/RampRate", Milliseconds.of(value));
-        });
     Logger.recordOutput("Climber/Motor/RampRate", climberRampRate);
   }
 

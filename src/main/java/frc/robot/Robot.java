@@ -90,13 +90,17 @@ public class Robot extends LoggedRobot {
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
     // Add command scheduler to dashboard
-    SmartDashboard.putData(CommandScheduler.getInstance());
+    if (Constants.tuningMode) {
+      SmartDashboard.putData(CommandScheduler.getInstance());
+    }
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
-    SmartDashboard.putData("OI", robotContainer.oi);
+    if (Constants.tuningMode) {
+      SmartDashboard.putData("OI", robotContainer.oi);
+    }
     OI.setWonAutoState(WonAutoState.Unknown);
   }
 
