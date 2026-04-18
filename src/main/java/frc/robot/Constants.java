@@ -42,7 +42,7 @@ public final class Constants {
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
   /** Enable runtime tuning of PID/SVA/motor values via Elastic. */
-  public static final boolean tuningMode = true;
+  public static final boolean tuningMode = false;
 
   public static enum Mode {
     /** Running on a real robot. */
