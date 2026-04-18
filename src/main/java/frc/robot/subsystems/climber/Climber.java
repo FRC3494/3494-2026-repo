@@ -65,33 +65,33 @@ public class Climber extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Climber Positions
+    builder.addDoubleProperty(
+        "Up Position",
+        () -> climberUpPosition,
+        (double value) -> {
+          climberUpPosition = value;
+          Logger.recordOutput("Climber/Setpoints/UpPosition", value);
+        });
+
+    builder.addDoubleProperty(
+        "Down Position",
+        () -> climberDownPosition,
+        (double value) -> {
+          climberDownPosition = value;
+          Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
+        });
+
+    builder.addDoubleProperty(
+        "Climb Position Factor",
+        () -> 1.0 - (climberClimbPosition / climberUpPosition),
+        (double value) -> {
+          double position = percentClimbedPosition(value);
+          climberClimbPosition = position;
+          Logger.recordOutput("Climber/Setpoints/ClimbPosition", position);
+        });
+
     if (Constants.tuningMode) {
-      // Climber Positions
-      builder.addDoubleProperty(
-          "Up Position",
-          () -> climberUpPosition,
-          (double value) -> {
-            climberUpPosition = value;
-            Logger.recordOutput("Climber/Setpoints/UpPosition", value);
-          });
-
-      builder.addDoubleProperty(
-          "Down Position",
-          () -> climberDownPosition,
-          (double value) -> {
-            climberDownPosition = value;
-            Logger.recordOutput("Climber/Setpoints/DownPosition", climberDownPosition);
-          });
-
-      builder.addDoubleProperty(
-          "Climb Position Factor",
-          () -> 1.0 - (climberClimbPosition / climberUpPosition),
-          (double value) -> {
-            double position = percentClimbedPosition(value);
-            climberClimbPosition = position;
-            Logger.recordOutput("Climber/Setpoints/ClimbPosition", position);
-          });
-
       builder.addDoubleProperty(
           "Tolerance",
           () -> climberTolerance,
