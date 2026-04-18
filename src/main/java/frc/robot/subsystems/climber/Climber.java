@@ -44,7 +44,8 @@ public class Climber extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .inverted(climberInverted)
         .openLoopRampRate(climberRampRate.in(Seconds))
-        .closedLoopRampRate(climberRampRate.in(Seconds));
+        .closedLoopRampRate(climberRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     climberConfig
         .encoder
         .positionConversionFactor(climberGearRatio)

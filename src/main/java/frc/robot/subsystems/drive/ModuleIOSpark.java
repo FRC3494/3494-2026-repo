@@ -120,7 +120,8 @@ public class ModuleIOSpark implements ModuleIO {
         .smartCurrentLimit(driveMotorCurrentLimit)
         .voltageCompensation(12.0)
         .openLoopRampRate(driveRampRate.in(Seconds))
-        .closedLoopRampRate(driveRampRate.in(Seconds));
+        .closedLoopRampRate(driveRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     driveConfig
         .encoder
         .positionConversionFactor(driveEncoderPositionFactor)
@@ -157,7 +158,8 @@ public class ModuleIOSpark implements ModuleIO {
         .smartCurrentLimit(turnMotorCurrentLimit[module])
         .voltageCompensation(12.0)
         .openLoopRampRate(turnRampRate.in(Seconds))
-        .closedLoopRampRate(turnRampRate.in(Seconds));
+        .closedLoopRampRate(turnRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     turnConfig
         .absoluteEncoder
         .inverted(turnRelEncoderInverted[module])

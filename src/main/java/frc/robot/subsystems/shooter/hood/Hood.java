@@ -61,7 +61,8 @@ public class Hood extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .inverted(hoodInverted)
         .openLoopRampRate(hoodRampRate.in(Seconds))
-        .closedLoopRampRate(hoodRampRate.in(Seconds));
+        .closedLoopRampRate(hoodRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     hoodConfig
         .encoder
         .positionConversionFactor(hoodGearRatio)

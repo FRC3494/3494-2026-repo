@@ -58,7 +58,8 @@ public class Hopper extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .inverted(spindexerInverted)
         .openLoopRampRate(spindexerRampRate.in(Seconds))
-        .closedLoopRampRate(spindexerRampRate.in(Seconds));
+        .closedLoopRampRate(spindexerRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     spindexerConfig
         .encoder
         .positionConversionFactor(spindexerGearRatio)
@@ -81,7 +82,8 @@ public class Hopper extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .inverted(kickerInverted)
         .openLoopRampRate(kickerRampRate.in(Seconds))
-        .closedLoopRampRate(kickerRampRate.in(Seconds));
+        .closedLoopRampRate(kickerRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     kickerConfig.closedLoop.pid(kickerKp, kickerKi, kickerKd);
     kickerConfig.closedLoop.feedForward.sva(kickerKs, kickerKv, kickerKa);
     kickerMotor.configure(

@@ -55,7 +55,8 @@ public class Turret extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .inverted(turretInverted)
         .openLoopRampRate(turretRampRate.in(Seconds))
-        .closedLoopRampRate(turretRampRate.in(Seconds));
+        .closedLoopRampRate(turretRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     turretConfig
         .closedLoop
         .pid(turretKp, turretKi, turretKd)

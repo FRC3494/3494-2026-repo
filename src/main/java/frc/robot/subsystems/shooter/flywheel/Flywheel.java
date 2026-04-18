@@ -50,7 +50,8 @@ public class Flywheel extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .inverted(flywheelInverted)
         .openLoopRampRate(flywheelRampRate.in(Seconds))
-        .closedLoopRampRate(flywheelRampRate.in(Seconds));
+        .closedLoopRampRate(flywheelRampRate.in(Seconds))
+        .secondaryCurrentLimit(115, 4);
     leftConfig
         .closedLoop
         .pid(flywheelKp, flywheelKi, flywheelKd)
