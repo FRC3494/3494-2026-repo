@@ -40,7 +40,7 @@ public class RobotCommands {
 
   private ShooterAimModel shooterAimModel;
 
-  private boolean spindexerInverted = false;
+  private boolean spindexerInverted = true;
   private int spindexerStallReversals = 0;
   private int spindexerStallsForward = 0;
   private int spindexerStallsReverse = 0;
@@ -401,7 +401,7 @@ public class RobotCommands {
             invertSpindexer())
         .finallyDo(
             () -> {
-              spindexerInverted = false;
+              resetSpindexerInversion();
             })
         .withName("RunSpindexerWithStallDetection");
   }
@@ -440,9 +440,13 @@ public class RobotCommands {
                             || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))))
         .finallyDo(
             () -> {
-              spindexerInverted = false;
+              resetSpindexerInversion();
             })
         .withName("RunSpindexerAndKicker");
+  }
+
+  private void resetSpindexerInversion() {
+    spindexerInverted = true;
   }
 
   // #endregion
