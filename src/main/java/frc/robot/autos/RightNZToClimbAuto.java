@@ -77,7 +77,7 @@ public class RightNZToClimbAuto {
                                     : climbPoseOutpost_RED),
                             robotCommands.creepBackward()),
                         sequence(
-                            waitUntil(() -> Timer.getMatchTime() <= 4)
+                            waitUntil(() -> Timer.getMatchTime() <= 5)
                                 .deadlineFor(robotCommands.shoot()),
                             runOnce(
                                 () -> {
