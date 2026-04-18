@@ -1,9 +1,7 @@
 package frc.robot.autos;
 
-import static edu.wpi.first.wpilibj2.command.Commands.parallel;
-import static edu.wpi.first.wpilibj2.command.Commands.sequence;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
-import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseOutpost;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -46,7 +44,10 @@ public class RightClimbAuto {
         .onTrue(
             parallel(
                 sequence(
-                    new AutoAlignCommand(climbPoseOutpost, drive), robotCommands.creepBackward()),
+                    new AutoAlignCommand(
+                        alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED,
+                        drive),
+                    robotCommands.creepBackward()),
                 sequence(waitSeconds(1), robotCommands.runClimberMid())));
 
     return routine;

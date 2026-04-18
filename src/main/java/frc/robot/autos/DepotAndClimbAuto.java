@@ -64,7 +64,11 @@ public class DepotAndClimbAuto {
                     parallel(
                         robotCommands.shoot(),
                         sequence(
-                            new AutoAlignCommand(climbPoseDepot, drive),
+                            new AutoAlignCommand(
+                                alliance == Alliance.Blue
+                                    ? climbPoseDepot_BLUE
+                                    : climbPoseDepot_RED,
+                                drive),
                             robotCommands.creepBackward()),
                         sequence(
                             waitUntil(() -> Timer.getMatchTime() <= 3),

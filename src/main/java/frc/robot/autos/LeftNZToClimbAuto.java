@@ -71,7 +71,13 @@ public class LeftNZToClimbAuto {
                         robotCommands.shoot(),
                         sequence(
                             AutoAlignCommand.alignSequence(
-                                drive, climbSetupPoseDepot, climbPoseDepot),
+                                drive,
+                                alliance == Alliance.Blue
+                                    ? climbSetupPoseDepot_BLUE
+                                    : climbSetupPoseDepot_RED,
+                                alliance == Alliance.Blue
+                                    ? climbPoseDepot_BLUE
+                                    : climbPoseDepot_RED),
                             robotCommands.creepBackward()),
                         sequence(
                             waitUntil(() -> Timer.getMatchTime() <= 4),

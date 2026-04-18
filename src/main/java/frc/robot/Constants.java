@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -383,10 +384,22 @@ public final class Constants {
       public static double autoAlignAngularKi = 0.0;
       public static double autoAlignAngularKd = 0.1;
 
-      public static final Pose2d climbSetupPoseOutpost = ChoreoVars.Poses.ClimbSetupOutpost;
-      public static final Pose2d climbPoseOutpost = ChoreoVars.Poses.ClimbOutpost;
-      public static final Pose2d climbSetupPoseDepot = ChoreoVars.Poses.ClimbSetupDepot;
-      public static final Pose2d climbPoseDepot = ChoreoVars.Poses.ClimbDepot;
+      public static final Pose2d climbSetupPoseOutpost_RED =
+          ChoreoVars.Poses.ClimbSetupOutpost.plus(Transform2d.kZero);
+      public static final Pose2d climbSetupPoseOutpost_BLUE =
+          ChoreoVars.Poses.ClimbSetupOutpost.plus(Transform2d.kZero);
+      public static final Pose2d climbPoseOutpost_RED =
+          ChoreoVars.Poses.ClimbOutpost.plus(Transform2d.kZero);
+      public static final Pose2d climbPoseOutpost_BLUE =
+          ChoreoVars.Poses.ClimbOutpost.plus(Transform2d.kZero);
+      public static final Pose2d climbSetupPoseDepot_RED =
+          ChoreoVars.Poses.ClimbSetupDepot.plus(Transform2d.kZero);
+      public static final Pose2d climbSetupPoseDepot_BLUE =
+          ChoreoVars.Poses.ClimbSetupDepot.plus(Transform2d.kZero);
+      public static final Pose2d climbPoseDepot_RED =
+          ChoreoVars.Poses.ClimbDepot.plus(Transform2d.kZero);
+      public static final Pose2d climbPoseDepot_BLUE =
+          ChoreoVars.Poses.ClimbDepot.plus(Transform2d.kZero);
 
       public static Distance trenchXTolerance = fieldLength;
       public static Distance trenchYTolerance = Inches.of(5.0);

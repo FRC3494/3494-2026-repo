@@ -72,7 +72,13 @@ public class RightOutpostAuto {
                     robotCommands.shoot(),
                     sequence(
                         AutoAlignCommand.alignSequence(
-                            drive, climbSetupPoseOutpost, climbPoseOutpost),
+                            drive,
+                            alliance == Alliance.Blue
+                                ? climbSetupPoseOutpost_BLUE
+                                : climbSetupPoseOutpost_RED,
+                            alliance == Alliance.Blue
+                                ? climbPoseOutpost_BLUE
+                                : climbPoseOutpost_RED),
                         parallel(
                             robotCommands.creepBackward(),
                             sequence(

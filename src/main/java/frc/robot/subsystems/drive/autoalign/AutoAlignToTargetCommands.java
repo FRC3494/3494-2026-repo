@@ -9,6 +9,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -18,16 +20,29 @@ public class AutoAlignToTargetCommands {
   public static Command autoAlignToTower(Drive drive, RobotCommands robotCommands) {
     return either(
             sequence(
-                AutoAlignCommand.alignSequenceDeferred(
-                    drive, climbSetupPoseOutpost, climbPoseOutpost),
+                defer(
+                    () ->
+                        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                            ? AutoAlignCommand.alignSequence(
+                                drive, climbSetupPoseOutpost_BLUE, climbPoseOutpost_BLUE)
+                            : AutoAlignCommand.alignSequence(
+                                drive, climbSetupPoseOutpost_RED, climbPoseOutpost_RED),
+                    Set.of(drive)),
                 robotCommands.creepBackward()),
             sequence(
-                AutoAlignCommand.alignSequenceDeferred(drive, climbSetupPoseDepot, climbPoseDepot),
+                defer(
+                    () ->
+                        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                            ? AutoAlignCommand.alignSequence(
+                                drive, climbSetupPoseDepot_BLUE, climbPoseDepot_BLUE)
+                            : AutoAlignCommand.alignSequence(
+                                drive, climbSetupPoseDepot_RED, climbPoseDepot_RED),
+                    Set.of(drive)),
                 robotCommands.creepBackward()),
             () ->
                 closerToWithFlip(
-                    climbSetupPoseOutpost.getTranslation(),
-                    climbSetupPoseDepot.getTranslation(),
+                    climbSetupPoseOutpost_BLUE.getTranslation(),
+                    climbSetupPoseDepot_BLUE.getTranslation(),
                     drive.getPose().getTranslation()))
         .withName("AutoAlignTower");
   }
