@@ -120,8 +120,8 @@
    },
    "ClimbDepot":{
     "x":{
-     "exp":"1.155 m - 4.5 in",
-     "val":1.0407
+     "exp":"1.155 m - 4.75 in",
+     "val":1.03435
     },
     "y":{
      "exp":"FieldWidth - 3.56 m - 1 in",
@@ -149,7 +149,7 @@
    "ClimbSetupDepot":{
     "x":{
      "exp":"ClimbDepot.x",
-     "val":1.0407
+     "val":1.03435
     },
     "y":{
      "exp":"4.9 m",
