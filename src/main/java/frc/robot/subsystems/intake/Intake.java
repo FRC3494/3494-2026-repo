@@ -88,31 +88,31 @@ public class Intake extends SubsystemBase {
                 (state) -> Logger.recordOutput("Intake/SpinnySpinnySysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpinnySpinnyOpenLoop(voltage), null, this));
 
-    if (tuningMode) {
+    if (true) {
       SmartDashboard.putData("Intake", this);
     }
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
+    // Spinny Spinny Speeds
+    builder.addIntegerProperty(
+        "SpinnySpinny/Speed",
+        () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
+        (long value) -> {
+          intakeSpinnySpinnySpeed = RPM.of(value);
+          Logger.recordOutput("SpinnySpinny/Speed", RPM.of(value));
+        });
+
+    builder.addIntegerProperty(
+        "SpinnySpinny/ShootingSpeed",
+        () -> ((long) intakeSpinnySpinnyShootingSpeed.in(RPM)),
+        (long value) -> {
+          intakeSpinnySpinnyShootingSpeed = RPM.of(value);
+          Logger.recordOutput("SpinnySpinny/ShootingSpeed", RPM.of(value));
+        });
+
     if (tuningMode) {
-      // Spinny Spinny Speeds
-      builder.addIntegerProperty(
-          "SpinnySpinny/Speed",
-          () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
-          (long value) -> {
-            intakeSpinnySpinnySpeed = RPM.of(value);
-            Logger.recordOutput("SpinnySpinny/Speed", RPM.of(value));
-          });
-
-      builder.addIntegerProperty(
-          "SpinnySpinny/ShootingSpeed",
-          () -> ((long) intakeSpinnySpinnyShootingSpeed.in(RPM)),
-          (long value) -> {
-            intakeSpinnySpinnyShootingSpeed = RPM.of(value);
-            Logger.recordOutput("SpinnySpinny/ShootingSpeed", RPM.of(value));
-          });
-
       // Spinny Spinny PID
       builder.addDoubleArrayProperty(
           "SpinnySpinny/PID",
@@ -133,40 +133,42 @@ public class Intake extends SubsystemBase {
             Logger.recordOutput("SpinnySpinny/PID/kV", values[1]);
             Logger.recordOutput("SpinnySpinny/PID/kA", values[2]);
           });
+    }
 
-      // Uppy Downy Settings
-      builder.addDoubleProperty(
-          "UppyDowny/Raise RPM",
-          () -> uppyDownyRaiseRPM,
-          (double value) -> {
-            uppyDownyRaiseRPM = value;
-            Logger.recordOutput("UppyDowny/RaiseRPM", value);
-          });
+    // Uppy Downy Settings
+    builder.addDoubleProperty(
+        "UppyDowny/Raise RPM",
+        () -> uppyDownyRaiseRPM,
+        (double value) -> {
+          uppyDownyRaiseRPM = value;
+          Logger.recordOutput("UppyDowny/RaiseRPM", value);
+        });
 
-      builder.addDoubleProperty(
-          "UppyDowny/Lower RPM",
-          () -> uppyDownyLowerRPM,
-          (double value) -> {
-            uppyDownyLowerRPM = value;
-            Logger.recordOutput("UppyDowny/LowerRPM", value);
-          });
+    builder.addDoubleProperty(
+        "UppyDowny/Lower RPM",
+        () -> uppyDownyLowerRPM,
+        (double value) -> {
+          uppyDownyLowerRPM = value;
+          Logger.recordOutput("UppyDowny/LowerRPM", value);
+        });
 
-      builder.addDoubleProperty(
-          "UppyDowny/Jostle Intake Up Time",
-          () -> jostleIntakeUpTime,
-          (double value) -> {
-            jostleIntakeUpTime = value;
-            Logger.recordOutput("UppyDowny/JostleIntakeUpTime", value);
-          });
+    builder.addDoubleProperty(
+        "UppyDowny/Jostle Intake Up Time",
+        () -> jostleIntakeUpTime,
+        (double value) -> {
+          jostleIntakeUpTime = value;
+          Logger.recordOutput("UppyDowny/JostleIntakeUpTime", value);
+        });
 
-      builder.addDoubleProperty(
-          "UppyDowny/Jostle Intake Down Time",
-          () -> jostleIntakeDownTime,
-          (double value) -> {
-            jostleIntakeDownTime = value;
-            Logger.recordOutput("UppyDowny/JostleIntakeDownTime", value);
-          });
+    builder.addDoubleProperty(
+        "UppyDowny/Jostle Intake Down Time",
+        () -> jostleIntakeDownTime,
+        (double value) -> {
+          jostleIntakeDownTime = value;
+          Logger.recordOutput("UppyDowny/JostleIntakeDownTime", value);
+        });
 
+    if (tuningMode) {
       // Uppy Downy PID
       builder.addDoubleArrayProperty(
           "UppyDowny/PID",

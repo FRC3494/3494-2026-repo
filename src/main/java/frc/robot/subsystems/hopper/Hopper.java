@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Robot;
 import lombok.Getter;
@@ -103,31 +104,31 @@ public class Hopper extends SubsystemBase {
                 (state) -> Logger.recordOutput("Hopper/Kicker/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setKickerOpenLoop(voltage), null, this));
 
-    if (tuningMode) {
+    if (true) {
       SmartDashboard.putData("Hopper", this);
     }
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    if (tuningMode) {
-      // Spindexer Speeds
-      builder.addIntegerProperty(
-          "Spindexer/Speed (RPM)",
-          () -> ((long) spindexerSpeed.in(RPM)),
-          (long value) -> {
-            spindexerSpeed = RPM.of(value);
-            Logger.recordOutput("Hopper/Spindexer/Speed", RPM.of(value));
-          });
+    // Spindexer Speeds
+    builder.addIntegerProperty(
+        "Spindexer/Speed (RPM)",
+        () -> ((long) spindexerSpeed.in(RPM)),
+        (long value) -> {
+          spindexerSpeed = RPM.of(value);
+          Logger.recordOutput("Hopper/Spindexer/Speed", RPM.of(value));
+        });
 
-      builder.addIntegerProperty(
-          "Spindexer/Speed while Intaking",
-          () -> (long) spindexerIntakingSpeed.in(RPM),
-          (long value) -> {
-            spindexerIntakingSpeed = RPM.of(value);
-            Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", RPM.of(value));
-          });
+    builder.addIntegerProperty(
+        "Spindexer/Speed while Intaking",
+        () -> (long) spindexerIntakingSpeed.in(RPM),
+        (long value) -> {
+          spindexerIntakingSpeed = RPM.of(value);
+          Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", RPM.of(value));
+        });
 
+    if (Constants.tuningMode) {
       // Spindexer PID
       builder.addDoubleArrayProperty(
           "Spindexer/PID",

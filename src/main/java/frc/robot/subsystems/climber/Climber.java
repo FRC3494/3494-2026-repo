@@ -58,7 +58,7 @@ public class Climber extends SubsystemBase {
       setRelativeEncoderPosition(climberDownPosition);
     }
 
-    if (Constants.tuningMode) {
+    if (true) {
       SmartDashboard.putData("Climber", this);
     }
   }
