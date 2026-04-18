@@ -528,6 +528,15 @@ public class RobotCommands {
         .withName("StopIntakeJostle");
   }
 
+  public Command runIntakeUp() {
+    return sequence(
+            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
+            waitSeconds(1.6),
+            stopIntakeJostle())
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
+        .withName("RunIntakeUp");
+  }
+
   public Command intakeManualUp() {
     return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
         .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))

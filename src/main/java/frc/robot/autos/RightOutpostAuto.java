@@ -69,7 +69,6 @@ public class RightOutpostAuto {
         .done()
         .onTrue(
             parallel(
-                    robotCommands.shoot(),
                     sequence(
                         AutoAlignCommand.alignSequence(
                             drive,
@@ -82,20 +81,24 @@ public class RightOutpostAuto {
                         parallel(
                             robotCommands.creepBackward(),
                             sequence(
-                                waitUntil(() -> Timer.getMatchTime() <= 4),
+                                waitUntil(() -> Timer.getMatchTime() <= 4)
+                                    .deadlineFor(robotCommands.shoot()),
                                 runOnce(
                                     () -> {
                                       shooterAimModel.setTurretTrim(
                                           turretTrimDefaultRot + Units.degreesToRotations(5.0));
                                     },
                                     shooterAimModel),
-                                robotCommands.runClimberMidWithCurrent(),
+                                parallel(
+                                    robotCommands.runClimberMidWithCurrent(),
+                                    robotCommands.runIntakeUp()),
                                 runOnce(
                                     () -> {
                                       shooterAimModel.setTurretTrim(
                                           turretTrimDefaultRot + Units.degreesToRotations(10.0));
                                     },
-                                    shooterAimModel)))))
+                                    shooterAimModel),
+                                robotCommands.shoot()))))
                 .finallyDo(
                     () -> {
                       shooterAimModel.setTurretTrim(turretTrimDefaultRot);
