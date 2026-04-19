@@ -800,6 +800,7 @@ public class RobotCommands {
               flywheel.setVelocity(shooterAimModel.getFlywheelSpeed());
             },
             flywheel)
+            .ignoringDisable(true)
         .withName("AutoFlywheelCommand");
   }
 
@@ -864,6 +865,7 @@ public class RobotCommands {
               hood.setPosition(shooterAimModel.getHoodAngle());
             },
             hood)
+        .ignoringDisable(true)
         .withName("AutoHoodCommand");
   }
 
@@ -985,6 +987,7 @@ public class RobotCommands {
               turret.setPosition(shooterAimModel.getTurretAngleRot());
             },
             turret)
+        .ignoringDisable(true)
         .withName("AutoTurretCommand");
   }
 
