@@ -27,16 +27,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj DepotToLeftClimb_BLUE = new ChoreoTraj(
 	    "DepotToLeftClimb_BLUE",
 	    OptionalInt.empty(),
-	    2.93258,
+	    2.93336,
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
-	    new Pose2d(1.034, 4.484, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.022, 4.484, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj DepotToLeftClimb_RED = new ChoreoTraj(
 	    "DepotToLeftClimb_RED",
 	    OptionalInt.empty(),
-	    2.93258,
+	    2.93336,
 	    new Pose2d(1.086, 5.969, Rotation2d.fromRadians(1.571)),
-	    new Pose2d(1.034, 4.484, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.022, 4.484, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj LeftBumpToDepotPartial_BLUE = new ChoreoTraj(
 	    "LeftBumpToDepotPartial_BLUE",
@@ -132,16 +132,16 @@ public record ChoreoTraj(
 	public static final ChoreoTraj MiddleNZToLeftClimb_BLUE = new ChoreoTraj(
 	    "MiddleNZToLeftClimb_BLUE",
 	    OptionalInt.empty(),
-	    3.6943,
+	    3.69954,
 	    new Pose2d(7.801, 4.927, Rotation2d.fromRadians(-1.833)),
-	    new Pose2d(1.034, 4.9, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.022, 4.9, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj MiddleNZToLeftClimb_RED = new ChoreoTraj(
 	    "MiddleNZToLeftClimb_RED",
 	    OptionalInt.empty(),
-	    3.6943,
+	    3.69954,
 	    new Pose2d(7.801, 4.927, Rotation2d.fromRadians(-1.833)),
-	    new Pose2d(1.034, 4.9, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.022, 4.9, Rotation2d.fromRadians(1.571))
 	);
 	public static final ChoreoTraj MiddleNZToRightClimb_BLUE = new ChoreoTraj(
 	    "MiddleNZToRightClimb_BLUE",
@@ -244,9 +244,9 @@ public record ChoreoTraj(
 	public static final ChoreoTraj TrenchToLeftClimb = new ChoreoTraj(
 	    "TrenchToLeftClimb",
 	    OptionalInt.empty(),
-	    2.86095,
+	    2.8677,
 	    new Pose2d(4.476, 7.444, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.034, 4.9, Rotation2d.fromRadians(1.571))
+	    new Pose2d(1.022, 4.9, Rotation2d.fromRadians(1.571))
 	);
 
     /**
