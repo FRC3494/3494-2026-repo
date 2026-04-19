@@ -146,8 +146,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
-
-    OI.setWonAutoState(WonAutoState.Unknown);
   }
 
   /** This function is called periodically during autonomous. */
@@ -163,6 +161,8 @@ public class Robot extends LoggedRobot {
     // this line or comment it out.
 
     alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+
+    OI.setWonAutoState(WonAutoState.Unknown);
 
     Command autonomousCommand = robotContainer.getAutonomousCommand();
     if (autonomousCommand != null) {

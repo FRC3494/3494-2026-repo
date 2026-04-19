@@ -31,7 +31,7 @@ public final class OI implements Sendable {
   private static Joystick leftButtonBoard = new Joystick(leftButtonBoardPort);
   private static Joystick rightButtonBoard = new Joystick(rightButtonBoardPort);
 
-  private static WonAutoState wonAutoState = WonAutoState.Unknown;
+  private static WonAutoState wonAutoState = WonAutoState.NotTeleop;
 
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -156,6 +156,7 @@ public final class OI implements Sendable {
         indicatorColor = Color.kMagenta;
         break;
       case Unknown:
+      case NotTeleop:
         break;
     }
     Logger.recordOutput("OI/WonAutoIndicator", indicatorColor.toHexString());
@@ -176,7 +177,8 @@ public final class OI implements Sendable {
   public static enum WonAutoState {
     Won,
     Lost,
-    Unknown
+    Unknown,
+    NotTeleop
   }
 
   // #region WHOLE ROBOT
