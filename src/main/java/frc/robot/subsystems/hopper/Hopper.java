@@ -183,16 +183,18 @@ public class Hopper extends SubsystemBase {
             Logger.recordOutput("Hopper/Spindexer/UnjamEnabled", value);
           });
       Logger.recordOutput("Hopper/Spindexer/UnjamEnabled", spindexerUnjamEnabled);
+    }
 
-      // Kicker Speed
-      builder.addIntegerProperty(
-          "Kicker/Speed",
-          () -> ((long) kickerSpeed.in(RPM)),
-          (long value) -> {
-            kickerSpeed = RPM.of(value);
-            Logger.recordOutput("Hopper/Kicker/Speed", RPM.of(value));
-          });
+    // Kicker Speed
+    builder.addIntegerProperty(
+        "Kicker/Speed",
+        () -> ((long) kickerSpeed.in(RPM)),
+        (long value) -> {
+          kickerSpeed = RPM.of(value);
+          Logger.recordOutput("Hopper/Kicker/Speed", RPM.of(value));
+        });
 
+    if (tuningMode) {
       builder.addDoubleArrayProperty(
           "Kicker/PID",
           () -> new double[] {kickerKp, kickerKi, kickerKd},
