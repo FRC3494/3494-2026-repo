@@ -46,7 +46,9 @@ public class TrenchToLeftClimbAuto {
         .done()
         .onTrue(
             sequence(
-                    robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
+                    robotCommands
+                        .runClimberUp()
+                        .deadlineFor(robotCommands.shootWithoutIntakeJostle()),
                     parallel(
                         sequence(
                             AutoAlignCommand.alignSequence(
@@ -60,23 +62,21 @@ public class TrenchToLeftClimbAuto {
                             robotCommands.creepBackward()),
                         sequence(
                             waitUntil(() -> Timer.getMatchTime() <= 5)
-                                .deadlineFor(robotCommands.shoot()),
+                                .deadlineFor(robotCommands.shootWithoutIntakeJostle()),
                             runOnce(
                                 () -> {
                                   shooterAimModel.setTurretTrim(
                                       turretTrimDefaultRot + Units.degreesToRotations(-5.0));
                                 },
                                 shooterAimModel),
-                            parallel(
-                                robotCommands.runClimberMidWithCurrent(),
-                                robotCommands.runIntakeUp()),
+                            parallel(robotCommands.runClimberMidWithCurrent()),
                             runOnce(
                                 () -> {
                                   shooterAimModel.setTurretTrim(
                                       turretTrimDefaultRot + Units.degreesToRotations(-10.0));
                                 },
                                 shooterAimModel),
-                            robotCommands.shoot())))
+                            robotCommands.shootWithoutIntakeJostle())))
                 .finallyDo(
                     () -> {
                       shooterAimModel.setTurretTrim(turretTrimDefaultRot);
