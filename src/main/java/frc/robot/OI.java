@@ -427,9 +427,13 @@ public final class OI implements Sendable {
 
     // #region FLYWHEEL
     public static final class FlywheelOI {
-      public static Trigger runFlywheel() {
-        return new Trigger(() -> false);
-        // return primaryController.rightBumper(eventLoop);
+      public static Trigger startFlywheel() {
+        return leftButtonBoard.button(7, eventLoop).castTo(Trigger::new);
+        // return new Trigger(() -> false);
+      }
+
+      public static Trigger stopFlywheel() {
+        return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
       }
 
       public static Trigger increaseFlywheelTrim() {
