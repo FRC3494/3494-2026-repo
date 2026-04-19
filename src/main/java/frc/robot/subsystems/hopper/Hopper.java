@@ -130,6 +130,11 @@ public class Hopper extends SubsystemBase {
           Logger.recordOutput("Hopper/Spindexer/IntakingSpeed", RPM.of(value));
         });
 
+    builder.addBooleanProperty(
+        "Spindexer/Default Clockwise",
+        () -> spindexerDefaultDirection,
+        (boolean value) -> spindexerDefaultDirection = value);
+
     if (Constants.tuningMode) {
       // Spindexer PID
       builder.addDoubleArrayProperty(

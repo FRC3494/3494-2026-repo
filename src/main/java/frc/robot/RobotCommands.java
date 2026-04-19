@@ -40,7 +40,7 @@ public class RobotCommands {
 
   private ShooterAimModel shooterAimModel;
 
-  private boolean spindexerInverted = false;
+  private boolean spindexerInverted = spindexerDefaultDirection;
   private int spindexerStallReversals = 0;
   private int spindexerStallsForward = 0;
   private int spindexerStallsReverse = 0;
@@ -446,7 +446,7 @@ public class RobotCommands {
   }
 
   private void resetSpindexerInversion() {
-    spindexerInverted = false;
+    spindexerInverted = spindexerDefaultDirection;
   }
 
   // #endregion
@@ -800,7 +800,7 @@ public class RobotCommands {
               flywheel.setVelocity(shooterAimModel.getFlywheelSpeed());
             },
             flywheel)
-            .ignoringDisable(true)
+        .ignoringDisable(true)
         .withName("AutoFlywheelCommand");
   }
 

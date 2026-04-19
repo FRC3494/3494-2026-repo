@@ -465,9 +465,13 @@ public class Drive extends SubsystemBase {
 
     // Generate the next speeds for the robot
     double xSpeed =
-        Math.signum(sample.ax) == Math.signum(sample.vx) || sample.vx == 0.0 ? sample.ax + sample.vx : sample.vx;
+        Math.signum(sample.ax) == Math.signum(sample.vx) || sample.vx == 0.0
+            ? sample.ax + sample.vx
+            : sample.vx;
     double ySpeed =
-        Math.signum(sample.ay) == Math.signum(sample.vy) || sample.vy == 0.0 ? sample.ay + sample.vy : sample.vy;
+        Math.signum(sample.ay) == Math.signum(sample.vy) || sample.vy == 0.0
+            ? sample.ay + sample.vy
+            : sample.vy;
     double thetaSpeed =
         Math.signum(sample.alpha) == Math.signum(sample.omega)
             ? sample.alpha + sample.omega
@@ -479,10 +483,9 @@ public class Drive extends SubsystemBase {
             thetaSpeed
                 + headingController.calculate(pose.getRotation().getRadians(), sample.heading),
             getRotation());
-        
+
     Logger.recordOutput(
-        "Choreo/VelocitySetpoint",
-        ChassisSpeeds.fromRobotRelativeSpeeds(speeds, getRotation()));
+        "Choreo/VelocitySetpoint", ChassisSpeeds.fromRobotRelativeSpeeds(speeds, getRotation()));
 
     // Apply the generated speeds
     runVelocity(speeds);

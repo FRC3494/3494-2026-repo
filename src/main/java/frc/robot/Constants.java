@@ -443,6 +443,7 @@ public final class Constants {
 
     public static AngularVelocity spindexerSpeed = RPM.of(90);
     public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
+    public static boolean spindexerDefaultDirection = false;
 
     public static double spindexerKp = 2.342E-07;
     public static double spindexerKi = 0.0;
