@@ -40,7 +40,7 @@ public class RobotCommands {
 
   private ShooterAimModel shooterAimModel;
 
-  private boolean spindexerInverted = true;
+  private boolean spindexerInverted = false;
   private int spindexerStallReversals = 0;
   private int spindexerStallsForward = 0;
   private int spindexerStallsReverse = 0;
@@ -446,7 +446,7 @@ public class RobotCommands {
   }
 
   private void resetSpindexerInversion() {
-    spindexerInverted = true;
+    spindexerInverted = false;
   }
 
   // #endregion
