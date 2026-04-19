@@ -160,9 +160,9 @@ public record ChoreoTraj(
 	public static final ChoreoTraj OutpostToRightClimb = new ChoreoTraj(
 	    "OutpostToRightClimb",
 	    OptionalInt.empty(),
-	    2.2276,
+	    2.21989,
 	    new Pose2d(0.443, 0.774, Rotation2d.fromRadians(-1.571)),
-	    new Pose2d(1.066, 2.65, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.041, 2.65, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightMiddleNZToOutpost = new ChoreoTraj(
 	    "RightMiddleNZToOutpost",
@@ -216,16 +216,16 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RightTrenchToClimb_BLUE = new ChoreoTraj(
 	    "RightTrenchToClimb_BLUE",
 	    OptionalInt.empty(),
-	    3.74354,
+	    3.75582,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.066, 2.957, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.041, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightTrenchToClimb_RED = new ChoreoTraj(
 	    "RightTrenchToClimb_RED",
 	    OptionalInt.empty(),
-	    3.74354,
+	    3.75582,
 	    new Pose2d(3.582, 2.033, Rotation2d.fromRadians(3.142)),
-	    new Pose2d(1.066, 2.957, Rotation2d.fromRadians(-1.571))
+	    new Pose2d(1.041, 2.957, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RightTrenchToNZ_BLUE = new ChoreoTraj(
 	    "RightTrenchToNZ_BLUE",
