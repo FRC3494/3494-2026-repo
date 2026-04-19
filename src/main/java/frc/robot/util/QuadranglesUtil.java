@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.alliance;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.Faults;
@@ -10,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import java.util.Arrays;
 import org.littletonrobotics.junction.Logger;
@@ -21,7 +21,7 @@ public final class QuadranglesUtil {
   }
 
   public static Pose2d toAlliancePose(Pose2d bluePose) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return bluePose;
     } else {
       return flipPose(bluePose);
@@ -33,7 +33,7 @@ public final class QuadranglesUtil {
   }
 
   public static Translation2d toAllianceTranslation(Translation2d blueTranslation) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return blueTranslation;
     } else {
       return flipTranslation(blueTranslation);
@@ -45,7 +45,7 @@ public final class QuadranglesUtil {
   }
 
   public static Rotation2d toAllianceAngle(Rotation2d blueAngle) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return blueAngle;
     } else {
       return flipAngle(blueAngle);
@@ -53,7 +53,7 @@ public final class QuadranglesUtil {
   }
 
   public static Distance toAllianceX(Distance blueX) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return blueX;
     } else {
       return fieldLength.minus(blueX);
@@ -61,7 +61,7 @@ public final class QuadranglesUtil {
   }
 
   public static double toAllianceXMeters(double blueXMeters) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return blueXMeters;
     } else {
       return fieldLength.in(Meters) - blueXMeters;
@@ -69,7 +69,7 @@ public final class QuadranglesUtil {
   }
 
   public static Distance toAllianceY(Distance blueY) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return blueY;
     } else {
       return fieldWidth.minus(blueY);
@@ -77,7 +77,7 @@ public final class QuadranglesUtil {
   }
 
   public static double toAllianceYMeters(double blueYMeters) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return blueYMeters;
     } else {
       return fieldWidth.in(Meters) - blueYMeters;

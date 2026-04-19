@@ -3,13 +3,13 @@ package frc.robot.subsystems.drive.autoalign;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
+import static frc.robot.Constants.alliance;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommands;
@@ -22,7 +22,7 @@ public class AutoAlignToTargetCommands {
             sequence(
                 defer(
                     () ->
-                        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                        alliance == Alliance.Blue
                             ? AutoAlignCommand.alignSequence(
                                 drive, climbSetupPoseOutpost_BLUE, climbPoseOutpost_BLUE)
                             : AutoAlignCommand.alignSequence(
@@ -32,7 +32,7 @@ public class AutoAlignToTargetCommands {
             sequence(
                 defer(
                     () ->
-                        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                        alliance == Alliance.Blue
                             ? AutoAlignCommand.alignSequence(
                                 drive, climbSetupPoseDepot_BLUE, climbPoseDepot_BLUE)
                             : AutoAlignCommand.alignSequence(

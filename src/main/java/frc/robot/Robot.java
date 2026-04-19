@@ -7,9 +7,13 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.alliance;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.util.StatusLogger;
 import edu.wpi.first.net.WebServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.Threads;
@@ -130,6 +134,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     CommandScheduler.getInstance().cancelAll();
+
+    alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
   }
 
   /** This function is called periodically when disabled. */
@@ -139,6 +145,8 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+
     OI.setWonAutoState(WonAutoState.Unknown);
   }
 
@@ -153,6 +161,8 @@ public class Robot extends LoggedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
+    alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
     Command autonomousCommand = robotContainer.getAutonomousCommand();
     if (autonomousCommand != null) {
@@ -169,6 +179,8 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
   }
 
   /** This function is called periodically during test mode. */

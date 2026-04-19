@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.alliance;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import choreo.trajectory.SwerveSample;
@@ -742,7 +743,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void resetYaw() {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       setRotation(Rotation2d.kZero);
     } else {
       setRotation(Rotation2d.k180deg);

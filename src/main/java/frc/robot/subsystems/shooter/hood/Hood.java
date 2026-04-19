@@ -22,7 +22,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -228,7 +227,7 @@ public class Hood extends SubsystemBase {
         ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, robotPose.getRotation())
             .vxMetersPerSecond;
 
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+    if (alliance == Alliance.Red) {
       speedX = -speedX;
     }
 

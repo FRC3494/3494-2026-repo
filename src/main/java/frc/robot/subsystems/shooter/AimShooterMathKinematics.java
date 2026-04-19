@@ -20,7 +20,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -474,7 +473,7 @@ public class AimShooterMathKinematics extends SubsystemBase implements ShooterAi
 
   /** Returns whether the shooter is currently considered inside the alliance zone. */
   private static boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLine) {
-    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
+    if (alliance == Alliance.Blue) {
       return shooterTranslation.getMeasureX().plus(azLineOffset).lte(azLine);
     } else {
       return shooterTranslation.getMeasureX().minus(azLineOffset).gte(azLine);

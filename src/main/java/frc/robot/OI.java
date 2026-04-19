@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.MathUtil;
@@ -20,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
@@ -126,14 +126,13 @@ public final class OI implements Sendable {
 
     if (wonAutoState == WonAutoState.Unknown) {
       String gameData = DriverStation.getGameSpecificMessage();
-      Optional<Alliance> alliance = DriverStation.getAlliance();
-      if (gameData.length() > 0 && alliance.isPresent()) {
+      if (gameData.length() > 0) {
         switch (gameData.charAt(0)) {
           case 'B':
-            setWonAutoState(alliance.get() == Alliance.Blue ? WonAutoState.Won : WonAutoState.Lost);
+            setWonAutoState(alliance == Alliance.Blue ? WonAutoState.Won : WonAutoState.Lost);
             break;
           case 'R':
-            setWonAutoState(alliance.get() == Alliance.Blue ? WonAutoState.Lost : WonAutoState.Won);
+            setWonAutoState(alliance == Alliance.Blue ? WonAutoState.Lost : WonAutoState.Won);
             break;
           default:
             break;

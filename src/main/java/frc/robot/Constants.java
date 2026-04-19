@@ -25,6 +25,8 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
 import frc.robot.subsystems.climber.Climber;
@@ -40,6 +42,7 @@ import java.util.Collections;
 public final class Constants {
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
   /** Enable runtime tuning of PID/SVA/motor values via Elastic. */
   public static final boolean tuningMode = false;

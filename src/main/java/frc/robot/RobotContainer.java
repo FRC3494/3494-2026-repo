@@ -10,12 +10,12 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
+import static frc.robot.Constants.alliance;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -606,28 +606,28 @@ public class RobotContainer {
             either(
                     robotCommands.changeYTrim(false),
                     robotCommands.changeYTrim(true),
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                    () -> alliance == Alliance.Blue)
                 .withName("TrimRight"));
     ShooterOI.trimLeft()
         .whileTrue(
             either(
                     robotCommands.changeYTrim(true),
                     robotCommands.changeYTrim(false),
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                    () -> alliance == Alliance.Blue)
                 .withName("TrimLeft"));
     ShooterOI.trimForward()
         .whileTrue(
             either(
                     robotCommands.changeXTrim(true),
                     robotCommands.changeXTrim(false),
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                    () -> alliance == Alliance.Blue)
                 .withName("TrimForward"));
     ShooterOI.trimBack()
         .whileTrue(
             either(
                     robotCommands.changeXTrim(false),
                     robotCommands.changeXTrim(true),
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue)
+                    () -> alliance == Alliance.Blue)
                 .withName("TrimBack"));
     ShooterOI.resetXYTrim().onTrue(robotCommands.resetXYTrim());
 
