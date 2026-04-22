@@ -45,7 +45,7 @@ public final class Constants {
   public static Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
   /** Enable runtime tuning of PID/SVA/motor values via Elastic. */
-  public static final boolean tuningMode = false;
+  public static final boolean tuningMode = true;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -260,11 +260,11 @@ public final class Constants {
 
     public static double maxSpeedMetersPerSec = 4.62906; // 15.187 ft/s
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
-    public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 72);
+    public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 40);
     public static final double demoModeSpeedFactor = 0.15;
 
     public static double maxAZShootingSpeedMetersPerSec = Units.feetToMeters(5.0);
-    public static double maxAZShootingAngularSpeedRadPerSec = Units.degreesToRadians(110);
+    public static double maxAZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
     public static double maxNZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
     public static double maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(110);
 
@@ -438,7 +438,7 @@ public final class Constants {
     public static Current spindexerCurrentLimit = Amps.of(30);
     // Number of amps BELOW limit at which spindexer detects a stall
     public static Current spindexerCurrentThreshold = spindexerCurrentLimit.minus(Amps.of(2));
-    public static boolean spindexerUnjamEnabled = true;
+    public static boolean spindexerUnjamEnabled = false;
     public static Time spindexerRampRate = Milliseconds.of(0);
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 
