@@ -84,6 +84,11 @@ public class Turret extends SubsystemBase {
       setRelativeEncoderPosition(turretRezeroLocationRot);
     }
 
+    // Seed setpoints from encoder so the turret holds its
+    // current position until `enableAutoTurret` is called.
+    turretSetpointClampedRot = getPositionRot();
+    turretSetpointRot = turretSetpointClampedRot;
+
     if (Constants.tuningMode) {
       SmartDashboard.putData("Shooter/Turret", this);
     }

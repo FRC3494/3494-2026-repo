@@ -549,6 +549,7 @@ public class RobotContainer {
         .onTrue(
             sequence(
                 robotCommands.enableAutoShooterSettings(),
+                robotCommands.enableAutoTurret(),
                 robotCommands.stopHood(),
                 robotCommands.stopFlywheel()));
 
@@ -715,7 +716,9 @@ public class RobotContainer {
 
     // #region TURRET
 
-    turret.setDefaultCommand(robotCommands.autoTurretCommand());
+    // Commenting out default command so turret holds position via Turret.periodic() until
+    // enableAutoTurret() is called (in auto after resetOdometry, or on teleop start).
+    // turret.setDefaultCommand(robotCommands.autoTurretCommand());
 
     TurretOI.turretManualCCW().whileTrue(robotCommands.runTurretManualCCW());
     TurretOI.turretManualCW().whileTrue(robotCommands.runTurretManualCW());
