@@ -9,8 +9,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
-import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
-import static frc.robot.Constants.alliance;
+import static frc.robot.Constants.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -319,7 +318,9 @@ public class RobotContainer {
 
     autoChooser.addCmd("=====================", () -> none());
 
-    configureTuningAutos();
+    if (tuningMode) {
+      configureTuningAutos();
+    }
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
