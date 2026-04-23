@@ -60,6 +60,7 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
+import frc.robot.util.choreo.ChoreoTraj;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -169,6 +170,16 @@ public class RobotContainer {
 
   // #region AUTOS
   private void configureCompetitionAutos() {
+    // Pre-load every trajectory into the AutoFactory's cache so the first auto run
+    // doesn't pay the JSON-parse cost at enable time.
+    for (ChoreoTraj traj : ChoreoTraj.ALL_TRAJECTORIES.values()) {
+      if (traj.segment().isPresent()) {
+        autoFactory.cache().loadTrajectory(traj.name(), traj.segment().getAsInt());
+      } else {
+        autoFactory.cache().loadTrajectory(traj.name());
+      }
+    }
+
     // Set up autos
     autoChooser.addRoutine(
         "DepotAndClimb_BLUE",
