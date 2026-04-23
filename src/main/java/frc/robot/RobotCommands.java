@@ -454,8 +454,9 @@ public class RobotCommands {
   // #region INTAKE
 
   public Command intake() {
-    return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed))
-        .withName("Intake");
+    return startIntake().withName("Intake");
+    // return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed))
+    //     .withName("Intake");
   }
 
   public Command spinDownFromIntake() {
