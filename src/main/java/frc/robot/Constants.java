@@ -445,7 +445,7 @@ public final class Constants {
 
     public static final int spindexerCurrentSensingFilterSize = 10;
 
-    public static AngularVelocity spindexerSpeed = RPM.of(90);
+    public static AngularVelocity spindexerSpeed = RPM.of(110);
     public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
     public static boolean spindexerDefaultDirection = false;
 
@@ -465,10 +465,10 @@ public final class Constants {
     public static final int kickerCurrentLimit = 50;
     public static final Time kickerRampRate = Milliseconds.of(0);
 
-    public static final AngularVelocity kickerMaxSpeed = RPM.of(4000);
+    public static final AngularVelocity kickerMaxSpeed = RPM.of(6000);
     // Number to multiply the flywheel speed by
     // public static double kickerSpeedFactor = 1.0;
-    public static AngularVelocity kickerSpeed = RPM.of(4000);
+    public static AngularVelocity kickerSpeed = RPM.of(4500);
 
     public static double kickerKp = 6.9449E-08;
     public static double kickerKi = 0.0;
