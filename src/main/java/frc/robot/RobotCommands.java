@@ -44,6 +44,7 @@ public class RobotCommands {
   private int spindexerStallReversals = 0;
   private int spindexerStallsForward = 0;
   private int spindexerStallsReverse = 0;
+  private double spindexerUnjamStartPosition = 0.0;
 
   public final Command joystickDriveCommand;
 
@@ -391,6 +392,26 @@ public class RobotCommands {
         .withName("JiggleRobot");
   }
 
+  public Command unjamSpindexer(Supplier<AngularVelocity> velocity) {
+    return sequence(
+            runOnce(
+                () -> {
+                  spindexerStallReversals++;
+                  Logger.recordOutput("Hopper/SpindexerStallUnjam", spindexerStallReversals);
+                  spindexerUnjamStartPosition = hopper.getSpindexerPosition();
+                }),
+            // Briefly reverse
+            runOnce(
+                () -> hopper.setSpindexerVelocity(velocity.get().times(spindexerInverted ? 1 : -1)),
+                hopper),
+            // Wait until we've reversed by the unjam distance
+            waitUntil(
+                () ->
+                    Math.abs(hopper.getSpindexerPosition() - spindexerUnjamStartPosition)
+                        >= spindexerUnjamMotorRotations * spindexerGearRatio))
+        .withName("UnjamSpindexer");
+  }
+
   public Command runSpindexerWithStallDetection(Supplier<AngularVelocity> velocity) {
     return repeatingSequence(
             startSpindexerWithSpeed(velocity),
@@ -398,11 +419,7 @@ public class RobotCommands {
                 () ->
                     spindexerUnjamEnabled
                         && hopper.getSpindexerFilteredCurrent().gt(spindexerCurrentThreshold)),
-            invertSpindexer())
-        .finallyDo(
-            () -> {
-              resetSpindexerInversion();
-            })
+            unjamSpindexer(velocity))
         .withName("RunSpindexerWithStallDetection");
   }
 
@@ -430,7 +447,7 @@ public class RobotCommands {
                                         drive.getPose(), drive.getChassisSpeeds())),
                         startKickerWithTrenchSafety()),
                     sequence(
-                        invertSpindexer(),
+                        unjamSpindexer(() -> spindexerSpeed),
                         startSpindexer(),
                         stopKicker(),
                         waitSeconds(0.1),

@@ -438,7 +438,8 @@ public final class Constants {
     public static Current spindexerCurrentLimit = Amps.of(30);
     // Number of amps BELOW limit at which spindexer detects a stall
     public static Current spindexerCurrentThreshold = spindexerCurrentLimit.minus(Amps.of(2));
-    public static boolean spindexerUnjamEnabled = false;
+    public static boolean spindexerUnjamEnabled = true;
+    public static double spindexerUnjamMotorRotations = 2.0;
     public static Time spindexerRampRate = Milliseconds.of(0);
     public static final double spindexerGearRatio = 180.0 / 6293.0;
 

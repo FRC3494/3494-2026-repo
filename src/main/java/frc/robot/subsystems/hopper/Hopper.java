@@ -183,6 +183,15 @@ public class Hopper extends SubsystemBase {
             Logger.recordOutput("Hopper/Spindexer/UnjamEnabled", value);
           });
       Logger.recordOutput("Hopper/Spindexer/UnjamEnabled", spindexerUnjamEnabled);
+
+      builder.addDoubleProperty(
+          "Spindexer/Unjam Motor Rotations",
+          () -> spindexerUnjamMotorRotations,
+          (double value) -> {
+            spindexerUnjamMotorRotations = value;
+            Logger.recordOutput("Hopper/Spindexer/UnjamMotorRotations", value);
+          });
+      Logger.recordOutput("Hopper/Spindexer/UnjamMotorRotations", spindexerUnjamMotorRotations);
     }
 
     // Kicker Speed
@@ -278,6 +287,10 @@ public class Hopper extends SubsystemBase {
 
   public void setKickerOpenLoop(Voltage voltage) {
     kickerMotor.getClosedLoopController().setSetpoint(voltage.in(Volts), ControlType.kVoltage);
+  }
+
+  public double getSpindexerPosition() {
+    return spindexerMotor.getEncoder().getPosition();
   }
 
   public double getSpindexerCurrent() {
