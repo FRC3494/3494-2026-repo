@@ -217,11 +217,12 @@ public class RobotContainer {
     SmartDashboard.putData(
         "LoadAuto",
         runOnce(
-            () -> {
-              selectedAutoCommand = autoChooser.selectedCommand();
-              drive.setPose(
-                  autoStartingPoses.getOrDefault(selectedAutoCommand.getName(), Pose2d.kZero));
-            }));
+                () -> {
+                  selectedAutoCommand = autoChooser.selectedCommand();
+                  drive.setPose(
+                      autoStartingPoses.getOrDefault(selectedAutoCommand.getName(), Pose2d.kZero));
+                })
+            .ignoringDisable(true));
     RobotModeTriggers.autonomous()
         .whileTrue(
             defer(
