@@ -13,6 +13,7 @@ import static frc.robot.Constants.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -36,6 +37,7 @@ import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
+import frc.robot.autos.LeftNZWithPassingAuto;
 import frc.robot.autos.RightClimbAuto;
 import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
@@ -60,6 +62,8 @@ import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 import frc.robot.util.choreo.ChoreoTraj;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -85,6 +89,9 @@ public class RobotContainer {
   // Choreo
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
+
+  private Command selectedAutoCommand;
+  private Map<String, Pose2d> autoStartingPoses;
 
   public final RobotCommands robotCommands;
 
@@ -180,141 +187,24 @@ public class RobotContainer {
     }
 
     // Set up autos
-    autoChooser.addRoutine(
-        "DepotAndClimb_BLUE",
-        () ->
-            DepotAndClimbAuto.getRoutine(
-                "DepotAndClimb_BLUE",
-                Alliance.Blue,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-    autoChooser.addRoutine(
-        "DepotAndClimb_RED",
-        () ->
-            DepotAndClimbAuto.getRoutine(
-                "DepotAndClimb_RED",
-                Alliance.Red,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-
-    autoChooser.addRoutine(
-        "LeftNZToClimb_BLUE",
-        () ->
-            LeftNZToClimbAuto.getRoutine(
-                "LeftNZToClimb_BLUE",
-                Alliance.Blue,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-    autoChooser.addRoutine(
-        "LeftNZToClimb_RED",
-        () ->
-            LeftNZToClimbAuto.getRoutine(
-                "LeftNZToClimb_RED",
-                Alliance.Red,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-    autoChooser.addRoutine(
-        "RightNZToClimb_BLUE",
-        () ->
-            RightNZToClimbAuto.getRoutine(
-                "RightNZToClimb_BLUE",
-                Alliance.Blue,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-    autoChooser.addRoutine(
-        "RightNZToClimb_RED",
-        () ->
-            RightNZToClimbAuto.getRoutine(
-                "RightNZToClimb_RED",
-                Alliance.Red,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-
-    autoChooser.addRoutine(
-        "LeftNZToNZ_BLUE",
-        () ->
-            LeftNZToNZAuto.getRoutine(
-                "LeftNZToNZ_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
-    autoChooser.addRoutine(
-        "LeftNZToNZ_RED",
-        () ->
-            LeftNZToNZAuto.getRoutine(
-                "LeftNZToNZ_RED", Alliance.Red, autoFactory, robotCommands, drive));
-    autoChooser.addRoutine(
-        "RightNZToNZ_BLUE",
-        () ->
-            RightNZToNZAuto.getRoutine(
-                "RightNZToNZ_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
-    autoChooser.addRoutine(
-        "RightNZToNZ_RED",
-        () ->
-            RightNZToNZAuto.getRoutine(
-                "RightNZToNZ_RED", Alliance.Red, autoFactory, robotCommands, drive));
-
-    autoChooser.addRoutine(
-        "RightClimb_BLUE",
-        () ->
-            RightClimbAuto.getRoutine(
-                "RightClimb_BLUE", Alliance.Blue, autoFactory, robotCommands, drive));
-    autoChooser.addRoutine(
-        "RightClimb_RED",
-        () ->
-            RightClimbAuto.getRoutine(
-                "RightClimb_RED", Alliance.Red, autoFactory, robotCommands, drive));
-
-    autoChooser.addRoutine(
-        "RightOutpost_BLUE",
-        () ->
-            RightOutpostAuto.getRoutine(
-                "RightOutpost_BLUE",
-                Alliance.Blue,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-    autoChooser.addRoutine(
-        "RightOutpost_RED",
-        () ->
-            RightOutpostAuto.getRoutine(
-                "RightOutpost_RED",
-                Alliance.Red,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-
-    autoChooser.addRoutine(
-        "TrenchToLeftClimb_BLUE",
-        () ->
-            TrenchToLeftClimbAuto.getRoutine(
-                "TrenchToLeftClimb_BLUE",
-                Alliance.Blue,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-    autoChooser.addRoutine(
-        "TrenchToLeftClimb_RED",
-        () ->
-            TrenchToLeftClimbAuto.getRoutine(
-                "TrenchToLeftClimb_RED",
-                Alliance.Red,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
+    DepotAndClimbAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    LeftNZToClimbAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    LeftNZToNZAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    LeftNZWithPassingAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    RightClimbAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    RightNZToClimbAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    RightNZToNZAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    RightOutpostAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    TrenchToLeftClimbAuto.loadAuto(
+        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
 
     autoChooser.addCmd("=====================", () -> none());
 
@@ -323,7 +213,21 @@ public class RobotContainer {
     }
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+
+    SmartDashboard.putData(
+        "LoadAuto",
+        runOnce(
+            () -> {
+              selectedAutoCommand = autoChooser.selectedCommand();
+              drive.setPose(
+                  autoStartingPoses.getOrDefault(selectedAutoCommand.getName(), Pose2d.kZero));
+            }));
+    RobotModeTriggers.autonomous()
+        .whileTrue(
+            defer(
+                () -> selectedAutoCommand,
+                Set.of(drive, climber, hopper, intake, flywheel, hood, turret)));
+
     RobotModeTriggers.teleop().onTrue(robotCommands.spinDownFromShoot());
   }
 
