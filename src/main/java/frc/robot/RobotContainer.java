@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -220,7 +221,9 @@ public class RobotContainer {
                 () -> {
                   selectedAutoCommand = autoChooser.selectedCommand();
                   drive.setPose(
-                      autoStartingPoses.getOrDefault(selectedAutoCommand.getName(), Pose2d.kZero));
+                      toAlliancePose(
+                          autoStartingPoses.getOrDefault(
+                              selectedAutoCommand.getName(), Pose2d.kZero)));
                 })
             .ignoringDisable(true));
     RobotModeTriggers.autonomous()
