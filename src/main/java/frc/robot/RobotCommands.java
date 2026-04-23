@@ -192,7 +192,8 @@ public class RobotCommands {
                 () -> {
                   climber.setCurrentLimit(climberCurrentLimit);
                 },
-                climber))
+                climber),
+            print("Climber Rezero Done ================================================="))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
@@ -943,7 +944,8 @@ public class RobotCommands {
                   hood.setRelativeEncoderPosition(hoodMinAngle);
                   hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
                 },
-                hood))
+                hood),
+            print("Hood Rezero Done ======================================="))
         .withTimeout(hoodRezeroTimeoutSeconds)
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .withName("RezeroHood");
