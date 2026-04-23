@@ -18,7 +18,7 @@ import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
-import java.util.Map;
+import java.util.HashMap;
 
 public class DepotAndClimbAuto {
   public static final String name = "DepotAndClimb";
@@ -104,7 +104,7 @@ public class DepotAndClimbAuto {
   }
 
   public static void loadAuto(
-      Map<String, Pose2d> startingPoseMap,
+      HashMap<String, Pose2d> startingPoseMap,
       AutoChooser autoChooser,
       AutoFactory autoFactory,
       RobotCommands robotCommands,

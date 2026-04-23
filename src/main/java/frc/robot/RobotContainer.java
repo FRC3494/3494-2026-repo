@@ -62,7 +62,7 @@ import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 import frc.robot.util.choreo.ChoreoTraj;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -90,8 +90,8 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
 
-  private Command selectedAutoCommand;
-  private Map<String, Pose2d> autoStartingPoses;
+  private Command selectedAutoCommand = none();
+  private HashMap<String, Pose2d> autoStartingPoses = new HashMap<String, Pose2d>();
 
   public final RobotCommands robotCommands;
 
