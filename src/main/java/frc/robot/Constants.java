@@ -653,7 +653,7 @@ public final class Constants {
       // Default starting speed for shots using dashboard settings
       public static AngularVelocity flywheelManualSpeed = RPM.of(3000);
 
-      public static double flywheelSpeedupKa = (0.00021404 + 0.00017531) / 2.0;
+      public static double flywheelSpeedupKa = 0.0002;
 
       // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
       public static double flywheelKp = (3.5004E-07 + 2.7377E-07) / 2.0;

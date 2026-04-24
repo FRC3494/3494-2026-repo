@@ -120,6 +120,14 @@ public class Flywheel extends SubsystemBase {
             Logger.recordOutput("Shooter/Flywheel/PID/kV", values[1]);
             Logger.recordOutput("Shooter/Flywheel/PID/kA", values[2]);
           });
+
+      builder.addDoubleProperty(
+          "Speedup kA",
+          () -> flywheelSpeedupKa,
+          (double value) -> {
+            flywheelSpeedupKa = value;
+            Logger.recordOutput("Shooter/Flywheel/SpeedupKa", value);
+          });
     }
 
     // Log initial values regardless of tuning mode
@@ -131,14 +139,6 @@ public class Flywheel extends SubsystemBase {
     Logger.recordOutput("Shooter/Flywheel/PID/kS", flywheelKs);
     Logger.recordOutput("Shooter/Flywheel/PID/kV", flywheelKv);
     Logger.recordOutput("Shooter/Flywheel/PID/kA", flywheelKa);
-
-    builder.addDoubleProperty(
-        "Speedup kA",
-        () -> flywheelSpeedupKa,
-        (double value) -> {
-          flywheelSpeedupKa = value;
-          Logger.recordOutput("Shooter/Flywheel/SpeedupKa", value);
-        });
     Logger.recordOutput("Shooter/Flywheel/SpeedupKa", flywheelSpeedupKa);
   }
 
