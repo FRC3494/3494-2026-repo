@@ -12,6 +12,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
+import choreo.Choreo;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElasticTab;
@@ -64,7 +66,6 @@ import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 import frc.robot.util.choreo.ChoreoTraj;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -180,6 +181,8 @@ public class RobotContainer {
     // Pre-load every trajectory into the AutoFactory's cache so the first auto run
     // doesn't pay the JSON-parse cost at enable time.
     for (ChoreoTraj traj : ChoreoTraj.ALL_TRAJECTORIES.values()) {
+      Choreo.loadTrajectory(traj.name());
+
       if (traj.segment().isPresent()) {
         autoFactory.cache().loadTrajectory(traj.name(), traj.segment().getAsInt());
       } else {
@@ -227,10 +230,20 @@ public class RobotContainer {
                 })
             .ignoringDisable(true));
     RobotModeTriggers.autonomous()
-        .whileTrue(
-            defer(
-                () -> selectedAutoCommand,
-                Set.of(drive, climber, hopper, intake, flywheel, hood, turret)));
+        .onTrue(
+            runOnce(
+                    () -> {
+                      System.out.println("Start Auto =====================================");
+                      CommandScheduler.getInstance().schedule(selectedAutoCommand);
+                    })
+                .ignoringDisable(true));
+    RobotModeTriggers.autonomous()
+        .onFalse(
+            runOnce(
+                    () -> {
+                      CommandScheduler.getInstance().cancelAll();
+                    })
+                .ignoringDisable(true));
 
     RobotModeTriggers.teleop().onTrue(robotCommands.spinDownFromShoot());
   }
@@ -672,6 +685,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.selectedCommand();
+    return selectedAutoCommand;
   }
 }
