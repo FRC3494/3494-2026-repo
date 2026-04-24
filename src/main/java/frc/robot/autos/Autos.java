@@ -4,12 +4,18 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoVars;
+import java.util.HashMap;
 import org.littletonrobotics.junction.Logger;
 
 public class Autos {
@@ -59,5 +65,38 @@ public class Autos {
   public static Command resetOdoRightBump(Drive drive) {
     return resetOdoForAuto(drive, ChoreoVars.Poses.RightBumpStartingPosition)
         .withName("ResetOdoRightBump");
+  }
+
+  public static void loadAuto(
+      AutoBase auto,
+      HashMap<String, Pose2d> startingPoseMap,
+      AutoChooser autoChooser,
+      AutoFactory autoFactory,
+      RobotCommands robotCommands,
+      Drive drive,
+      ShooterAimModel shooterAimModel) {
+    autoChooser.addRoutine(
+        auto.getName() + "_BLUE",
+        () ->
+            auto.getRoutine(
+                auto.getName() + "_BLUE",
+                Alliance.Blue,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
+    autoChooser.addRoutine(
+        auto.getName() + "_RED",
+        () ->
+            auto.getRoutine(
+                auto.getName() + "_RED",
+                Alliance.Red,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
+
+    startingPoseMap.put(auto.getName() + "_BLUE", auto.getStartingPose());
+    startingPoseMap.put(auto.getName() + "_RED", auto.getStartingPose());
   }
 }

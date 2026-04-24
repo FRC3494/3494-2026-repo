@@ -4,7 +4,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
-import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -15,13 +14,17 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
-import java.util.HashMap;
 
-public class RightNZToNZAuto {
-  public static final String name = "RightNZToNZ";
-  public static final Pose2d startingPose = ChoreoVars.Poses.RightTrenchStartingPosition;
+public class RightNZToNZAuto extends AutoBase {
+  public String getName() {
+    return "RightNZToNZ";
+  }
 
-  public static AutoRoutine getRoutine(
+  public Pose2d getStartingPose() {
+    return ChoreoVars.Poses.RightTrenchStartingPosition;
+  }
+
+  public AutoRoutine getRoutine(
       String name,
       Alliance alliance,
       AutoFactory autoFactory,
@@ -72,27 +75,5 @@ public class RightNZToNZAuto {
                 rightShootToNZ.cmd()));
 
     return routine;
-  }
-
-  public static void loadAuto(
-      HashMap<String, Pose2d> startingPoseMap,
-      AutoChooser autoChooser,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    autoChooser.addRoutine(
-        name + "_BLUE",
-        () ->
-            getRoutine(
-                name + "_BLUE", Alliance.Blue, autoFactory, robotCommands, drive, shooterAimModel));
-    autoChooser.addRoutine(
-        name + "_RED",
-        () ->
-            getRoutine(
-                name + "_RED", Alliance.Red, autoFactory, robotCommands, drive, shooterAimModel));
-
-    startingPoseMap.put(name + "_BLUE", startingPose);
-    startingPoseMap.put(name + "_RED", startingPose);
   }
 }

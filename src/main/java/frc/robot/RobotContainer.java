@@ -191,24 +191,78 @@ public class RobotContainer {
     // }
 
     // Set up autos
-    DepotAndClimbAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    LeftNZToClimbAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    LeftNZToNZAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    LeftNZWithPassingAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    RightClimbAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    RightNZToClimbAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    RightNZToNZAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    RightOutpostAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
-    TrenchToLeftClimbAuto.loadAuto(
-        autoStartingPoses, autoChooser, autoFactory, robotCommands, drive, shooterAimModel);
+    Autos.loadAuto(
+        new DepotAndClimbAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new LeftNZToClimbAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new LeftNZToNZAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new LeftNZWithPassingAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new RightClimbAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new RightNZToClimbAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new RightNZToNZAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new RightOutpostAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new TrenchToLeftClimbAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
 
     autoChooser.addCmd("=====================", () -> none());
 
