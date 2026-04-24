@@ -12,7 +12,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
-import choreo.Choreo;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,7 +63,6 @@ import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
-import frc.robot.util.choreo.ChoreoTraj;
 import java.util.HashMap;
 
 /**
@@ -178,17 +176,19 @@ public class RobotContainer {
 
   // #region AUTOS
   private void configureCompetitionAutos() {
+    CommandScheduler.getInstance().schedule(autoFactory.warmupCmd());
+
     // Pre-load every trajectory into the AutoFactory's cache so the first auto run
     // doesn't pay the JSON-parse cost at enable time.
-    for (ChoreoTraj traj : ChoreoTraj.ALL_TRAJECTORIES.values()) {
-      Choreo.loadTrajectory(traj.name());
+    // for (ChoreoTraj traj : ChoreoTraj.ALL_TRAJECTORIES.values()) {
+    //   Choreo.loadTrajectory(traj.name());
 
-      if (traj.segment().isPresent()) {
-        autoFactory.cache().loadTrajectory(traj.name(), traj.segment().getAsInt());
-      } else {
-        autoFactory.cache().loadTrajectory(traj.name());
-      }
-    }
+    //   if (traj.segment().isPresent()) {
+    //     autoFactory.cache().loadTrajectory(traj.name(), traj.segment().getAsInt());
+    //   } else {
+    //     autoFactory.cache().loadTrajectory(traj.name());
+    //   }
+    // }
 
     // Set up autos
     DepotAndClimbAuto.loadAuto(
@@ -222,28 +222,29 @@ public class RobotContainer {
         "LoadAuto",
         runOnce(
                 () -> {
-                  selectedAutoCommand = autoChooser.selectedCommand();
+                  //   selectedAutoCommand = autoChooser.selectedCommand();
                   drive.setPose(
                       toAlliancePose(
                           autoStartingPoses.getOrDefault(
-                              selectedAutoCommand.getName(), Pose2d.kZero)));
+                              autoChooser.selectedCommand().getName(), Pose2d.kZero)));
                 })
             .ignoringDisable(true));
-    RobotModeTriggers.autonomous()
-        .onTrue(
-            runOnce(
-                    () -> {
-                      System.out.println("Start Auto =====================================");
-                      CommandScheduler.getInstance().schedule(selectedAutoCommand);
-                    })
-                .ignoringDisable(true));
-    RobotModeTriggers.autonomous()
-        .onFalse(
-            runOnce(
-                    () -> {
-                      CommandScheduler.getInstance().cancelAll();
-                    })
-                .ignoringDisable(true));
+    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    // RobotModeTriggers.autonomous()
+    //     .onTrue(
+    //         runOnce(
+    //                 () -> {
+    //                   System.out.println("Start Auto =====================================");
+    //                   CommandScheduler.getInstance().schedule(selectedAutoCommand);
+    //                 })
+    //             .ignoringDisable(true));
+    // RobotModeTriggers.autonomous()
+    //     .onFalse(
+    //         runOnce(
+    //                 () -> {
+    //                   CommandScheduler.getInstance().cancelAll();
+    //                 })
+    //             .ignoringDisable(true));
 
     RobotModeTriggers.teleop().onTrue(robotCommands.spinDownFromShoot());
   }
