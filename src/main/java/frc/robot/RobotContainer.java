@@ -45,6 +45,7 @@ import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
 import frc.robot.autos.RightOutpostAuto;
 import frc.robot.autos.TrenchToLeftClimbAuto;
+import frc.robot.autos.WarmUpAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
@@ -89,6 +90,7 @@ public class RobotContainer {
   // Choreo
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
+  private String selectedAutoNameCache = "";
 
   private Command selectedAutoCommand = none();
   private HashMap<String, Pose2d> autoStartingPoses = new HashMap<String, Pose2d>();
@@ -168,6 +170,7 @@ public class RobotContainer {
             true,
             drive,
             Autos::logTrajectory);
+
     configureCompetitionAutos();
 
     // Configure the button bindings
@@ -266,11 +269,36 @@ public class RobotContainer {
 
     autoChooser.addCmd("=====================", () -> none());
 
+    WarmUpAuto warmUpAuto = new WarmUpAuto();
+    autoChooser.addRoutine(
+        warmUpAuto.getName(),
+        () ->
+            warmUpAuto.getRoutine(
+                warmUpAuto.getName(),
+                Alliance.Blue,
+                autoFactory,
+                robotCommands,
+                drive,
+                shooterAimModel));
+
     if (tuningMode) {
       configureTuningAutos();
     }
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData(
+        "Auto Warm Up",
+        runOnce(
+                () -> {
+                  String currentAuto = autoChooser.selectedCommand().getName();
+                  if (currentAuto == warmUpAuto.getName()) {
+                    autoChooser.select(selectedAutoNameCache);
+                  } else {
+                    selectedAutoNameCache = currentAuto;
+                    autoChooser.select(warmUpAuto.getName());
+                  }
+                })
+            .ignoringDisable(true));
 
     SmartDashboard.putData(
         "LoadAuto",
