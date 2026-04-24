@@ -8,12 +8,9 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
@@ -78,44 +75,7 @@ public class RightOutpostAuto extends AutoBase {
                 robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
                 outpostToRightClimb.cmd().deadlineFor(robotCommands.shoot())));
 
-    outpostToRightClimb
-        .done()
-        .onTrue(
-            parallel(
-                    sequence(
-                        AutoAlignCommand.alignSequence(
-                            drive,
-                            alliance == Alliance.Blue
-                                ? climbSetupPoseOutpost_BLUE
-                                : climbSetupPoseOutpost_RED,
-                            alliance == Alliance.Blue
-                                ? climbPoseOutpost_BLUE
-                                : climbPoseOutpost_RED),
-                        parallel(
-                            robotCommands.creepBackward(),
-                            sequence(
-                                waitUntil(() -> Timer.getMatchTime() <= 4)
-                                    .deadlineFor(robotCommands.shoot()),
-                                runOnce(
-                                    () -> {
-                                      shooterAimModel.setTurretTrim(
-                                          turretTrimDefaultRot + Units.degreesToRotations(5.0));
-                                    },
-                                    shooterAimModel),
-                                parallel(
-                                    robotCommands.runClimberMidWithCurrent(),
-                                    robotCommands.runIntakeUp()),
-                                runOnce(
-                                    () -> {
-                                      shooterAimModel.setTurretTrim(
-                                          turretTrimDefaultRot + Units.degreesToRotations(10.0));
-                                    },
-                                    shooterAimModel),
-                                robotCommands.shoot()))))
-                .finallyDo(
-                    () -> {
-                      shooterAimModel.setTurretTrim(turretTrimDefaultRot);
-                    }));
+    outpostToRightClimb.done().onTrue(Autos.climbOutpost(robotCommands, drive, shooterAimModel));
 
     return routine;
   }

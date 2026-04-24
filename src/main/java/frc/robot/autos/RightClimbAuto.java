@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
@@ -53,16 +52,7 @@ public class RightClimbAuto extends AutoBase {
                 robotCommands.shoot().withTimeout(3),
                 parallel(rightClimb.cmd(), robotCommands.spinDownFromShoot())));
 
-    rightClimb
-        .done()
-        .onTrue(
-            parallel(
-                sequence(
-                    new AutoAlignCommand(
-                        alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED,
-                        drive),
-                    robotCommands.creepBackward()),
-                sequence(waitSeconds(1), robotCommands.runClimberMid())));
+    rightClimb.done().onTrue(Autos.climbOutpost(robotCommands, drive, shooterAimModel));
 
     return routine;
   }

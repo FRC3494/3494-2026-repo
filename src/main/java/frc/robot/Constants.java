@@ -362,6 +362,9 @@ public final class Constants {
     // Auto config
     public static final boolean mirrorForRedAlliance = true;
 
+    // Seconds left when robot tries to climb
+    public static final int climbTime = 5;
+
     public static double autoLinearKp = 10.0;
     public static double autoLinearKi = 0.0;
     public static double autoLinearKd = 0.0;
