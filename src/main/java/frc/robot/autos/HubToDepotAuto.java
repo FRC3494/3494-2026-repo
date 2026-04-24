@@ -55,15 +55,10 @@ public class HubToDepotAuto extends AutoBase {
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(2),
+                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
                 depotIntake.cmd().deadlineFor(robotCommands.intake())));
 
-    depotIntake
-        .done()
-        .onTrue(
-            sequence(
-                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
-                depotIntakeToClimb.cmd()));
+    depotIntake.done().onTrue(depotIntakeToClimb.cmd());
 
     depotIntakeToClimb.done().onTrue(Autos.climbDepot(robotCommands, drive, shooterAimModel));
 
