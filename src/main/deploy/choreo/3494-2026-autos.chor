@@ -14,8 +14,8 @@
    "DepotMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"1 m / s",
-     "val":1.0
+     "exp":"0.5 m / s",
+     "val":0.5
     }
    },
    "FieldLength":{
@@ -188,17 +188,31 @@
      "val":3.141592653589793
     }
    },
-   "DepotSide":{
+   "DepotSideLeft":{
     "x":{
      "exp":"0.4650391638278961 m",
      "val":0.4650391638278961
     },
     "y":{
-     "exp":"7.19 m",
-     "val":7.19
+     "exp":"7.4 m",
+     "val":7.4
     },
     "heading":{
      "exp":"-90 deg",
+     "val":-1.5707963267948966
+    }
+   },
+   "DepotSideRight":{
+    "x":{
+     "exp":"DepotSideLeft.x",
+     "val":0.4650391638278961
+    },
+    "y":{
+     "exp":"DepotSideLeft.y - 8 ft",
+     "val":4.961600000000001
+    },
+    "heading":{
+     "exp":"DepotSideLeft.heading",
      "val":-1.5707963267948966
     }
    },
@@ -256,6 +270,20 @@
     "heading":{
      "exp":"LeftNZ.heading",
      "val":-1.832595714594046
+    }
+   },
+   "LeftHubStartingPosition":{
+    "x":{
+     "exp":"3.5788490772247314 m",
+     "val":3.578849077224731
+    },
+    "y":{
+     "exp":"4.183844089508057 m",
+     "val":4.183844089508057
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
     }
    },
    "LeftMiddleNZ":{

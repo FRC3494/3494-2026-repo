@@ -90,7 +90,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj LeftShootToDepot = new ChoreoTraj(
         "LeftShootToDepot",
         OptionalInt.empty(),
-        4.08536,
+        6.65406,
         new Pose2d(2.92773, 7.12084, Rotation2d.fromRadians(0.5236)),
         new Pose2d(0.46504, 4.92584, Rotation2d.fromRadians(-1.5708))
     );
@@ -255,6 +255,27 @@ public record ChoreoTraj(
         new Pose2d(0.00001, 0, Rotation2d.fromRadians(0)),
         new Pose2d(0.00009, 0, Rotation2d.fromRadians(0))
     );
+    public static final ChoreoTraj LeftHubToDepot = new ChoreoTraj(
+        "LeftHubToDepot",
+        OptionalInt.empty(),
+        2.27221,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DepotIntake = new ChoreoTraj(
+        "DepotIntake",
+        OptionalInt.empty(),
+        5.00772,
+        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708)),
+        new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DepotIntakeToClimb = new ChoreoTraj(
+        "DepotIntakeToClimb",
+        OptionalInt.empty(),
+        0.74892,
+        new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708)),
+        new Pose2d(1.02165, 4.9, Rotation2d.fromRadians(1.5708))
+    );
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -293,7 +314,10 @@ public record ChoreoTraj(
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
         Map.entry("TrenchToLeftClimb", TrenchToLeftClimb),
-        Map.entry("WarmUp", WarmUp)
+        Map.entry("WarmUp", WarmUp),
+        Map.entry("LeftHubToDepot", LeftHubToDepot),
+        Map.entry("DepotIntake", DepotIntake),
+        Map.entry("DepotIntakeToClimb", DepotIntakeToClimb)
     );
 
     /**

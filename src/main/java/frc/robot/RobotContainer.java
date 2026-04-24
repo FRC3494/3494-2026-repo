@@ -38,6 +38,7 @@ import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.OI.WonAutoState;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
+import frc.robot.autos.HubToDepotAuto;
 import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
 import frc.robot.autos.LeftNZWithPassingAuto;
@@ -198,6 +199,14 @@ public class RobotContainer {
     // Set up autos
     Autos.loadAuto(
         new DepotAndClimbAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new HubToDepotAuto(),
         autoStartingPoses,
         autoChooser,
         autoFactory,
