@@ -16,14 +16,17 @@ import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
 public class RightNZToNZAuto extends AutoBase {
+  @Override
   public String getName() {
     return "RightNZToNZ";
   }
 
+  @Override
   public Pose2d getStartingPose() {
     return ChoreoVars.Poses.RightTrenchStartingPosition;
   }
 
+  @Override
   public AutoRoutine getRoutine(
       String name,
       Alliance alliance,

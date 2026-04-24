@@ -19,14 +19,17 @@ import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
 public class LeftNZToClimbAuto extends AutoBase {
+  @Override
   public String getName() {
     return "LeftNZToClimb";
   }
 
+  @Override
   public Pose2d getStartingPose() {
     return ChoreoVars.Poses.LeftTrenchStartingPosition;
   }
 
+  @Override
   public AutoRoutine getRoutine(
       String routineName,
       Alliance alliance,

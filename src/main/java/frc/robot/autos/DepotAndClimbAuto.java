@@ -19,14 +19,17 @@ import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
 public class DepotAndClimbAuto extends AutoBase {
+  @Override
   public String getName() {
     return "DepotAndClimb";
   }
 
+  @Override
   public Pose2d getStartingPose() {
     return ChoreoVars.Poses.LeftBumpStartingPosition;
   }
 
+  @Override
   public AutoRoutine getRoutine(
       String routineName,
       Alliance alliance,
