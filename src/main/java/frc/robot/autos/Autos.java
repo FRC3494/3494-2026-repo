@@ -50,9 +50,10 @@ public class Autos {
       RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
     return sequence(
             AutoAlignCommand.alignSequence(
-                drive,
-                alliance == Alliance.Blue ? climbSetupPoseDepot_BLUE : climbSetupPoseDepot_RED,
-                alliance == Alliance.Blue ? climbPoseDepot_BLUE : climbPoseDepot_RED),
+                    drive,
+                    alliance == Alliance.Blue ? climbSetupPoseDepot_BLUE : climbSetupPoseDepot_RED,
+                    alliance == Alliance.Blue ? climbPoseDepot_BLUE : climbPoseDepot_RED)
+                .deadlineFor(robotCommands.shoot()),
             parallel(
                 robotCommands.creepBackward(),
                 sequence(
@@ -75,16 +76,20 @@ public class Autos {
         .finallyDo(
             () -> {
               shooterAimModel.setTurretTrim(turretTrimDefaultRot);
-            });
+            })
+        .withName("ClimbDepot");
   }
 
   public static Command climbOutpost(
       RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
     return sequence(
             AutoAlignCommand.alignSequence(
-                drive,
-                alliance == Alliance.Blue ? climbSetupPoseOutpost_BLUE : climbSetupPoseOutpost_RED,
-                alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED),
+                    drive,
+                    alliance == Alliance.Blue
+                        ? climbSetupPoseOutpost_BLUE
+                        : climbSetupPoseOutpost_RED,
+                    alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED)
+                .deadlineFor(robotCommands.shoot()),
             parallel(
                 robotCommands.creepBackward(),
                 sequence(
@@ -107,7 +112,8 @@ public class Autos {
         .finallyDo(
             () -> {
               shooterAimModel.setTurretTrim(turretTrimDefaultRot);
-            });
+            })
+        .withName("ClimbOutpost");
   }
   // #endregion
 
