@@ -358,31 +358,21 @@ public class RobotContainer implements Sendable {
 
   private void registerSysIdAutos(
       String name, SysIdRoutine routine, Consumer<Voltage> setOpenLoop) {
+    Command stopMechanism = run(() -> setOpenLoop.accept(Volts.of(0.0))).withTimeout(1.0);
+
     autoChooser.addCmd(
         name + " SysId (Quasistatic Forward)",
-        () ->
-            run(() -> setOpenLoop.accept(Volts.of(0.0)))
-                .withTimeout(1.0)
-                .andThen(routine.quasistatic(SysIdRoutine.Direction.kForward)));
+        () -> stopMechanism.andThen(routine.quasistatic(SysIdRoutine.Direction.kForward)));
     autoChooser.addCmd(
         name + " SysId (Quasistatic Reverse)",
-        () ->
-            run(() -> setOpenLoop.accept(Volts.of(0.0)))
-                .withTimeout(1.0)
-                .andThen(routine.quasistatic(SysIdRoutine.Direction.kReverse)));
+        () -> stopMechanism.andThen(routine.quasistatic(SysIdRoutine.Direction.kReverse)));
 
     autoChooser.addCmd(
         name + " SysId (Dynamic Forward)",
-        () ->
-            run(() -> setOpenLoop.accept(Volts.of(0.0)))
-                .withTimeout(1.0)
-                .andThen(routine.dynamic(SysIdRoutine.Direction.kForward)));
+        () -> stopMechanism.andThen(routine.dynamic(SysIdRoutine.Direction.kForward)));
     autoChooser.addCmd(
         name + " SysId (Dynamic Reverse)",
-        () ->
-            run(() -> setOpenLoop.accept(Volts.of(0.0)))
-                .withTimeout(1.0)
-                .andThen(routine.dynamic(SysIdRoutine.Direction.kReverse)));
+        () -> stopMechanism.andThen(routine.dynamic(SysIdRoutine.Direction.kReverse)));
   }
   // #endregion
 
