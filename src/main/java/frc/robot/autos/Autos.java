@@ -13,7 +13,6 @@ import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,19 +67,7 @@ public class Autos {
                 sequence(
                     waitUntil(() -> Timer.getMatchTime() <= climbTime)
                         .deadlineFor(robotCommands.shoot()),
-                    runOnce(
-                        () -> {
-                          shooterAimModel.setTurretTrim(
-                              turretTrimDefaultRot + Units.degreesToRotations(-5.0));
-                        },
-                        shooterAimModel),
                     parallel(robotCommands.runClimberMidWithCurrent(), robotCommands.runIntakeUp()),
-                    runOnce(
-                        () -> {
-                          shooterAimModel.setTurretTrim(
-                              turretTrimDefaultRot + Units.degreesToRotations(-10.0));
-                        },
-                        shooterAimModel),
                     robotCommands.shoot())))
         .finallyDo(
             () -> {
@@ -110,19 +97,7 @@ public class Autos {
                 sequence(
                     waitUntil(() -> Timer.getMatchTime() <= climbTime)
                         .deadlineFor(robotCommands.shoot()),
-                    runOnce(
-                        () -> {
-                          shooterAimModel.setTurretTrim(
-                              turretTrimDefaultRot + Units.degreesToRotations(5.0));
-                        },
-                        shooterAimModel),
                     parallel(robotCommands.runClimberMidWithCurrent(), robotCommands.runIntakeUp()),
-                    runOnce(
-                        () -> {
-                          shooterAimModel.setTurretTrim(
-                              turretTrimDefaultRot + Units.degreesToRotations(10.0));
-                        },
-                        shooterAimModel),
                     robotCommands.shoot())))
         .finallyDo(
             () -> {

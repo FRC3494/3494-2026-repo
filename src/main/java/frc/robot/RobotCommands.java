@@ -3,6 +3,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseDepot_BLUE;
+import static frc.robot.Constants.DriveConstants.AutoAlignConstants.climbPoseOutpost_BLUE;
 import static frc.robot.Constants.HopperConstants.*;
 import static frc.robot.Constants.IntakeConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
@@ -120,6 +122,18 @@ public class RobotCommands {
                   climber.setCurrentLimit(climberCurrentLimit);
                 },
                 climber),
+            runOnce(
+                () -> {
+                  shooterAimModel.setTurretTrim(
+                      shooterAimModel.getTurretTrimRot()
+                          + (closerToWithFlip(
+                                  climbPoseDepot_BLUE.getTranslation(),
+                                  climbPoseOutpost_BLUE.getTranslation(),
+                                  drive.getPose().getTranslation())
+                              ? Units.degreesToRotations(-10.0)
+                              : Units.degreesToRotations(10)));
+                },
+                shooterAimModel),
             runOnce(
                 () -> {
                   climber.setPosition(climberClimbPosition);
