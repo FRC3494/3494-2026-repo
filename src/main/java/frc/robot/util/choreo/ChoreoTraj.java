@@ -83,22 +83,22 @@ public record ChoreoTraj(
     public static final ChoreoTraj LeftHubToDepot = new ChoreoTraj(
         "LeftHubToDepot",
         OptionalInt.empty(),
-        2.16355,
+        2.7269,
         new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
         new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj LeftHubToDepot$0 = new ChoreoTraj(
         "LeftHubToDepot",
         OptionalInt.of(0),
-        0.80546,
+        0.83625,
         new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.62161))
+        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.81647))
     );
     public static final ChoreoTraj LeftHubToDepot$1 = new ChoreoTraj(
         "LeftHubToDepot",
         OptionalInt.of(1),
-        1.3580899999999998,
-        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.62161)),
+        1.89065,
+        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.81647)),
         new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj LeftMiddleNZToShoot_BLUE = new ChoreoTraj(
