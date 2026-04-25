@@ -244,9 +244,9 @@ public record ChoreoTraj(
     public static final ChoreoTraj OutpostToRightClimb = new ChoreoTraj(
         "OutpostToRightClimb",
         OptionalInt.empty(),
-        2.23156,
+        2.21989,
         new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(1.0788, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.0407, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightMiddleNZToOutpost = new ChoreoTraj(
         "RightMiddleNZToOutpost",
@@ -300,16 +300,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj RightTrenchToClimb_BLUE = new ChoreoTraj(
         "RightTrenchToClimb_BLUE",
         OptionalInt.empty(),
-        3.73718,
+        3.75582,
         new Pose2d(3.58204, 2.03271, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0788, 2.9572, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.0407, 2.9572, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightTrenchToClimb_RED = new ChoreoTraj(
         "RightTrenchToClimb_RED",
         OptionalInt.empty(),
-        3.73718,
+        3.75582,
         new Pose2d(3.58204, 2.03271, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0788, 2.9572, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.0407, 2.9572, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightTrenchToNZ_BLUE = new ChoreoTraj(
         "RightTrenchToNZ_BLUE",
@@ -342,16 +342,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj RightHubToClimb_BLUE = new ChoreoTraj(
         "RightHubToClimb_BLUE",
         OptionalInt.empty(),
-        2.11046,
+        2.12884,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0788, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.0407, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightHubToClimb_RED = new ChoreoTraj(
         "RightHubToClimb_RED",
         OptionalInt.empty(),
-        2.11046,
+        2.12884,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0788, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.0407, 2.65, Rotation2d.fromRadians(-1.5708))
     );
 
     /**
