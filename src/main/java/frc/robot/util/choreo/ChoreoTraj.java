@@ -381,13 +381,6 @@ public record ChoreoTraj(
         new Pose2d(0, 0, Rotation2d.fromRadians(0)),
         new Pose2d(0, 0, Rotation2d.fromRadians(0))
     );
-    public static final ChoreoTraj RightHubToOutpost = new ChoreoTraj(
-        "RightHubToOutpost",
-        OptionalInt.empty(),
-        2.73692,
-        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708))
-    );
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -444,8 +437,7 @@ public record ChoreoTraj(
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
         Map.entry("WarmUpStraight", WarmUpStraight),
-        Map.entry("WarmUpTurn", WarmUpTurn),
-        Map.entry("RightHubToOutpost", RightHubToOutpost)
+        Map.entry("WarmUpTurn", WarmUpTurn)
     );
 
     /**
