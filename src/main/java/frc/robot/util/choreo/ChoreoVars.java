@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.*;
  */
 public final class ChoreoVars {
     public static final LinearVelocity ClimbMaxVelocity = Units.MetersPerSecond.of(0.5);
-    public static final LinearVelocity DepotMaxVelocity = Units.MetersPerSecond.of(0.6);
+    public static final LinearVelocity DepotMaxVelocity = Units.MetersPerSecond.of(0.55);
     public static final Distance FieldLength = Units.Meters.of(16.541);
     public static final Distance FieldWidth = Units.Meters.of(8.0692);
     public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1.25);
