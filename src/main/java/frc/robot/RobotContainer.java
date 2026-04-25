@@ -554,8 +554,16 @@ public class RobotContainer implements Sendable {
                     ShooterOI.shoot()::getAsBoolean)
                 .withName("IntakeButtonRelease"));
     IntakeOI.intakeReverse()
-        .onTrue(robotCommands.startIntakeReverse())
-        .onFalse(robotCommands.stopIntake());
+        .onTrue(
+            either(
+                robotCommands.shootWithOuttakeWoJostle(),
+                robotCommands.startIntakeReverse(),
+                ShooterOI.shoot()::getAsBoolean))
+        .onFalse(
+            either(
+                robotCommands.shoot(),
+                robotCommands.stopIntake(),
+                ShooterOI.shoot()::getAsBoolean));
 
     IntakeOI.toggleIntake()
         .onTrue(
@@ -586,15 +594,24 @@ public class RobotContainer implements Sendable {
     ShooterOI.shoot()
         .whileTrue(
             either(
-                    robotCommands.shootWithoutIntakeJostle(),
-                    robotCommands.shoot(),
-                    () -> IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone())
+                    robotCommands.shootWithOuttakeWoJostle(),
+                    either(
+                        robotCommands.shootWoIntakeJostle(),
+                        robotCommands.shoot(),
+                        () ->
+                            IntakeOI.intake().getAsBoolean()
+                                || !shooterAimModel.isInAllianceZone()),
+                    IntakeOI.intakeReverse()::getAsBoolean)
                 .withName("ShootButtonPress"))
         .onFalse(
-            either(
-                    sequence(robotCommands.spinDownFromShoot(), robotCommands.intake()),
+            sequence(
                     robotCommands.spinDownFromShoot(),
-                    IntakeOI.intake()::getAsBoolean)
+                    // startIntakeReverse() is instant, so it must go before intake(), which lasts
+                    // for as long as you let it
+                    robotCommands
+                        .startIntakeReverse()
+                        .onlyIf(IntakeOI.intakeReverse()::getAsBoolean),
+                    robotCommands.intake().onlyIf(IntakeOI.intake()::getAsBoolean))
                 .withName("ShootButtonRelease"));
 
     ShooterOI.shootClose()

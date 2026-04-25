@@ -589,9 +589,18 @@ public class RobotCommands {
         runSpindexerAndKicker());
   }
 
-  public Command shootWithoutIntakeJostle() {
+  public Command shootWoIntakeJostle() {
     return getShootCommand(
         "ShootWoIntakeJostle", autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker());
+  }
+
+  public Command shootWithOuttakeWoJostle() {
+    return getShootCommand(
+        "ShootWithOuttakeWoJostle",
+        autoFlywheelCommand(),
+        runAutoHood(),
+        startIntakeReverse(),
+        runSpindexerAndKicker());
   }
 
   private Command getShootCommand(String name, Command... parallelCommands) {

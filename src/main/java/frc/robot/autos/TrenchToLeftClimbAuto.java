@@ -57,9 +57,7 @@ public class TrenchToLeftClimbAuto extends AutoBase {
         .done()
         .onTrue(
             sequence(
-                    robotCommands
-                        .runClimberUp()
-                        .deadlineFor(robotCommands.shootWithoutIntakeJostle()),
+                    robotCommands.runClimberUp().deadlineFor(robotCommands.shootWoIntakeJostle()),
                     Autos.climbDepot(robotCommands, drive, shooterAimModel))
                 .finallyDo(
                     () -> {

@@ -1524,6 +1524,20 @@
             },
             "children": [
               {
+                "title": "Jostle Intake Up Time",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Intake/UppyDowny/Jostle Intake Up Time",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
                 "title": "Jostle Intake Down Time",
                 "x": 0.0,
                 "y": 0.0,
@@ -1538,14 +1552,14 @@
                 }
               },
               {
-                "title": "Jostle Intake Up Time",
+                "title": "Raise RPM",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 140.0,
                 "height": 140.0,
                 "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Intake/UppyDowny/Jostle Intake Up Time",
+                  "topic": "/SmartDashboard/Intake/UppyDowny/Raise RPM",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
@@ -1576,20 +1590,6 @@
                   "topic": "/SmartDashboard/Intake/UppyDowny/PID",
                   "period": 0.06,
                   "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Raise RPM",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Intake/UppyDowny/Raise RPM",
-                  "period": 0.06,
-                  "data_type": "double",
                   "show_submit_button": true
                 }
               },
