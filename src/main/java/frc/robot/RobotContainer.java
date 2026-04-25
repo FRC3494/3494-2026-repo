@@ -229,102 +229,47 @@ public class RobotContainer implements Sendable {
     }
 
     // Set up autos
-    Autos.loadAuto(
-        new DepotAndClimbAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new HubToDepotAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new HubToOutpostAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new LeftHubToClimbAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new LeftNZToClimbAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new LeftNZToNZAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new LeftNZWithPassingAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new RightClimbAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new RightHubToClimbAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new RightNZToClimbAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new RightNZToNZAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new RightOutpostAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
+    AutoBase[] autos =
+        new AutoBase[] {
+          new DepotAndClimbAuto(),
+          new HubToDepotAuto(),
+          new HubToOutpostAuto(),
+          new LeftHubToClimbAuto(),
+          new LeftNZToClimbAuto(),
+          new LeftNZToNZAuto(),
+          new LeftNZWithPassingAuto(),
+          new RightClimbAuto(),
+          new RightHubToClimbAuto(),
+          new RightNZToClimbAuto(),
+          new RightNZToNZAuto(),
+          new RightOutpostAuto(),
+        };
+
+    for (AutoBase auto : autos) {
+      autoChooser.addRoutine(
+          auto.getName() + "_BLUE",
+          () ->
+              auto.getRoutine(
+                  auto.getName() + "_BLUE",
+                  Alliance.Blue,
+                  autoFactory,
+                  robotCommands,
+                  drive,
+                  shooterAimModel));
+      autoChooser.addRoutine(
+          auto.getName() + "_RED",
+          () ->
+              auto.getRoutine(
+                  auto.getName() + "_RED",
+                  Alliance.Red,
+                  autoFactory,
+                  robotCommands,
+                  drive,
+                  shooterAimModel));
+
+      autoStartingPoses.put(auto.getName() + "_BLUE", auto.getStartingPose());
+      autoStartingPoses.put(auto.getName() + "_RED", auto.getStartingPose());
+    }
 
     autoChooser.addCmd("=====================", () -> none());
 
