@@ -87,6 +87,13 @@
      "exp":"1 m / s",
      "val":1.0
     }
+   },
+   "WarmUpTurnRadius":{
+    "dimension":"Length",
+    "var":{
+     "exp":"0.5 m",
+     "val":0.5
+    }
    }
   },
   "poses":{

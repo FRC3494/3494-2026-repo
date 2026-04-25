@@ -1,5 +1,7 @@
 package frc.robot.autos;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -31,9 +33,21 @@ public class WarmUpAuto extends AutoBase {
       ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(routineName);
 
-    AutoTrajectory warmUp = ChoreoTraj.WarmUp.asAutoTraj(routine);
+    AutoTrajectory warmUpTurn = ChoreoTraj.WarmUpTurn.asAutoTraj(routine);
+    AutoTrajectory warmUpStraight = ChoreoTraj.WarmUpStraight.asAutoTraj(routine);
 
-    routine.active().onTrue(warmUp.cmd());
+    routine
+        .active()
+        .onTrue(
+            sequence(
+                warmUpTurn.resetOdometry(),
+                robotCommands.runClimberUp(),
+                waitSeconds(0.5),
+                robotCommands.runClimberDown(),
+                robotCommands.shoot().withTimeout(3),
+                warmUpTurn.cmd()));
+
+    warmUpTurn.chain(warmUpStraight);
 
     return routine;
   }

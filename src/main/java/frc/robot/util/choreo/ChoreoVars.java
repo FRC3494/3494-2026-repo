@@ -23,6 +23,7 @@ public final class ChoreoVars {
     public static final Distance RobotBumperSize = Units.Meters.of(0.447675);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.63);
     public static final LinearVelocity ShootingMaxSpeed = Units.MetersPerSecond.of(1);
+    public static final Distance WarmUpTurnRadius = Units.Meters.of(0.5);
 
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.6228, 5.7832, Rotation2d.fromRadians(0));

@@ -367,12 +367,19 @@ public record ChoreoTraj(
         new Pose2d(4.47612, 0.62547, Rotation2d.fromRadians(3.14159)),
         new Pose2d(7.77511, 3.26376, Rotation2d.fromRadians(1.8326))
     );
-    public static final ChoreoTraj WarmUp = new ChoreoTraj(
-        "WarmUp",
+    public static final ChoreoTraj WarmUpStraight = new ChoreoTraj(
+        "WarmUpStraight",
         OptionalInt.empty(),
-        20.50412,
+        4.50092,
         new Pose2d(0, 0, Rotation2d.fromRadians(0)),
-        new Pose2d(10, 0, Rotation2d.fromRadians(0))
+        new Pose2d(2, 0, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj WarmUpTurn = new ChoreoTraj(
+        "WarmUpTurn",
+        OptionalInt.empty(),
+        1.73249,
+        new Pose2d(0, 0, Rotation2d.fromRadians(0)),
+        new Pose2d(0, 0, Rotation2d.fromRadians(0))
     );
 
     /**
@@ -429,7 +436,8 @@ public record ChoreoTraj(
         Map.entry("RightTrenchToClimb_RED", RightTrenchToClimb_RED),
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-        Map.entry("WarmUp", WarmUp)
+        Map.entry("WarmUpStraight", WarmUpStraight),
+        Map.entry("WarmUpTurn", WarmUpTurn)
     );
 
     /**
