@@ -18,6 +18,8 @@ import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -36,6 +38,7 @@ import frc.robot.OI.ShooterOI.FlywheelOI;
 import frc.robot.OI.ShooterOI.HoodOI;
 import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.OI.WonAutoState;
+import frc.robot.autos.AutoBase;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.autos.HubToDepotAuto;
@@ -75,7 +78,7 @@ import java.util.HashMap;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Sendable {
   public final OI oi;
 
   // Subsystems
@@ -94,6 +97,8 @@ public class RobotContainer {
   private final AutoChooser autoChooser;
   private final AutoFactory autoFactory;
   private String selectedAutoNameCache = "";
+  private boolean warmUpAutoSelected = false;
+  private final AutoBase warmUpAuto;
 
   private Command selectedAutoCommand = none();
   private HashMap<String, Pose2d> autoStartingPoses = new HashMap<String, Pose2d>();
@@ -174,10 +179,35 @@ public class RobotContainer {
             drive,
             Autos::logTrajectory);
 
+    warmUpAuto = new WarmUpAuto();
+
     configureCompetitionAutos();
+
+    if (tuningMode) {
+      configureTuningAutos();
+    }
 
     // Configure the button bindings
     configureButtonBindings();
+
+    SmartDashboard.putData("Buttons", this);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addBooleanProperty(
+        "Auto Warmup",
+        () -> warmUpAutoSelected,
+        (boolean value) -> {
+          warmUpAutoSelected = value;
+
+          if (value) {
+            selectedAutoNameCache = autoChooser.selectedCommand().getName();
+            autoChooser.select(warmUpAuto.getName());
+          } else {
+            autoChooser.select(selectedAutoNameCache);
+          }
+        });
   }
 
   // #region AUTOS
@@ -280,66 +310,39 @@ public class RobotContainer {
 
     autoChooser.addCmd("=====================", () -> none());
 
-    WarmUpAuto warmUpAuto = new WarmUpAuto();
-    autoChooser.addRoutine(
-        warmUpAuto.getName(),
-        () ->
-            warmUpAuto.getRoutine(
-                warmUpAuto.getName(),
-                Alliance.Blue,
-                autoFactory,
-                robotCommands,
-                drive,
-                shooterAimModel));
-
-    if (tuningMode) {
-      configureTuningAutos();
-    }
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
     SmartDashboard.putData(
-        "Auto Warm Up",
+        "Buttons/ResetOdoForAuto",
         runOnce(
                 () -> {
-                  String currentAuto = autoChooser.selectedCommand().getName();
-                  if (currentAuto == warmUpAuto.getName()) {
-                    autoChooser.select(selectedAutoNameCache);
+                  if (warmUpAutoSelected) {
+                    drive.setPose(Pose2d.kZero);
                   } else {
-                    selectedAutoNameCache = currentAuto;
-                    autoChooser.select(warmUpAuto.getName());
+                    drive.setPose(
+                        toAlliancePose(
+                            autoStartingPoses.getOrDefault(
+                                autoChooser.selectedCommand().getName(), Pose2d.kZero)));
                   }
                 })
             .ignoringDisable(true));
 
-    SmartDashboard.putData(
-        "LoadAuto",
-        runOnce(
-                () -> {
-                  drive.setPose(
-                      toAlliancePose(
-                          autoStartingPoses.getOrDefault(
-                              autoChooser.selectedCommand().getName(), Pose2d.kZero)));
-                })
-            .ignoringDisable(true));
+    RobotModeTriggers.autonomous()
+        .whileTrue(
+            either(
+                warmUpAuto
+                    .getRoutine(
+                        selectedAutoNameCache,
+                        alliance,
+                        autoFactory,
+                        robotCommands,
+                        drive,
+                        shooterAimModel)
+                    .cmd(),
+                autoChooser.selectedCommandScheduler(),
+                () -> warmUpAutoSelected));
 
-    RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
-    // RobotModeTriggers.autonomous()
-    //     .onTrue(
-    //         runOnce(
-    //                 () -> {
-    //                   System.out.println("Start Auto =====================================");
-    //                   CommandScheduler.getInstance().schedule(selectedAutoCommand);
-    //                 })
-    //             .ignoringDisable(true));
-    // RobotModeTriggers.autonomous()
-    //     .onFalse(
-    //         runOnce(
-    //                 () -> {
-    //                   CommandScheduler.getInstance().cancelAll();
-    //                 })
-    //             .ignoringDisable(true));
-
-    RobotModeTriggers.teleop().onTrue(robotCommands.spinDownFromShoot());
+    RobotModeTriggers.teleop().onTrue(robotCommands.stopShootNoDelay());
   }
 
   private void configureTuningAutos() {
@@ -481,10 +484,10 @@ public class RobotContainer {
     RobotModeTriggers.teleop().onTrue(runOnce(() -> OI.setWonAutoState(WonAutoState.Unknown)));
     OI.RumbleOI.shiftRumbleWindow().whileTrue(OI.RumbleOI.shiftRumbleSequence());
 
-    SmartDashboard.putData("ResetOdoLeftTrench", Autos.resetOdoLeftTrench(drive));
-    SmartDashboard.putData("ResetOdoRightTrench", Autos.resetOdoRightTrench(drive));
-    SmartDashboard.putData("ResetOdoLeftBump", Autos.resetOdoLeftBump(drive));
-    SmartDashboard.putData("ResetOdoRightBump", Autos.resetOdoRightBump(drive));
+    SmartDashboard.putData("Buttons/ResetOdoLeftTrench", Autos.resetOdoLeftTrench(drive));
+    SmartDashboard.putData("Buttons/ResetOdoRightTrench", Autos.resetOdoRightTrench(drive));
+    SmartDashboard.putData("Buttons/ResetOdoLeftBump", Autos.resetOdoLeftBump(drive));
+    SmartDashboard.putData("Buttons/ResetOdoRightBump", Autos.resetOdoRightBump(drive));
 
     // #endregion
 

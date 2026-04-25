@@ -9,34 +9,21 @@
         "containers": [
           {
             "title": "Auto Chooser",
-            "x": 160.0,
+            "x": 0.0,
             "y": 0.0,
-            "width": 460.0,
+            "width": 380.0,
             "height": 120.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/Auto Chooser",
               "period": 0.06,
-              "sort_options": false
-            }
-          },
-          {
-            "title": "EnableTuningAutos",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 160.0,
-            "height": 120.0,
-            "type": "Toggle Switch",
-            "properties": {
-              "topic": "/AdvantageKit/NetworkInputs/SmartDashboard/EnableTuningAutos",
-              "period": 0.06,
-              "data_type": "boolean"
+              "sort_options": true
             }
           },
           {
             "title": "Turret Position",
-            "x": 520.0,
-            "y": 120.0,
+            "x": 260.0,
+            "y": 240.0,
             "width": 260.0,
             "height": 120.0,
             "type": "Large Text Display",
@@ -56,64 +43,8 @@
             "properties": {
               "topic": "/SmartDashboard/Buttons/RezeroTurret",
               "period": 0.06,
-              "show_type": true,
-              "maximize_button_space": false
-            }
-          },
-          {
-            "title": "ResetOdoLeftBump",
-            "x": 0.0,
-            "y": 240.0,
-            "width": 260.0,
-            "height": 120.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/ResetOdoLeftBump",
-              "period": 0.06,
               "show_type": false,
-              "maximize_button_space": false
-            }
-          },
-          {
-            "title": "ResetOdoLeftTrench",
-            "x": 0.0,
-            "y": 120.0,
-            "width": 260.0,
-            "height": 120.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/ResetOdoLeftTrench",
-              "period": 0.06,
-              "show_type": false,
-              "maximize_button_space": false
-            }
-          },
-          {
-            "title": "ResetOdoRightBump",
-            "x": 260.0,
-            "y": 240.0,
-            "width": 260.0,
-            "height": 120.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/ResetOdoRightBump",
-              "period": 0.06,
-              "show_type": false,
-              "maximize_button_space": false
-            }
-          },
-          {
-            "title": "ResetOdoRightTrench",
-            "x": 260.0,
-            "y": 120.0,
-            "width": 260.0,
-            "height": 120.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/ResetOdoRightTrench",
-              "period": 0.06,
-              "show_type": false,
-              "maximize_button_space": false
+              "maximize_button_space": true
             }
           },
           {
@@ -139,9 +70,9 @@
           },
           {
             "title": "MatchTime",
-            "x": 620.0,
-            "y": 0.0,
-            "width": 160.0,
+            "x": 640.0,
+            "y": 120.0,
+            "width": 140.0,
             "height": 120.0,
             "type": "Match Time",
             "properties": {
@@ -151,6 +82,101 @@
               "time_display_mode": "Minutes and Seconds",
               "red_start_time": 20,
               "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "kvale",
+            "x": 1020.0,
+            "y": 260.0,
+            "width": 120.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/limelight-kvale/Valid",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "square",
+            "x": 1140.0,
+            "y": 260.0,
+            "width": 120.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/limelight-square/Valid",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "angle",
+            "x": 780.0,
+            "y": 260.0,
+            "width": 120.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/limelight-angle/Valid",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "cube",
+            "x": 900.0,
+            "y": 260.0,
+            "width": 120.0,
+            "height": 100.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/limelight-cube/Valid",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "ResetOdoForAuto",
+            "x": 380.0,
+            "y": 0.0,
+            "width": 260.0,
+            "height": 120.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Buttons/ResetOdoForAuto",
+              "period": 0.06,
+              "show_type": false,
+              "maximize_button_space": true
+            }
+          },
+          {
+            "title": "Auto Warmup",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 140.0,
+            "height": 120.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/Buttons/Auto Warmup",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]
@@ -388,8 +414,8 @@
               "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/TurretTrimDeg",
               "period": 0.06,
               "data_type": "double",
-              "start_angle": 180.0,
-              "end_angle": -180.0,
+              "start_angle": -180.0,
+              "end_angle": 180.0,
               "min_value": -180.0,
               "max_value": 180.0,
               "number_of_labels": 8,
@@ -538,6 +564,20 @@
                 "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Shooter/Flywheel/Threshold Factor",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Speedup kA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Shooter/Flywheel/Speedup kA",
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": true
@@ -865,14 +905,14 @@
         ],
         "containers": [
           {
-            "title": "DistanceRaw",
+            "title": "Distance",
             "x": 1220.0,
             "y": 220.0,
             "width": 140.0,
             "height": 140.0,
             "type": "Large Text Display",
             "properties": {
-              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/DistanceRaw",
+              "topic": "/AdvantageKit/RealOutputs/AimShooterMathLinear/Distance",
               "period": 0.06,
               "data_type": "double"
             }
@@ -1360,6 +1400,46 @@
                   "data_type": "int",
                   "show_submit_button": true
                 }
+              },
+              {
+                "title": "Default Clockwise",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/Default Clockwise",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Unjam Enabled",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Toggle Switch",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/Unjam Enabled",
+                  "period": 0.06,
+                  "data_type": "boolean"
+                }
+              },
+              {
+                "title": "Unjam Motor Rotations",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Hopper/Spindexer/Unjam Motor Rotations",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
               }
             ]
           },
@@ -1662,145 +1742,6 @@
       "grid_layout": {
         "layouts": [
           {
-            "title": "Drive",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 360.0,
-            "height": 360.0,
-            "type": "List Layout",
-            "properties": {
-              "label_position": "TOP"
-            },
-            "children": [
-              {
-                "title": "Max Drive Speed (FtPerSec)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Max Drive Speed (FtPerSec)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Max Angular Speed (DegPerSec)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Max Angular Speed (DegPerSec)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Max Shooting Drive Speed (FtPerSec)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Max Shooting Drive Speed (FtPerSec)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Max Shooting Angular Speed (DegPerSec)",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Max Shooting Angular Speed (DegPerSec)",
-                  "period": 0.06,
-                  "data_type": "double",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Drive PID",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Drive PID",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Drive SVA",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Drive SVA",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Turn PID",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Turn PID",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Auto Linear PID",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Auto Linear PID",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              },
-              {
-                "title": "Auto Angular PID",
-                "x": 0.0,
-                "y": 0.0,
-                "width": 140.0,
-                "height": 140.0,
-                "type": "Text Display",
-                "properties": {
-                  "topic": "/SmartDashboard/Drive/Auto Angular PID",
-                  "period": 0.06,
-                  "data_type": "double[]",
-                  "show_submit_button": true
-                }
-              }
-            ]
-          },
-          {
             "title": "AutoAlign",
             "x": 380.0,
             "y": 0.0,
@@ -1933,6 +1874,173 @@
                   "topic": "/SmartDashboard/Drive/AutoAlign/Trench/YTolerance (ft)",
                   "period": 0.06,
                   "data_type": "double",
+                  "show_submit_button": true
+                }
+              }
+            ]
+          },
+          {
+            "title": "Drive",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 340.0,
+            "height": 360.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Auto Angular PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Auto Angular PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Auto Linear PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Auto Linear PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Drive PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Drive PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Drive SVA",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Drive SVA",
+                  "period": 0.06,
+                  "data_type": "double[]",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max AZ Shooting Angular Speed (DegPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max AZ Shooting Angular Speed (DegPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max AZ Shooting Drive Speed (FtPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max AZ Shooting Drive Speed (FtPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max Angular Speed (DegPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max Angular Speed (DegPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max Drive Speed (FtPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max Drive Speed (FtPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max NZ Shooting Angular Speed (DegPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max NZ Shooting Angular Speed (DegPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Max NZ Shooting Drive Speed (FtPerSec)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Max NZ Shooting Drive Speed (FtPerSec)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": true
+                }
+              },
+              {
+                "title": "Turn PID",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 140.0,
+                "height": 140.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Drive/Turn PID",
+                  "period": 0.06,
+                  "data_type": "double[]",
                   "show_submit_button": true
                 }
               }
