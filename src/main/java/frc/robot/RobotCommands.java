@@ -578,27 +578,23 @@ public class RobotCommands {
 
   public Command shoot() {
     return getShootCommand(
-        "Shoot",
-        new Command[] {
-          autoFlywheelCommand(), runAutoHood(), runIntakeJostle(), runSpindexerAndKicker()
-        });
+        "Shoot", autoFlywheelCommand(), runAutoHood(), runIntakeJostle(), runSpindexerAndKicker());
   }
 
   public Command shootWithManualSettings() {
     return getShootCommand(
         "ShootWithManualSettings",
-        new Command[] {
-          runManualHoodWithTrenchSafety(), runIntakeJostle(), runSpindexerAndKicker()
-        });
+        runManualHoodWithTrenchSafety(),
+        runIntakeJostle(),
+        runSpindexerAndKicker());
   }
 
   public Command shootWithoutIntakeJostle() {
     return getShootCommand(
-        "ShootWoIntakeJostle",
-        new Command[] {autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker()});
+        "ShootWoIntakeJostle", autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker());
   }
 
-  private Command getShootCommand(String name, Command[] parallelCommands) {
+  private Command getShootCommand(String name, Command... parallelCommands) {
     return sequence(
             startHoodWithTrenchSafety(),
             startFlywheel(),
