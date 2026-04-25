@@ -37,6 +37,7 @@ public class WarmUpAuto extends AutoBase {
                 waitSeconds(0.5),
                 requirements.robotCommands().runClimberDown(),
                 requirements.robotCommands().shoot().withTimeout(3),
+                requirements.robotCommands().stopShootNoDelay(),
                 warmUpTurn.cmd()));
 
     warmUpTurn.chain(warmUpStraight);

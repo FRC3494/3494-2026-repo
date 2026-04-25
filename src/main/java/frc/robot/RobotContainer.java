@@ -272,7 +272,7 @@ public class RobotContainer implements Sendable {
         runOnce(
                 () -> {
                   if (warmUpAutoSelected) {
-                    drive.setPose(Pose2d.kZero);
+                    drive.setPose(toAlliancePose(Pose2d.kZero));
                   } else {
                     drive.setPose(
                         toAlliancePose(
