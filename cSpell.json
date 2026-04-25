@@ -63,6 +63,7 @@
     "Fiducials",
     "fieldlength",
     "fieldwidth",
+    "fmap",
     "freefair",
     "fseventsd",
     "getenv",
