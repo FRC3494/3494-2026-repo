@@ -3,6 +3,7 @@ package frc.robot.autos;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
+import static frc.robot.Constants.alliance;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -41,10 +42,17 @@ public class RightOutpostAuto extends AutoBase {
             ? ChoreoTraj.RightTrenchToNZ_BLUE.asAutoTraj(routine)
             : ChoreoTraj.RightTrenchToNZ_RED.asAutoTraj(routine);
     AutoTrajectory rightMiddleNZToOutpost_0 =
-        ChoreoTraj.RightMiddleNZToOutpost.segment(0).asAutoTraj(routine);
+        alliance == Alliance.Blue
+            ? ChoreoTraj.RightMiddleNZToOutpost_BLUE.segment(0).asAutoTraj(routine)
+            : ChoreoTraj.RightMiddleNZToOutpost_RED.segment(0).asAutoTraj(routine);
     AutoTrajectory rightMiddleNZToOutpost_1 =
-        ChoreoTraj.RightMiddleNZToOutpost.segment(1).asAutoTraj(routine);
-    AutoTrajectory outpostToRightClimb = ChoreoTraj.OutpostToRightClimb.asAutoTraj(routine);
+        alliance == Alliance.Blue
+            ? ChoreoTraj.RightMiddleNZToOutpost_BLUE.segment(1).asAutoTraj(routine)
+            : ChoreoTraj.RightMiddleNZToOutpost_RED.segment(1).asAutoTraj(routine);
+    AutoTrajectory outpostToRightClimb =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.OutpostToRightClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.OutpostToRightClimb_RED.asAutoTraj(routine);
 
     routine
         .active()
