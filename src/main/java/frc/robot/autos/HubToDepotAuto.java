@@ -38,10 +38,22 @@ public class HubToDepotAuto extends AutoBase {
       ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(routineName);
 
-    AutoTrajectory leftHubToDepot_0 = ChoreoTraj.LeftHubToDepot.segment(0).asAutoTraj(routine);
-    AutoTrajectory leftHubToDepot_1 = ChoreoTraj.LeftHubToDepot.segment(1).asAutoTraj(routine);
-    AutoTrajectory depotIntake = ChoreoTraj.DepotIntake.asAutoTraj(routine);
-    AutoTrajectory depotIntakeToClimb = ChoreoTraj.DepotIntakeToClimb.asAutoTraj(routine);
+    AutoTrajectory leftHubToDepot_0 =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftHubToDepot_BLUE.segment(0).asAutoTraj(routine)
+            : ChoreoTraj.LeftHubToDepot_RED.segment(0).asAutoTraj(routine);
+    AutoTrajectory leftHubToDepot_1 =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftHubToDepot_BLUE.segment(1).asAutoTraj(routine)
+            : ChoreoTraj.LeftHubToDepot_RED.segment(1).asAutoTraj(routine);
+    AutoTrajectory depotIntake =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.DepotIntake_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.DepotIntake_RED.asAutoTraj(routine);
+    AutoTrajectory depotIntakeToClimb =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.DepotIntakeToClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.DepotIntakeToClimb_RED.asAutoTraj(routine);
 
     routine
         .active()
