@@ -19,7 +19,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -44,8 +43,8 @@ public class Hopper extends SubsystemBase {
   private final MedianFilter spindexerCurrentFilter =
       new MedianFilter(spindexerCurrentSensingFilterSize);
 
-  SysIdRoutine spindexerSysId;
-  SysIdRoutine kickerSysId;
+  @Getter private final SysIdRoutine spindexerSysId;
+  @Getter private final SysIdRoutine kickerSysId;
 
   public Hopper() {
     spindexerMotor = new SparkFlex(RobotMap.Hopper.spindexerCanId, MotorType.kBrushless);
@@ -295,30 +294,6 @@ public class Hopper extends SubsystemBase {
 
   public double getSpindexerCurrent() {
     return spindexerMotor.getOutputCurrent();
-  }
-
-  public Command kickerSysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> setKickerOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(kickerSysId.quasistatic(direction));
-  }
-
-  public Command kickerSysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> setKickerOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(kickerSysId.dynamic(direction));
-  }
-
-  public Command spindexerSysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> setSpindexerOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(spindexerSysId.quasistatic(direction));
-  }
-
-  public Command spindexerSysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> setSpindexerOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(spindexerSysId.dynamic(direction));
   }
 
   private void setSpindexerPID(double p, double i, double d) {

@@ -18,7 +18,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -44,7 +43,7 @@ public class Turret extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Turret/ArbFF")
   private Voltage turretArbFF = Volts.of(0.0);
 
-  SysIdRoutine turretSysId;
+  @Getter private final SysIdRoutine sysId;
 
   public Turret() {
     turretMotor = new SparkFlex(RobotMap.Shooter.turretMotorCanId, MotorType.kBrushless);
@@ -71,7 +70,7 @@ public class Turret extends SubsystemBase {
     turretMotor.configure(
         turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    turretSysId =
+    sysId =
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 Volts.per(Seconds).of(0.1),
@@ -281,18 +280,6 @@ public class Turret extends SubsystemBase {
 
   public void setOpenLoop(Voltage volts) {
     turretMotor.setVoltage(volts);
-  }
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> setOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(turretSysId.quasistatic(direction));
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> setOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(turretSysId.dynamic(direction));
   }
 
   public void setRelativeEncoderPosition(double rotations) {

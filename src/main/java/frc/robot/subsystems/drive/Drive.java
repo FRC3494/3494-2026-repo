@@ -39,7 +39,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -58,9 +57,9 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
-  private final SysIdRoutine driveSysId;
-  private final SysIdRoutine turnSysId;
-  private final SysIdRoutine robotTurnSysId;
+  @Getter private final SysIdRoutine driveSysId;
+  @Getter private final SysIdRoutine turnSysId;
+  @Getter private final SysIdRoutine robotTurnSysId;
 
   private final Alert gyroDisconnectedAlert =
       new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
@@ -528,44 +527,6 @@ public class Drive extends SubsystemBase {
     }
     kinematics.resetHeadings(headings);
     stop();
-  }
-
-  /** Returns a command to run a quasistatic test in the specified direction. */
-  public Command driveSysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> runDriveCharacterization(0.0))
-        .withTimeout(1.0)
-        .andThen(driveSysId.quasistatic(direction));
-  }
-
-  /** Returns a command to run a dynamic test in the specified direction. */
-  public Command driveSysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> runDriveCharacterization(0.0))
-        .withTimeout(1.0)
-        .andThen(driveSysId.dynamic(direction));
-  }
-
-  public Command turnSysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> runTurnCharacterization(0.0))
-        .withTimeout(1.0)
-        .andThen(turnSysId.quasistatic(direction));
-  }
-
-  public Command turnSysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> runTurnCharacterization(0.0))
-        .withTimeout(1.0)
-        .andThen(turnSysId.dynamic(direction));
-  }
-
-  public Command robotTurnSysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> runRobotTurnCharacterization(0.0))
-        .withTimeout(1.0)
-        .andThen(robotTurnSysId.quasistatic(direction));
-  }
-
-  public Command robotTurnSysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> runRobotTurnCharacterization(0.0))
-        .withTimeout(1.0)
-        .andThen(robotTurnSysId.dynamic(direction));
   }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */

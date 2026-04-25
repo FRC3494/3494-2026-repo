@@ -18,7 +18,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
@@ -42,7 +41,7 @@ public class Intake extends SubsystemBase {
   private final MedianFilter uppyDownyCurrentFilter =
       new MedianFilter(uppyDownCurrentSensingFilterSize);
 
-  SysIdRoutine spinnySpinnySysId;
+  @Getter private final SysIdRoutine spinnySpinnySysId;
 
   public Intake() {
     spinnySpinnyMotor = new SparkFlex(RobotMap.Intake.spinnySpinnyCanId, MotorType.kBrushless);
@@ -240,18 +239,6 @@ public class Intake extends SubsystemBase {
     spinnySpinnyMotor
         .getClosedLoopController()
         .setSetpoint(voltage.in(Volts), ControlType.kVoltage);
-  }
-
-  public Command spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> setSpinnySpinnyOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(spinnySpinnySysId.quasistatic(direction));
-  }
-
-  public Command spinnySpinnySysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> setSpinnySpinnyOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(spinnySpinnySysId.dynamic(direction));
   }
 
   public double getUppyDownyPosition() {

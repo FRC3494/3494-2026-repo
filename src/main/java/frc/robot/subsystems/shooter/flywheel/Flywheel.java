@@ -18,7 +18,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.RobotMap;
@@ -35,7 +34,7 @@ public class Flywheel extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Flywheel/FlywheelSetpoint")
   private AngularVelocity flywheelSetpoint = RPM.of(0.0);
 
-  SysIdRoutine sysId;
+  @Getter private final SysIdRoutine sysId;
 
   @AutoLogOutput(key = "Shooter/Flywheel/Shooting")
   private boolean shooting = false;
@@ -215,15 +214,5 @@ public class Flywheel extends SubsystemBase {
 
   public AngularVelocity getVelocity() {
     return RPM.of(leftMotor.getEncoder().getVelocity());
-  }
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return run(() -> setOpenLoop(Volts.of(0.0)))
-        .withTimeout(1.0)
-        .andThen(sysId.quasistatic(direction));
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> setOpenLoop(Volts.of(0.0))).withTimeout(1.0).andThen(sysId.dynamic(direction));
   }
 }

@@ -18,6 +18,7 @@ import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -73,6 +74,7 @@ import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 import frc.robot.util.choreo.ChoreoTraj;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -212,7 +214,7 @@ public class RobotContainer implements Sendable {
         });
   }
 
-  // #region AUTOS
+  // #region COMP AUTOS
   private void configureCompetitionAutos() {
     CommandScheduler.getInstance().schedule(autoFactory.warmupCmd());
 
@@ -307,7 +309,9 @@ public class RobotContainer implements Sendable {
 
     RobotModeTriggers.teleop().onTrue(robotCommands.stopShootNoDelay());
   }
+  // #endregion
 
+  // #region TUNING AUTOS
   private void configureTuningAutos() {
     // Drive
     autoChooser.addCmd(
@@ -319,118 +323,66 @@ public class RobotContainer implements Sendable {
     autoChooser.addCmd(
         "Drive Simple FF Characterization", () -> DriveCommands.feedforwardCharacterization(drive));
 
-    autoChooser.addCmd(
-        "Drive SysId (Quasistatic Forward)",
-        () -> drive.driveSysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Drive SysId (Quasistatic Reverse)",
-        () -> drive.driveSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Drive SysId (Dynamic Forward)",
-        () -> drive.driveSysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Drive SysId (Dynamic Reverse)",
-        () -> drive.driveSysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    autoChooser.addCmd(
-        "Turn SysId (Quasistatic Forward)",
-        () -> drive.turnSysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Turn SysId (Quasistatic Reverse)",
-        () -> drive.turnSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Turn SysId (Dynamic Forward)",
-        () -> drive.turnSysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Turn SysId (Dynamic Reverse)",
-        () -> drive.turnSysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    autoChooser.addCmd(
-        "Robot Turn SysId (Quasistatic Forward)",
-        () -> drive.robotTurnSysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Robot Turn SysId (Quasistatic Reverse)",
-        () -> drive.robotTurnSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Robot Turn SysId (Dynamic Forward)",
-        () -> drive.robotTurnSysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Robot Turn SysId (Dynamic Reverse)",
-        () -> drive.robotTurnSysIdDynamic(SysIdRoutine.Direction.kReverse));
+    registerSysIdAutos(
+        "Drive",
+        drive.getDriveSysId(),
+        (Voltage volts) -> drive.runDriveCharacterization(volts.in(Volts)));
+    registerSysIdAutos(
+        "Module Turn",
+        drive.getTurnSysId(),
+        (Voltage volts) -> drive.runTurnCharacterization(volts.in(Volts)));
+    registerSysIdAutos(
+        "Robot Turn",
+        drive.getRobotTurnSysId(),
+        (Voltage volts) -> drive.runRobotTurnCharacterization(volts.in(Volts)));
 
     autoChooser.addCmd(
         "Pigeon Turn Error Characterization", () -> DriveCommands.turnErrorCharacterization(drive));
 
     // Flywheel
-    autoChooser.addCmd(
-        "Flywheel SysId (Quasistatic Forward)",
-        () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Flywheel SysId (Quasistatic Reverse)",
-        () -> flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Flywheel SysId (Dynamic Forward)",
-        () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Flywheel SysId (Dynamic Reverse)",
-        () -> flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    registerSysIdAutos("Flywheel", flywheel.getSysId(), flywheel::setOpenLoop);
 
     // Hopper
-    autoChooser.addCmd(
-        "Spindexer SysId (Quasistatic Forward)",
-        () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Spindexer SysId (Quasistatic Reverse)",
-        () -> hopper.spindexerSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Spindexer SysId (Dynamic Forward)",
-        () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Spindexer SysId (Dynamic Reverse)",
-        () -> hopper.spindexerSysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    autoChooser.addCmd(
-        "Kicker SysId (Quasistatic Forward)",
-        () -> hopper.kickerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Kicker SysId (Quasistatic Reverse)",
-        () -> hopper.kickerSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Kicker SysId (Dynamic Forward)",
-        () -> hopper.kickerSysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Kicker SysId (Dynamic Reverse)",
-        () -> hopper.kickerSysIdDynamic(SysIdRoutine.Direction.kReverse));
+    registerSysIdAutos("Spindexer", hopper.getSpindexerSysId(), hopper::setSpindexerOpenLoop);
+    registerSysIdAutos("Kicker", hopper.getKickerSysId(), hopper::setKickerOpenLoop);
 
     // Intake
-    autoChooser.addCmd(
-        "Intake SpinnySpinny SysId (Quasistatic Forward)",
-        () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Intake SpinnySpinny SysId (Quasistatic Reverse)",
-        () -> intake.spinnySpinnySysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Intake SpinnySpinny SysId (Dynamic Forward)",
-        () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Intake SpinnySpinny SysId (Dynamic Reverse)",
-        () -> intake.spinnySpinnySysIdDynamic(SysIdRoutine.Direction.kReverse));
+    registerSysIdAutos(
+        "Intake SpinnySpinny", intake.getSpinnySpinnySysId(), intake::setSpinnySpinnyOpenLoop);
 
     // Turret
-    autoChooser.addCmd(
-        "Turret SysId (Quasistatic Forward)",
-        () -> turret.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Turret SysId (Quasistatic Reverse)",
-        () -> turret.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addCmd(
-        "Turret SysId (Dynamic Forward)",
-        () -> turret.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addCmd(
-        "Turret SysId (Dynamic Reverse)",
-        () -> turret.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    registerSysIdAutos("Turret", turret.getSysId(), turret::setOpenLoop);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
+
+  private void registerSysIdAutos(
+      String name, SysIdRoutine routine, Consumer<Voltage> setOpenLoop) {
+    autoChooser.addCmd(
+        name + " SysId (Quasistatic Forward)",
+        () ->
+            run(() -> setOpenLoop.accept(Volts.of(0.0)))
+                .withTimeout(1.0)
+                .andThen(routine.quasistatic(SysIdRoutine.Direction.kForward)));
+    autoChooser.addCmd(
+        name + " SysId (Quasistatic Reverse)",
+        () ->
+            run(() -> setOpenLoop.accept(Volts.of(0.0)))
+                .withTimeout(1.0)
+                .andThen(routine.quasistatic(SysIdRoutine.Direction.kReverse)));
+
+    autoChooser.addCmd(
+        name + " SysId (Dynamic Forward)",
+        () ->
+            run(() -> setOpenLoop.accept(Volts.of(0.0)))
+                .withTimeout(1.0)
+                .andThen(routine.dynamic(SysIdRoutine.Direction.kForward)));
+    autoChooser.addCmd(
+        name + " SysId (Dynamic Reverse)",
+        () ->
+            run(() -> setOpenLoop.accept(Volts.of(0.0)))
+                .withTimeout(1.0)
+                .andThen(routine.dynamic(SysIdRoutine.Direction.kReverse)));
   }
   // #endregion
 
