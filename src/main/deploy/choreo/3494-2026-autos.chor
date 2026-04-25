@@ -14,8 +14,8 @@
    "DepotMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"0.5 m / s",
-     "val":0.5
+     "exp":"0.6 m / s",
+     "val":0.6
     }
    },
    "FieldLength":{
