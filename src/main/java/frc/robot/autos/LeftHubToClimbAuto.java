@@ -51,7 +51,8 @@ public class LeftHubToClimbAuto extends AutoBase {
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(5),
+                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
+                robotCommands.shoot().withTimeout(2),
                 Autos.climbDepot(robotCommands, drive, shooterAimModel)));
 
     return routine;
