@@ -42,6 +42,7 @@ import frc.robot.autos.AutoBase;
 import frc.robot.autos.Autos;
 import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.autos.HubToDepotAuto;
+import frc.robot.autos.HubToOutpostAuto;
 import frc.robot.autos.LeftHubToClimbAuto;
 import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
@@ -238,6 +239,14 @@ public class RobotContainer implements Sendable {
         shooterAimModel);
     Autos.loadAuto(
         new HubToDepotAuto(),
+        autoStartingPoses,
+        autoChooser,
+        autoFactory,
+        robotCommands,
+        drive,
+        shooterAimModel);
+    Autos.loadAuto(
+        new HubToOutpostAuto(),
         autoStartingPoses,
         autoChooser,
         autoFactory,
