@@ -526,15 +526,33 @@ public class RobotContainer implements Sendable {
 
     HopperOI.spindexerBackwards()
         .onTrue(robotCommands.startSpindexerReverse())
-        .onFalse(robotCommands.stopSpindexer());
+        .onFalse(
+            either(
+                either(
+                    robotCommands.shootWoIntakeJostle(),
+                    robotCommands.shoot(),
+                    () -> IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone()),
+                robotCommands.stopSpindexer(),
+                ShooterOI.shoot()::getAsBoolean));
 
     HopperOI.runKicker().onTrue(robotCommands.startKicker()).onFalse(robotCommands.stopKicker());
 
     HopperOI.kickerBackwards()
         .onTrue(robotCommands.startKickerReverse())
-        .onFalse(robotCommands.stopKicker());
+        .onFalse(
+            either(
+                either(
+                    robotCommands.shootWoIntakeJostle(),
+                    robotCommands.shoot(),
+                    () -> IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone()),
+                robotCommands.stopKicker(),
+                ShooterOI.shoot()::getAsBoolean));
 
     HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
+
+    HopperOI.dumpFuel()
+        .whileTrue(robotCommands.dumpFuelNoSafety())
+        .onFalse(robotCommands.spinDownFromShoot());
 
     // #endregion
 

@@ -284,6 +284,10 @@ public final class OI implements Sendable {
       // return primaryController.povLeft();
       return new Trigger(() -> false);
     }
+
+    public static Trigger dumpFuel() {
+      return leftButtonBoard.button(3, eventLoop).castTo(Trigger::new);
+    }
   }
   // #endregion
 

@@ -467,6 +467,25 @@ public class RobotCommands {
     spindexerInverted = spindexerDefaultDirection;
   }
 
+  public Command dumpFuelNoSafety() {
+    return sequence(
+            setManualShooterSettings(Rotation2d.fromDegrees(45), RPM.of(2800)),
+            turretToPosition(Units.degreesToRotations(0)),
+            startHood(),
+            startFlywheel(),
+            startIntakeReverse(),
+            waitUntil(turret::withinShootingTolerance),
+            startKicker(),
+            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+            runSpindexerWithStallDetection(() -> spindexerSpeed))
+        .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+        .finallyDo(
+            () -> {
+              turret.setDefaultCommand(autoTurretCommand());
+            })
+        .withName("DumpFuelNoSafety");
+  }
+
   // #endregion
 
   // #region INTAKE
