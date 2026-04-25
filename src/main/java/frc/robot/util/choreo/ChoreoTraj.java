@@ -377,7 +377,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj WarmUpTurn = new ChoreoTraj(
         "WarmUpTurn",
         OptionalInt.empty(),
-        1.73249,
+        5.12594,
         new Pose2d(0, 0, Rotation2d.fromRadians(0)),
         new Pose2d(0, 0, Rotation2d.fromRadians(0))
     );
