@@ -4,14 +4,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static frc.robot.Constants.alliance;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -28,13 +25,8 @@ public class HubToOutpostAuto extends AutoBase {
 
   @Override
   public AutoRoutine getRoutine(
-      String routineName,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    AutoRoutine routine = autoFactory.newRoutine(routineName);
+      String routineName, Alliance alliance, AutoRequirements requirements) {
+    AutoRoutine routine = requirements.autoFactory().newRoutine(routineName);
 
     AutoTrajectory rightHubToOutpost_0 =
         ChoreoTraj.RightHubToOutpost.segment(0).asAutoTraj(routine);
@@ -51,26 +43,29 @@ public class HubToOutpostAuto extends AutoBase {
             sequence(
                 rightHubToOutpost_0.resetOdometry(),
                 parallel(
-                    robotCommands.enableAutoShooterSettings(),
-                    robotCommands.enableAutoTurret(),
+                    requirements.robotCommands().enableAutoShooterSettings(),
+                    requirements.robotCommands().enableAutoTurret(),
                     rightHubToOutpost_0.cmd())));
 
     rightHubToOutpost_0
         .done()
         .onTrue(
             sequence(
-                robotCommands.stopDrive(),
-                robotCommands.dropIntakeWithSpin(),
+                requirements.robotCommands().stopDrive(),
+                requirements.robotCommands().dropIntakeWithSpin(),
                 rightHubToOutpost_1.cmd()));
 
     rightHubToOutpost_1
         .done()
         .onTrue(
             sequence(
-                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
-                outpostToRightClimb.cmd().deadlineFor(robotCommands.shoot())));
+                requirements
+                    .robotCommands()
+                    .runClimberUp()
+                    .deadlineFor(requirements.robotCommands().shoot()),
+                outpostToRightClimb.cmd().deadlineFor(requirements.robotCommands().shoot())));
 
-    outpostToRightClimb.done().onTrue(Autos.climbOutpost(robotCommands, drive, shooterAimModel));
+    outpostToRightClimb.done().onTrue(Autos.climbOutpost(requirements));
 
     return routine;
   }

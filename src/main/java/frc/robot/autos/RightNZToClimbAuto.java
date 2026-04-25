@@ -5,15 +5,12 @@ import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -29,14 +26,8 @@ public class RightNZToClimbAuto extends AutoBase {
   }
 
   @Override
-  public AutoRoutine getRoutine(
-      String name,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    AutoRoutine routine = autoFactory.newRoutine(name);
+  public AutoRoutine getRoutine(String name, Alliance alliance, AutoRequirements requirements) {
+    AutoRoutine routine = requirements.autoFactory().newRoutine(name);
 
     AutoTrajectory rightTrenchToNZ =
         alliance == Alliance.Blue
@@ -55,32 +46,37 @@ public class RightNZToClimbAuto extends AutoBase {
                 rightTrenchToNZ.resetOdometry(),
                 print("2"),
                 parallel(
-                    robotCommands.enableAutoShooterSettings(),
-                    robotCommands.enableAutoTurret(),
+                    requirements.robotCommands().enableAutoShooterSettings(),
+                    requirements.robotCommands().enableAutoTurret(),
                     rightTrenchToNZ.cmd()),
                 print("3")));
 
-    rightTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
+    rightTrenchToNZ.atTime("NZIntake").onTrue(requirements.robotCommands().intake());
 
-    rightTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), middleNZToRightClimb.cmd()));
+    rightTrenchToNZ
+        .done()
+        .onTrue(sequence(requirements.robotCommands().stopIntake(), middleNZToRightClimb.cmd()));
 
     middleNZToRightClimb
         .atPose("ClimberUp", Units.inchesToMeters(6), Math.PI)
-        .onTrue(robotCommands.startClimberUp().andThen(print("ClimberUp")));
+        .onTrue(requirements.robotCommands().startClimberUp().andThen(print("ClimberUp")));
 
     middleNZToRightClimb
         .atTime("StartFlywheel")
-        .onTrue(robotCommands.startFlywheel().andThen(print("StartFlywheel")));
+        .onTrue(requirements.robotCommands().startFlywheel().andThen(print("StartFlywheel")));
 
     middleNZToRightClimb
         .done()
         .onTrue(
             sequence(
-                    robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
-                    Autos.climbOutpost(robotCommands, drive, shooterAimModel))
+                    requirements
+                        .robotCommands()
+                        .runClimberUp()
+                        .deadlineFor(requirements.robotCommands().shoot()),
+                    Autos.climbOutpost(requirements))
                 .finallyDo(
                     () -> {
-                      shooterAimModel.setTurretTrim(turretTrimDefaultRot);
+                      requirements.shooterAimModel().setTurretTrim(turretTrimDefaultRot);
                     }));
 
     return routine;

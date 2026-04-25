@@ -41,6 +41,7 @@ import frc.robot.OI.ShooterOI.TurretOI;
 import frc.robot.OI.WonAutoState;
 import frc.robot.autos.AutoBase;
 import frc.robot.autos.Autos;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.autos.HubToDepotAuto;
 import frc.robot.autos.HubToOutpostAuto;
@@ -247,27 +248,16 @@ public class RobotContainer implements Sendable {
           new RightOutpostAuto(),
         };
 
+    AutoRequirements autoRequirements =
+        new AutoRequirements(autoFactory, robotCommands, drive, shooterAimModel);
+
     for (AutoBase auto : autos) {
       autoChooser.addRoutine(
           auto.getName() + "_BLUE",
-          () ->
-              auto.getRoutine(
-                  auto.getName() + "_BLUE",
-                  Alliance.Blue,
-                  autoFactory,
-                  robotCommands,
-                  drive,
-                  shooterAimModel));
+          () -> auto.getRoutine(auto.getName() + "_BLUE", Alliance.Blue, autoRequirements));
       autoChooser.addRoutine(
           auto.getName() + "_RED",
-          () ->
-              auto.getRoutine(
-                  auto.getName() + "_RED",
-                  Alliance.Red,
-                  autoFactory,
-                  robotCommands,
-                  drive,
-                  shooterAimModel));
+          () -> auto.getRoutine(auto.getName() + "_RED", Alliance.Red, autoRequirements));
 
       autoStartingPoses.put(auto.getName() + "_BLUE", auto.getStartingPose());
       autoStartingPoses.put(auto.getName() + "_RED", auto.getStartingPose());
@@ -295,15 +285,7 @@ public class RobotContainer implements Sendable {
     RobotModeTriggers.autonomous()
         .whileTrue(
             either(
-                warmUpAuto
-                    .getRoutine(
-                        selectedAutoNameCache,
-                        alliance,
-                        autoFactory,
-                        robotCommands,
-                        drive,
-                        shooterAimModel)
-                    .cmd(),
+                warmUpAuto.getRoutine(selectedAutoNameCache, alliance, autoRequirements).cmd(),
                 autoChooser.selectedCommandScheduler(),
                 () -> warmUpAutoSelected));
 

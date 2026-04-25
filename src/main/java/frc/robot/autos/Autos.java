@@ -8,6 +8,7 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
+import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +23,12 @@ import frc.robot.util.choreo.ChoreoVars;
 import org.littletonrobotics.junction.Logger;
 
 public class Autos {
+  public record AutoRequirements(
+      AutoFactory autoFactory,
+      RobotCommands robotCommands,
+      Drive drive,
+      ShooterAimModel shooterAimModel) {}
+
   // #region LOGGING
   public static void logTrajectory(Trajectory<SwerveSample> trajectory, boolean starting) {
     Logger.recordOutput("Choreo/TrajStarting", starting);
@@ -43,12 +50,9 @@ public class Autos {
   // #endregion
 
   // #region COMMANDS
-  public static Command climbDepot(
-      RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
+  public static Command climbDepot(AutoRequirements requirements) {
     return climbCommand(
-            robotCommands,
-            drive,
-            shooterAimModel,
+            requirements,
             climbSetupPoseDepot_BLUE,
             climbSetupPoseDepot_RED,
             climbPoseDepot_BLUE,
@@ -56,12 +60,9 @@ public class Autos {
         .withName("ClimbDepot");
   }
 
-  public static Command climbOutpost(
-      RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
+  public static Command climbOutpost(AutoRequirements requirements) {
     return climbCommand(
-            robotCommands,
-            drive,
-            shooterAimModel,
+            requirements,
             climbSetupPoseOutpost_BLUE,
             climbSetupPoseOutpost_RED,
             climbPoseOutpost_BLUE,
@@ -70,9 +71,7 @@ public class Autos {
   }
 
   private static Command climbCommand(
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel,
+      AutoRequirements requirements,
       Pose2d setupPose_BLUE,
       Pose2d setupPose_RED,
       Pose2d climbPose_BLUE,
@@ -81,23 +80,26 @@ public class Autos {
             sequence(
                     new AutoAlignCommand(
                         alliance == Alliance.Blue ? setupPose_BLUE : setupPose_RED,
-                        drive,
+                        requirements.drive(),
                         autoAlignLinearTolerance,
                         Meters.of(5),
                         autoAlignAngularTolerance),
                     new AutoAlignCommand(
-                        alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED, drive))
-                .deadlineFor(robotCommands.shoot()),
+                        alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED,
+                        requirements.drive()))
+                .deadlineFor(requirements.robotCommands().shoot()),
             parallel(
-                robotCommands.creepBackward(),
+                requirements.robotCommands().creepBackward(),
                 sequence(
                     waitUntil(() -> Timer.getMatchTime() <= climbTime)
-                        .deadlineFor(robotCommands.shoot()),
-                    parallel(robotCommands.runClimberMidWithCurrent(), robotCommands.runIntakeUp()),
-                    robotCommands.shoot())))
+                        .deadlineFor(requirements.robotCommands().shoot()),
+                    parallel(
+                        requirements.robotCommands().runClimberMidWithCurrent(),
+                        requirements.robotCommands().runIntakeUp()),
+                    requirements.robotCommands().shoot())))
         .finallyDo(
             () -> {
-              shooterAimModel.setTurretTrim(turretTrimDefaultRot);
+              requirements.shooterAimModel().setTurretTrim(turretTrimDefaultRot);
             });
   }
   // #endregion

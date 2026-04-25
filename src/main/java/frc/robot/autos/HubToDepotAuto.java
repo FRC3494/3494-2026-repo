@@ -6,14 +6,11 @@ import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -30,13 +27,8 @@ public class HubToDepotAuto extends AutoBase {
 
   @Override
   public AutoRoutine getRoutine(
-      String routineName,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    AutoRoutine routine = autoFactory.newRoutine(routineName);
+      String routineName, Alliance alliance, AutoRequirements requirements) {
+    AutoRoutine routine = requirements.autoFactory().newRoutine(routineName);
 
     AutoTrajectory leftHubToDepot_0 =
         alliance == Alliance.Blue
@@ -61,16 +53,16 @@ public class HubToDepotAuto extends AutoBase {
             sequence(
                 leftHubToDepot_0.resetOdometry(),
                 parallel(
-                    robotCommands.enableAutoShooterSettings(),
-                    robotCommands.enableAutoTurret(),
+                    requirements.robotCommands().enableAutoShooterSettings(),
+                    requirements.robotCommands().enableAutoTurret(),
                     leftHubToDepot_0.cmd())));
 
     leftHubToDepot_0
         .done()
         .onTrue(
             sequence(
-                robotCommands.stopDrive(),
-                robotCommands.dropIntakeWithSpin(),
+                requirements.robotCommands().stopDrive(),
+                requirements.robotCommands().dropIntakeWithSpin(),
                 leftHubToDepot_1.cmd()));
 
     leftHubToDepot_1
@@ -78,12 +70,12 @@ public class HubToDepotAuto extends AutoBase {
         .onTrue(
             sequence(
                 parallel(
-                    robotCommands.runClimberUp(),
-                    depotIntake.cmd().deadlineFor(robotCommands.intake()))));
+                    requirements.robotCommands().runClimberUp(),
+                    depotIntake.cmd().deadlineFor(requirements.robotCommands().intake()))));
 
     depotIntake.done().onTrue(depotIntakeToClimb.cmd());
 
-    depotIntakeToClimb.done().onTrue(Autos.climbDepot(robotCommands, drive, shooterAimModel));
+    depotIntakeToClimb.done().onTrue(Autos.climbDepot(requirements));
 
     return routine;
   }

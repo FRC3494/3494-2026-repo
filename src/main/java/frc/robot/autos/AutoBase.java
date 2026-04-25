@@ -1,12 +1,9 @@
 package frc.robot.autos;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 
 public abstract class AutoBase {
   public abstract String getName();
@@ -14,10 +11,5 @@ public abstract class AutoBase {
   public abstract Pose2d getStartingPose();
 
   public abstract AutoRoutine getRoutine(
-      String routineName,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel);
+      String routineName, Alliance alliance, AutoRequirements requirements);
 }

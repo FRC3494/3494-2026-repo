@@ -4,14 +4,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.print;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -27,14 +24,8 @@ public class RightNZToNZAuto extends AutoBase {
   }
 
   @Override
-  public AutoRoutine getRoutine(
-      String name,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    AutoRoutine routine = autoFactory.newRoutine(name);
+  public AutoRoutine getRoutine(String name, Alliance alliance, AutoRequirements requirements) {
+    AutoRoutine routine = requirements.autoFactory().newRoutine(name);
 
     AutoTrajectory rightTrenchToNZ =
         alliance == Alliance.Blue
@@ -57,24 +48,28 @@ public class RightNZToNZAuto extends AutoBase {
                 rightTrenchToNZ.resetOdometry(),
                 print("2"),
                 parallel(
-                    robotCommands.enableAutoShooterSettings(),
-                    robotCommands.enableAutoTurret(),
+                    requirements.robotCommands().enableAutoShooterSettings(),
+                    requirements.robotCommands().enableAutoTurret(),
                     rightTrenchToNZ.cmd()),
                 print("3")));
 
-    rightTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
+    rightTrenchToNZ.atTime("NZIntake").onTrue(requirements.robotCommands().intake());
 
-    rightTrenchToNZ.done().onTrue(sequence(robotCommands.stopIntake(), rightMiddleNZToShoot.cmd()));
+    rightTrenchToNZ
+        .done()
+        .onTrue(sequence(requirements.robotCommands().stopIntake(), rightMiddleNZToShoot.cmd()));
 
-    rightMiddleNZToShoot.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+    rightMiddleNZToShoot
+        .atTime("StartFlywheel")
+        .onTrue(requirements.robotCommands().startFlywheel());
 
     rightMiddleNZToShoot
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(7),
-                robotCommands.stopShootNoDelay(),
-                robotCommands.startIntake(),
+                requirements.robotCommands().shoot().withTimeout(7),
+                requirements.robotCommands().stopShootNoDelay(),
+                requirements.robotCommands().startIntake(),
                 rightShootToNZ.cmd()));
 
     return routine;

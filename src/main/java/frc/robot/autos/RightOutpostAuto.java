@@ -5,14 +5,11 @@ import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 import static frc.robot.Constants.alliance;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -28,14 +25,8 @@ public class RightOutpostAuto extends AutoBase {
   }
 
   @Override
-  public AutoRoutine getRoutine(
-      String name,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    AutoRoutine routine = autoFactory.newRoutine(name);
+  public AutoRoutine getRoutine(String name, Alliance alliance, AutoRequirements requirements) {
+    AutoRoutine routine = requirements.autoFactory().newRoutine(name);
 
     AutoTrajectory rightTrenchToNZ =
         alliance == Alliance.Blue
@@ -60,30 +51,36 @@ public class RightOutpostAuto extends AutoBase {
             sequence(
                 rightTrenchToNZ.resetOdometry(),
                 parallel(
-                    robotCommands.enableAutoShooterSettings(),
-                    robotCommands.enableAutoTurret(),
+                    requirements.robotCommands().enableAutoShooterSettings(),
+                    requirements.robotCommands().enableAutoTurret(),
                     rightTrenchToNZ.cmd())));
 
-    rightTrenchToNZ.atTime("NZIntake").onTrue(robotCommands.intake());
+    rightTrenchToNZ.atTime("NZIntake").onTrue(requirements.robotCommands().intake());
 
     rightTrenchToNZ
         .done()
-        .onTrue(sequence(robotCommands.stopIntake(), rightMiddleNZToOutpost_0.cmd()));
+        .onTrue(
+            sequence(requirements.robotCommands().stopIntake(), rightMiddleNZToOutpost_0.cmd()));
 
-    rightMiddleNZToOutpost_0.atTime("StartFlywheel").onTrue(robotCommands.startFlywheel());
+    rightMiddleNZToOutpost_0
+        .atTime("StartFlywheel")
+        .onTrue(requirements.robotCommands().startFlywheel());
 
     rightMiddleNZToOutpost_0
         .done()
-        .onTrue(rightMiddleNZToOutpost_1.cmd().deadlineFor(robotCommands.shoot()));
+        .onTrue(rightMiddleNZToOutpost_1.cmd().deadlineFor(requirements.robotCommands().shoot()));
 
     rightMiddleNZToOutpost_1
         .done()
         .onTrue(
             sequence(
-                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
-                outpostToRightClimb.cmd().deadlineFor(robotCommands.shoot())));
+                requirements
+                    .robotCommands()
+                    .runClimberUp()
+                    .deadlineFor(requirements.robotCommands().shoot()),
+                outpostToRightClimb.cmd().deadlineFor(requirements.robotCommands().shoot())));
 
-    outpostToRightClimb.done().onTrue(Autos.climbOutpost(robotCommands, drive, shooterAimModel));
+    outpostToRightClimb.done().onTrue(Autos.climbOutpost(requirements));
 
     return routine;
   }

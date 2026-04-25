@@ -5,14 +5,11 @@ import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 
-import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.RobotCommands;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.shooter.ShooterAimModel;
+import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 
@@ -29,13 +26,8 @@ public class DepotAndClimbAuto extends AutoBase {
 
   @Override
   public AutoRoutine getRoutine(
-      String routineName,
-      Alliance alliance,
-      AutoFactory autoFactory,
-      RobotCommands robotCommands,
-      Drive drive,
-      ShooterAimModel shooterAimModel) {
-    AutoRoutine routine = autoFactory.newRoutine(routineName);
+      String routineName, Alliance alliance, AutoRequirements requirements) {
+    AutoRoutine routine = requirements.autoFactory().newRoutine(routineName);
 
     AutoTrajectory leftBumpToDepot =
         alliance == Alliance.Blue
@@ -55,20 +47,20 @@ public class DepotAndClimbAuto extends AutoBase {
         .onTrue(
             sequence(
                 leftBumpToDepot.resetOdometry(),
-                robotCommands.enableAutoShooterSettings(),
-                robotCommands.enableAutoTurret(),
-                robotCommands.startClimberUp(),
-                robotCommands.dropIntakeWithDrive(),
-                leftBumpToDepotPartial.cmd().deadlineFor(robotCommands.intake())));
+                requirements.robotCommands().enableAutoShooterSettings(),
+                requirements.robotCommands().enableAutoTurret(),
+                requirements.robotCommands().startClimberUp(),
+                requirements.robotCommands().dropIntakeWithDrive(),
+                leftBumpToDepotPartial.cmd().deadlineFor(requirements.robotCommands().intake())));
 
     leftBumpToDepotPartial
         .done()
         .onTrue(
             sequence(
-                robotCommands.shoot().withTimeout(1.75),
-                depotToLeftClimb.cmd().deadlineFor(robotCommands.shoot())));
+                requirements.robotCommands().shoot().withTimeout(1.75),
+                depotToLeftClimb.cmd().deadlineFor(requirements.robotCommands().shoot())));
 
-    depotToLeftClimb.done().onTrue(Autos.climbDepot(robotCommands, drive, shooterAimModel));
+    depotToLeftClimb.done().onTrue(Autos.climbDepot(requirements));
 
     return routine;
   }
