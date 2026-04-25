@@ -9,6 +9,7 @@ import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants
 import static frc.robot.Constants.ShooterConstants.FlywheelConstants.*;
 import static frc.robot.Constants.ShooterConstants.HoodConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
+import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -296,6 +297,15 @@ public class RobotCommands {
         .withName("SprintBackward");
   }
 
+  public Command spinRobot() {
+    return run(() -> {
+          drive.runVelocity(
+              new ChassisSpeeds(
+                  MetersPerSecond.zero(), MetersPerSecond.zero(), DegreesPerSecond.of(500)));
+        })
+        .withName("SpinRobot");
+  }
+
   // #endregion
 
   // #region HOPPER
@@ -540,6 +550,22 @@ public class RobotCommands {
     return sequence(
             sprintForward().withTimeout(0.88), sprintBackward().withTimeout(0.75), stopDrive())
         .withName("DropIntakeWithDrive");
+  }
+
+  private Rotation2d robotRotationCache;
+
+  public Command dropIntakeWithSpin() {
+    return sequence(
+            runOnce(
+                () -> {
+                  robotRotationCache = drive.getRotation();
+                }),
+            spinRobot()
+                .until(() -> drive.getRotation().getDegrees() < robotRotationCache.getDegrees()),
+            spinRobot()
+                .until(() -> drive.getRotation().getDegrees() >= robotRotationCache.getDegrees()),
+            stopDrive())
+        .withName("DropIntakeWithSpin");
   }
 
   private Command upDownCommand() {

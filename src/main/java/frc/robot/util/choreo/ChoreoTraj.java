@@ -34,7 +34,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj DepotIntakeToClimb = new ChoreoTraj(
         "DepotIntakeToClimb",
         OptionalInt.empty(),
-        2.66347,
+        1.12888,
         new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708)),
         new Pose2d(1.1042, 4.9, Rotation2d.fromRadians(1.5708))
     );
@@ -83,8 +83,22 @@ public record ChoreoTraj(
     public static final ChoreoTraj LeftHubToDepot = new ChoreoTraj(
         "LeftHubToDepot",
         OptionalInt.empty(),
-        2.27221,
+        2.16355,
         new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj LeftHubToDepot$0 = new ChoreoTraj(
+        "LeftHubToDepot",
+        OptionalInt.of(0),
+        0.80546,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.62161))
+    );
+    public static final ChoreoTraj LeftHubToDepot$1 = new ChoreoTraj(
+        "LeftHubToDepot",
+        OptionalInt.of(1),
+        1.3580899999999998,
+        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.62161)),
         new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj LeftMiddleNZToShoot_BLUE = new ChoreoTraj(
@@ -291,6 +305,8 @@ public record ChoreoTraj(
         Map.entry("LeftBumpToDepot_BLUE", LeftBumpToDepot_BLUE),
         Map.entry("LeftBumpToDepot_RED", LeftBumpToDepot_RED),
         Map.entry("LeftHubToDepot", LeftHubToDepot),
+        Map.entry("LeftHubToDepot$0", LeftHubToDepot$0),
+        Map.entry("LeftHubToDepot$1", LeftHubToDepot$1),
         Map.entry("LeftMiddleNZToShoot_BLUE", LeftMiddleNZToShoot_BLUE),
         Map.entry("LeftMiddleNZToShoot_RED", LeftMiddleNZToShoot_RED),
         Map.entry("LeftNZSecondPass", LeftNZSecondPass),

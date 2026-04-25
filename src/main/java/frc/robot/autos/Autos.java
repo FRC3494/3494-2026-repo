@@ -1,5 +1,6 @@
 package frc.robot.autos;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
@@ -49,10 +50,18 @@ public class Autos {
   public static Command climbDepot(
       RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
     return sequence(
-            AutoAlignCommand.alignSequence(
-                    drive,
-                    alliance == Alliance.Blue ? climbSetupPoseDepot_BLUE : climbSetupPoseDepot_RED,
-                    alliance == Alliance.Blue ? climbPoseDepot_BLUE : climbPoseDepot_RED)
+            sequence(
+                    new AutoAlignCommand(
+                        alliance == Alliance.Blue
+                            ? climbSetupPoseDepot_BLUE
+                            : climbSetupPoseDepot_RED,
+                        drive,
+                        autoAlignLinearTolerance,
+                        Meters.of(5),
+                        autoAlignAngularTolerance),
+                    new AutoAlignCommand(
+                        alliance == Alliance.Blue ? climbPoseDepot_BLUE : climbPoseDepot_RED,
+                        drive))
                 .deadlineFor(robotCommands.shoot()),
             parallel(
                 robotCommands.creepBackward(),
@@ -83,12 +92,18 @@ public class Autos {
   public static Command climbOutpost(
       RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
     return sequence(
-            AutoAlignCommand.alignSequence(
-                    drive,
-                    alliance == Alliance.Blue
-                        ? climbSetupPoseOutpost_BLUE
-                        : climbSetupPoseOutpost_RED,
-                    alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED)
+            sequence(
+                    new AutoAlignCommand(
+                        alliance == Alliance.Blue
+                            ? climbSetupPoseOutpost_BLUE
+                            : climbSetupPoseOutpost_RED,
+                        drive,
+                        autoAlignLinearTolerance,
+                        Meters.of(5),
+                        autoAlignAngularTolerance),
+                    new AutoAlignCommand(
+                        alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED,
+                        drive))
                 .deadlineFor(robotCommands.shoot()),
             parallel(
                 robotCommands.creepBackward(),

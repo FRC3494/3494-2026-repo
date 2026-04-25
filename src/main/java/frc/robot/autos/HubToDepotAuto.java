@@ -1,5 +1,6 @@
 package frc.robot.autos;
 
+import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
@@ -9,6 +10,7 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
@@ -38,7 +40,8 @@ public class HubToDepotAuto extends AutoBase {
       ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(routineName);
 
-    AutoTrajectory leftHubToDepot = ChoreoTraj.LeftHubToDepot.asAutoTraj(routine);
+    AutoTrajectory leftHubToDepot_0 = ChoreoTraj.LeftHubToDepot.segment(0).asAutoTraj(routine);
+    AutoTrajectory leftHubToDepot_1 = ChoreoTraj.LeftHubToDepot.segment(1).asAutoTraj(routine);
     AutoTrajectory depotIntake = ChoreoTraj.DepotIntake.asAutoTraj(routine);
     AutoTrajectory depotIntakeToClimb = ChoreoTraj.DepotIntakeToClimb.asAutoTraj(routine);
 
@@ -46,25 +49,40 @@ public class HubToDepotAuto extends AutoBase {
         .active()
         .onTrue(
             sequence(
-                leftHubToDepot.resetOdometry(),
+                leftHubToDepot_0.resetOdometry(),
                 parallel(
                     robotCommands.enableAutoShooterSettings(),
                     robotCommands.enableAutoTurret(),
-                    leftHubToDepot.cmd())));
+                    leftHubToDepot_0.cmd())));
 
-    leftHubToDepot
+    leftHubToDepot_0
         .done()
         .onTrue(
             sequence(
-                robotCommands.runClimberUp().deadlineFor(robotCommands.shoot()),
+                robotCommands.stopDrive(),
+                robotCommands.dropIntakeWithSpin(),
+                leftHubToDepot_1.cmd()));
+
+    leftHubToDepot_1
+        .done()
+        .onTrue(
+            sequence(
+                robotCommands.shoot().withTimeout(1),
                 robotCommands.stopShootNoDelay(),
-                depotIntake.cmd().deadlineFor(robotCommands.intake())));
+                parallel(
+                    robotCommands.runClimberUp(),
+                    depotIntake.cmd().deadlineFor(robotCommands.intake()))));
 
     depotIntake
         .done()
         .onTrue(
             sequence(
-                new AutoAlignCommand(ChoreoVars.Poses.DepotSideRight, drive),
+                new AutoAlignCommand(
+                    ChoreoVars.Poses.DepotSideRight,
+                    drive,
+                    Meters.of(5),
+                    autoAlignLinearTolerance,
+                    Rotation2d.kPi),
                 depotIntakeToClimb.cmd()));
 
     depotIntakeToClimb.done().onTrue(Autos.climbDepot(robotCommands, drive, shooterAimModel));
