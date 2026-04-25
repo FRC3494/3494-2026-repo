@@ -16,6 +16,7 @@ import java.util.Arrays;
 import org.littletonrobotics.junction.Logger;
 
 public final class QuadranglesUtil {
+  // #region MATH
   public static Pose2d flipPose(Pose2d pose) {
     return new Pose2d(flipTranslation(pose.getTranslation()), flipAngle(pose.getRotation()));
   }
@@ -108,7 +109,9 @@ public final class QuadranglesUtil {
   public static double average(double... numbers) {
     return Arrays.stream(numbers).sum() / numbers.length;
   }
+  // #endregion
 
+  // #region LOGGING
   public static void logMotorStats(String key, SparkBase spark, boolean absoluteEncoder) {
     Logger.recordOutput(key + "/Position", Rotations.of(spark.getEncoder().getPosition()));
     Logger.recordOutput(key + "/Velocity", RPM.of(spark.getEncoder().getVelocity()));
@@ -129,25 +132,13 @@ public final class QuadranglesUtil {
     Logger.recordOutput(key + "/Setpoint", spark.getClosedLoopController().getSetpoint());
     Logger.recordOutput(key + "/AtSetpoint", spark.getClosedLoopController().isAtSetpoint());
 
-    Faults faults = spark.getFaults();
-    Logger.recordOutput(key + "/Faults/Can", faults.can);
-    Logger.recordOutput(key + "/Faults/EscEeprom", faults.escEeprom);
-    Logger.recordOutput(key + "/Faults/Firmware", faults.firmware);
-    Logger.recordOutput(key + "/Faults/GateDriver", faults.gateDriver);
-    Logger.recordOutput(key + "/Faults/MotorType", faults.motorType);
-    Logger.recordOutput(key + "/Faults/Other", faults.other);
-    Logger.recordOutput(key + "/Faults/Sensor", faults.sensor);
-    Logger.recordOutput(key + "/Faults/Temperature", faults.temperature);
+    logFaults(key + "/Faults", spark.getFaults());
+    logWarnings(key + "/Warnings", spark.getWarnings());
 
-    Warnings warnings = spark.getWarnings();
-    Logger.recordOutput(key + "/Warnings/Brownout", warnings.brownout);
-    Logger.recordOutput(key + "/Warnings/EscEeprom", warnings.escEeprom);
-    Logger.recordOutput(key + "/Warnings/ExtEeprom", warnings.extEeprom);
-    Logger.recordOutput(key + "/Warnings/HasReset", warnings.hasReset);
-    Logger.recordOutput(key + "/Warnings/Other", warnings.other);
-    Logger.recordOutput(key + "/Warnings/Overcurrent", warnings.overcurrent);
-    Logger.recordOutput(key + "/Warnings/Sensor", warnings.sensor);
-    Logger.recordOutput(key + "/Warnings/Stall", warnings.stall);
+    if (tuningMode) {
+      logFaults(key + "/StickyFaults", spark.getStickyFaults());
+      logWarnings(key + "/StickyWarnings", spark.getStickyWarnings());
+    }
   }
 
   public static void logMotorStatsNotCoveredByIO(String key, SparkBase spark) {
@@ -158,24 +149,39 @@ public final class QuadranglesUtil {
     Logger.recordOutput(key + "/Setpoint", spark.getClosedLoopController().getSetpoint());
     Logger.recordOutput(key + "/AtSetpoint", spark.getClosedLoopController().isAtSetpoint());
 
-    Faults faults = spark.getFaults();
-    Logger.recordOutput(key + "/Faults/Can", faults.can);
-    Logger.recordOutput(key + "/Faults/EscEeprom", faults.escEeprom);
-    Logger.recordOutput(key + "/Faults/Firmware", faults.firmware);
-    Logger.recordOutput(key + "/Faults/GateDriver", faults.gateDriver);
-    Logger.recordOutput(key + "/Faults/MotorType", faults.motorType);
-    Logger.recordOutput(key + "/Faults/Other", faults.other);
-    Logger.recordOutput(key + "/Faults/Sensor", faults.sensor);
-    Logger.recordOutput(key + "/Faults/Temperature", faults.temperature);
+    logFaults(key + "/Faults", spark.getFaults());
+    logWarnings(key + "/Warnings", spark.getWarnings());
 
-    Warnings warnings = spark.getWarnings();
-    Logger.recordOutput(key + "/Warnings/Brownout", warnings.brownout);
-    Logger.recordOutput(key + "/Warnings/EscEeprom", warnings.escEeprom);
-    Logger.recordOutput(key + "/Warnings/ExtEeprom", warnings.extEeprom);
-    Logger.recordOutput(key + "/Warnings/HasReset", warnings.hasReset);
-    Logger.recordOutput(key + "/Warnings/Other", warnings.other);
-    Logger.recordOutput(key + "/Warnings/Overcurrent", warnings.overcurrent);
-    Logger.recordOutput(key + "/Warnings/Sensor", warnings.sensor);
-    Logger.recordOutput(key + "/Warnings/Stall", warnings.stall);
+    if (tuningMode) {
+      logFaults(key + "/StickyFaults", spark.getStickyFaults());
+      logWarnings(key + "/StickyWarnings", spark.getStickyWarnings());
+    }
   }
+
+  private static void logFaults(String key, Faults faults) {
+    Logger.recordOutput(key + "/Count", Integer.bitCount(faults.rawBits));
+
+    Logger.recordOutput(key + "/Can", faults.can);
+    Logger.recordOutput(key + "/EscEeprom", faults.escEeprom);
+    Logger.recordOutput(key + "/Firmware", faults.firmware);
+    Logger.recordOutput(key + "/GateDriver", faults.gateDriver);
+    Logger.recordOutput(key + "/MotorType", faults.motorType);
+    Logger.recordOutput(key + "/Other", faults.other);
+    Logger.recordOutput(key + "/Sensor", faults.sensor);
+    Logger.recordOutput(key + "/Temperature", faults.temperature);
+  }
+
+  private static void logWarnings(String key, Warnings warnings) {
+    Logger.recordOutput(key + "/Count", Integer.bitCount(warnings.rawBits));
+
+    Logger.recordOutput(key + "/Brownout", warnings.brownout);
+    Logger.recordOutput(key + "/EscEeprom", warnings.escEeprom);
+    Logger.recordOutput(key + "/ExtEeprom", warnings.extEeprom);
+    Logger.recordOutput(key + "/HasReset", warnings.hasReset);
+    Logger.recordOutput(key + "/Other", warnings.other);
+    Logger.recordOutput(key + "/Overcurrent", warnings.overcurrent);
+    Logger.recordOutput(key + "/Sensor", warnings.sensor);
+    Logger.recordOutput(key + "/Stall", warnings.stall);
+  }
+  // #endregion
 }
