@@ -74,6 +74,7 @@ import frc.robot.subsystems.shooter.turret.Turret;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.util.Elastic;
 import frc.robot.util.choreo.ChoreoTraj;
+import frc.robot.util.choreo.ChoreoVars;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
@@ -208,7 +209,8 @@ public class RobotContainer implements Sendable {
 
           if (value) {
             selectedAutoNameCache = autoChooser.selectedCommand().getName();
-            autoChooser.select(warmUpAuto.getName());
+            autoChooser.select(
+                warmUpAuto.getName() + (alliance == Alliance.Blue ? "_BLUE" : "_RED"));
           } else {
             autoChooser.select(selectedAutoNameCache);
           }
@@ -246,6 +248,7 @@ public class RobotContainer implements Sendable {
           new RightNZToClimbAuto(),
           new RightNZToNZAuto(),
           new RightOutpostAuto(),
+          new WarmUpAuto()
         };
 
     AutoRequirements autoRequirements =
@@ -272,7 +275,7 @@ public class RobotContainer implements Sendable {
         runOnce(
                 () -> {
                   if (warmUpAutoSelected) {
-                    drive.setPose(toAlliancePose(Pose2d.kZero));
+                    drive.setPose(toAlliancePose(ChoreoVars.Poses.WarmUpPosition));
                   } else {
                     drive.setPose(
                         toAlliancePose(

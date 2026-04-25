@@ -1008,8 +1008,13 @@ public class RobotCommands {
                   hood.setCurrentLimit(Amps.of(hoodCurrentLimit));
                 },
                 hood),
+            enableAutoShooterSettings(),
             print("Hood Rezero Done ======================================="))
         .withTimeout(hoodRezeroTimeoutSeconds)
+        .finallyDo(
+            () -> {
+              hood.setOpenLoop(Volts.zero());
+            })
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .withName("RezeroHood");
   }

@@ -57,6 +57,7 @@ public final class ChoreoVars {
         public static final Pose2d RightTrenchStartingPosition = new Pose2d(4.476115, 0.625475, Rotation2d.fromRadians(3.1415927));
         public static final Pose2d ShootLeftTrench = new Pose2d(2.9277268, 7.1208358, Rotation2d.fromRadians(0.5235988));
         public static final Pose2d ShootRightTrench = new Pose2d(3.0801268, 0.690118, Rotation2d.fromRadians(0));
+        public static final Pose2d WarmUpPosition = new Pose2d(3.0200958, 3.4652441, Rotation2d.fromRadians(0));
     }
 }
 // spotless:on

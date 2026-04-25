@@ -367,19 +367,12 @@ public record ChoreoTraj(
         new Pose2d(4.47612, 0.62547, Rotation2d.fromRadians(3.14159)),
         new Pose2d(7.77511, 3.26376, Rotation2d.fromRadians(1.8326))
     );
-    public static final ChoreoTraj WarmUpStraight = new ChoreoTraj(
-        "WarmUpStraight",
+    public static final ChoreoTraj WarmUp = new ChoreoTraj(
+        "WarmUp",
         OptionalInt.empty(),
-        4.50092,
-        new Pose2d(0, 0, Rotation2d.fromRadians(0)),
-        new Pose2d(2, 0, Rotation2d.fromRadians(0))
-    );
-    public static final ChoreoTraj WarmUpTurn = new ChoreoTraj(
-        "WarmUpTurn",
-        OptionalInt.empty(),
-        5.12594,
-        new Pose2d(0, 0, Rotation2d.fromRadians(0)),
-        new Pose2d(0, 0, Rotation2d.fromRadians(0))
+        6.50134,
+        new Pose2d(3.0201, 3.46524, Rotation2d.fromRadians(0)),
+        new Pose2d(5.0201, 4.21524, Rotation2d.fromRadians(0))
     );
     public static final ChoreoTraj RightHubToOutpost = new ChoreoTraj(
         "RightHubToOutpost",
@@ -457,8 +450,7 @@ public record ChoreoTraj(
         Map.entry("RightTrenchToClimb_RED", RightTrenchToClimb_RED),
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-        Map.entry("WarmUpStraight", WarmUpStraight),
-        Map.entry("WarmUpTurn", WarmUpTurn),
+        Map.entry("WarmUp", WarmUp),
         Map.entry("RightHubToOutpost", RightHubToOutpost),
         Map.entry("RightHubToOutpost$0", RightHubToOutpost$0),
         Map.entry("RightHubToOutpost$1", RightHubToOutpost$1)

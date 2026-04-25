@@ -5,9 +5,12 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
+import frc.robot.util.choreo.ChoreoVars;
 
 public class WarmUpAuto extends AutoBase {
   @Override
@@ -17,7 +20,7 @@ public class WarmUpAuto extends AutoBase {
 
   @Override
   public Pose2d getStartingPose() {
-    return Pose2d.kZero;
+    return ChoreoVars.Poses.WarmUpPosition;
   }
 
   @Override
@@ -25,22 +28,28 @@ public class WarmUpAuto extends AutoBase {
       String routineName, Alliance alliance, AutoRequirements requirements) {
     AutoRoutine routine = requirements.autoFactory().newRoutine(routineName);
 
-    AutoTrajectory warmUpTurn = ChoreoTraj.WarmUpTurn.asAutoTraj(routine);
-    AutoTrajectory warmUpStraight = ChoreoTraj.WarmUpStraight.asAutoTraj(routine);
+    AutoTrajectory warmUp = ChoreoTraj.WarmUp.asAutoTraj(routine);
 
     routine
         .active()
         .onTrue(
             sequence(
-                warmUpTurn.resetOdometry(),
-                requirements.robotCommands().runClimberUp(),
-                waitSeconds(0.5),
-                requirements.robotCommands().runClimberDown(),
-                requirements.robotCommands().shoot().withTimeout(3),
-                requirements.robotCommands().stopShootNoDelay(),
-                warmUpTurn.cmd()));
-
-    warmUpTurn.chain(warmUpStraight);
+                    warmUp.resetOdometry(),
+                    requirements.robotCommands().enableAutoShooterSettings(),
+                    requirements.robotCommands().turretToPosition(Units.degreesToRotations(1)),
+                    requirements.robotCommands().runClimberUp(),
+                    waitSeconds(0.25),
+                    requirements.robotCommands().runClimberDown(),
+                    requirements.robotCommands().turretToPosition(Units.degreesToRotations(15)),
+                    requirements.robotCommands().shoot().withTimeout(3),
+                    requirements.robotCommands().stopShootNoDelay(),
+                    waitSeconds(0.5),
+                    warmUp.cmd())
+                .finallyDo(
+                    () -> {
+                      CommandScheduler.getInstance()
+                          .schedule(requirements.robotCommands().enableAutoTurret());
+                    }));
 
     return routine;
   }
