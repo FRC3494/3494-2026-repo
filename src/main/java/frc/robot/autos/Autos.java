@@ -48,49 +48,48 @@ public class Autos {
   // #region COMMANDS
   public static Command climbDepot(
       RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
-    return sequence(
-            sequence(
-                    new AutoAlignCommand(
-                        alliance == Alliance.Blue
-                            ? climbSetupPoseDepot_BLUE
-                            : climbSetupPoseDepot_RED,
-                        drive,
-                        autoAlignLinearTolerance,
-                        Meters.of(5),
-                        autoAlignAngularTolerance),
-                    new AutoAlignCommand(
-                        alliance == Alliance.Blue ? climbPoseDepot_BLUE : climbPoseDepot_RED,
-                        drive))
-                .deadlineFor(robotCommands.shoot()),
-            parallel(
-                robotCommands.creepBackward(),
-                sequence(
-                    waitUntil(() -> Timer.getMatchTime() <= climbTime)
-                        .deadlineFor(robotCommands.shoot()),
-                    parallel(robotCommands.runClimberMidWithCurrent(), robotCommands.runIntakeUp()),
-                    robotCommands.shoot())))
-        .finallyDo(
-            () -> {
-              shooterAimModel.setTurretTrim(turretTrimDefaultRot);
-            })
+    return climbCommand(
+            robotCommands,
+            drive,
+            shooterAimModel,
+            climbSetupPoseDepot_BLUE,
+            climbSetupPoseDepot_RED,
+            climbPoseDepot_BLUE,
+            climbPoseDepot_RED)
         .withName("ClimbDepot");
   }
 
   public static Command climbOutpost(
       RobotCommands robotCommands, Drive drive, ShooterAimModel shooterAimModel) {
+    return climbCommand(
+            robotCommands,
+            drive,
+            shooterAimModel,
+            climbSetupPoseOutpost_BLUE,
+            climbSetupPoseOutpost_RED,
+            climbPoseOutpost_BLUE,
+            climbPoseOutpost_RED)
+        .withName("ClimbOutpost");
+  }
+
+  private static Command climbCommand(
+      RobotCommands robotCommands,
+      Drive drive,
+      ShooterAimModel shooterAimModel,
+      Pose2d setupPose_BLUE,
+      Pose2d setupPose_RED,
+      Pose2d climbPose_BLUE,
+      Pose2d climbPose_RED) {
     return sequence(
             sequence(
                     new AutoAlignCommand(
-                        alliance == Alliance.Blue
-                            ? climbSetupPoseOutpost_BLUE
-                            : climbSetupPoseOutpost_RED,
+                        alliance == Alliance.Blue ? setupPose_BLUE : setupPose_RED,
                         drive,
                         autoAlignLinearTolerance,
                         Meters.of(5),
                         autoAlignAngularTolerance),
                     new AutoAlignCommand(
-                        alliance == Alliance.Blue ? climbPoseOutpost_BLUE : climbPoseOutpost_RED,
-                        drive))
+                        alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED, drive))
                 .deadlineFor(robotCommands.shoot()),
             parallel(
                 robotCommands.creepBackward(),
@@ -102,8 +101,7 @@ public class Autos {
         .finallyDo(
             () -> {
               shooterAimModel.setTurretTrim(turretTrimDefaultRot);
-            })
-        .withName("ClimbOutpost");
+            });
   }
   // #endregion
 
