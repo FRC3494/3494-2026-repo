@@ -304,6 +304,7 @@ public class Turret extends SubsystemBase {
     return turretMotor.getEncoder().getPosition();
   }
 
+  @AutoLogOutput(key = "Shooter/Turret/WithinShootingTolerance")
   public boolean withinShootingTolerance() {
     return Math.abs(getPositionRot() - getTurretSetpointClampedRot()) <= turretShootingToleranceRot;
   }
