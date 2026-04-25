@@ -2,6 +2,7 @@ package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static frc.robot.Constants.alliance;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -35,7 +36,10 @@ public class LeftHubToClimbAuto extends AutoBase {
       ShooterAimModel shooterAimModel) {
     AutoRoutine routine = autoFactory.newRoutine(routineName);
 
-    AutoTrajectory leftHubToClimb = ChoreoTraj.LeftHubToClimb.asAutoTraj(routine);
+    AutoTrajectory leftHubToClimb =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.LeftHubToClimb_BLUE.asAutoTraj(routine)
+            : ChoreoTraj.LeftHubToClimb_RED.asAutoTraj(routine);
 
     routine
         .active()
