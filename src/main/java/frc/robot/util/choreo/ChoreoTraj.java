@@ -41,16 +41,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj DepotToLeftClimb_BLUE = new ChoreoTraj(
         "DepotToLeftClimb_BLUE",
         OptionalInt.empty(),
-        2.93136,
+        2.8914,
         new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(1.5708)),
-        new Pose2d(1.1042, 4.4838, Rotation2d.fromRadians(1.5708))
+        new Pose2d(1.1042, 4.5038, Rotation2d.fromRadians(1.5708))
     );
     public static final ChoreoTraj DepotToLeftClimb_RED = new ChoreoTraj(
         "DepotToLeftClimb_RED",
         OptionalInt.empty(),
-        2.93136,
+        2.8914,
         new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(1.5708)),
-        new Pose2d(1.1042, 4.4838, Rotation2d.fromRadians(1.5708))
+        new Pose2d(1.1042, 4.5038, Rotation2d.fromRadians(1.5708))
     );
     public static final ChoreoTraj LeftBumpToDepotPartial_BLUE = new ChoreoTraj(
         "LeftBumpToDepotPartial_BLUE",

@@ -124,8 +124,8 @@
      "val":1.1042
     },
     "y":{
-     "exp":"FieldWidth - 3.56 m - 1 in",
-     "val":4.4838
+     "exp":"FieldWidth - 3.56 m - 1 in + 2 cm",
+     "val":4.503799999999999
     },
     "heading":{
      "exp":"90 deg",
