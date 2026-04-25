@@ -51,7 +51,6 @@ import frc.robot.autos.RightHubToClimbAuto;
 import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
 import frc.robot.autos.RightOutpostAuto;
-import frc.robot.autos.TrenchToLeftClimbAuto;
 import frc.robot.autos.WarmUpAuto;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
@@ -311,14 +310,6 @@ public class RobotContainer implements Sendable {
         shooterAimModel);
     Autos.loadAuto(
         new RightOutpostAuto(),
-        autoStartingPoses,
-        autoChooser,
-        autoFactory,
-        robotCommands,
-        drive,
-        shooterAimModel);
-    Autos.loadAuto(
-        new TrenchToLeftClimbAuto(),
         autoStartingPoses,
         autoChooser,
         autoFactory,
