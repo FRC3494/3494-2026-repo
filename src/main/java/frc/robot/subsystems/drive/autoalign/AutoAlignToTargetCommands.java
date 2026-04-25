@@ -2,8 +2,8 @@ package frc.robot.subsystems.drive.autoalign;
 
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
-import static frc.robot.Constants.alliance;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.MathUtil;

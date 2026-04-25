@@ -7,8 +7,6 @@
 
 package frc.robot.util;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import java.util.function.Consumer;

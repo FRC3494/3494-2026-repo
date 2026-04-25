@@ -8,10 +8,10 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.DriveConstants.AutoAlignConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
-import static frc.robot.Constants.alliance;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import choreo.trajectory.SwerveSample;
@@ -137,7 +137,7 @@ public class Drive extends SubsystemBase {
                 (voltage) -> runRobotTurnCharacterization(voltage.in(Volts)), null, this));
 
     SmartDashboard.putData("RobotField", robotField2d);
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       SmartDashboard.putData("Drive", this);
     }
   }
@@ -145,7 +145,7 @@ public class Drive extends SubsystemBase {
   // #region initSendable()
   @Override
   public void initSendable(SendableBuilder builder) {
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       // Max Speeds
       builder.addDoubleProperty(
           "Max Drive Speed (FtPerSec)",

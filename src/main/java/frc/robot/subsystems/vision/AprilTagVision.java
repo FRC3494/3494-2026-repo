@@ -1,13 +1,13 @@
 package frc.robot.subsystems.vision;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.VisionConstants.*;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
@@ -28,7 +28,7 @@ public class AprilTagVision extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       builder.addDoubleProperty(
           "Distance Std Dev", () -> distanceStdDev, (double value) -> distanceStdDev = value);
       builder.addDoubleProperty(

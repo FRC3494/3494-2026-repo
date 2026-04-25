@@ -8,8 +8,8 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.loggingFrequency;
 import static frc.robot.util.QuadranglesUtil.*;
 import static frc.robot.util.SparkUtil.*;
 

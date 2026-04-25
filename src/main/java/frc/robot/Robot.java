@@ -7,7 +7,7 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.alliance;
+import static frc.robot.Constants.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.revrobotics.util.StatusLogger;
@@ -94,7 +94,7 @@ public class Robot extends LoggedRobot {
     WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
 
     // Add command scheduler to dashboard
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       SmartDashboard.putData(CommandScheduler.getInstance());
     }
 
@@ -102,7 +102,7 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       SmartDashboard.putData("OI", robotContainer.oi);
     }
     OI.setWonAutoState(WonAutoState.Unknown);

@@ -1,8 +1,6 @@
 package frc.robot.autos;
 
-import static edu.wpi.first.wpilibj2.command.Commands.parallel;
-import static edu.wpi.first.wpilibj2.command.Commands.print;
-import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;

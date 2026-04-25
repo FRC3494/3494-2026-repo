@@ -1,8 +1,8 @@
 package frc.robot.util;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.alliance;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.Faults;

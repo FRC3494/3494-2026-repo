@@ -35,7 +35,7 @@ public final class OI implements Sendable {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       builder.addIntegerArrayProperty(
           "Rumble End Times",
           () -> ((long[]) shiftRumbleTimesSeconds),

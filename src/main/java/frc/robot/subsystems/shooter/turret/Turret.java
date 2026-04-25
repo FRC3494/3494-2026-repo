@@ -1,8 +1,8 @@
 package frc.robot.subsystems.shooter.turret;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
-import static frc.robot.Constants.loggingFrequency;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import com.revrobotics.PersistMode;
@@ -20,7 +20,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Robot;
 import lombok.Getter;
@@ -88,14 +87,14 @@ public class Turret extends SubsystemBase {
     turretSetpointClampedRot = getPositionRot();
     turretSetpointRot = turretSetpointClampedRot;
 
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       SmartDashboard.putData("Shooter/Turret", this);
     }
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       // Turret Position
       builder.addDoubleProperty(
           "Rezero Location",

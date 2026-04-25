@@ -21,7 +21,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Robot;
 import lombok.Getter;
@@ -134,7 +133,7 @@ public class Hopper extends SubsystemBase {
         () -> spindexerDefaultDirection,
         (boolean value) -> spindexerDefaultDirection = value);
 
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       // Spindexer PID
       builder.addDoubleArrayProperty(
           "Spindexer/PID",

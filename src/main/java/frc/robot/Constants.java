@@ -8,7 +8,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.DriveConstants.fieldWidth;
+import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.geometry.Pose2d;

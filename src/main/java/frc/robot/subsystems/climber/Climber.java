@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.*;
 import static frc.robot.Constants.ClimberConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
@@ -19,7 +20,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -93,7 +93,7 @@ public class Climber extends SubsystemBase {
           Logger.recordOutput("Climber/Setpoints/ClimbPosition", position);
         });
 
-    if (Constants.tuningMode) {
+    if (tuningMode) {
       builder.addDoubleProperty(
           "Tolerance",
           () -> climberTolerance,
