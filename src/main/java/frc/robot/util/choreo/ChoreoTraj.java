@@ -24,6 +24,20 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
+    public static final ChoreoTraj DepotIntake = new ChoreoTraj(
+        "DepotIntake",
+        OptionalInt.empty(),
+        5.00772,
+        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708)),
+        new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DepotIntakeToClimb = new ChoreoTraj(
+        "DepotIntakeToClimb",
+        OptionalInt.empty(),
+        2.66347,
+        new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708)),
+        new Pose2d(1.1042, 4.9, Rotation2d.fromRadians(1.5708))
+    );
     public static final ChoreoTraj DepotToLeftClimb_BLUE = new ChoreoTraj(
         "DepotToLeftClimb_BLUE",
         OptionalInt.empty(),
@@ -65,6 +79,13 @@ public record ChoreoTraj(
         2.24906,
         new Pose2d(3.58204, 6.03649, Rotation2d.fromRadians(3.14159)),
         new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(3.14159))
+    );
+    public static final ChoreoTraj LeftHubToDepot = new ChoreoTraj(
+        "LeftHubToDepot",
+        OptionalInt.empty(),
+        2.27221,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj LeftMiddleNZToShoot_BLUE = new ChoreoTraj(
         "LeftMiddleNZToShoot_BLUE",
@@ -251,30 +272,9 @@ public record ChoreoTraj(
     public static final ChoreoTraj WarmUp = new ChoreoTraj(
         "WarmUp",
         OptionalInt.empty(),
-        3,
-        new Pose2d(0.00001, 0, Rotation2d.fromRadians(0)),
-        new Pose2d(0.00009, 0, Rotation2d.fromRadians(0))
-    );
-    public static final ChoreoTraj LeftHubToDepot = new ChoreoTraj(
-        "LeftHubToDepot",
-        OptionalInt.empty(),
-        2.27221,
-        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708))
-    );
-    public static final ChoreoTraj DepotIntake = new ChoreoTraj(
-        "DepotIntake",
-        OptionalInt.empty(),
-        5.00772,
-        new Pose2d(0.46504, 7.4, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708))
-    );
-    public static final ChoreoTraj DepotIntakeToClimb = new ChoreoTraj(
-        "DepotIntakeToClimb",
-        OptionalInt.empty(),
-        2.66347,
-        new Pose2d(0.46504, 4.9616, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(1.1042, 4.9, Rotation2d.fromRadians(1.5708))
+        20.50412,
+        new Pose2d(0, 0, Rotation2d.fromRadians(0)),
+        new Pose2d(10, 0, Rotation2d.fromRadians(0))
     );
 
     /**
@@ -282,12 +282,15 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
+        Map.entry("DepotIntake", DepotIntake),
+        Map.entry("DepotIntakeToClimb", DepotIntakeToClimb),
         Map.entry("DepotToLeftClimb_BLUE", DepotToLeftClimb_BLUE),
         Map.entry("DepotToLeftClimb_RED", DepotToLeftClimb_RED),
         Map.entry("LeftBumpToDepotPartial_BLUE", LeftBumpToDepotPartial_BLUE),
         Map.entry("LeftBumpToDepotPartial_RED", LeftBumpToDepotPartial_RED),
         Map.entry("LeftBumpToDepot_BLUE", LeftBumpToDepot_BLUE),
         Map.entry("LeftBumpToDepot_RED", LeftBumpToDepot_RED),
+        Map.entry("LeftHubToDepot", LeftHubToDepot),
         Map.entry("LeftMiddleNZToShoot_BLUE", LeftMiddleNZToShoot_BLUE),
         Map.entry("LeftMiddleNZToShoot_RED", LeftMiddleNZToShoot_RED),
         Map.entry("LeftNZSecondPass", LeftNZSecondPass),
@@ -314,10 +317,7 @@ public record ChoreoTraj(
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
         Map.entry("TrenchToLeftClimb", TrenchToLeftClimb),
-        Map.entry("WarmUp", WarmUp),
-        Map.entry("LeftHubToDepot", LeftHubToDepot),
-        Map.entry("DepotIntake", DepotIntake),
-        Map.entry("DepotIntakeToClimb", DepotIntakeToClimb)
+        Map.entry("WarmUp", WarmUp)
     );
 
     /**
