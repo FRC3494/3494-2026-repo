@@ -48,6 +48,7 @@ public final class ChoreoVars {
         public static final Pose2d NZOutpostShootingTarget = new Pose2d(1, 1.9572, Rotation2d.fromRadians(0));
         public static final Pose2d Outpost = new Pose2d(0.4433372, 0.773997, Rotation2d.fromRadians(-1.5707963));
         public static final Pose2d RightBumpStartingPosition = new Pose2d(3.5820408, 2.0327081, Rotation2d.fromRadians(3.1415927));
+        public static final Pose2d RightHubStartingPosition = new Pose2d(3.5788491, 3.8892567, Rotation2d.fromRadians(3.1415927));
         public static final Pose2d RightMiddleNZ = new Pose2d(7.7751117, 3.26376, Rotation2d.fromRadians(1.8325957));
         public static final Pose2d RightNZ = new Pose2d(7.7751117, 0.82536, Rotation2d.fromRadians(1.8325957));
         public static final Pose2d RightNZLoopEnd = new Pose2d(5.801136, 2.2492785, Rotation2d.fromRadians(-1.5707963));
