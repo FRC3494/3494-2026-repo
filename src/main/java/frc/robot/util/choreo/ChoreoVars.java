@@ -27,13 +27,13 @@ public final class ChoreoVars {
     public static final class Poses {
         public static final Pose2d BumpDepot = new Pose2d(4.6228, 5.7832, Rotation2d.fromRadians(0));
         public static final Pose2d BumpOutpost = new Pose2d(4.6228, 2.286, Rotation2d.fromRadians(0));
-        public static final Pose2d ClimbDepot = new Pose2d(1.1042, 4.5038, Rotation2d.fromRadians(1.5707963));
+        public static final Pose2d ClimbDepot = new Pose2d(1.1042, 4.4938, Rotation2d.fromRadians(1.5707963));
         public static final Pose2d ClimbOutpost = new Pose2d(1.0788, 2.9572, Rotation2d.fromRadians(-1.5707963));
         public static final Pose2d ClimbSetupDepot = new Pose2d(1.1042, 4.9, Rotation2d.fromRadians(1.5707963));
         public static final Pose2d ClimbSetupOutpost = new Pose2d(1.0788, 2.65, Rotation2d.fromRadians(-1.5707963));
         public static final Pose2d DepotIntake = new Pose2d(1.0858, 5.9692, Rotation2d.fromRadians(3.1415927));
-        public static final Pose2d DepotSideLeft = new Pose2d(0.4650392, 7.4, Rotation2d.fromRadians(-1.5707963));
-        public static final Pose2d DepotSideRight = new Pose2d(0.4650392, 4.9616, Rotation2d.fromRadians(-1.5707963));
+        public static final Pose2d DepotSideLeft = new Pose2d(0.4523392, 7.4, Rotation2d.fromRadians(-1.5707963));
+        public static final Pose2d DepotSideRight = new Pose2d(0.4523392, 4.9616, Rotation2d.fromRadians(-1.5707963));
         public static final Pose2d Hub = new Pose2d(4.62534, 4.0346, Rotation2d.fromRadians(0));
         public static final Pose2d LeftBumpStartingPosition = new Pose2d(3.5820408, 6.0364919, Rotation2d.fromRadians(3.1415927));
         public static final Pose2d LeftFarMiddleNZ = new Pose2d(8.4096, 4.92736, Rotation2d.fromRadians(-1.8325957));

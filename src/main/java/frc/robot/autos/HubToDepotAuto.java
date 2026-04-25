@@ -10,11 +10,9 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
@@ -73,17 +71,7 @@ public class HubToDepotAuto extends AutoBase {
                     robotCommands.runClimberUp(),
                     depotIntake.cmd().deadlineFor(robotCommands.intake()))));
 
-    depotIntake
-        .done()
-        .onTrue(
-            sequence(
-                new AutoAlignCommand(
-                    ChoreoVars.Poses.DepotSideRight,
-                    drive,
-                    Meters.of(5),
-                    autoAlignLinearTolerance,
-                    Rotation2d.kPi),
-                depotIntakeToClimb.cmd()));
+    depotIntake.done().onTrue(depotIntakeToClimb.cmd());
 
     depotIntakeToClimb.done().onTrue(Autos.climbDepot(robotCommands, drive, shooterAimModel));
 
