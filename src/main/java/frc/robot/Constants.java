@@ -263,7 +263,7 @@ public final class Constants {
     public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 40);
     public static final double demoModeSpeedFactor = 0.15;
 
-    public static double maxAZShootingSpeedMetersPerSec = Units.feetToMeters(5.0);
+    public static double maxAZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
     public static double maxAZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
     public static double maxNZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
     public static double maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
