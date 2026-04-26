@@ -289,7 +289,7 @@ public final class Constants {
 
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
-    public static final int driveMotorCurrentLimit = 70;
+    public static final int driveMotorCurrentLimit = 60;
     public static final Time driveRampRate = Milliseconds.of(10);
     // When using linear characterization: actual linear distance / wheel delta
     public static final double wheelRadiusMeters =
