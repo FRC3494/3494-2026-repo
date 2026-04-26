@@ -580,7 +580,7 @@ public class RobotCommands {
     return sequence(
             runOnce(
                 () -> {
-                  robotRotationCache = drive.getRotation();
+                  robotRotationCache = drive.getRotation().plus(Rotation2d.fromDegrees(90));
                 }),
             spinRobot()
                 .until(() -> drive.getRotation().getDegrees() < robotRotationCache.getDegrees()),
