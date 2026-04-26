@@ -501,7 +501,6 @@ public class RobotCommands {
             startKicker(),
             waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
             runSpindexerWithStallDetection(() -> spindexerSpeed))
-        .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .finallyDo(
             () -> {
               turret.setDefaultCommand(autoTurretCommand());
