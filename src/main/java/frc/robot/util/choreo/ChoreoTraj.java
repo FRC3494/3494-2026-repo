@@ -423,19 +423,12 @@ public record ChoreoTraj(
         new Pose2d(7.77511, 3.26376, Rotation2d.fromRadians(1.8326)),
         new Pose2d(3.08013, 0.69012, Rotation2d.fromRadians(0))
     );
-    public static final ChoreoTraj RightShootToNZ_BLUE = new ChoreoTraj(
-        "RightShootToNZ_BLUE",
-        OptionalInt.empty(),
-        3.75471,
-        new Pose2d(3.08013, 0.69012, Rotation2d.fromRadians(0)),
-        new Pose2d(6.61007, 4.91165, Rotation2d.fromRadians(1.5708))
-    );
     public static final ChoreoTraj RightShootToNZ_RED = new ChoreoTraj(
         "RightShootToNZ_RED",
         OptionalInt.empty(),
-        3.75471,
+        3.31487,
         new Pose2d(3.08013, 0.69012, Rotation2d.fromRadians(0)),
-        new Pose2d(6.61007, 4.91165, Rotation2d.fromRadians(1.5708))
+        new Pose2d(6.51379, 5.22489, Rotation2d.fromRadians(1.74404))
     );
     public static final ChoreoTraj RightTrenchToClimb_BLUE = new ChoreoTraj(
         "RightTrenchToClimb_BLUE",
@@ -471,6 +464,13 @@ public record ChoreoTraj(
         4.00171,
         new Pose2d(3.0201, 3.46524, Rotation2d.fromRadians(0)),
         new Pose2d(3.7701, 4.21524, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj RightShootToNZ_BLUE = new ChoreoTraj(
+        "RightShootToNZ_BLUE",
+        OptionalInt.empty(),
+        3.31487,
+        new Pose2d(3.08013, 0.69012, Rotation2d.fromRadians(0)),
+        new Pose2d(6.51379, 5.22489, Rotation2d.fromRadians(1.74404))
     );
 
     /**
@@ -535,13 +535,13 @@ public record ChoreoTraj(
         Map.entry("RightMiddleNZToOutpost_RED$1", RightMiddleNZToOutpost_RED$1),
         Map.entry("RightMiddleNZToShoot_BLUE", RightMiddleNZToShoot_BLUE),
         Map.entry("RightMiddleNZToShoot_RED", RightMiddleNZToShoot_RED),
-        Map.entry("RightShootToNZ_BLUE", RightShootToNZ_BLUE),
         Map.entry("RightShootToNZ_RED", RightShootToNZ_RED),
         Map.entry("RightTrenchToClimb_BLUE", RightTrenchToClimb_BLUE),
         Map.entry("RightTrenchToClimb_RED", RightTrenchToClimb_RED),
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-        Map.entry("WarmUp", WarmUp)
+        Map.entry("WarmUp", WarmUp),
+        Map.entry("RightShootToNZ_BLUE", RightShootToNZ_BLUE)
     );
 
     /**
