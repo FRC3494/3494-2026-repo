@@ -42,14 +42,11 @@ import frc.robot.OI.WonAutoState;
 import frc.robot.autos.AutoBase;
 import frc.robot.autos.Autos;
 import frc.robot.autos.Autos.AutoRequirements;
-import frc.robot.autos.DepotAndClimbAuto;
 import frc.robot.autos.HubToDepotAuto;
 import frc.robot.autos.HubToOutpostAuto;
 import frc.robot.autos.LeftHubToClimbAuto;
 import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
-import frc.robot.autos.LeftNZWithPassingAuto;
-import frc.robot.autos.RightClimbAuto;
 import frc.robot.autos.RightHubToClimbAuto;
 import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
@@ -236,14 +233,11 @@ public class RobotContainer implements Sendable {
     // Set up autos
     AutoBase[] autos =
         new AutoBase[] {
-          new DepotAndClimbAuto(),
           new HubToDepotAuto(),
           new HubToOutpostAuto(),
           new LeftHubToClimbAuto(),
           new LeftNZToClimbAuto(),
           new LeftNZToNZAuto(),
-          new LeftNZWithPassingAuto(),
-          new RightClimbAuto(),
           new RightHubToClimbAuto(),
           new RightNZToClimbAuto(),
           new RightNZToNZAuto(),
