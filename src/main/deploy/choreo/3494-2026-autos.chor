@@ -145,8 +145,8 @@
      "val":1.0026000000000002
     },
     "y":{
-     "exp":"FieldWidth - 5.112 m",
-     "val":2.9572000000000003
+     "exp":"FieldWidth - 5.112 m - 4 cm",
+     "val":2.9172
     },
     "heading":{
      "exp":"-90 deg",
