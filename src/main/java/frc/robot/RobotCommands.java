@@ -513,7 +513,7 @@ public class RobotCommands {
   // #region INTAKE
 
   public Command intake() {
-    return runIntakeWithUnjam().withName("Intake");
+    return startIntake().withName("Intake");
     // return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed))
     //     .withName("Intake");
   }
@@ -546,7 +546,7 @@ public class RobotCommands {
             waitUntil(
                 () -> intake.getSpinnySpinnyFilteredCurrent().gt(spinnySpinnyCurrentThreshold)),
             startIntakeReverse(),
-            waitSeconds(0.2))
+            waitSeconds(0.1))
         .withName("RunIntakeWithUnjam");
   }
 
