@@ -370,9 +370,9 @@ public record ChoreoTraj(
     public static final ChoreoTraj WarmUp = new ChoreoTraj(
         "WarmUp",
         OptionalInt.empty(),
-        6.50134,
+        4.00171,
         new Pose2d(3.0201, 3.46524, Rotation2d.fromRadians(0)),
-        new Pose2d(5.0201, 4.21524, Rotation2d.fromRadians(0))
+        new Pose2d(3.7701, 4.21524, Rotation2d.fromRadians(0))
     );
     public static final ChoreoTraj RightHubToOutpost = new ChoreoTraj(
         "RightHubToOutpost",
