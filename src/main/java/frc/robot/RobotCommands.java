@@ -595,9 +595,23 @@ public class RobotCommands {
     return sequence(
             runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
             waitSeconds(0.15),
-            defer(this::upDownCommand, this.upDownCommand().getRequirements())
-                .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero())))
+            defer(this::upDownCommand, this.upDownCommand().getRequirements()))
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
         .withName("RunIntakeJostle");
+  }
+
+  public Command runIntakeJostleWithTrenchSafety() {
+    // Start by moving up (-RPM) first so we move away from the bottom hard stop
+    return sequence(
+            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
+            waitSeconds(0.15),
+            repeatingSequence(
+                    waitUntil(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
+                    defer(this::upDownCommand, this.upDownCommand().getRequirements()))
+                .until(() -> hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
+            stopIntakeJostle())
+        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
+        .withName("RunIntakeJostleWithTrenchSafety");
   }
 
   public Command stopIntakeJostle() {
@@ -636,14 +650,18 @@ public class RobotCommands {
 
   public Command shoot() {
     return getShootCommand(
-        "Shoot", autoFlywheelCommand(), runAutoHood(), runIntakeJostle(), runSpindexerAndKicker());
+        "Shoot",
+        autoFlywheelCommand(),
+        runAutoHood(),
+        runIntakeJostleWithTrenchSafety(),
+        runSpindexerAndKicker());
   }
 
   public Command shootWithManualSettings() {
     return getShootCommand(
         "ShootWithManualSettings",
         runManualHoodWithTrenchSafety(),
-        runIntakeJostle(),
+        runIntakeJostleWithTrenchSafety(),
         runSpindexerAndKicker());
   }
 

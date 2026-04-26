@@ -457,7 +457,9 @@ public class RobotContainer implements Sendable {
                 .withName("IntakeButtonPress"))
         .whileFalse(
             either(
-                    robotCommands.runIntakeJostle().onlyIf(shooterAimModel::isInAllianceZone),
+                    robotCommands
+                        .runIntakeJostleWithTrenchSafety()
+                        .onlyIf(shooterAimModel::isInAllianceZone),
                     robotCommands.spinDownFromIntake(),
                     ShooterOI.shoot()::getAsBoolean)
                 .withName("IntakeButtonRelease"));
