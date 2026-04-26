@@ -36,7 +36,7 @@ public class Hopper extends SubsystemBase {
   @AutoLogOutput private AngularVelocity kickerSetpointClamped = RPM.zero();
 
   @Getter
-  @AutoLogOutput(key = "Hopper/SpindexerFilteredMotorCurrent")
+  @AutoLogOutput(key = "Hopper/Spindexer/Motor/FilteredCurrent")
   private Current spindexerFilteredCurrent = Amps.zero();
 
   private final MedianFilter spindexerCurrentFilter =

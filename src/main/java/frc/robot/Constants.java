@@ -446,7 +446,7 @@ public final class Constants {
 
     public static final int spindexerCurrentSensingFilterSize = 10;
 
-    public static AngularVelocity spindexerSpeed = RPM.of(90);
+    public static AngularVelocity spindexerSpeed = RPM.of(100);
     public static AngularVelocity spindexerIntakingSpeed = RPM.of(10);
     public static boolean spindexerDefaultDirection = false;
 
@@ -485,8 +485,11 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
     public static final Current spinnySpinnyCurrentLimit = Amps.of(50);
+    public static final Current spinnySpinnyCurrentThreshold =
+        spinnySpinnyCurrentLimit.minus(Amps.of(5));
     public static final Time spinnySpinnyRampRate = Milliseconds.of(0);
     public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
+    public static final int spinnySpinnyCurrentSensingFilterSize = 10;
 
     public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
     public static AngularVelocity intakeSpinnySpinnyShootingSpeed = RPM.of(1000);
@@ -503,7 +506,7 @@ public final class Constants {
     public static final int uppyDownyCurrentLimit = 50;
     public static final Time uppyDownyRampRate = Milliseconds.of(10);
     public static final double uppyDownyGearRatio = 1.0 / 4.0;
-    public static final int uppyDownCurrentSensingFilterSize = 10;
+    public static final int uppyDownyCurrentSensingFilterSize = 10;
 
     public static final double uppyDownyMinPosition = 0.0;
     public static final double uppyDownyMaxPosition = 0.0;

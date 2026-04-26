@@ -513,7 +513,7 @@ public class RobotCommands {
   // #region INTAKE
 
   public Command intake() {
-    return startIntake().withName("Intake");
+    return runIntakeWithUnjam().withName("Intake");
     // return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed))
     //     .withName("Intake");
   }
@@ -538,6 +538,16 @@ public class RobotCommands {
             },
             intake)
         .withName("StartIntakeForShoot");
+  }
+
+  public Command runIntakeWithUnjam() {
+    return repeatingSequence(
+            startIntake(),
+            waitUntil(
+                () -> intake.getSpinnySpinnyFilteredCurrent().gt(spinnySpinnyCurrentThreshold)),
+            startIntakeReverse(),
+            waitSeconds(0.2))
+        .withName("RunIntakeWithUnjam");
   }
 
   public Command startIntakeReverse() {

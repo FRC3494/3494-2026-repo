@@ -36,10 +36,18 @@ public class Intake extends SubsystemBase {
   @Getter @AutoLogOutput double uppyDownySetpoint = 0.0;
   @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
 
-  @Getter @AutoLogOutput private Current uppyDownyFilteredCurrent = Amps.of(0);
+  @Getter
+  @AutoLogOutput(key = "Intake/SpinnySpinny/Motor/FilteredCurrent")
+  private Current spinnySpinnyFilteredCurrent = Amps.zero();
 
+  @Getter
+  @AutoLogOutput(key = "Intake/UppyDowny/Motor/FilteredCurrent")
+  private Current uppyDownyFilteredCurrent = Amps.of(0);
+
+  private final MedianFilter spinnySpinnyCurrentFilter =
+      new MedianFilter(spinnySpinnyCurrentSensingFilterSize);
   private final MedianFilter uppyDownyCurrentFilter =
-      new MedianFilter(uppyDownCurrentSensingFilterSize);
+      new MedianFilter(uppyDownyCurrentSensingFilterSize);
 
   @Getter private final SysIdRoutine spinnySpinnySysId;
 
@@ -89,9 +97,7 @@ public class Intake extends SubsystemBase {
                 (state) -> Logger.recordOutput("Intake/SpinnySpinnySysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpinnySpinnyOpenLoop(voltage), null, this));
 
-    if (true) {
-      SmartDashboard.putData("Intake", this);
-    }
+    SmartDashboard.putData("Intake", this);
   }
 
   @Override
@@ -220,6 +226,8 @@ public class Intake extends SubsystemBase {
       logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
     }
 
+    spinnySpinnyFilteredCurrent =
+        Amps.of(spinnySpinnyCurrentFilter.calculate(spinnySpinnyMotor.getOutputCurrent()));
     uppyDownyFilteredCurrent =
         Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));
   }
