@@ -325,22 +325,43 @@ public record ChoreoTraj(
         new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.59126)),
         new Pose2d(1.0026, 2.65, Rotation2d.fromRadians(-1.5708))
     );
-    public static final ChoreoTraj RightHubToOutpost = new ChoreoTraj(
-        "RightHubToOutpost",
+    public static final ChoreoTraj RightHubToOutpost_BLUE = new ChoreoTraj(
+        "RightHubToOutpost_BLUE",
         OptionalInt.empty(),
         3.43261,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
         new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708))
     );
-    public static final ChoreoTraj RightHubToOutpost$0 = new ChoreoTraj(
-        "RightHubToOutpost",
+    public static final ChoreoTraj RightHubToOutpost_BLUE$0 = new ChoreoTraj(
+        "RightHubToOutpost_BLUE",
         OptionalInt.of(0),
         1.3673,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
         new Pose2d(2.48457, 2.4999, Rotation2d.fromRadians(-2.28224))
     );
-    public static final ChoreoTraj RightHubToOutpost$1 = new ChoreoTraj(
-        "RightHubToOutpost",
+    public static final ChoreoTraj RightHubToOutpost_BLUE$1 = new ChoreoTraj(
+        "RightHubToOutpost_BLUE",
+        OptionalInt.of(1),
+        2.06531,
+        new Pose2d(2.48457, 2.4999, Rotation2d.fromRadians(-2.28224)),
+        new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj RightHubToOutpost_RED = new ChoreoTraj(
+        "RightHubToOutpost_RED",
+        OptionalInt.empty(),
+        3.43261,
+        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj RightHubToOutpost_RED$0 = new ChoreoTraj(
+        "RightHubToOutpost_RED",
+        OptionalInt.of(0),
+        1.3673,
+        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.48457, 2.4999, Rotation2d.fromRadians(-2.28224))
+    );
+    public static final ChoreoTraj RightHubToOutpost_RED$1 = new ChoreoTraj(
+        "RightHubToOutpost_RED",
         OptionalInt.of(1),
         2.06531,
         new Pose2d(2.48457, 2.4999, Rotation2d.fromRadians(-2.28224)),
@@ -500,9 +521,12 @@ public record ChoreoTraj(
         Map.entry("RightHubToClimb_RED", RightHubToClimb_RED),
         Map.entry("RightHubToClimb_RED$0", RightHubToClimb_RED$0),
         Map.entry("RightHubToClimb_RED$1", RightHubToClimb_RED$1),
-        Map.entry("RightHubToOutpost", RightHubToOutpost),
-        Map.entry("RightHubToOutpost$0", RightHubToOutpost$0),
-        Map.entry("RightHubToOutpost$1", RightHubToOutpost$1),
+        Map.entry("RightHubToOutpost_BLUE", RightHubToOutpost_BLUE),
+        Map.entry("RightHubToOutpost_BLUE$0", RightHubToOutpost_BLUE$0),
+        Map.entry("RightHubToOutpost_BLUE$1", RightHubToOutpost_BLUE$1),
+        Map.entry("RightHubToOutpost_RED", RightHubToOutpost_RED),
+        Map.entry("RightHubToOutpost_RED$0", RightHubToOutpost_RED$0),
+        Map.entry("RightHubToOutpost_RED$1", RightHubToOutpost_RED$1),
         Map.entry("RightMiddleNZToOutpost_BLUE", RightMiddleNZToOutpost_BLUE),
         Map.entry("RightMiddleNZToOutpost_BLUE$0", RightMiddleNZToOutpost_BLUE$0),
         Map.entry("RightMiddleNZToOutpost_BLUE$1", RightMiddleNZToOutpost_BLUE$1),
