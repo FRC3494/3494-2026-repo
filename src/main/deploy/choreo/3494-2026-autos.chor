@@ -141,8 +141,8 @@
    },
    "ClimbOutpost":{
     "x":{
-     "exp":"1.155 m - 4.5 in",
-     "val":1.0407
+     "exp":"1.155 m - 6 in",
+     "val":1.0026000000000002
     },
     "y":{
      "exp":"FieldWidth - 5.112 m",
@@ -170,7 +170,7 @@
    "ClimbSetupOutpost":{
     "x":{
      "exp":"ClimbOutpost.x",
-     "val":1.0407
+     "val":1.0026000000000002
     },
     "y":{
      "exp":"2.65 m",
