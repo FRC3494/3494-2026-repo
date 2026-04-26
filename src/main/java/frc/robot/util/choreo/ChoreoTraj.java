@@ -426,16 +426,16 @@ public record ChoreoTraj(
     public static final ChoreoTraj RightShootToNZ_BLUE = new ChoreoTraj(
         "RightShootToNZ_BLUE",
         OptionalInt.empty(),
-        3.28512,
+        3.75471,
         new Pose2d(3.08013, 0.69012, Rotation2d.fromRadians(0)),
-        new Pose2d(6.67232, 3.29398, Rotation2d.fromRadians(0))
+        new Pose2d(6.61007, 4.91165, Rotation2d.fromRadians(1.5708))
     );
     public static final ChoreoTraj RightShootToNZ_RED = new ChoreoTraj(
         "RightShootToNZ_RED",
         OptionalInt.empty(),
-        3.28512,
+        3.75471,
         new Pose2d(3.08013, 0.69012, Rotation2d.fromRadians(0)),
-        new Pose2d(6.67232, 3.29398, Rotation2d.fromRadians(0))
+        new Pose2d(6.61007, 4.91165, Rotation2d.fromRadians(1.5708))
     );
     public static final ChoreoTraj RightTrenchToClimb_BLUE = new ChoreoTraj(
         "RightTrenchToClimb_BLUE",
