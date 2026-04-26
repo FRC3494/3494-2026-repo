@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static frc.robot.Constants.alliance;
 
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -27,9 +28,13 @@ public class HubToOutpostAuto extends AutoBase {
     AutoRoutine routine = requirements.autoFactory().newRoutine(routineName);
 
     AutoTrajectory rightHubToOutpost_0 =
-        ChoreoTraj.RightHubToOutpost.segment(0).asAutoTraj(routine);
+        alliance == Alliance.Blue
+            ? ChoreoTraj.RightHubToOutpost_BLUE.segment(0).asAutoTraj(routine)
+            : ChoreoTraj.RightHubToOutpost_RED.segment(0).asAutoTraj(routine);
     AutoTrajectory rightHubToOutpost_1 =
-        ChoreoTraj.RightHubToOutpost.segment(1).asAutoTraj(routine);
+        alliance == Alliance.Blue
+            ? ChoreoTraj.RightHubToOutpost_BLUE.segment(1).asAutoTraj(routine)
+            : ChoreoTraj.RightHubToOutpost_RED.segment(1).asAutoTraj(routine);
     AutoTrajectory outpostToRightClimb =
         alliance == Alliance.Blue
             ? ChoreoTraj.OutpostToRightClimb_BLUE.asAutoTraj(routine)
