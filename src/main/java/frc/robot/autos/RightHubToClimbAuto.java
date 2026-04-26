@@ -26,22 +26,34 @@ public class RightHubToClimbAuto extends AutoBase {
       String routineName, Alliance alliance, AutoRequirements requirements) {
     AutoRoutine routine = requirements.autoFactory().newRoutine(routineName);
 
-    AutoTrajectory rightHubToClimb =
+    AutoTrajectory rightHubToClimb_0 =
         alliance == Alliance.Blue
-            ? ChoreoTraj.RightHubToClimb_BLUE.asAutoTraj(routine)
-            : ChoreoTraj.RightHubToClimb_RED.asAutoTraj(routine);
+            ? ChoreoTraj.RightHubToClimb_BLUE.segment(0).asAutoTraj(routine)
+            : ChoreoTraj.RightHubToClimb_RED.segment(0).asAutoTraj(routine);
+    AutoTrajectory rightHubToClimb_1 =
+        alliance == Alliance.Blue
+            ? ChoreoTraj.RightHubToClimb_BLUE.segment(1).asAutoTraj(routine)
+            : ChoreoTraj.RightHubToClimb_RED.segment(1).asAutoTraj(routine);
 
     routine
         .active()
         .onTrue(
             sequence(
-                rightHubToClimb.resetOdometry(),
+                rightHubToClimb_0.resetOdometry(),
                 parallel(
                     requirements.robotCommands().enableAutoShooterSettings(),
                     requirements.robotCommands().enableAutoTurret(),
-                    rightHubToClimb.cmd())));
+                    rightHubToClimb_0.cmd())));
 
-    rightHubToClimb
+    rightHubToClimb_0
+        .done()
+        .onTrue(
+            sequence(
+                requirements.robotCommands().stopDrive(),
+                requirements.robotCommands().dropIntakeWithSpin(),
+                rightHubToClimb_1.cmd()));
+
+    rightHubToClimb_1
         .done()
         .onTrue(
             sequence(
