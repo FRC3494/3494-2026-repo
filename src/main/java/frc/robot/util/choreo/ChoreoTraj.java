@@ -24,6 +24,139 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
+    public static final ChoreoTraj DEMO_HubToDepot = new ChoreoTraj(
+        "DEMO_HubToDepot",
+        OptionalInt.empty(),
+        5.44607,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.06356, 4.5538, Rotation2d.fromRadians(1.5708))
+    );
+    public static final ChoreoTraj DEMO_HubToDepot$0 = new ChoreoTraj(
+        "DEMO_HubToDepot",
+        OptionalInt.of(0),
+        0.80046,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.71243))
+    );
+    public static final ChoreoTraj DEMO_HubToDepot$1 = new ChoreoTraj(
+        "DEMO_HubToDepot",
+        OptionalInt.of(1),
+        4.64561,
+        new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.71243)),
+        new Pose2d(1.06356, 4.5538, Rotation2d.fromRadians(1.5708))
+    );
+    public static final ChoreoTraj DEMO_HubToOutpost = new ChoreoTraj(
+        "DEMO_HubToOutpost",
+        OptionalInt.empty(),
+        4.18882,
+        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DEMO_HubToOutpost$0 = new ChoreoTraj(
+        "DEMO_HubToOutpost",
+        OptionalInt.of(0),
+        0.94401,
+        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.48457, 2.4999, Rotation2d.fromRadians(-2.02274))
+    );
+    public static final ChoreoTraj DEMO_HubToOutpost$1 = new ChoreoTraj(
+        "DEMO_HubToOutpost",
+        OptionalInt.of(1),
+        3.2448099999999998,
+        new Pose2d(2.48457, 2.4999, Rotation2d.fromRadians(-2.02274)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DEMO_LeftHubToClimb = new ChoreoTraj(
+        "DEMO_LeftHubToClimb",
+        OptionalInt.empty(),
+        2.44152,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.06356, 4.5538, Rotation2d.fromRadians(1.5708))
+    );
+    public static final ChoreoTraj DEMO_LeftHubToClimb$0 = new ChoreoTraj(
+        "DEMO_LeftHubToClimb",
+        OptionalInt.of(0),
+        0.64286,
+        new Pose2d(3.57885, 4.18384, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.92969, 4.62465, Rotation2d.fromRadians(2.70101))
+    );
+    public static final ChoreoTraj DEMO_LeftHubToClimb$1 = new ChoreoTraj(
+        "DEMO_LeftHubToClimb",
+        OptionalInt.of(1),
+        1.7986600000000001,
+        new Pose2d(2.92969, 4.62465, Rotation2d.fromRadians(2.70101)),
+        new Pose2d(1.06356, 4.5538, Rotation2d.fromRadians(1.5708))
+    );
+    public static final ChoreoTraj DEMO_LeftNZToClimb = new ChoreoTraj(
+        "DEMO_LeftNZToClimb",
+        OptionalInt.empty(),
+        8.16146,
+        new Pose2d(4.47611, 7.44372, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.06356, 4.5538, Rotation2d.fromRadians(1.5708))
+    );
+    public static final ChoreoTraj DEMO_LeftNZToNZ = new ChoreoTraj(
+        "DEMO_LeftNZToNZ",
+        OptionalInt.empty(),
+        9.86786,
+        new Pose2d(4.47612, 7.44373, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(6.51379, 2.84431, Rotation2d.fromRadians(-1.74404))
+    );
+    public static final ChoreoTraj DEMO_RightHubToClimb = new ChoreoTraj(
+        "DEMO_RightHubToClimb",
+        OptionalInt.empty(),
+        3.03827,
+        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DEMO_RightHubToClimb$0 = new ChoreoTraj(
+        "DEMO_RightHubToClimb",
+        OptionalInt.of(0),
+        0.99313,
+        new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58051))
+    );
+    public static final ChoreoTraj DEMO_RightHubToClimb$1 = new ChoreoTraj(
+        "DEMO_RightHubToClimb",
+        OptionalInt.of(1),
+        2.04514,
+        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58051)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DEMO_RightNZToClimb = new ChoreoTraj(
+        "DEMO_RightNZToClimb",
+        OptionalInt.empty(),
+        8.07645,
+        new Pose2d(4.47611, 0.62548, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DEMO_RightNZToNZ = new ChoreoTraj(
+        "DEMO_RightNZToNZ",
+        OptionalInt.empty(),
+        10.06893,
+        new Pose2d(4.47611, 0.62548, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(6.51379, 5.22489, Rotation2d.fromRadians(1.74404))
+    );
+    public static final ChoreoTraj DEMO_RightOutpost = new ChoreoTraj(
+        "DEMO_RightOutpost",
+        OptionalInt.empty(),
+        8.91745,
+        new Pose2d(4.47611, 0.62548, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
+    public static final ChoreoTraj DEMO_RightOutpost$0 = new ChoreoTraj(
+        "DEMO_RightOutpost",
+        OptionalInt.of(0),
+        6.49873,
+        new Pose2d(4.47611, 0.62548, Rotation2d.fromRadians(3.14159)),
+        new Pose2d(2.0043, 1.0794, Rotation2d.fromRadians(-2.29168))
+    );
+    public static final ChoreoTraj DEMO_RightOutpost$1 = new ChoreoTraj(
+        "DEMO_RightOutpost",
+        OptionalInt.of(1),
+        2.4187200000000004,
+        new Pose2d(2.0043, 1.0794, Rotation2d.fromRadians(-2.29168)),
+        new Pose2d(1.0661, 2.9172, Rotation2d.fromRadians(-1.5708))
+    );
     public static final ChoreoTraj DepotIntakeToClimb_BLUE = new ChoreoTraj(
         "DepotIntakeToClimb_BLUE",
         OptionalInt.empty(),
@@ -401,6 +534,25 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
+        Map.entry("DEMO_HubToDepot", DEMO_HubToDepot),
+        Map.entry("DEMO_HubToDepot$0", DEMO_HubToDepot$0),
+        Map.entry("DEMO_HubToDepot$1", DEMO_HubToDepot$1),
+        Map.entry("DEMO_HubToOutpost", DEMO_HubToOutpost),
+        Map.entry("DEMO_HubToOutpost$0", DEMO_HubToOutpost$0),
+        Map.entry("DEMO_HubToOutpost$1", DEMO_HubToOutpost$1),
+        Map.entry("DEMO_LeftHubToClimb", DEMO_LeftHubToClimb),
+        Map.entry("DEMO_LeftHubToClimb$0", DEMO_LeftHubToClimb$0),
+        Map.entry("DEMO_LeftHubToClimb$1", DEMO_LeftHubToClimb$1),
+        Map.entry("DEMO_LeftNZToClimb", DEMO_LeftNZToClimb),
+        Map.entry("DEMO_LeftNZToNZ", DEMO_LeftNZToNZ),
+        Map.entry("DEMO_RightHubToClimb", DEMO_RightHubToClimb),
+        Map.entry("DEMO_RightHubToClimb$0", DEMO_RightHubToClimb$0),
+        Map.entry("DEMO_RightHubToClimb$1", DEMO_RightHubToClimb$1),
+        Map.entry("DEMO_RightNZToClimb", DEMO_RightNZToClimb),
+        Map.entry("DEMO_RightNZToNZ", DEMO_RightNZToNZ),
+        Map.entry("DEMO_RightOutpost", DEMO_RightOutpost),
+        Map.entry("DEMO_RightOutpost$0", DEMO_RightOutpost$0),
+        Map.entry("DEMO_RightOutpost$1", DEMO_RightOutpost$1),
         Map.entry("DepotIntakeToClimb_BLUE", DepotIntakeToClimb_BLUE),
         Map.entry("DepotIntakeToClimb_RED", DepotIntakeToClimb_RED),
         Map.entry("DepotIntake_BLUE", DepotIntake_BLUE),
