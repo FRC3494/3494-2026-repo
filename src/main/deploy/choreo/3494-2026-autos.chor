@@ -131,8 +131,8 @@
      "val":1.06356
     },
     "y":{
-     "exp":"FieldWidth - 3.56 m - 1 in + 7 cm",
-     "val":4.5538
+     "exp":"4.535 m",
+     "val":4.535
     },
     "heading":{
      "exp":"90 deg",
@@ -141,12 +141,12 @@
    },
    "ClimbOutpost":{
     "x":{
-     "exp":"1.155 m - 3.5 in",
-     "val":1.0661
+     "exp":"1.056 m",
+     "val":1.056
     },
     "y":{
-     "exp":"FieldWidth - 5.112 m - 4 cm",
-     "val":2.9172
+     "exp":"2.935 m",
+     "val":2.935
     },
     "heading":{
      "exp":"-90 deg",
