@@ -45,7 +45,7 @@ public final class Constants {
   public static Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
 
   /** Enable runtime tuning of PID/SVA/motor values via Elastic. */
-  public static final boolean tuningMode = true;
+  public static final boolean tuningMode = false;
 
   public static enum Mode {
     /** Running on a real robot. */
