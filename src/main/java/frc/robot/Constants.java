@@ -322,7 +322,7 @@ public final class Constants {
 
     // Turn motor configuration
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
-    public static final int[] turnMotorCurrentLimit = new int[] {60, 60, 60, 60};
+    public static final int[] turnMotorCurrentLimit = new int[] {50, 50, 50, 50};
     public static final Time turnRampRate = Milliseconds.of(10);
     public static final double[] turnMotorReduction =
         new double[] {

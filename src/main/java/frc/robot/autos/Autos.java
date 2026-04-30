@@ -90,7 +90,7 @@ public class Autos {
                         Set.of(requirements.drive())),
                     defer(
                         () ->
-                            new AutoAlignCommand( 
+                            new AutoAlignCommand(
                                 alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED,
                                 requirements.drive()),
                         Set.of(requirements.drive())))
