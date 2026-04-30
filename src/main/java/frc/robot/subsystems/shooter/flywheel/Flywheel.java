@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -128,6 +129,23 @@ public class Flywheel extends SubsystemBase {
             flywheelSpeedupKa = value;
             Logger.recordOutput("Shooter/Flywheel/SpeedupKa", value);
           });
+
+      builder.addDoubleProperty(
+          "Ramp Rate (ms)",
+          () -> flywheelRampRate.in(Seconds),
+          (double value) -> {
+            Time rate = Milliseconds.of(value);
+
+            SparkFlexConfig config = new SparkFlexConfig();
+            config.openLoopRampRate(rate.in(Seconds)).closedLoopRampRate(rate.in(Seconds));
+            leftMotor.configure(
+                config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            rightMotor.configure(
+                config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+            flywheelRampRate = rate;
+            Logger.recordOutput("Shooter/Flywheel/RampRate", rate);
+          });
     }
 
     // Log initial values regardless of tuning mode
@@ -140,6 +158,7 @@ public class Flywheel extends SubsystemBase {
     Logger.recordOutput("Shooter/Flywheel/PID/kV", flywheelKv);
     Logger.recordOutput("Shooter/Flywheel/PID/kA", flywheelKa);
     Logger.recordOutput("Shooter/Flywheel/SpeedupKa", flywheelSpeedupKa);
+    Logger.recordOutput("Shooter/Flywheel/RampRate", flywheelRampRate);
   }
 
   @Override
@@ -202,6 +221,8 @@ public class Flywheel extends SubsystemBase {
     flywheelKd = d;
     config.closedLoop.pid(p, i, d);
     leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    rightMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   private void setSVA(double s, double v, double a) {
@@ -211,6 +232,8 @@ public class Flywheel extends SubsystemBase {
     flywheelKa = a;
     config.closedLoop.feedForward.sva(s, v, a);
     leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    rightMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
   public AngularVelocity getVelocity() {

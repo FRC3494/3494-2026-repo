@@ -646,7 +646,7 @@ public final class Constants {
     public static final class FlywheelConstants {
       public static final boolean flywheelInverted = true;
       public static final int flywheelCurrentLimit = 50;
-      public static final Time flywheelRampRate = Milliseconds.of(0);
+      public static Time flywheelRampRate = Milliseconds.of(0);
       public static final double flywheelRadius = Units.inchesToMeters(4) / 2.0;
 
       public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
