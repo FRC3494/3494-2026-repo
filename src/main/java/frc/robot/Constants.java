@@ -650,7 +650,7 @@ public final class Constants {
       public static final double flywheelRadius = Units.inchesToMeters(4) / 2.0;
 
       public static final AngularVelocity flywheelMinSpeed = RPM.of(0.0);
-      public static final AngularVelocity flywheelMaxSpeed = RPM.of(5700.0);
+      public static final AngularVelocity flywheelMaxSpeed = RPM.of(5000.0);
 
       // Fraction of target speed at which kicker triggers and robot starts shooting
       public static double flywheelThresholdFactor = 0.99;
