@@ -32,6 +32,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -248,6 +249,22 @@ public class Drive extends SubsystemBase {
             Logger.recordOutput("Drive/TurnPID/kD", values[2]);
           });
 
+      builder.addDoubleProperty(
+          "Drive Ramp Rate (ms)",
+          () -> driveRampRate.in(Milliseconds),
+          (double value) -> {
+            setDriveRampRate(Milliseconds.of(value));
+            Logger.recordOutput("Drive/Drive/RampRate", Milliseconds.of(value));
+          });
+
+      builder.addDoubleProperty(
+          "Turn Ramp Rate (ms)",
+          () -> turnRampRate.in(Milliseconds),
+          (double value) -> {
+            setTurnRampRate(Milliseconds.of(value));
+            Logger.recordOutput("Drive/Turn/RampRate", Milliseconds.of(value));
+          });
+
       // Auto Align Tolerances
       builder.addDoubleProperty(
           "AutoAlign/LinearTolerance (in)",
@@ -343,6 +360,8 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/TurnPID/kP", turnKp);
     Logger.recordOutput("Drive/TurnPID/kI", turnKi);
     Logger.recordOutput("Drive/TurnPID/kD", turnKd);
+    Logger.recordOutput("Drive/Drive/RampRate", driveRampRate);
+    Logger.recordOutput("Drive/Turn/RampRate", turnRampRate);
     Logger.recordOutput("Drive/AutoAlign/LinearTolerance", autoAlignLinearTolerance);
     Logger.recordOutput("Drive/AutoAlign/AngularTolerance", autoAlignAngularTolerance);
     Logger.recordOutput("Drive/AutoAlign/Trench/XTolerance", trenchXTolerance);
@@ -707,6 +726,18 @@ public class Drive extends SubsystemBase {
       setRotation(Rotation2d.kZero);
     } else {
       setRotation(Rotation2d.k180deg);
+    }
+  }
+
+  private void setDriveRampRate(Time rate) {
+    for (var module : modules) {
+      module.setDriveRampRate(rate);
+    }
+  }
+
+  private void setTurnRampRate(Time rate) {
+    for (var module : modules) {
+      module.setTurnRampRate(rate);
     }
   }
 }

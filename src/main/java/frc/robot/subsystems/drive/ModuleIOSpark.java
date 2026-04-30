@@ -27,6 +27,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.RobotMap;
@@ -351,5 +352,18 @@ public class ModuleIOSpark implements ModuleIO {
 
   public Rotation2d getTurnPosition() {
     return getRawRelativeTurnPosition().minus(relativeEncoderOffset);
+  }
+
+  public void setDriveRampRate(Time rate) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    config.openLoopRampRate(rate.in(Seconds)).closedLoopRampRate(rate.in(Seconds));
+    driveSpark.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  public void setTurnRampRate(Time rate) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    config.openLoopRampRate(rate.in(Seconds)).closedLoopRampRate(rate.in(Seconds));
+    turnSpark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }
