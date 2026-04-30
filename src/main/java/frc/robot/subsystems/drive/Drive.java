@@ -730,12 +730,16 @@ public class Drive extends SubsystemBase {
   }
 
   private void setDriveRampRate(Time rate) {
+    driveRampRate = rate;
+
     for (var module : modules) {
       module.setDriveRampRate(rate);
     }
   }
 
   private void setTurnRampRate(Time rate) {
+    turnRampRate = rate;
+
     for (var module : modules) {
       module.setTurnRampRate(rate);
     }
