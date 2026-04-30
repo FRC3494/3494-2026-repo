@@ -675,8 +675,8 @@ public class RobotContainer implements Sendable {
     TurretOI.turretManualCW().whileTrue(robotCommands.runTurretManualCW());
 
     TurretOI.resetTurretTrim().onTrue(robotCommands.resetTurretTrim());
-    TurretOI.increaseTurretTrim().onTrue(robotCommands.changeTurretTrim(true));
-    TurretOI.decreaseTurretTrim().onTrue(robotCommands.changeTurretTrim(false));
+    TurretOI.increaseTurretTrim().whileTrue(robotCommands.changeTurretTrim(true));
+    TurretOI.decreaseTurretTrim().whileTrue(robotCommands.changeTurretTrim(false));
 
     TurretOI.lockTurret().onTrue(robotCommands.lockTurret());
     TurretOI.enableAutoTurret().onTrue(robotCommands.enableAutoTurret());

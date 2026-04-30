@@ -560,7 +560,7 @@ public final class Constants {
       public static AngularVelocity azFlywheelTrim = RPM.zero();
       public static AngularVelocity nzFlywheelTrim = RPM.zero();
 
-      public static final Distance distanceTrimIncrement = Inches.of(5.0);
+      public static final Distance distanceTrimIncrement = Inches.of(2.0);
       public static final Distance xyTrimIncrement = Inches.of(5.0);
 
       public static Distance azDistanceTrimDefault = Inches.of(40.0);
