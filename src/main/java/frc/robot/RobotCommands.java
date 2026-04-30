@@ -855,8 +855,8 @@ public class RobotCommands {
   }
 
   public Command setMediumShot(boolean withTrim) {
-    Rotation2d angle = Rotation2d.fromDegrees(33);
-    AngularVelocity speed = RPM.of(3100);
+    Rotation2d angle = Rotation2d.fromDegrees(45);
+    AngularVelocity speed = RPM.of(3500);
     if (!withTrim) {
       return setManualShooterSettings(angle, speed);
     } else {
