@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -221,6 +222,21 @@ public class Hopper extends SubsystemBase {
             Logger.recordOutput("Hopper/Kicker/PID/kV", values[1]);
             Logger.recordOutput("Hopper/Kicker/PID/kA", values[2]);
           });
+
+      builder.addDoubleProperty(
+          "Kicker/Ramp Rate (ms)",
+          () -> kickerRampRate.in(Milliseconds),
+          (double value) -> {
+            Time rate = Milliseconds.of(value);
+
+            SparkFlexConfig config = new SparkFlexConfig();
+            config.openLoopRampRate(rate.in(Seconds)).closedLoopRampRate(rate.in(Seconds));
+            kickerMotor.configure(
+                config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+            kickerRampRate = rate;
+            Logger.recordOutput("Hopper/Kicker/RampRate", rate);
+          });
     }
 
     // Log initial values regardless of tuning mode
@@ -241,6 +257,7 @@ public class Hopper extends SubsystemBase {
     Logger.recordOutput("Hopper/Kicker/PID/kS", kickerKs);
     Logger.recordOutput("Hopper/Kicker/PID/kV", kickerKv);
     Logger.recordOutput("Hopper/Kicker/PID/kA", kickerKa);
+    Logger.recordOutput("Hopper/Kicker/RampRate", kickerRampRate);
   }
 
   @Override
