@@ -20,6 +20,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoVars;
+import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 
 public class Autos {
@@ -78,15 +79,21 @@ public class Autos {
       Pose2d climbPose_RED) {
     return sequence(
             sequence(
-                    new AutoAlignCommand(
-                        alliance == Alliance.Blue ? setupPose_BLUE : setupPose_RED,
-                        requirements.drive(),
-                        autoAlignLinearTolerance,
-                        Meters.of(5),
-                        autoAlignAngularTolerance),
-                    new AutoAlignCommand(
-                        alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED,
-                        requirements.drive()))
+                    defer(
+                        () ->
+                            new AutoAlignCommand(
+                                alliance == Alliance.Blue ? setupPose_BLUE : setupPose_RED,
+                                requirements.drive(),
+                                autoAlignLinearTolerance,
+                                Meters.of(5),
+                                autoAlignAngularTolerance),
+                        Set.of(requirements.drive())),
+                    defer(
+                        () ->
+                            new AutoAlignCommand(
+                                alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED,
+                                requirements.drive()),
+                        Set.of(requirements.drive())))
                 .deadlineFor(requirements.robotCommands().shoot()),
             parallel(
                 requirements.robotCommands().creepBackward(),
