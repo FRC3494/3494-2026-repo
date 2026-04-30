@@ -469,7 +469,7 @@ public final class Constants {
     public static final AngularVelocity kickerMaxSpeed = RPM.of(6000);
     // Number to multiply the flywheel speed by
     // public static double kickerSpeedFactor = 1.0;
-    public static AngularVelocity kickerSpeed = RPM.of(4500);
+    public static AngularVelocity kickerSpeed = RPM.of(5000);
 
     public static double kickerKp = 6.9449E-08;
     public static double kickerKi = 0.0;
