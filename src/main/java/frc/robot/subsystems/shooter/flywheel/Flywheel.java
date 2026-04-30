@@ -14,6 +14,8 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -152,7 +154,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setVelocity(AngularVelocity velocity) {
-    flywheelSetpoint = velocity;
+    flywheelSetpoint = RPM.of(MathUtil.clamp(velocity.in(RPM), 0, flywheelMaxSpeed.in(RPM)));
 
     runFlywheel();
   }
