@@ -94,7 +94,7 @@ public class Autos {
                                 alliance == Alliance.Blue ? climbPose_BLUE : climbPose_RED,
                                 requirements.drive()),
                         Set.of(requirements.drive())))
-                .until(() -> Timer.getMatchTime() <= climbTime)
+                .until(() -> Timer.getMatchTime() <= 3)
                 .deadlineFor(requirements.robotCommands().shoot()),
             parallel(
                 requirements.robotCommands().creepBackward(),
