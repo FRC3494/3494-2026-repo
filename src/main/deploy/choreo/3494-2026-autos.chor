@@ -170,7 +170,7 @@
    "ClimbSetupOutpost":{
     "x":{
      "exp":"ClimbOutpost.x",
-     "val":1.0661
+     "val":1.056
     },
     "y":{
      "exp":"2.65 m",

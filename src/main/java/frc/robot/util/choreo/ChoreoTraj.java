@@ -209,58 +209,58 @@ public record ChoreoTraj(
     public static final ChoreoTraj OutpostToRightClimb_BLUE = new ChoreoTraj(
         "OutpostToRightClimb_BLUE",
         OptionalInt.empty(),
-        2.2276,
+        2.2245,
         new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(1.0661, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.056, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj OutpostToRightClimb_RED = new ChoreoTraj(
         "OutpostToRightClimb_RED",
         OptionalInt.empty(),
-        2.2276,
+        2.2245,
         new Pose2d(0.44334, 0.774, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(1.0661, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.056, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightHubToClimb_BLUE = new ChoreoTraj(
         "RightHubToClimb_BLUE",
         OptionalInt.empty(),
-        2.5191,
+        2.52584,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0661, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.056, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightHubToClimb_BLUE$0 = new ChoreoTraj(
         "RightHubToClimb_BLUE",
         OptionalInt.of(0),
         0.99313,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58613))
+        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58935))
     );
     public static final ChoreoTraj RightHubToClimb_BLUE$1 = new ChoreoTraj(
         "RightHubToClimb_BLUE",
         OptionalInt.of(1),
-        1.52597,
-        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58613)),
-        new Pose2d(1.0661, 2.65, Rotation2d.fromRadians(-1.5708))
+        1.5327100000000002,
+        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58935)),
+        new Pose2d(1.056, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightHubToClimb_RED = new ChoreoTraj(
         "RightHubToClimb_RED",
         OptionalInt.empty(),
-        2.5191,
+        2.52584,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(1.0661, 2.65, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(1.056, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightHubToClimb_RED$0 = new ChoreoTraj(
         "RightHubToClimb_RED",
         OptionalInt.of(0),
         0.99313,
         new Pose2d(3.57885, 3.88926, Rotation2d.fromRadians(3.14159)),
-        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58613))
+        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58935))
     );
     public static final ChoreoTraj RightHubToClimb_RED$1 = new ChoreoTraj(
         "RightHubToClimb_RED",
         OptionalInt.of(1),
-        1.52597,
-        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58613)),
-        new Pose2d(1.0661, 2.65, Rotation2d.fromRadians(-1.5708))
+        1.5327100000000002,
+        new Pose2d(2.91845, 2.87875, Rotation2d.fromRadians(-2.58935)),
+        new Pose2d(1.056, 2.65, Rotation2d.fromRadians(-1.5708))
     );
     public static final ChoreoTraj RightHubToOutpost_BLUE = new ChoreoTraj(
         "RightHubToOutpost_BLUE",
