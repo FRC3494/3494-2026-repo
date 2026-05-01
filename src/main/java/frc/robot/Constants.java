@@ -563,7 +563,7 @@ public final class Constants {
       public static final Distance distanceTrimIncrement = Inches.of(1.0);
       public static final Distance xyTrimIncrement = Inches.of(5.0);
 
-      public static Distance azDistanceTrimDefault = Inches.of(35.0);
+      public static Distance azDistanceTrimDefault = Inches.of(40.0);
       public static Distance azDistanceTrim = azDistanceTrimDefault;
       public static Distance azXTrim = Inches.zero();
       public static Distance azYTrim = Inches.zero();
