@@ -398,22 +398,22 @@ public record ChoreoTraj(
     public static final ChoreoTraj LeftMiddleNZToDepot = new ChoreoTraj(
         "LeftMiddleNZToDepot",
         OptionalInt.empty(),
-        4.19471,
+        4.46069,
         new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
         new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
     );
     public static final ChoreoTraj LeftMiddleNZToDepot$0 = new ChoreoTraj(
         "LeftMiddleNZToDepot",
         OptionalInt.of(0),
-        2.73676,
+        2.15915,
         new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
-        new Pose2d(1.87002, 7.31006, Rotation2d.fromRadians(-0.26315))
+        new Pose2d(3.71094, 7.42988, Rotation2d.fromRadians(0))
     );
     public static final ChoreoTraj LeftMiddleNZToDepot$1 = new ChoreoTraj(
         "LeftMiddleNZToDepot",
         OptionalInt.of(1),
-        1.4579499999999999,
-        new Pose2d(1.87002, 7.31006, Rotation2d.fromRadians(-0.26315)),
+        2.3015399999999997,
+        new Pose2d(3.71094, 7.42988, Rotation2d.fromRadians(0)),
         new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
     );
 
