@@ -395,6 +395,27 @@ public record ChoreoTraj(
         new Pose2d(3.0201, 3.46524, Rotation2d.fromRadians(0)),
         new Pose2d(3.7701, 4.21524, Rotation2d.fromRadians(0))
     );
+    public static final ChoreoTraj LeftMiddleNZToDepot = new ChoreoTraj(
+        "LeftMiddleNZToDepot",
+        OptionalInt.empty(),
+        4.19471,
+        new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
+        new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
+    );
+    public static final ChoreoTraj LeftMiddleNZToDepot$0 = new ChoreoTraj(
+        "LeftMiddleNZToDepot",
+        OptionalInt.of(0),
+        2.73676,
+        new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
+        new Pose2d(1.87002, 7.31006, Rotation2d.fromRadians(-0.26315))
+    );
+    public static final ChoreoTraj LeftMiddleNZToDepot$1 = new ChoreoTraj(
+        "LeftMiddleNZToDepot",
+        OptionalInt.of(1),
+        1.4579499999999999,
+        new Pose2d(1.87002, 7.31006, Rotation2d.fromRadians(-0.26315)),
+        new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
+    );
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -453,7 +474,10 @@ public record ChoreoTraj(
         Map.entry("RightShootToNZ_RED", RightShootToNZ_RED),
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-        Map.entry("WarmUp", WarmUp)
+        Map.entry("WarmUp", WarmUp),
+        Map.entry("LeftMiddleNZToDepot", LeftMiddleNZToDepot),
+        Map.entry("LeftMiddleNZToDepot$0", LeftMiddleNZToDepot$0),
+        Map.entry("LeftMiddleNZToDepot$1", LeftMiddleNZToDepot$1)
     );
 
     /**

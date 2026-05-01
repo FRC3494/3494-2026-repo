@@ -47,6 +47,7 @@ import frc.robot.autos.HubToOutpostAuto;
 import frc.robot.autos.LeftHubToClimbAuto;
 import frc.robot.autos.LeftNZToClimbAuto;
 import frc.robot.autos.LeftNZToNZAuto;
+import frc.robot.autos.NZToDepotAuto;
 import frc.robot.autos.RightHubToClimbAuto;
 import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
@@ -238,6 +239,7 @@ public class RobotContainer implements Sendable {
           new LeftHubToClimbAuto(),
           new LeftNZToClimbAuto(),
           new LeftNZToNZAuto(),
+          new NZToDepotAuto(),
           new RightHubToClimbAuto(),
           new RightNZToClimbAuto(),
           new RightNZToNZAuto(),
