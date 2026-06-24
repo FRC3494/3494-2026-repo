@@ -1,4 +1,6 @@
-# REBUILT 2026
+# 3494's 2026 REBUILT Robot - Krakatoa
+
+![Krakatoa](./Krakatoa.jpg)
 
 ## Workspace setup
 
