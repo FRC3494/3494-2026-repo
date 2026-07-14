@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.*;
 import static frc.robot.Constants.ShooterConstants.TurretConstants.*;
+import static frc.robot.Constants.driveMode;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.filter.MedianFilter;
@@ -21,6 +22,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveMode;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.AimShooterMathLinearConstants.LinearInterpolationDataPoint;
 import java.util.function.Supplier;
@@ -393,6 +395,10 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
         getFlywheelSpeed(state.inAllianceZone(), state.virtualDistanceToTarget())
             .plus(state.inAllianceZone() ? azFlywheelTrim : nzFlywheelTrim);
 
+    if (driveMode == DriveMode.DEMO) {
+      computedFlywheelSpeed = computedFlywheelSpeed.times(0.75); // Reduce speed for demo mode
+    }
+
     debugLogging();
 
     return new LinearSetpoints(
@@ -435,7 +441,12 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
 
   /** Returns whether the shooter is inside the alliance zone. */
   private boolean isInAllianceZone(Translation2d shooterTranslation, Distance azLineBlue) {
-    // ! Flips the robot location AGAIN (back to alliance-relative coordinates essentially)
+    if (driveMode == DriveMode.DEMO) {
+      return true;
+    }
+
+    // ! Flips the robot location AGAIN (back to alliance-relative coordinates
+    // essentially)
     return toAllianceTranslation(shooterTranslation).getMeasureX().lte(azLineBlue);
   }
 
@@ -447,6 +458,10 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
    */
   private Translation2d getTargetLocation(
       Translation2d shooterTranslation, boolean inAllianceZone, Translation2d allianceHubLocation) {
+    if (driveMode == DriveMode.DEMO) {
+      return Translation2d.kZero.plus(new Translation2d(azXTrim, azYTrim));
+    }
+
     if (inAllianceZone) {
       return allianceHubLocation.plus(new Translation2d(azXTrim, azYTrim));
     } else {
@@ -521,42 +536,47 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     Translation2d robotSpeedTranslation =
         new Translation2d(robotSpeed.vxMetersPerSecond, robotSpeed.vyMetersPerSecond);
     // Translation2d robotAcceleration =
-    //     robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
+    // robotSpeedTranslation.minus(previousRobotSpeed).div(timeSinceLastLoop);
 
     // // Estimate how the motion-compensated ("virtual") target itself is moving.
-    // // The virtual target shifts because robot velocity changes and because time of flight
+    // // The virtual target shifts because robot velocity changes and because time
+    // of flight
     // changes.
     // Translation2d virtualGoalVelocity =
-    //     robotAcceleration
-    //         .times(-timeOfFlight)
-    //         .minus(robotSpeedTranslation.times(deltaTimeOfFlight));
+    // robotAcceleration
+    // .times(-timeOfFlight)
+    // .minus(robotSpeedTranslation.times(deltaTimeOfFlight));
 
     // // Relative translational motion between shooter and virtual goal.
-    // Translation2d correctedVelocity = robotSpeedTranslation.minus(virtualGoalVelocity);
-    // Translation2d translationToVirtualGoal = virtualTargetLocation.minus(shooterTranslation);
+    // Translation2d correctedVelocity =
+    // robotSpeedTranslation.minus(virtualGoalVelocity);
+    // Translation2d translationToVirtualGoal =
+    // virtualTargetLocation.minus(shooterTranslation);
     // double translationNormSquared = translationToVirtualGoal.getSquaredNorm();
 
     // // Angular rate of the line-of-sight vector to the virtual goal.
     // // For r = (x, y) and v = (vx, vy), d(theta)/dt = (x*vy - y*vx) / |r|^2.
     // double turretVelocity =
-    //     (translationToVirtualGoal.getX() * correctedVelocity.getY()
-    //             - translationToVirtualGoal.getY() * correctedVelocity.getX())
-    //         / translationNormSquared;
+    // (translationToVirtualGoal.getX() * correctedVelocity.getY()
+    // - translationToVirtualGoal.getY() * correctedVelocity.getX())
+    // / translationNormSquared;
 
     // // Angular acceleration of that same line-of-sight vector.
     // // This is the time derivative of the angular-rate expression above.
     // double angularAccelerationNumerator =
-    //     (translationToVirtualGoal.getX() * robotAcceleration.getY()
-    //             - translationToVirtualGoal.getY() * robotAcceleration.getX())
-    //         / translationNormSquared;
+    // (translationToVirtualGoal.getX() * robotAcceleration.getY()
+    // - translationToVirtualGoal.getY() * robotAcceleration.getX())
+    // / translationNormSquared;
     // double radialVelocityComponent =
-    //     (translationToVirtualGoal.getX() * correctedVelocity.getX()
-    //             + translationToVirtualGoal.getY() * correctedVelocity.getY())
-    //         / translationNormSquared;
+    // (translationToVirtualGoal.getX() * correctedVelocity.getX()
+    // + translationToVirtualGoal.getY() * correctedVelocity.getY())
+    // / translationNormSquared;
     // double turretAcceleration =
-    //     angularAccelerationNumerator - (2.0 * turretVelocity * radialVelocityComponent);
+    // angularAccelerationNumerator - (2.0 * turretVelocity *
+    // radialVelocityComponent);
 
-    // Chassis yaw rotates the whole robot underneath the turret, so compensate that directly.
+    // Chassis yaw rotates the whole robot underneath the turret, so compensate that
+    // directly.
     Voltage robotYawVelocityFF =
         Volts.of(
             robotYawKv
@@ -567,7 +587,7 @@ public class AimShooterMathLinear extends SubsystemBase implements ShooterAimMod
     // Standard velocity + acceleration feedforward model in turret-angle units.
     return robotYawVelocityFF;
     // .plus(
-    //  Volts.of(turretKv * turretVelocity + turretKa * turretAcceleration));
+    // Volts.of(turretKv * turretVelocity + turretKa * turretAcceleration));
   }
 
   /** Returns the interpolated hood angle for the given distance. */

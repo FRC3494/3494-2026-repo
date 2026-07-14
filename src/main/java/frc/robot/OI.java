@@ -377,57 +377,87 @@ public final class OI implements Sendable {
 
     public static Trigger increaseDistanceTrim() {
       // Left button board joystick UP
-      return leftButtonBoard
-          .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      if (driveMode == DriveMode.NORMAL) {
+        return leftButtonBoard
+            .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
+            .castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger decreaseDistanceTrim() {
       // Left button board joystick DOWN
-      return leftButtonBoard
-          .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
-          .castTo(Trigger::new);
+      if (driveMode == DriveMode.NORMAL) {
+        return leftButtonBoard
+            .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
+            .castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger resetDistanceTrim() {
-      return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+      if (driveMode == DriveMode.NORMAL) {
+        return leftButtonBoard.button(8, eventLoop).castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger trimRight() {
-      return new Trigger(() -> false);
-      // // Right button board joystick RIGHT
-      // return rightButtonBoard
-      //     .axisLessThan(0, -buttonBoardStickDeadband, eventLoop)
-      //     .castTo(Trigger::new);
+      // Left button board joystick RIGHT
+      if (driveMode == DriveMode.DEMO) {
+        return leftButtonBoard
+            .axisGreaterThan(0, buttonBoardStickDeadband, eventLoop)
+            .castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger trimLeft() {
-      return new Trigger(() -> false);
-      // // Right button board joystick LEFT
-      // return rightButtonBoard
-      //     .axisGreaterThan(0, buttonBoardStickDeadband, eventLoop)
-      //     .castTo(Trigger::new);
+      // Left button board joystick LEFT
+      if (driveMode == DriveMode.DEMO) {
+        return leftButtonBoard
+            .axisLessThan(0, -buttonBoardStickDeadband, eventLoop)
+            .castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger trimForward() {
-      return new Trigger(() -> false);
-      // // Right button board joystick UP
-      // return rightButtonBoard
-      //     .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
-      //     .castTo(Trigger::new);
+      // Left button board joystick UP
+      if (driveMode == DriveMode.DEMO) {
+        return leftButtonBoard
+            .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
+            .castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger trimBack() {
-      return new Trigger(() -> false);
-      // // Right button board joystick DOWN
-      // return rightButtonBoard
-      //     .axisLessThan(1, -buttonBoardStickDeadband, eventLoop)
-      //     .castTo(Trigger::new);
+      // Left button board joystick DOWN
+      if (driveMode == DriveMode.DEMO) {
+        return leftButtonBoard
+            .axisGreaterThan(1, buttonBoardStickDeadband, eventLoop)
+            .castTo(Trigger::new);
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     public static Trigger resetXYTrim() {
-      return new Trigger(() -> false);
-      // return leftButtonBoard.button(9, eventLoop).castTo(Trigger::new);
+      if (driveMode == DriveMode.DEMO) {
+        return leftButtonBoard
+            .button(8, eventLoop)
+            .castTo(Trigger::new)
+            .or(leftButtonBoard.button(4, eventLoop));
+      } else {
+        return new Trigger(() -> false);
+      }
     }
 
     // #region FLYWHEEL
@@ -501,21 +531,33 @@ public final class OI implements Sendable {
       }
 
       public static Trigger resetTurretTrim() {
-        return leftButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+        if (driveMode == DriveMode.DEMO) {
+          return leftButtonBoard.button(4, eventLoop).castTo(Trigger::new);
+        } else {
+          return new Trigger(() -> false);
+        }
       }
 
       public static Trigger increaseTurretTrim() {
         // Left button board joystick LEFT
-        return leftButtonBoard
-            .axisLessThan(0, -buttonBoardStickDeadband, eventLoop)
-            .castTo(Trigger::new);
+        if (driveMode == DriveMode.NORMAL) {
+          return leftButtonBoard
+              .axisLessThan(0, -buttonBoardStickDeadband, eventLoop)
+              .castTo(Trigger::new);
+        } else {
+          return new Trigger(() -> false);
+        }
       }
 
       public static Trigger decreaseTurretTrim() {
         // Left button board joystick RIGHT
-        return leftButtonBoard
-            .axisGreaterThan(0, buttonBoardStickDeadband, eventLoop)
-            .castTo(Trigger::new);
+        if (driveMode == DriveMode.NORMAL) {
+          return leftButtonBoard
+              .axisGreaterThan(0, buttonBoardStickDeadband, eventLoop)
+              .castTo(Trigger::new);
+        } else {
+          return new Trigger(() -> false);
+        }
       }
 
       public static Trigger lockTurret() {

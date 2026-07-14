@@ -791,7 +791,7 @@ public class RobotCommands {
   public Command changeXTrim(boolean increment) {
     return runOnce(
             () -> {
-              if (increment) {
+              if (shooterAimModel.isInAllianceZone()) {
                 azXTrim =
                     increment ? azXTrim.plus(xyTrimIncrement) : azXTrim.minus(xyTrimIncrement);
               } else {
@@ -807,7 +807,7 @@ public class RobotCommands {
   public Command changeYTrim(boolean increment) {
     return runOnce(
             () -> {
-              if (increment) {
+              if (shooterAimModel.isInAllianceZone()) {
                 azYTrim =
                     increment ? azYTrim.plus(xyTrimIncrement) : azYTrim.minus(xyTrimIncrement);
               } else {

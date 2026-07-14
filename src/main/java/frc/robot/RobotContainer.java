@@ -582,28 +582,28 @@ public class RobotContainer implements Sendable {
             either(
                     robotCommands.changeYTrim(false),
                     robotCommands.changeYTrim(true),
-                    () -> alliance == Alliance.Blue)
+                    () -> alliance == Alliance.Blue || driveMode == DriveMode.DEMO)
                 .withName("TrimRight"));
     ShooterOI.trimLeft()
         .whileTrue(
             either(
                     robotCommands.changeYTrim(true),
                     robotCommands.changeYTrim(false),
-                    () -> alliance == Alliance.Blue)
+                    () -> alliance == Alliance.Blue || driveMode == DriveMode.DEMO)
                 .withName("TrimLeft"));
     ShooterOI.trimForward()
         .whileTrue(
             either(
                     robotCommands.changeXTrim(true),
                     robotCommands.changeXTrim(false),
-                    () -> alliance == Alliance.Blue)
+                    () -> alliance == Alliance.Blue || driveMode == DriveMode.DEMO)
                 .withName("TrimForward"));
     ShooterOI.trimBack()
         .whileTrue(
             either(
                     robotCommands.changeXTrim(false),
                     robotCommands.changeXTrim(true),
-                    () -> alliance == Alliance.Blue)
+                    () -> alliance == Alliance.Blue || driveMode == DriveMode.DEMO)
                 .withName("TrimBack"));
     ShooterOI.resetXYTrim().onTrue(robotCommands.resetXYTrim());
 

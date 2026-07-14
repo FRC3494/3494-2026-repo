@@ -722,7 +722,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void resetYaw() {
-    if (alliance == Alliance.Blue) {
+    if (alliance == Alliance.Blue || driveMode == DriveMode.DEMO) {
       setRotation(Rotation2d.kZero);
     } else {
       setRotation(Rotation2d.k180deg);

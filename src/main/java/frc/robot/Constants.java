@@ -9,6 +9,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -58,7 +59,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final DriveMode driveMode = DriveMode.NORMAL;
+  public static final DriveMode driveMode = DriveMode.DEMO;
   public static final double targetHeight = Units.inchesToMeters(120.36); // hub height
 
   public static enum DriveMode {
@@ -180,7 +181,8 @@ public final class Constants {
     // SHIFT 3 25 Seconds 1:20 - 0:55
     // SHIFT 4 25 Seconds 0:55 - 0:30
     // END GAME 30 Seconds 0:30 - 0:00
-    // ! This should not be changed. It is for calculating how much time is left in the given match
+    // ! This should not be changed. It is for calculating how much time is left in
+    // the given match
     // ! period. To change when controller rumbles, change shiftRumbleTimesSeconds.
     public static final double[] shiftTimesSeconds =
         new double[] {
@@ -212,7 +214,8 @@ public final class Constants {
 
     public static boolean shiftRumbleEnabled = true;
     public static double shiftRumbleIntensity = 0.50;
-    // Since match time FLOORS instead of ROUNDS, offset by 1s to make rumble seem like it starts at
+    // Since match time FLOORS instead of ROUNDS, offset by 1s to make rumble seem
+    // like it starts at
     // the right time
     public static double shiftRumbleOffsetSeconds = 1.0;
     public static double shiftRumbleContinuousSeconds = 2.0;
@@ -251,15 +254,18 @@ public final class Constants {
   // #region DRIVE
   public static class DriveConstants {
     /*
-    ! Things that need to be configured in addition to AdvantageKit Swerve Template configs:
-
-    * maxAngularSpeedFactor
-       - Units: rad/sec
-       - Divide max rotation speed when driving by max rotation speed while stationary
-    */
+     * ! Things that need to be configured in addition to AdvantageKit Swerve
+     * Template configs:
+     *
+     * maxAngularSpeedFactor
+     * - Units: rad/sec
+     * - Divide max rotation speed when driving by max rotation speed while
+     * stationary
+     */
 
     public static double maxSpeedMetersPerSec = 4.62906; // 15.187 ft/s
-    // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
+    // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while
+    // stationary
     public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 40);
     public static final double demoModeSpeedFactor = 0.15;
 
@@ -295,7 +301,8 @@ public final class Constants {
     public static final double wheelRadiusMeters =
         Units.inchesToMeters(1.99307984); // From rotational characterization
     public static final double driveMotorReduction =
-        (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+ Gearing
+        (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+
+    // Gearing
     public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
     // Drive encoder configuration
@@ -535,7 +542,8 @@ public final class Constants {
     public static final Translation2d nzOutpostShootingTarget =
         ChoreoVars.Poses.NZOutpostShootingTarget.getTranslation();
 
-    // The distance into the NZ beyond which shooter targets middle of AZ rather than Hub
+    // The distance into the NZ beyond which shooter targets middle of AZ rather
+    // than Hub
     // 17.625 inches is robot center-to-bumper edge distance
     public static final Distance azLineOffset = Inches.of(17.625).plus(Inches.of(48));
     // TODO: Move to a more appropriate place
@@ -728,9 +736,11 @@ public final class Constants {
       public static double turretPositionToleranceRot = Units.degreesToRotations(0.1);
       // Retractor kicks in when CW from (less than) this position
       public static double turretCableRetractorStartRot = Units.degreesToRotations(115);
-      // Feedforward for retractor when turret is moving clockwise (against the retractor)
+      // Feedforward for retractor when turret is moving clockwise (against the
+      // retractor)
       public static Voltage turretCableRetractorFFCW = Volts.of(0.0); // -0.3
-      // Feedforward for retractor when turret is moving counterclockwise (with the retractor)
+      // Feedforward for retractor when turret is moving counterclockwise (with the
+      // retractor)
       public static Voltage turretCableRetractorFFCCW = Volts.of(0.0); // -0.1
 
       public static double turretKp = 3.0;
