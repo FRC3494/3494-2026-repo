@@ -260,7 +260,7 @@ public final class OI implements Sendable {
     }
 
     public static Trigger slowDrive() {
-      return primaryController.leftTrigger(controllerTriggerDeadband, eventLoop);
+      return primaryController.povRight();
     }
   }
   // #endregion
@@ -295,7 +295,7 @@ public final class OI implements Sendable {
   public static final class IntakeOI {
     public static Trigger intake() {
       return primaryController
-          .rightTrigger(controllerTriggerDeadband, eventLoop)
+          .leftTrigger(controllerTriggerDeadband, eventLoop)
           .or(rightButtonBoard.button(9, eventLoop));
     }
 
@@ -331,7 +331,9 @@ public final class OI implements Sendable {
   // #region SHOOTER
   public static final class ShooterOI {
     public static Trigger shoot() {
-      return primaryController.povRight().or(rightButtonBoard.button(8, eventLoop));
+      return primaryController
+          .rightTrigger(controllerTriggerDeadband, eventLoop)
+          .or(rightButtonBoard.button(8, eventLoop));
     }
 
     public static Trigger shootClose() {
