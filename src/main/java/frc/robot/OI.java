@@ -240,7 +240,12 @@ public final class OI implements Sendable {
     }
 
     public static Trigger resetYaw() {
-      return primaryController.back(eventLoop);
+      if (driveMode == DriveMode.DEMO) {
+        return primaryController.back(eventLoop).or(leftButtonBoard.button(8, eventLoop));
+
+      } else {
+        return primaryController.back(eventLoop);
+      }
     }
 
     public static Trigger rezeroSwerveTurnEncoders() {
@@ -453,10 +458,7 @@ public final class OI implements Sendable {
 
     public static Trigger resetXYTrim() {
       if (driveMode == DriveMode.DEMO) {
-        return leftButtonBoard
-            .button(8, eventLoop)
-            .castTo(Trigger::new)
-            .or(leftButtonBoard.button(4, eventLoop));
+        return leftButtonBoard.button(4, eventLoop).castTo(Trigger::new);
       } else {
         return new Trigger(() -> false);
       }
