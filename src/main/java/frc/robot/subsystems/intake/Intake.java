@@ -27,7 +27,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  SparkFlex spinnySpinnyMotor;
+  SparkFlex spinnySpinnyLeftMotor;
+  SparkFlex spinnySpinnyRightMotor;
   SparkFlex uppyDownyMotor;
 
   @Getter @AutoLogOutput AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
@@ -52,23 +53,32 @@ public class Intake extends SubsystemBase {
   @Getter private final SysIdRoutine spinnySpinnySysId;
 
   public Intake() {
-    spinnySpinnyMotor = new SparkFlex(RobotMap.Intake.spinnySpinnyCanId, MotorType.kBrushless);
-    SparkFlexConfig spinnySpinnyConfig = new SparkFlexConfig();
-    spinnySpinnyConfig
+    spinnySpinnyLeftMotor =
+        new SparkFlex(RobotMap.Intake.spinnySpinnyLeftCanId, MotorType.kBrushless);
+    SparkFlexConfig spinnySpinnyLeftConfig = new SparkFlexConfig();
+    spinnySpinnyLeftConfig
         .smartCurrentLimit(((int) spinnySpinnyCurrentLimit.in(Amps)))
         .idleMode(IdleMode.kCoast)
         .inverted(spinnySpinnyInverted)
         .openLoopRampRate(spinnySpinnyRampRate.in(Seconds))
         .closedLoopRampRate(spinnySpinnyRampRate.in(Seconds))
         .secondaryCurrentLimit(115, 4);
-    spinnySpinnyConfig
+    spinnySpinnyLeftConfig
         .encoder
         .positionConversionFactor(spinnySpinnyGearRatio)
         .velocityConversionFactor(spinnySpinnyGearRatio);
-    spinnySpinnyConfig.closedLoop.pid(spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd);
-    spinnySpinnyConfig.closedLoop.feedForward.sva(spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa);
-    spinnySpinnyMotor.configure(
-        spinnySpinnyConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    spinnySpinnyLeftConfig.closedLoop.pid(spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd);
+    spinnySpinnyLeftConfig.closedLoop.feedForward.sva(
+        spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa);
+    spinnySpinnyLeftMotor.configure(
+        spinnySpinnyLeftConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    spinnySpinnyRightMotor =
+        new SparkFlex(RobotMap.Intake.spinnySpinnyRightCanId, MotorType.kBrushless);
+    SparkFlexConfig spinnySpinnyRightConfig = new SparkFlexConfig().apply(spinnySpinnyLeftConfig);
+    spinnySpinnyRightConfig.follow(spinnySpinnyLeftMotor, true);
+    spinnySpinnyRightMotor.configure(
+        spinnySpinnyRightConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     uppyDownyMotor = new SparkFlex(RobotMap.Intake.uppyDownyCanId, MotorType.kBrushless);
     SparkFlexConfig uppyDownyConfig = new SparkFlexConfig();
@@ -222,12 +232,12 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     if (Robot.loopCount % loggingFrequency == 0) {
-      logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyMotor, false);
+      logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyLeftMotor, false);
       logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
     }
 
     spinnySpinnyFilteredCurrent =
-        Amps.of(spinnySpinnyCurrentFilter.calculate(spinnySpinnyMotor.getOutputCurrent()));
+        Amps.of(spinnySpinnyCurrentFilter.calculate(spinnySpinnyLeftMotor.getOutputCurrent()));
     uppyDownyFilteredCurrent =
         Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));
   }
@@ -235,16 +245,16 @@ public class Intake extends SubsystemBase {
   public void setSpinnySpinnyVelocity(AngularVelocity velocity) {
     spinnySpinnySetpoint = velocity;
     if (!velocity.isEquivalent(RPM.of(0))) {
-      spinnySpinnyMotor
+      spinnySpinnyLeftMotor
           .getClosedLoopController()
           .setSetpoint(velocity.in(RPM), ControlType.kVelocity);
     } else {
-      spinnySpinnyMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
+      spinnySpinnyLeftMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
     }
   }
 
   public void setSpinnySpinnyOpenLoop(Voltage voltage) {
-    spinnySpinnyMotor
+    spinnySpinnyLeftMotor
         .getClosedLoopController()
         .setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
@@ -303,7 +313,7 @@ public class Intake extends SubsystemBase {
     spinnySpinnyKi = i;
     spinnySpinnyKd = d;
     config.closedLoop.pid(p, i, d);
-    spinnySpinnyMotor.configure(
+    spinnySpinnyLeftMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
@@ -313,7 +323,7 @@ public class Intake extends SubsystemBase {
     spinnySpinnyKv = v;
     spinnySpinnyKa = a;
     config.closedLoop.feedForward.sva(s, v, a);
-    spinnySpinnyMotor.configure(
+    spinnySpinnyLeftMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

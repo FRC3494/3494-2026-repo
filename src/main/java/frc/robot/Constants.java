@@ -111,8 +111,9 @@ public final class Constants {
     }
 
     public static final class Intake {
-      public static final int spinnySpinnyCanId = 12;
-      public static final int uppyDownyCanId = 11;
+      public static final int spinnySpinnyLeftCanId = 12;
+      public static final int spinnySpinnyRightCanId = 11;
+      public static final int uppyDownyCanId = 24;
 
       public static final int intakeMagSensorDIO = 0;
     }
