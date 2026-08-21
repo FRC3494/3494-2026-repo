@@ -75,6 +75,7 @@ import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 import java.util.HashMap;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -339,21 +340,22 @@ public class RobotContainer implements Sendable {
 
   private void registerSysIdAutos(
       String name, SysIdRoutine routine, Consumer<Voltage> setOpenLoop) {
-    Command stopMechanism = run(() -> setOpenLoop.accept(Volts.of(0.0))).withTimeout(1.0);
+    Supplier<Command> stopMechanism =
+        () -> run(() -> setOpenLoop.accept(Volts.of(0.0))).withTimeout(1.0);
 
     autoChooser.addCmd(
         name + " SysId (Quasistatic Forward)",
-        () -> stopMechanism.andThen(routine.quasistatic(SysIdRoutine.Direction.kForward)));
+        () -> stopMechanism.get().andThen(routine.quasistatic(SysIdRoutine.Direction.kForward)));
     autoChooser.addCmd(
         name + " SysId (Quasistatic Reverse)",
-        () -> stopMechanism.andThen(routine.quasistatic(SysIdRoutine.Direction.kReverse)));
+        () -> stopMechanism.get().andThen(routine.quasistatic(SysIdRoutine.Direction.kReverse)));
 
     autoChooser.addCmd(
         name + " SysId (Dynamic Forward)",
-        () -> stopMechanism.andThen(routine.dynamic(SysIdRoutine.Direction.kForward)));
+        () -> stopMechanism.get().andThen(routine.dynamic(SysIdRoutine.Direction.kForward)));
     autoChooser.addCmd(
         name + " SysId (Dynamic Reverse)",
-        () -> stopMechanism.andThen(routine.dynamic(SysIdRoutine.Direction.kReverse)));
+        () -> stopMechanism.get().andThen(routine.dynamic(SysIdRoutine.Direction.kReverse)));
   }
   // #endregion
 
