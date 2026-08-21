@@ -496,19 +496,19 @@ public final class Constants {
     public static final Current spinnySpinnyCurrentThreshold =
         spinnySpinnyCurrentLimit.minus(Amps.of(5));
     public static final Time spinnySpinnyRampRate = Milliseconds.of(0);
-    public static final double spinnySpinnyGearRatio = 17.0 / 55.0;
+    public static final double spinnySpinnyGearRatio = 1.5 / 3.5;
     public static final int spinnySpinnyCurrentSensingFilterSize = 10;
 
     public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(2000);
     public static AngularVelocity intakeSpinnySpinnyShootingSpeed = RPM.of(1000);
 
-    public static double spinnySpinnyKp = 3.1048E-05;
+    public static double spinnySpinnyKp = 9.3404E-08;
     public static double spinnySpinnyKi = 0.0;
     public static double spinnySpinnyKd = 0.0;
 
-    public static double spinnySpinnyKs = 0.099025;
-    public static double spinnySpinnyKv = 0.0058905;
-    public static double spinnySpinnyKa = 0.00033752;
+    public static double spinnySpinnyKs = 0.13129;
+    public static double spinnySpinnyKv = 0.0042424;
+    public static double spinnySpinnyKa = 0.00026638;
 
     public static final boolean uppyDownyInverted = false;
     public static final int uppyDownyCurrentLimit = 50;
