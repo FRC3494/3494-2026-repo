@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.OI.DriveOI;
+import frc.robot.OI.ShooterOI;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;
@@ -677,11 +678,10 @@ public class Drive extends SubsystemBase {
     }
   }
 
-  // todo: put back shooting condition
   private boolean shootingDriveSpeed() {
     return inAllianceZone()
-        ? (DriveOI.slowDrive().getAsBoolean()) && !DriveOI.autoDriveThroughTrench().getAsBoolean()
-        : DriveOI.slowDrive().getAsBoolean() && !DriveOI.autoDriveThroughTrench().getAsBoolean();
+        ? (ShooterOI.shoot().getAsBoolean() && !DriveOI.autoDriveThroughTrench().getAsBoolean())
+        : (DriveOI.slowDrive().getAsBoolean() && !DriveOI.autoDriveThroughTrench().getAsBoolean());
   }
 
   private boolean inAllianceZone() {
