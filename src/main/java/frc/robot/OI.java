@@ -265,7 +265,7 @@ public final class OI implements Sendable {
     }
 
     public static Trigger slowDrive() {
-      return primaryController.povRight();
+      return new Trigger(() -> false);
     }
   }
   // #endregion
