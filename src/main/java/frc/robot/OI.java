@@ -257,11 +257,19 @@ public final class OI implements Sendable {
     }
 
     public static Trigger autoAlignClimb() {
-      return primaryController.rightBumper(eventLoop);
+      if (driveMode == DriveMode.DEMO) {
+        return new Trigger(() -> false);
+      } else {
+        return primaryController.rightBumper(eventLoop);
+      }
     }
 
     public static Trigger autoDriveThroughTrench() {
-      return primaryController.leftBumper();
+      if (driveMode == DriveMode.DEMO) {
+        return new Trigger(() -> false);
+      } else {
+        return primaryController.leftBumper(eventLoop);
+      }
     }
 
     public static Trigger slowDrive() {
