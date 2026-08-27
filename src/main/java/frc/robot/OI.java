@@ -543,7 +543,7 @@ public final class OI implements Sendable {
       }
 
       public static Trigger resetTurretTrim() {
-        if (driveMode == DriveMode.DEMO) {
+        if (driveMode == DriveMode.NORMAL) {
           return leftButtonBoard.button(4, eventLoop).castTo(Trigger::new);
         } else {
           return new Trigger(() -> false);
