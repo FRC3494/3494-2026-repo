@@ -269,12 +269,17 @@ public final class OI implements Sendable {
       if (driveMode == DriveMode.DEMO) {
         return new Trigger(() -> false);
       } else {
-        return primaryController.leftBumper(eventLoop);
+        // return primaryController.leftBumper(eventLoop);
+        return new Trigger(() -> false);
       }
     }
 
     public static Trigger slowDrive() {
       return new Trigger(() -> false);
+    }
+
+    public static Trigger fastDrive() {
+      return primaryController.leftBumper(eventLoop);
     }
 
     public static Trigger alignToMovementDirection() {
