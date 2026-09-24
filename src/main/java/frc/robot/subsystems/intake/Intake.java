@@ -253,6 +253,8 @@ public class Intake extends SubsystemBase {
         Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));
   }
 
+  //#region SPINNY SPINNY
+
   public void setSpinnySpinnyVelocity(AngularVelocity velocity) {
     spinnySpinnySetpoint = velocity;
     if (!velocity.isEquivalent(RPM.of(0))) {
@@ -269,6 +271,30 @@ public class Intake extends SubsystemBase {
         .getClosedLoopController()
         .setSetpoint(voltage.in(Volts), ControlType.kVoltage);
   }
+
+  private void setSpinnySpinnyPID(double p, double i, double d) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spinnySpinnyKp = p;
+    spinnySpinnyKi = i;
+    spinnySpinnyKd = d;
+    config.closedLoop.pid(p, i, d);
+    spinnySpinnyLeftMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  private void setSpinnySpinnySVA(double s, double v, double a) {
+    SparkFlexConfig config = new SparkFlexConfig();
+    spinnySpinnyKs = s;
+    spinnySpinnyKv = v;
+    spinnySpinnyKa = a;
+    config.closedLoop.feedForward.sva(s, v, a);
+    spinnySpinnyLeftMotor.configure(
+        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
+
+  //#endregion
+
+  //#region UPPY DOWNY
 
   public double getUppyDownyPosition() {
     return uppyDownyMotor.getEncoder().getPosition();
@@ -319,23 +345,13 @@ public class Intake extends SubsystemBase {
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  private void setSpinnySpinnyPID(double p, double i, double d) {
-    SparkFlexConfig config = new SparkFlexConfig();
-    spinnySpinnyKp = p;
-    spinnySpinnyKi = i;
-    spinnySpinnyKd = d;
-    config.closedLoop.pid(p, i, d);
-    spinnySpinnyLeftMotor.configure(
-        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-  }
+  //#endregion
 
-  private void setSpinnySpinnySVA(double s, double v, double a) {
-    SparkFlexConfig config = new SparkFlexConfig();
-    spinnySpinnyKs = s;
-    spinnySpinnyKv = v;
-    spinnySpinnyKa = a;
-    config.closedLoop.feedForward.sva(s, v, a);
-    spinnySpinnyLeftMotor.configure(
-        config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-  }
+  
+
+  
+
+  
+
+  
 }
