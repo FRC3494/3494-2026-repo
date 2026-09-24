@@ -129,6 +129,13 @@ public class Intake extends SubsystemBase {
           Logger.recordOutput("SpinnySpinny/ShootingSpeed", RPM.of(value));
         });
 
+    builder.addDoubleProperty(
+        "SpinnySpinny/ShootingReverseTime",
+        () -> intakeSpinnySpinnyShootingReverseTime.in(Seconds),
+        (double value) -> {
+          intakeSpinnySpinnyShootingReverseTime = Seconds.of(value);
+        });
+
     if (tuningMode) {
       // Spinny Spinny PID
       builder.addDoubleArrayProperty(
@@ -211,6 +218,8 @@ public class Intake extends SubsystemBase {
     // Log initial values regardless of tuning mode
     Logger.recordOutput("SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
     Logger.recordOutput("SpinnySpinny/ShootingSpeed", intakeSpinnySpinnyShootingSpeed);
+    Logger.recordOutput(
+        "SpinnySpinny/ShootingReverseTime", intakeSpinnySpinnyShootingReverseTime.in(Seconds));
     Logger.recordOutput("SpinnySpinny/PID/kP", spinnySpinnyKp);
     Logger.recordOutput("SpinnySpinny/PID/kI", spinnySpinnyKi);
     Logger.recordOutput("SpinnySpinny/PID/kD", spinnySpinnyKd);

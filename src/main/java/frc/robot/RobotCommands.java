@@ -28,6 +28,7 @@ import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
+import java.util.Set;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -531,12 +532,19 @@ public class RobotCommands {
         .withName("StartIntake");
   }
 
-  public Command startIntakeForShoot() {
-    return runOnce(
-            () -> {
-              intake.setSpinnySpinnyVelocity(intakeSpinnySpinnyShootingSpeed);
-            },
-            intake)
+  public Command runIntakeStartupForShoot() {
+    return sequence(
+            runOnce(
+                () -> {
+                  intake.setSpinnySpinnyVelocity(intakeSpinnySpinnyShootingSpeed.unaryMinus());
+                },
+                intake),
+            defer(() -> waitTime(intakeSpinnySpinnyShootingReverseTime), Set.of(intake)),
+            runOnce(
+                () -> {
+                  intake.setSpinnySpinnyVelocity(intakeSpinnySpinnyShootingSpeed);
+                },
+                intake))
         .withName("StartIntakeForShoot");
   }
 
@@ -690,12 +698,14 @@ public class RobotCommands {
 
   private Command getShootCommand(String name, Command... parallelCommands) {
     return sequence(
-            startHoodWithTrenchSafety(),
-            startFlywheel(),
-            startIntakeForShoot(),
-            waitUntil(turret::withinShootingTolerance),
-            startKickerWithTrenchSafety(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+            parallel(
+                runIntakeStartupForShoot(),
+                sequence(
+                    startHoodWithTrenchSafety(),
+                    startFlywheel(),
+                    waitUntil(turret::withinShootingTolerance),
+                    startKickerWithTrenchSafety(),
+                    waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)))),
             parallel(parallelCommands))
         .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
         .withName(name);

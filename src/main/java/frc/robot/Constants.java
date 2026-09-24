@@ -501,6 +501,7 @@ public final class Constants {
 
     public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(3000);
     public static AngularVelocity intakeSpinnySpinnyShootingSpeed = RPM.of(1500);
+    public static Time intakeSpinnySpinnyShootingReverseTime = Seconds.of(0.25);
 
     public static double spinnySpinnyKp = 9.3404E-08;
     public static double spinnySpinnyKi = 0.0;
