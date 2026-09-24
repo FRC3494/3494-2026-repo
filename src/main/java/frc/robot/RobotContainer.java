@@ -408,6 +408,11 @@ public class RobotContainer implements Sendable {
     DriveOI.autoDriveThroughTrench()
         .whileTrue(AutoAlignToTargetCommands.autoDriveThroughTrench(drive, robotCommands));
 
+    DriveOI.alignToMovementDirection()
+        .whileTrue(
+            DriveCommands.joystickDriveAtMovementAngle(
+                drive, DriveOI::joystickDriveX, DriveOI::joystickDriveY));
+
     // #endregion
 
     // #region HOPPER
