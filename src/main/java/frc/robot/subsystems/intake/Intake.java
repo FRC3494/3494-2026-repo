@@ -94,7 +94,7 @@ public class Intake extends SubsystemBase {
         .positionConversionFactor(uppyDownyGearRatio)
         .positionConversionFactor(uppyDownyGearRatio);
     uppyDownyConfig.closedLoop.pid(uppyDownyKp, uppyDownyKi, uppyDownyKd);
-    uppyDownyConfig.closedLoop.feedForward.sva(uppyDownyKs, uppyDownyKv, uppyDownyKa);
+    uppyDownyConfig.closedLoop.feedForward.svag(uppyDownyKs, uppyDownyKv, uppyDownyKa, uppyDownyKg);
     uppyDownyMotor.configure(
         uppyDownyConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -205,13 +205,14 @@ public class Intake extends SubsystemBase {
           });
 
       builder.addDoubleArrayProperty(
-          "UppyDowny/SVA",
-          () -> new double[] {uppyDownyKs, uppyDownyKv, uppyDownyKa},
+          "UppyDowny/SVAG",
+          () -> new double[] {uppyDownyKs, uppyDownyKv, uppyDownyKa, uppyDownyKg},
           (double[] values) -> {
-            setUppyDownySVA(values[0], values[1], values[2]);
+            setUppyDownySVAG(values[0], values[1], values[2], values[3]);
             Logger.recordOutput("UppyDowny/PID/kS", values[0]);
             Logger.recordOutput("UppyDowny/PID/kV", values[1]);
             Logger.recordOutput("UppyDowny/PID/kA", values[2]);
+            Logger.recordOutput("UppyDowny/PID/kG", values[3]);
           });
     }
 
@@ -236,6 +237,7 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("UppyDowny/PID/kS", uppyDownyKs);
     Logger.recordOutput("UppyDowny/PID/kV", uppyDownyKv);
     Logger.recordOutput("UppyDowny/PID/kA", uppyDownyKa);
+    Logger.recordOutput("UppyDowny/PID/kG", uppyDownyKg);
   }
 
   @Override
@@ -306,12 +308,13 @@ public class Intake extends SubsystemBase {
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  private void setUppyDownySVA(double s, double v, double a) {
+  private void setUppyDownySVAG(double s, double v, double a, double g) {
     SparkFlexConfig config = new SparkFlexConfig();
     uppyDownyKs = s;
     uppyDownyKv = v;
     uppyDownyKa = a;
-    config.closedLoop.feedForward.sva(s, v, a);
+    uppyDownyKg = g;
+    config.closedLoop.feedForward.svag(s, v, a, g);
     uppyDownyMotor.configure(
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }

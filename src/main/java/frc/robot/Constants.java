@@ -527,6 +527,7 @@ public final class Constants {
     public static double uppyDownyKs = 0.0;
     public static double uppyDownyKv = 0.007;
     public static double uppyDownyKa = 0.0;
+    public static double uppyDownyKg = 0.0;
 
     public static double uppyDownyRaiseRPM = -800.0;
     public static double uppyDownyLowerRPM = 150.0;
