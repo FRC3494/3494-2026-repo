@@ -83,7 +83,7 @@ public class Intake extends SubsystemBase {
     uppyDownyMotor = new SparkFlex(RobotMap.Intake.uppyDownyCanId, MotorType.kBrushless);
     SparkFlexConfig uppyDownyConfig = new SparkFlexConfig();
     uppyDownyConfig
-        .smartCurrentLimit(uppyDownyCurrentLimit)
+        .smartCurrentLimit((int) uppyDownyCurrentLimit.in(Amps))
         .idleMode(IdleMode.kCoast)
         .inverted(uppyDownyInverted)
         .openLoopRampRate(uppyDownyRampRate.in(Seconds))

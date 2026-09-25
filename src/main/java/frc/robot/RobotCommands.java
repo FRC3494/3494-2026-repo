@@ -668,6 +668,36 @@ public class RobotCommands {
         .withName(upwards ? "IntakeManualUp" : "IntakeManualDown");
   }
 
+  public Command rezeroIntake() {
+    return sequence(
+            runOnce(
+                () -> {
+                  intake.setUppyDownyCurrentLimit(Amps.of(20));
+                  intake.setUppyDownyOpenLoop(Volts.of(-1));
+                },
+                intake),
+            waitUntil(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(19))),
+            runOnce(
+                () -> {
+                  intake.setUppyDownyOpenLoop(Volts.zero());
+                  intake.setUppyDownyRelativeEncoderPosition(uppyDownyDownPosition);
+                },
+                intake),
+            runOnce(
+                () -> {
+                  intake.setUppyDownyCurrentLimit(uppyDownyCurrentLimit);
+                },
+                intake),
+            print("Intake Rezero Done ================================================="))
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+        .finallyDo(
+            () -> {
+              intake.setUppyDownyOpenLoop(Volts.zero());
+              intake.setUppyDownyCurrentLimit(uppyDownyCurrentLimit);
+            })
+        .withName("RezeroIntake");
+  }
+
   // #endregion
 
   // #region SHOOTER

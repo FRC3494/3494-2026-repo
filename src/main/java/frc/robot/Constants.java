@@ -512,7 +512,7 @@ public final class Constants {
     public static double spinnySpinnyKa = 0.00026638;
 
     public static final boolean uppyDownyInverted = false;
-    public static final int uppyDownyCurrentLimit = 50;
+    public static final Current uppyDownyCurrentLimit = Amps.of(50);
     public static final Time uppyDownyRampRate = Milliseconds.of(10);
     public static final double uppyDownyGearRatio = 1.0 / 4.0;
     public static final int uppyDownyCurrentSensingFilterSize = 10;
