@@ -529,11 +529,14 @@ public final class Constants {
     public static double uppyDownyKa = 0.0;
     public static double uppyDownyKg = 0.0;
 
-    public static double uppyDownyRaiseRPM = -800.0;
-    public static double uppyDownyLowerRPM = 150.0;
+    public static double uppyDownyDownPosition = 0.0;
+    public static double uppyDownyUpPosition = 0.0;
+    public static double uppyDownyTolerance = 0.0;
 
-    public static double jostleIntakeUpTime = 0.8;
-    public static double jostleIntakeDownTime = 0.7;
+    public static double jostleIntakeUpTime = 1.0;
+    public static double jostleIntakeDownTime = 1.0;
+
+    public static Voltage uppyDownyManualVoltage = Volts.of(1.0);
   }
   // #endregion
 

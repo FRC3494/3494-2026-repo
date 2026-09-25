@@ -474,11 +474,11 @@ public class RobotContainer implements Sendable {
                     () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.zero()))
                 .withName("ToggleIntake"));
 
-    IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManualUp());
-    IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManualDown());
+    IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManual(true));
+    IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManual(false));
     IntakeOI.jostleIntake()
         .whileTrue(robotCommands.runIntakeJostle())
-        .onFalse(robotCommands.stopIntakeJostle());
+        .onFalse(robotCommands.runIntakeDown());
 
     // #endregion
 

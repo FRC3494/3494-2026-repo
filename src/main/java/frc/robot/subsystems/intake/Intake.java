@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -32,7 +33,6 @@ public class Intake extends SubsystemBase {
   SparkFlex uppyDownyMotor;
 
   @Getter @AutoLogOutput AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
-  @Getter @AutoLogOutput AngularVelocity uppyDownyVelocitySetpoint = RPM.of(0.0);
 
   @Getter @AutoLogOutput double uppyDownySetpoint = 0.0;
   @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
@@ -161,19 +161,19 @@ public class Intake extends SubsystemBase {
 
     // Uppy Downy Settings
     builder.addDoubleProperty(
-        "UppyDowny/Raise RPM",
-        () -> uppyDownyRaiseRPM,
+        "UppyDown/DownPosition",
+        () -> uppyDownyDownPosition,
         (double value) -> {
-          uppyDownyRaiseRPM = value;
-          Logger.recordOutput("UppyDowny/RaiseRPM", value);
+          uppyDownyDownPosition = value;
+          Logger.recordOutput("UppyDown/DownPosition", value);
         });
 
     builder.addDoubleProperty(
-        "UppyDowny/Lower RPM",
-        () -> uppyDownyLowerRPM,
+        "UppyDown/UpPosition",
+        () -> uppyDownyUpPosition,
         (double value) -> {
-          uppyDownyLowerRPM = value;
-          Logger.recordOutput("UppyDowny/LowerRPM", value);
+          uppyDownyUpPosition = value;
+          Logger.recordOutput("UppyDown/UpPosition", value);
         });
 
     builder.addDoubleProperty(
@@ -193,6 +193,22 @@ public class Intake extends SubsystemBase {
         });
 
     if (tuningMode) {
+      builder.addDoubleProperty(
+          "UppyDowny/Tolerance",
+          () -> uppyDownyTolerance,
+          (double value) -> {
+            uppyDownyTolerance = value;
+            Logger.recordOutput("UppyDowny/Tolerance", value);
+          });
+
+      builder.addDoubleProperty(
+          "UppyDowny/ManualVoltage",
+          () -> uppyDownyManualVoltage.in(Volts),
+          (double value) -> {
+            uppyDownyManualVoltage = Volts.of(value);
+            Logger.recordOutput("UppyDowny/ManualVoltage", Volts.of(value));
+          });
+
       // Uppy Downy PID
       builder.addDoubleArrayProperty(
           "UppyDowny/PID",
@@ -227,10 +243,13 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("SpinnySpinny/PID/kS", spinnySpinnyKs);
     Logger.recordOutput("SpinnySpinny/PID/kV", spinnySpinnyKv);
     Logger.recordOutput("SpinnySpinny/PID/kA", spinnySpinnyKa);
-    Logger.recordOutput("UppyDowny/RaiseRPM", uppyDownyRaiseRPM);
-    Logger.recordOutput("UppyDowny/LowerRPM", uppyDownyLowerRPM);
+
+    Logger.recordOutput("UppyDowny/DownPosition", uppyDownyDownPosition);
+    Logger.recordOutput("UppyDowny/UpPosition", uppyDownyUpPosition);
     Logger.recordOutput("UppyDowny/JostleIntakeUpTime", jostleIntakeUpTime);
     Logger.recordOutput("UppyDowny/JostleIntakeDownTime", jostleIntakeDownTime);
+    Logger.recordOutput("UppyDowny/Tolerance", uppyDownyTolerance);
+    Logger.recordOutput("UppyDowny/ManualVoltage", uppyDownyManualVoltage);
     Logger.recordOutput("UppyDowny/PID/kP", uppyDownyKp);
     Logger.recordOutput("UppyDowny/PID/kI", uppyDownyKi);
     Logger.recordOutput("UppyDowny/PID/kD", uppyDownyKd);
@@ -253,7 +272,7 @@ public class Intake extends SubsystemBase {
         Amps.of(uppyDownyCurrentFilter.calculate(uppyDownyMotor.getOutputCurrent()));
   }
 
-  //#region SPINNY SPINNY
+  // #region SPINNY SPINNY
 
   public void setSpinnySpinnyVelocity(AngularVelocity velocity) {
     spinnySpinnySetpoint = velocity;
@@ -292,21 +311,26 @@ public class Intake extends SubsystemBase {
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  //#endregion
+  // #endregion
 
-  //#region UPPY DOWNY
+  // #region UPPY DOWNY
 
   public double getUppyDownyPosition() {
     return uppyDownyMotor.getEncoder().getPosition();
   }
 
-  public void setUppyDownyVelocity(AngularVelocity velocity) {
-    uppyDownyVelocitySetpoint = velocity;
-    if (!velocity.isEquivalent(RPM.of(0))) {
-      uppyDownyMotor.getClosedLoopController().setSetpoint(velocity.in(RPM), ControlType.kVelocity);
-    } else {
-      uppyDownyMotor.getClosedLoopController().setSetpoint(0, ControlType.kVoltage);
-    }
+  @AutoLogOutput
+  public boolean isUppyDownyAtSetpoint() {
+    return MathUtil.isNear(uppyDownySetpointClamped, getUppyDownyPosition(), uppyDownyTolerance);
+  }
+
+  public void setUppyDownyPosition(double position) {
+    uppyDownySetpoint = position;
+    uppyDownySetpointClamped = MathUtil.clamp(position, uppyDownyDownPosition, uppyDownyUpPosition);
+
+    uppyDownyMotor
+        .getClosedLoopController()
+        .setSetpoint(uppyDownySetpointClamped, ControlType.kPosition);
   }
 
   public void setUppyDownyOpenLoop(Voltage voltage) {
@@ -345,13 +369,6 @@ public class Intake extends SubsystemBase {
         config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  //#endregion
+  // #endregion
 
-  
-
-  
-
-  
-
-  
 }

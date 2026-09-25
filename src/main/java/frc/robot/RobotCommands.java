@@ -29,6 +29,7 @@ import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
 import frc.robot.subsystems.shooter.turret.Turret;
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -600,65 +601,71 @@ public class RobotCommands {
 
   private Command upDownCommand() {
     return repeatingSequence(
-            run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
-                .withTimeout(jostleIntakeDownTime),
-            run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
-                .withTimeout(jostleIntakeUpTime))
+            runIntakeUp().withTimeout(jostleIntakeDownTime),
+            runIntakeDown().withTimeout(jostleIntakeUpTime))
         .withName("IntakeUpDown");
   }
 
   public Command runIntakeJostle() {
-    // Start by moving up (-RPM) first so we move away from the bottom hard stop
-    return sequence(
-            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
-            waitSeconds(0.15),
-            defer(this::upDownCommand, this.upDownCommand().getRequirements()))
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
+    return defer(this::upDownCommand, this.upDownCommand().getRequirements())
+        .finallyDo(this::stopIntakeUppyDowny)
         .withName("RunIntakeJostle");
   }
 
   public Command runIntakeJostleWithTrenchSafety() {
     // Start by moving up (-RPM) first so we move away from the bottom hard stop
-    return sequence(
-            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
-            waitSeconds(0.15),
-            repeatingSequence(
-                    waitUntil(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
-                    defer(this::upDownCommand, this.upDownCommand().getRequirements()))
+    return repeatingSequence(
+            waitUntil(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
+            defer(this::upDownCommand, this.upDownCommand().getRequirements())
                 .until(() -> hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
-            stopIntakeJostle())
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
+            runIntakeDown())
+        .finallyDo(this::stopIntakeUppyDowny)
         .withName("RunIntakeJostleWithTrenchSafety");
   }
 
-  public Command stopIntakeJostle() {
-    return runOnce(
-            () -> {
-              intake.setUppyDownyVelocity(RPM.zero());
-            },
-            intake)
-        .withName("StopIntakeJostle");
+  public Command runIntakeToPosition(double position) {
+    return sequence(
+            runOnce(
+                () -> {
+                  intake.setUppyDownyPosition(position);
+                },
+                intake),
+            waitUntil(() -> intake.isUppyDownyAtSetpoint()))
+        .withName("RunIntakeToPosition");
+  }
+
+  public Command runIntakeToPosition(DoubleSupplier position) {
+    return sequence(
+            runOnce(
+                () -> {
+                  intake.setUppyDownyPosition(position.getAsDouble());
+                },
+                intake),
+            waitUntil(() -> intake.isUppyDownyAtSetpoint()))
+        .withName("RunIntakeToPosition");
   }
 
   public Command runIntakeUp() {
-    return sequence(
-            runOnce(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake),
-            waitSeconds(1.6),
-            stopIntakeJostle())
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
-        .withName("RunIntakeUp");
+    return runIntakeToPosition(() -> uppyDownyUpPosition).withName("RunIntakeUp");
   }
 
-  public Command intakeManualUp() {
-    return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyRaiseRPM)), intake)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
-        .withName("IntakeManualUp");
+  public Command runIntakeDown() {
+    return runIntakeToPosition(() -> uppyDownyDownPosition).withName("RunIntakeDown");
   }
 
-  public Command intakeManualDown() {
-    return run(() -> intake.setUppyDownyVelocity(RPM.of(uppyDownyLowerRPM)), intake)
-        .finallyDo(() -> intake.setUppyDownyVelocity(RPM.zero()))
-        .withName("IntakeManualDown");
+  private void stopIntakeUppyDowny() {
+    intake.setUppyDownyOpenLoop(Volts.zero());
+  }
+
+  public Command intakeManual(boolean upwards) {
+    return run(
+            () -> {
+              intake.setUppyDownyOpenLoop(
+                  upwards ? uppyDownyManualVoltage : uppyDownyManualVoltage.unaryMinus());
+            },
+            intake)
+        .finallyDo(this::stopIntakeUppyDowny)
+        .withName(upwards ? "IntakeManualUp" : "IntakeManualDown");
   }
 
   // #endregion
@@ -719,8 +726,8 @@ public class RobotCommands {
             stopKicker(),
             waitSeconds(0.25),
             stopIntake(),
-            stopIntakeJostle(),
-            stopFlywheel())
+            stopFlywheel(),
+            runIntakeDown())
         .withName("SpinDownFromShoot");
   }
 
@@ -730,8 +737,8 @@ public class RobotCommands {
             stopKicker(),
             stopIntake(),
             stopHood(),
-            stopIntakeJostle(),
-            stopFlywheel())
+            stopFlywheel(),
+            runOnce(this::stopIntakeUppyDowny, intake))
         .withName("StopShootNoDelay");
   }
 

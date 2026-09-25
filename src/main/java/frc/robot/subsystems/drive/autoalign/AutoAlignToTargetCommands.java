@@ -52,7 +52,7 @@ public class AutoAlignToTargetCommands {
             robotCommands.stopSpindexer(),
             robotCommands.stopKicker(),
             robotCommands.stopHood(),
-            robotCommands.stopIntakeJostle(),
+            robotCommands.runIntakeDown(),
             either(
                 autoDriveTrench(drive, robotCommands, closeLeftTrench, closeRightTrench),
                 autoDriveTrench(drive, robotCommands, farLeftTrench, farRightTrench),
