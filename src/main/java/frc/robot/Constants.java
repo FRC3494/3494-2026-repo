@@ -349,12 +349,12 @@ public final class Constants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static double turnKp = 100;
+    public static double turnKp = 61.05625;
     public static double turnKi = 0.0;
-    public static double turnKd = 0.5;
-    public static double turnKs = 0.0;
-    public static double turnKv = 0.124;
-    public static double turnKa = 0.0;
+    public static double turnKd = 0.4164575;
+    public static double turnKs = 0.4056825;
+    public static double turnKv = 0.04649525;
+    public static double turnKa = 0.001644425;
     public static final double turnSimP = 8.0;
     public static final double turnSimI = 0.0;
     public static final double turnSimD = 0.0;
