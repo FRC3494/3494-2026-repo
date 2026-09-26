@@ -147,6 +147,10 @@ public class Module {
     io.setTurnPID(p, i, d);
   }
 
+  public void setTurnSVA(double s, double v, double a) {
+    io.setTurnSVA(s, v, a);
+  }
+
   public void setDriveRampRate(Time rate) {
     io.setDriveRampRate(rate);
   }

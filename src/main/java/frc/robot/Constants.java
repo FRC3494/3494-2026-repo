@@ -111,9 +111,9 @@ public final class Constants {
     }
 
     public static final class Intake {
-      public static final int spinnySpinnyLeftCanId = 12;
-      public static final int spinnySpinnyRightCanId = 11;
-      public static final int uppyDownyCanId = 24;
+      public static final int spinnySpinnyLeftCanId = 11;
+      public static final int spinnySpinnyRightCanId = 12;
+      public static final int uppyDownyCanId = 10;
 
       public static final int intakeMagSensorDIO = 0;
     }
@@ -289,10 +289,10 @@ public final class Constants {
 
     // Zeroed rotation values for each module, see setup instructions
     // ! Gears on the right
-    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(1.219);
-    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(3.360);
-    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(1.371);
-    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(4.042);
+    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(-0.535);
+    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(-0.907);
+    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(1.675);
+    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(0.769);
 
     // Drive motor configuration
     public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
@@ -315,12 +315,12 @@ public final class Constants {
     // Wheel Rad/Sec
 
     // Drive PID configuration - From SysId
-    public static double driveKp = 7.43E-06;
+    public static double driveKp = 0.1;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
-    public static double driveKs = 0.11;
-    public static double driveKv = 0.1179175;
-    public static double driveKa = 0.02385725;
+    public static double driveKs = 0.0;
+    public static double driveKv = 0.124;
+    public static double driveKa = 0.0;
     public static final double driveSimP = 0.05;
     public static final double driveSimI = 0.0;
     public static final double driveSimD = 0.0;
@@ -349,9 +349,12 @@ public final class Constants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static double turnKp = 2.0;
+    public static double turnKp = 100;
     public static double turnKi = 0.0;
-    public static double turnKd = 0.0;
+    public static double turnKd = 0.5;
+    public static double turnKs = 0.0;
+    public static double turnKv = 0.124;
+    public static double turnKa = 0.0;
     public static final double turnSimP = 8.0;
     public static final double turnSimI = 0.0;
     public static final double turnSimD = 0.0;

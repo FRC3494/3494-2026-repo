@@ -235,7 +235,7 @@ public class ModuleIOSpark implements ModuleIO {
     inputs.relativeRotationOffset = relativeEncoderOffset;
     inputs.rawRelativeTurnPosition = getRawRelativeTurnPosition();
     inputs.rawAbsoluteTurnPosition = getRawAbsoluteTurnPosition();
-    inputs.absoluteTurnPosition = getAbsoluteTurnPosition();
+    inputs.turnAbsolutePosition = getAbsoluteTurnPosition();
 
     // Update odometry inputs
     inputs.odometryTimestamps =

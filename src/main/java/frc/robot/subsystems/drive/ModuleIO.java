@@ -21,11 +21,12 @@ public interface ModuleIO {
     public double driveCurrentAmps = 0.0;
 
     public boolean turnConnected = false;
+    public boolean turnEncoderConnected = false;
     public Rotation2d relativeRotationOffset = Rotation2d.kZero;
     public Rotation2d rawRelativeTurnPosition = Rotation2d.kZero;
     public Rotation2d turnPosition = Rotation2d.kZero;
     public Rotation2d rawAbsoluteTurnPosition = Rotation2d.kZero;
-    public Rotation2d absoluteTurnPosition = Rotation2d.kZero;
+    public Rotation2d turnAbsolutePosition = Rotation2d.kZero;
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
     public double turnCurrentAmps = 0.0;
@@ -57,6 +58,7 @@ public interface ModuleIO {
   public default void setDriveSVA(double s, double v, double a) {}
 
   public default void setTurnPID(double p, double i, double d) {}
+  public default void setTurnSVA(double s, double v, double a) {}
 
   public default void setDriveRampRate(Time rate) {}
 

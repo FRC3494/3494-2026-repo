@@ -250,6 +250,13 @@ public class Drive extends SubsystemBase {
             Logger.recordOutput("Drive/TurnPID/kD", values[2]);
           });
 
+          builder.addDoubleArrayProperty("Turn SVA", () -> new double[] {turnKs, turnKv, turnKa}, (double[] values) -> {
+            setTurnSVA(values[0], values[1], values[2]);
+            Logger.recordOutput("Drive/TurnSVA/kS", values[0]);
+            Logger.recordOutput("Drive/TurnSVA/kV", values[1]);
+            Logger.recordOutput("Drive/TurnSVA/kA", values[2]);
+          });
+
       builder.addDoubleProperty(
           "Drive Ramp Rate (ms)",
           () -> driveRampRate.in(Milliseconds),
@@ -713,6 +720,12 @@ public class Drive extends SubsystemBase {
   public void setTurnPID(double p, double i, double d) {
     for (var module : modules) {
       module.setTurnPID(p, i, d);
+    }
+  }
+
+  public void setTurnSVA(double s, double v, double a) {
+    for (var module : modules) {
+      module.setTurnSVA(s, v, a);
     }
   }
 
