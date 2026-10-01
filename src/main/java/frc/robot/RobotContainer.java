@@ -192,6 +192,8 @@ public class RobotContainer implements Sendable {
       configureTuningAutos();
     }
 
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -264,8 +266,6 @@ public class RobotContainer implements Sendable {
     }
 
     autoChooser.addCmd("=====================", () -> none());
-
-    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     SmartDashboard.putData(
         "Buttons/ResetOdoForAuto",
