@@ -313,12 +313,12 @@ public final class Constants {
         (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM ->
     // Wheel Rad/Sec
 
-    // Drive PID configuration - From SysId
-    public static double driveKp = 0.1;
+    // Drive PID configuration
+    public static double driveKp = 0.0;
     public static double driveKi = 0.0;
     public static double driveKd = 0.0;
     public static double driveKs = 0.0;
-    public static double driveKv = 0.124;
+    public static double driveKv = 0.0;
     public static double driveKa = 0.0;
     public static final double driveSimP = 0.05;
     public static final double driveSimI = 0.0;
@@ -348,12 +348,12 @@ public final class Constants {
     public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
-    public static double turnKp = 61.05625;
+    public static double turnKp = 0.0;
     public static double turnKi = 0.0;
-    public static double turnKd = 0.4164575;
-    public static double turnKs = 0.4056825;
-    public static double turnKv = 0.04649525;
-    public static double turnKa = 0.001644425;
+    public static double turnKd = 0.0;
+    public static double turnKs = 0.0;
+    public static double turnKv = 0.0;
+    public static double turnKa = 0.0;
     public static final double turnSimP = 8.0;
     public static final double turnSimI = 0.0;
     public static final double turnSimD = 0.0;
