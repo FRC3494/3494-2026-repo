@@ -58,6 +58,7 @@ public interface ModuleIO {
   public default void setDriveSVA(double s, double v, double a) {}
 
   public default void setTurnPID(double p, double i, double d) {}
+
   public default void setTurnSVA(double s, double v, double a) {}
 
   public default void setDriveRampRate(Time rate) {}

@@ -9,7 +9,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.ShooterConstants.HoodConstants.hoodMinAngle;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import edu.wpi.first.math.geometry.Pose2d;

@@ -331,13 +331,36 @@ public class ModuleIOTalonFX implements ModuleIO {
   public void rezeroTurnEncoder() {}
 
   public void setDrivePID(double p, double i, double d) {
-    
+    driveKp = p;
+    driveKi = i;
+    driveKd = d;
+
+    driveTalon.getConfigurator().apply(new Slot0Configs().withKP(p).withKI(i).withKD(d));
   }
 
-  public void setDriveSVA(double s, double v, double a) {}
+  public void setDriveSVA(double s, double v, double a) {
+    driveKs = s;
+    driveKv = v;
+    driveKa = a;
 
-  public void setTurnPID(double p, double i, double d) {}
-  public void setTurnSVA(double s, double v, double a) {}
+    driveTalon.getConfigurator().apply(new Slot0Configs().withKS(s).withKV(v).withKA(a));
+  }
+
+  public void setTurnPID(double p, double i, double d) {
+    turnKp = p;
+    turnKi = i;
+    turnKd = d;
+
+    turnTalon.getConfigurator().apply(new Slot0Configs().withKP(p).withKI(i).withKD(d));
+  }
+
+  public void setTurnSVA(double s, double v, double a) {
+    turnKs = s;
+    turnKv = v;
+    turnKa = a;
+
+    turnTalon.getConfigurator().apply(new Slot0Configs().withKS(s).withKV(v).withKA(a));
+  }
 
   public void setDriveRampRate(Time rate) {}
 

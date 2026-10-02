@@ -250,7 +250,10 @@ public class Drive extends SubsystemBase {
             Logger.recordOutput("Drive/TurnPID/kD", values[2]);
           });
 
-          builder.addDoubleArrayProperty("Turn SVA", () -> new double[] {turnKs, turnKv, turnKa}, (double[] values) -> {
+      builder.addDoubleArrayProperty(
+          "Turn SVA",
+          () -> new double[] {turnKs, turnKv, turnKa},
+          (double[] values) -> {
             setTurnSVA(values[0], values[1], values[2]);
             Logger.recordOutput("Drive/TurnSVA/kS", values[0]);
             Logger.recordOutput("Drive/TurnSVA/kV", values[1]);
@@ -368,6 +371,9 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("Drive/TurnPID/kP", turnKp);
     Logger.recordOutput("Drive/TurnPID/kI", turnKi);
     Logger.recordOutput("Drive/TurnPID/kD", turnKd);
+    Logger.recordOutput("Drive/TurnPID/kS", turnKs);
+    Logger.recordOutput("Drive/TurnPID/kV", turnKv);
+    Logger.recordOutput("Drive/TurnPID/kA", turnKa);
     Logger.recordOutput("Drive/Drive/RampRate", driveRampRate);
     Logger.recordOutput("Drive/Turn/RampRate", turnRampRate);
     Logger.recordOutput("Drive/AutoAlign/LinearTolerance", autoAlignLinearTolerance);
