@@ -274,7 +274,7 @@ public final class Constants {
     public static double maxNZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
     public static double maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
 
-    public static final double odometryFrequency = 100.0; // Hz
+    public static final double odometryFrequency = 250.0; // Hz
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
     public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
