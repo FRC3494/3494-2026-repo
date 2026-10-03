@@ -117,12 +117,11 @@ public class TunerConstants {
   // This may need to be tuned to your individual robot
   private static final double kCoupleRatio = 3.125;
 
-  private static final double kDriveGearRatio = 7.125;
-  private static final double kSteerGearRatio = 21.428571428571427;
-  private static final Distance kWheelRadius = Inches.of(2);
-
-  private static final boolean kInvertLeftSide = false;
-  private static final boolean kInvertRightSide = true;
+  private static final double kDriveGearRatio =
+      (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+ Gearing
+  private static final double kSteerGearRatio =
+      ((18.75) / (2.0 * Math.PI)); // Mk4n or Mk4i w/ 16t adapter
+  private static final Distance kWheelRadius = Inches.of(1.99307984);
 
   private static final int kPigeonId = 20;
 
