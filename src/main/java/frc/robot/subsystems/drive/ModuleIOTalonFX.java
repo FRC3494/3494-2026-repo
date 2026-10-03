@@ -274,7 +274,16 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveKi = i;
     driveKd = d;
 
-    driveTalon.getConfigurator().apply(new Slot0Configs().withKP(p).withKI(i).withKD(d));
+    driveTalon
+        .getConfigurator()
+        .apply(
+            new Slot0Configs()
+                .withKP(p)
+                .withKI(i)
+                .withKD(d)
+                .withKS(driveKs)
+                .withKV(driveKv)
+                .withKA(driveKa));
   }
 
   public void setDriveSVA(double s, double v, double a) {
@@ -282,7 +291,16 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveKv = v;
     driveKa = a;
 
-    driveTalon.getConfigurator().apply(new Slot0Configs().withKS(s).withKV(v).withKA(a));
+    driveTalon
+        .getConfigurator()
+        .apply(
+            new Slot0Configs()
+                .withKP(driveKp)
+                .withKI(driveKi)
+                .withKD(driveKd)
+                .withKS(s)
+                .withKV(v)
+                .withKA(a));
   }
 
   public void setTurnPID(double p, double i, double d) {
@@ -290,7 +308,16 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnKi = i;
     turnKd = d;
 
-    turnTalon.getConfigurator().apply(new Slot0Configs().withKP(p).withKI(i).withKD(d));
+    turnTalon
+        .getConfigurator()
+        .apply(
+            new Slot0Configs()
+                .withKP(p)
+                .withKI(i)
+                .withKD(d)
+                .withKS(turnKs)
+                .withKV(turnKv)
+                .withKA(turnKa));
   }
 
   public void setTurnSVA(double s, double v, double a) {
@@ -298,7 +325,16 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnKv = v;
     turnKa = a;
 
-    turnTalon.getConfigurator().apply(new Slot0Configs().withKS(s).withKV(v).withKA(a));
+    turnTalon
+        .getConfigurator()
+        .apply(
+            new Slot0Configs()
+                .withKP(turnKp)
+                .withKI(turnKi)
+                .withKD(turnKd)
+                .withKS(s)
+                .withKV(v)
+                .withKA(a));
   }
 
   public void setDriveRampRate(Time rate) {}
