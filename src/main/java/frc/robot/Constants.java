@@ -17,9 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -295,12 +293,12 @@ public final class Constants {
     // When using linear characterization: actual linear distance / wheel delta
 
     // Drive PID configuration
-    public static double driveKp = 0.0;
-    public static double driveKi = 0.0;
-    public static double driveKd = 0.0;
-    public static double driveKs = 0.0;
-    public static double driveKv = 0.0;
-    public static double driveKa = 0.0;
+    public static double driveKp = TunerConstants.FrontLeft.DriveMotorGains.kP;
+    public static double driveKi = TunerConstants.FrontLeft.DriveMotorGains.kI;
+    public static double driveKd = TunerConstants.FrontLeft.DriveMotorGains.kD;
+    public static double driveKs = TunerConstants.FrontLeft.DriveMotorGains.kS;
+    public static double driveKv = TunerConstants.FrontLeft.DriveMotorGains.kV;
+    public static double driveKa = TunerConstants.FrontLeft.DriveMotorGains.kA;
     public static final double driveSimP = 0.05;
     public static final double driveSimI = 0.0;
     public static final double driveSimD = 0.0;
@@ -314,12 +312,12 @@ public final class Constants {
     public static Time turnRampRate = Milliseconds.of(10);
 
     // Turn PID configuration
-    public static double turnKp = 0.0;
-    public static double turnKi = 0.0;
-    public static double turnKd = 0.0;
-    public static double turnKs = 0.0;
-    public static double turnKv = 0.0;
-    public static double turnKa = 0.0;
+    public static double turnKp = TunerConstants.FrontLeft.SteerMotorGains.kP;
+    public static double turnKi = TunerConstants.FrontLeft.SteerMotorGains.kI;
+    public static double turnKd = TunerConstants.FrontLeft.SteerMotorGains.kD;
+    public static double turnKs = TunerConstants.FrontLeft.SteerMotorGains.kS;
+    public static double turnKv = TunerConstants.FrontLeft.SteerMotorGains.kV;
+    public static double turnKa = TunerConstants.FrontLeft.SteerMotorGains.kA;
     public static final double turnSimP = 8.0;
     public static final double turnSimI = 0.0;
     public static final double turnSimD = 0.0;
