@@ -93,8 +93,8 @@ public class DriveCommands {
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,
                       isFlipped
-                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                          : drive.getRotation()));
+                          ? drive.getRotation()
+                          : drive.getRotation().plus(new Rotation2d(Math.PI))));
             },
             drive)
         .withName("JoystickDrive");
@@ -143,8 +143,8 @@ public class DriveCommands {
                   ChassisSpeeds.fromFieldRelativeSpeeds(
                       speeds,
                       isFlipped
-                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                          : drive.getRotation()));
+                          ? drive.getRotation()
+                          : drive.getRotation().plus(new Rotation2d(Math.PI))));
             },
             drive)
 
