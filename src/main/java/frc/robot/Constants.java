@@ -23,12 +23,14 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Frequency;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.VisionConstants.LimelightConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.util.choreo.ChoreoVars;
 import java.util.Arrays;
@@ -274,10 +276,20 @@ public final class Constants {
     public static double maxNZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
     public static double maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
 
-    public static final double odometryFrequency = 250.0; // Hz
+    public static final Frequency odometryFrequency =
+        Hertz.of(TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0);
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
-    public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
+    public static final double driveBaseRadius =
+        Math.max(
+            Math.max(
+                Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+                Math.hypot(
+                    TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY)),
+            Math.max(
+                Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+                Math.hypot(
+                    TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
     public static final Translation2d[] moduleTranslations =
         new Translation2d[] {
           new Translation2d(trackWidth / 2.0, wheelBase / 2.0),

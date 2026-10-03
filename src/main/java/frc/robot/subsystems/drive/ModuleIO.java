@@ -24,9 +24,9 @@ public interface ModuleIO {
     public boolean turnEncoderConnected = false;
     public Rotation2d relativeRotationOffset = Rotation2d.kZero;
     public Rotation2d rawRelativeTurnPosition = Rotation2d.kZero;
-    public Rotation2d turnPosition = Rotation2d.kZero;
     public Rotation2d rawAbsoluteTurnPosition = Rotation2d.kZero;
     public Rotation2d turnAbsolutePosition = Rotation2d.kZero;
+    public Rotation2d turnPosition = Rotation2d.kZero;
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
     public double turnCurrentAmps = 0.0;
