@@ -278,8 +278,6 @@ public final class Constants {
 
     public static final Frequency odometryFrequency =
         Hertz.of(TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0);
-    public static final double trackWidth = Units.inchesToMeters(21.75);
-    public static final double wheelBase = Units.inchesToMeters(21.75);
     public static final double driveBaseRadius =
         Math.max(
             Math.max(
@@ -290,40 +288,11 @@ public final class Constants {
                 Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 Math.hypot(
                     TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
-    public static final Translation2d[] moduleTranslations =
-        new Translation2d[] {
-          new Translation2d(trackWidth / 2.0, wheelBase / 2.0),
-          new Translation2d(trackWidth / 2.0, -wheelBase / 2.0),
-          new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
-          new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
-        };
-
-    // Zeroed rotation values for each module, see setup instructions
-    // ! Gears on the right
-    public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromRadians(-0.535);
-    public static final Rotation2d frontRightZeroRotation = Rotation2d.fromRadians(-0.907);
-    public static final Rotation2d backLeftZeroRotation = Rotation2d.fromRadians(1.675);
-    public static final Rotation2d backRightZeroRotation = Rotation2d.fromRadians(0.769);
 
     // Drive motor configuration
-    public static final boolean[] driveInverted = new boolean[] {true, true, true, true};
     public static final int driveMotorCurrentLimit = 60;
     public static Time driveRampRate = Milliseconds.of(10);
     // When using linear characterization: actual linear distance / wheel delta
-    public static final double wheelRadiusMeters =
-        Units.inchesToMeters(1.99307984); // From rotational characterization
-    public static final double driveMotorReduction =
-        (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0); // SDS Mk4n/4i L1+
-    // Gearing
-    public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
-
-    // Drive encoder configuration
-    public static final double driveEncoderPositionFactor =
-        2 * Math.PI / driveMotorReduction; // Rotor Rotations ->
-    // Wheel Radians
-    public static final double driveEncoderVelocityFactor =
-        (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM ->
-    // Wheel Rad/Sec
 
     // Drive PID configuration
     public static double driveKp = 0.0;
@@ -343,21 +312,6 @@ public final class Constants {
     public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
     public static final int[] turnMotorCurrentLimit = new int[] {50, 50, 50, 50};
     public static Time turnRampRate = Milliseconds.of(10);
-    public static final double[] turnMotorReduction =
-        new double[] {
-          ((18.75) / (2.0 * Math.PI)), // Mk4i w/ 16t adapter
-          ((18.75) / (2.0 * Math.PI)), // Mk4i w/ 16t adapter
-          ((18.75) / (2.0 * Math.PI)), // Mk4n
-          ((18.75) / (2.0 * Math.PI)) // Mk4n
-        };
-    public static final DCMotor turnGearbox = DCMotor.getNeo550(1);
-
-    // Turn encoder configuration
-    public static final boolean[] turnAbsEncoderInverted =
-        new boolean[] {false, false, false, false};
-    public static final boolean[] turnRelEncoderInverted = new boolean[] {true, true, true, true};
-    public static final double turnEncoderPositionFactor = 2 * Math.PI; // Rotations -> Radians
-    public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0; // RPM -> Rad/Sec
 
     // Turn PID configuration
     public static double turnKp = 0.0;
@@ -369,17 +323,6 @@ public final class Constants {
     public static final double turnSimP = 8.0;
     public static final double turnSimI = 0.0;
     public static final double turnSimD = 0.0;
-    public static final double turnPIDMinInput = 0; // Radians
-    public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
-
-    // Pigeon config
-    public static final double pigeonGyroTrimXDegPerRot = 0.0;
-    public static final double pigeonGyroTrimYDegPerRot = 0.0;
-    public static final double pigeonGyroTrimZDegPerRot = -3.543375;
-
-    public static final Angle pigeonMountPoseYaw = Degrees.of(-0.03239322453737259);
-    public static final Angle pigeonMountPosePitch = Degrees.of(-0.30914023518562317);
-    public static final Angle pigeonMountPoseRoll = Degrees.of(-179.48013305664062);
 
     // Auto config
     public static final boolean mirrorForRedAlliance = true;
