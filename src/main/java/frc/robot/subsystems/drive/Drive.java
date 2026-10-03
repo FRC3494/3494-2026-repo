@@ -667,7 +667,7 @@ public class Drive extends SubsystemBase {
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return TunerConstants.kSpeedAt12Volts.times(demoModeSpeedFactor).in(MetersPerSecond);
+        return maxSpeedMetersPerSec * demoModeSpeedFactor;
       }
       default -> {
         return shootingDriveSpeed()
