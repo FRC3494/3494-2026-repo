@@ -263,7 +263,7 @@ public final class Constants {
      * stationary
      */
 
-    public static double maxSpeedMetersPerSec = 4.62906; // 15.187 ft/s
+    public static double maxSpeedMetersPerSec = 20; // 15.187 ft/s
     // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while
     // stationary
     public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 40);
