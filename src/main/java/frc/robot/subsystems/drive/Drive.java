@@ -743,7 +743,6 @@ public class Drive extends SubsystemBase {
 
   public void setRotation(Rotation2d rotation) {
     gyroIO.setYaw(rotation);
-    poseEstimator.resetRotation(rotation);
   }
 
   public void resetYaw() {
