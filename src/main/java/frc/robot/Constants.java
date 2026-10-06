@@ -59,7 +59,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final DriveMode driveMode = DriveMode.DEMO;
+  public static final DriveMode driveMode = DriveMode.NORMAL;
   public static final double targetHeight = Units.inchesToMeters(120.36); // hub height
 
   public static enum DriveMode {
