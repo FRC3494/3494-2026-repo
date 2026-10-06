@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Frequency;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -263,9 +264,8 @@ public final class Constants {
      * stationary
      */
 
-    public static double maxSpeedMetersPerSec = 20; // 15.187 ft/s
-    // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while
-    // stationary
+    public static LinearVelocity maxSpeed = MetersPerSecond.of(20); // 15.187 ft/s
+    // * Max rotation speed (Rad/Sec) while moving / Max rotation speed while stationary
     public static double maxAngularSpeedRadPerSec = Units.degreesToRadians(360 + 40);
     public static final double demoModeSpeedFactor = 0.15;
 

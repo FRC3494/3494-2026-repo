@@ -153,9 +153,9 @@ public class Drive extends SubsystemBase {
       // Max Speeds
       builder.addDoubleProperty(
           "Max Drive Speed (FtPerSec)",
-          () -> Units.metersToFeet(maxSpeedMetersPerSec),
+          () -> maxSpeed.in(FeetPerSecond),
           (double value) -> {
-            maxSpeedMetersPerSec = Units.feetToMeters(value);
+            maxSpeed = FeetPerSecond.of(value);
             Logger.recordOutput("Drive/MaxDriveSpeed", FeetPerSecond.of(value));
           });
 
@@ -348,7 +348,7 @@ public class Drive extends SubsystemBase {
     }
 
     // Log initial values regardless of tuning mode
-    Logger.recordOutput("Drive/MaxDriveSpeed", MetersPerSecond.of(maxSpeedMetersPerSec));
+    Logger.recordOutput("Drive/MaxDriveSpeed", maxSpeed);
     Logger.recordOutput("Drive/MaxAngularSpeed", RadiansPerSecond.of(maxAngularSpeedRadPerSec));
     Logger.recordOutput(
         "Drive/MaxAZShootingDriveSpeed", MetersPerSecond.of(maxAZShootingSpeedMetersPerSec));
@@ -461,7 +461,7 @@ public class Drive extends SubsystemBase {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeed.in(MetersPerSecond));
 
     // Log unoptimized setpoints
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -667,12 +667,12 @@ public class Drive extends SubsystemBase {
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return maxSpeedMetersPerSec * demoModeSpeedFactor;
+        return maxSpeed.in(MetersPerSecond) * demoModeSpeedFactor;
       }
       default -> {
         return shootingDriveSpeed()
             ? (inAllianceZone() ? maxAZShootingSpeedMetersPerSec : maxNZShootingSpeedMetersPerSec)
-            : maxSpeedMetersPerSec;
+            : maxSpeed.in(MetersPerSecond);
       }
     }
   }
