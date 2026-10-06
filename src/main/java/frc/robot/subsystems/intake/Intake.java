@@ -161,19 +161,19 @@ public class Intake extends SubsystemBase {
 
     // Uppy Downy Settings
     builder.addDoubleProperty(
-        "UppyDown/DownPosition",
+        "UppyDowny/DownPosition",
         () -> uppyDownyDownPosition,
         (double value) -> {
           uppyDownyDownPosition = value;
-          Logger.recordOutput("UppyDown/DownPosition", value);
+          Logger.recordOutput("UppyDowny/DownPosition", value);
         });
 
     builder.addDoubleProperty(
-        "UppyDown/UpPosition",
+        "UppyDowny/UpPosition",
         () -> uppyDownyUpPosition,
         (double value) -> {
           uppyDownyUpPosition = value;
-          Logger.recordOutput("UppyDown/UpPosition", value);
+          Logger.recordOutput("UppyDowny/UpPosition", value);
         });
 
     builder.addDoubleProperty(
