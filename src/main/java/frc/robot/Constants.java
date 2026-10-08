@@ -507,7 +507,6 @@ public final class Constants {
     // than Hub
     // 17.625 inches is robot center-to-bumper edge distance
     public static final Distance azLineOffset = Inches.of(17.625).plus(Inches.of(48));
-    // TODO: Move to a more appropriate place
     public static final Distance azLine = Inches.of(158.6).plus(azLineOffset);
 
     public static final double gravity = 9.81;
