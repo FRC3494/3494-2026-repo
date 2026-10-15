@@ -84,7 +84,7 @@ public class Intake extends SubsystemBase {
     SparkFlexConfig uppyDownyConfig = new SparkFlexConfig();
     uppyDownyConfig
         .smartCurrentLimit((int) uppyDownyCurrentLimit.in(Amps))
-        .idleMode(IdleMode.kCoast)
+        .idleMode(IdleMode.kBrake)
         .inverted(uppyDownyInverted)
         .openLoopRampRate(uppyDownyRampRate.in(Seconds))
         .closedLoopRampRate(uppyDownyRampRate.in(Seconds))
