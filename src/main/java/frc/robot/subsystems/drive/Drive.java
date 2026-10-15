@@ -161,9 +161,9 @@ public class Drive extends SubsystemBase {
 
       builder.addDoubleProperty(
           "Max Angular Speed (DegPerSec)",
-          () -> Units.radiansToDegrees(maxAngularSpeedRadPerSec),
+          () -> maxAngularSpeed.in(DegreesPerSecond),
           (double value) -> {
-            maxAngularSpeedRadPerSec = Units.degreesToRadians(value);
+            maxAngularSpeed = DegreesPerSecond.of(value);
             Logger.recordOutput("Drive/MaxAngularSpeed", DegreesPerSecond.of(value));
           });
 
@@ -349,7 +349,7 @@ public class Drive extends SubsystemBase {
 
     // Log initial values regardless of tuning mode
     Logger.recordOutput("Drive/MaxDriveSpeed", maxSpeed);
-    Logger.recordOutput("Drive/MaxAngularSpeed", RadiansPerSecond.of(maxAngularSpeedRadPerSec));
+    Logger.recordOutput("Drive/MaxAngularSpeed", maxAngularSpeed);
     Logger.recordOutput(
         "Drive/MaxAZShootingDriveSpeed", MetersPerSecond.of(maxAZShootingSpeedMetersPerSec));
     Logger.recordOutput(
@@ -681,14 +681,14 @@ public class Drive extends SubsystemBase {
   public double getMaxAngularSpeedRadPerSec() {
     switch (Constants.driveMode) {
       case DEMO -> {
-        return maxAngularSpeedRadPerSec * demoModeSpeedFactor;
+        return maxAngularSpeed.in(RadiansPerSecond) * demoModeSpeedFactor;
       }
       default -> {
         return shootingDriveSpeed()
             ? (inAllianceZone()
                 ? maxAZShootingAngularSpeedRadPerSec
                 : maxNZShootingAngularSpeedRadPerSec)
-            : maxAngularSpeedRadPerSec;
+            : maxAngularSpeed.in(RadiansPerSecond);
       }
     }
   }
