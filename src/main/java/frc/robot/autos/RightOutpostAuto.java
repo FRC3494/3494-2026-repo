@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
+import frc.robot.subsystems.intake.SpinnySpinny;
 
 public class RightOutpostAuto extends AutoBase {
   @Override
@@ -52,12 +53,16 @@ public class RightOutpostAuto extends AutoBase {
                     requirements.robotCommands().enableAutoTurret(),
                     rightTrenchToNZ.cmd())));
 
-    rightTrenchToNZ.atTime("NZIntake").onTrue(requirements.robotCommands().intake());
+    rightTrenchToNZ
+        .atTime("NZIntake")
+        .onTrue(requirements.spinnySpinny().setState(SpinnySpinny.State.INTAKE));
 
     rightTrenchToNZ
         .done()
         .onTrue(
-            sequence(requirements.robotCommands().stopIntake(), rightMiddleNZToOutpost_0.cmd()));
+            sequence(
+                requirements.spinnySpinny().setState(SpinnySpinny.State.IDLE),
+                rightMiddleNZToOutpost_0.cmd()));
 
     rightMiddleNZToOutpost_0
         .atTime("StartFlywheel")

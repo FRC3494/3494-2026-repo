@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
+import frc.robot.subsystems.intake.SpinnySpinny;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.util.choreo.ChoreoVars;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class Autos {
       AutoFactory autoFactory,
       RobotCommands robotCommands,
       Drive drive,
+      SpinnySpinny spinnySpinny,
       ShooterAimModel shooterAimModel) {}
 
   // #region LOGGING

@@ -331,6 +331,14 @@ public final class OI implements Sendable {
       // return rightButtonBoard.button(10, eventLoop).castTo(Trigger::new);
     }
 
+    public static Trigger intakeUp() {
+      return primaryController.povUp();
+    }
+
+    public static Trigger intakeDown() {
+      return primaryController.povDown();
+    }
+
     public static Trigger raiseIntake() {
       // Right button board joystick LEFT
       return rightButtonBoard

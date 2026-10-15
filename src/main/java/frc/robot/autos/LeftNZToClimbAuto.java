@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
+import frc.robot.subsystems.intake.SpinnySpinny;
 
 public class LeftNZToClimbAuto extends AutoBase {
   @Override
@@ -48,11 +49,18 @@ public class LeftNZToClimbAuto extends AutoBase {
 
     leftTrenchToNZ
         .atTime("NZIntake")
-        .onTrue(requirements.robotCommands().intake().andThen(print("NZIntake")));
+        .onTrue(
+            requirements
+                .spinnySpinny()
+                .setState(SpinnySpinny.State.INTAKE)
+                .andThen(print("NZIntake")));
 
     leftTrenchToNZ
         .done()
-        .onTrue(sequence(requirements.robotCommands().stopIntake(), middleNZToLeftClimb.cmd()));
+        .onTrue(
+            sequence(
+                requirements.spinnySpinny().setState(SpinnySpinny.State.IDLE),
+                middleNZToLeftClimb.cmd()));
 
     // middleNZToLeftClimb
     //     .atPose("ClimberUp", Units.inchesToMeters(12), Math.PI)

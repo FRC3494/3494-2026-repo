@@ -23,7 +23,8 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveCommands;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.SpinnySpinny;
+import frc.robot.subsystems.intake.UppyDowny;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.shooter.hood.Hood;
@@ -37,7 +38,8 @@ public class RobotCommands {
   private final Climber climber;
   private final Drive drive;
   private final Hopper hopper;
-  private final Intake intake;
+  private final SpinnySpinny spinnySpinny;
+  private final UppyDowny uppyDowny;
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turret turret;
@@ -56,7 +58,8 @@ public class RobotCommands {
       Climber climber,
       Drive drive,
       Hopper hopper,
-      Intake intake,
+      SpinnySpinny spinnySpinny,
+      UppyDowny uppyDowny,
       Flywheel flywheel,
       Hood hood,
       Turret turret,
@@ -64,7 +67,8 @@ public class RobotCommands {
     this.climber = climber;
     this.drive = drive;
     this.hopper = hopper;
-    this.intake = intake;
+    this.spinnySpinny = spinnySpinny;
+    this.uppyDowny = uppyDowny;
     this.flywheel = flywheel;
     this.hood = hood;
     this.turret = turret;
@@ -388,10 +392,7 @@ public class RobotCommands {
   }
 
   public Command startKickerWithTrenchSafety() {
-    return either(
-            stopKicker(),
-            startKicker(),
-            () -> hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+    return either(stopKicker(), startKicker(), () -> drive.isUnderTrench())
         .withName("StartKickerWithTrenchSafety");
   }
 
@@ -493,16 +494,17 @@ public class RobotCommands {
   }
 
   public Command dumpFuelNoSafety() {
-    return sequence(
-            setManualShooterSettings(Rotation2d.fromDegrees(45), RPM.of(2800)),
-            turretToPosition(Units.degreesToRotations(0)),
-            startHood(),
-            startFlywheel(),
-            startIntakeReverse(),
-            waitUntil(turret::withinShootingTolerance),
-            startKicker(),
-            waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
-            runSpindexerWithStallDetection(() -> spindexerSpeed))
+    return parallel(
+            spinnySpinny.runState(SpinnySpinny.State.OUTTAKE),
+            sequence(
+                setManualShooterSettings(Rotation2d.fromDegrees(45), RPM.of(2800)),
+                turretToPosition(Units.degreesToRotations(0)),
+                startHood(),
+                startFlywheel(),
+                waitUntil(turret::withinShootingTolerance),
+                startKicker(),
+                waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)),
+                runSpindexerWithStallDetection(() -> spindexerSpeed)))
         .finallyDo(
             () -> {
               turret.setDefaultCommand(autoTurretCommand());
@@ -514,67 +516,13 @@ public class RobotCommands {
 
   // #region INTAKE
 
-  public Command intake() {
-    return startIntake().withName("Intake");
-    // return parallel(startIntake(), runSpindexerWithStallDetection(() -> spindexerIntakingSpeed))
-    //     .withName("Intake");
-  }
-
-  public Command spinDownFromIntake() {
-    return sequence(stopIntake(), stopSpindexer()).withName("SpinDownFromIntake");
-  }
-
-  public Command startIntake() {
-    return runOnce(
-            () -> {
-              intake.setSpinnySpinnyVelocity(intakeSpinnySpinnySpeed);
-            },
-            intake)
-        .withName("StartIntake");
-  }
-
-  public Command runIntakeStartupForShoot() {
-    return sequence(
-            runOnce(
-                () -> {
-                  intake.setSpinnySpinnyVelocity(intakeSpinnySpinnyShootingSpeed.unaryMinus());
-                },
-                intake),
-            defer(() -> waitTime(intakeSpinnySpinnyShootingReverseTime), Set.of(intake)),
-            runOnce(
-                () -> {
-                  intake.setSpinnySpinnyVelocity(intakeSpinnySpinnyShootingSpeed);
-                },
-                intake))
-        .withName("StartIntakeForShoot");
-  }
-
   public Command runIntakeWithUnjam() {
     return repeatingSequence(
-            startIntake(),
-            waitUntil(
-                () -> intake.getSpinnySpinnyFilteredCurrent().gt(spinnySpinnyCurrentThreshold)),
-            startIntakeReverse(),
-            waitSeconds(0.1))
+            spinnySpinny
+                .runState(SpinnySpinny.State.INTAKE)
+                .until(() -> spinnySpinny.getFilteredCurrent().gt(spinnySpinnyCurrentThreshold)),
+            spinnySpinny.runState(SpinnySpinny.State.OUTTAKE).withTimeout(Seconds.of(0.1)))
         .withName("RunIntakeWithUnjam");
-  }
-
-  public Command startIntakeReverse() {
-    return runOnce(
-            () -> {
-              intake.setSpinnySpinnyVelocity(intakeSpinnySpinnySpeed.times(-1.0));
-            },
-            intake)
-        .withName("StartIntakeReverse");
-  }
-
-  public Command stopIntake() {
-    return runOnce(
-            () -> {
-              intake.setSpinnySpinnyVelocity(RPM.zero());
-            },
-            intake)
-        .withName("StopIntake");
   }
 
   public Command dropIntakeWithDrive() {
@@ -601,8 +549,13 @@ public class RobotCommands {
 
   private Command upDownCommand() {
     return repeatingSequence(
-            runIntakeUp().withTimeout(jostleIntakeDownTime),
-            runIntakeDown().withTimeout(jostleIntakeUpTime))
+            runOnce(() -> uppyDowny.setOpenLoop(jostleIntakeVoltage.plus(Volts.of(uppyDownyKg)))),
+            waitTime(jostleIntakeDownTime),
+            runOnce(
+                () ->
+                    uppyDowny.setOpenLoop(
+                        jostleIntakeVoltage.unaryMinus().minus(Volts.of(uppyDownyKg)))),
+            waitTime(jostleIntakeUpTime))
         .withName("IntakeUpDown");
   }
 
@@ -627,22 +580,15 @@ public class RobotCommands {
     return sequence(
             runOnce(
                 () -> {
-                  intake.setUppyDownyPosition(position);
+                  uppyDowny.setPosition(position);
                 },
-                intake),
-            waitUntil(() -> intake.isUppyDownyAtSetpoint()))
+                uppyDowny),
+            waitUntil(() -> uppyDowny.isAtSetpoint()))
         .withName("RunIntakeToPosition");
   }
 
   public Command runIntakeToPosition(DoubleSupplier position) {
-    return sequence(
-            runOnce(
-                () -> {
-                  intake.setUppyDownyPosition(position.getAsDouble());
-                },
-                intake),
-            waitUntil(() -> intake.isUppyDownyAtSetpoint()))
-        .withName("RunIntakeToPosition");
+    return runIntakeToPosition(position.getAsDouble());
   }
 
   public Command runIntakeUp() {
@@ -654,16 +600,16 @@ public class RobotCommands {
   }
 
   private void stopIntakeUppyDowny() {
-    intake.setUppyDownyOpenLoop(Volts.zero());
+    uppyDowny.setOpenLoop(Volts.zero());
   }
 
   public Command intakeManual(boolean upwards) {
     return run(
             () -> {
-              intake.setUppyDownyOpenLoop(
+              uppyDowny.setOpenLoop(
                   upwards ? uppyDownyManualVoltage : uppyDownyManualVoltage.unaryMinus());
             },
-            intake)
+            uppyDowny)
         .finallyDo(this::stopIntakeUppyDowny)
         .withName(upwards ? "IntakeManualUp" : "IntakeManualDown");
   }
@@ -672,28 +618,28 @@ public class RobotCommands {
     return sequence(
             runOnce(
                 () -> {
-                  intake.setUppyDownyCurrentLimit(Amps.of(20));
-                  intake.setUppyDownyOpenLoop(Volts.of(-1));
+                  uppyDowny.setCurrentLimit(Amps.of(20));
+                  uppyDowny.setOpenLoop(Volts.of(1));
                 },
-                intake),
-            waitUntil(() -> intake.getUppyDownyFilteredCurrent().gte(Amps.of(19))),
+                uppyDowny),
+            waitUntil(() -> uppyDowny.getFilteredCurrent().gte(Amps.of(19))),
             runOnce(
                 () -> {
-                  intake.setUppyDownyOpenLoop(Volts.zero());
-                  intake.setUppyDownyRelativeEncoderPosition(uppyDownyDownPosition);
+                  uppyDowny.setOpenLoop(Volts.zero());
+                  uppyDowny.setRelativeEncoderPosition(uppyDownyUpPosition);
                 },
-                intake),
+                uppyDowny),
             runOnce(
                 () -> {
-                  intake.setUppyDownyCurrentLimit(uppyDownyCurrentLimit);
+                  uppyDowny.setCurrentLimit(uppyDownyCurrentLimit);
                 },
-                intake),
+                uppyDowny),
             print("Intake Rezero Done ================================================="))
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
-              intake.setUppyDownyOpenLoop(Volts.zero());
-              intake.setUppyDownyCurrentLimit(uppyDownyCurrentLimit);
+              uppyDowny.setOpenLoop(Volts.zero());
+              uppyDowny.setCurrentLimit(uppyDownyCurrentLimit);
             })
         .withName("RezeroIntake");
   }
@@ -707,6 +653,7 @@ public class RobotCommands {
         "Shoot",
         autoFlywheelCommand(),
         runAutoHood(),
+        spinnySpinny.runState(SpinnySpinny.State.INTAKE_WHILE_SHOOTING),
         runIntakeJostleWithTrenchSafety(),
         runSpindexerAndKicker());
   }
@@ -715,13 +662,18 @@ public class RobotCommands {
     return getShootCommand(
         "ShootWithManualSettings",
         runManualHoodWithTrenchSafety(),
+        spinnySpinny.runState(SpinnySpinny.State.INTAKE_WHILE_SHOOTING),
         runIntakeJostleWithTrenchSafety(),
         runSpindexerAndKicker());
   }
 
   public Command shootWoIntakeJostle() {
     return getShootCommand(
-        "ShootWoIntakeJostle", autoFlywheelCommand(), runAutoHood(), runSpindexerAndKicker());
+        "ShootWoIntakeJostle",
+        autoFlywheelCommand(),
+        runAutoHood(),
+        spinnySpinny.runState(SpinnySpinny.State.INTAKE_WHILE_SHOOTING),
+        runSpindexerAndKicker());
   }
 
   public Command shootWithOuttakeWoJostle() {
@@ -729,14 +681,19 @@ public class RobotCommands {
         "ShootWithOuttakeWoJostle",
         autoFlywheelCommand(),
         runAutoHood(),
-        startIntakeReverse(),
+        spinnySpinny.runState(SpinnySpinny.State.OUTTAKE_WHILE_SHOOTING),
         runSpindexerAndKicker());
   }
 
   private Command getShootCommand(String name, Command... parallelCommands) {
     return sequence(
             parallel(
-                runIntakeStartupForShoot(),
+                defer(
+                    () ->
+                        spinnySpinny
+                            .runState(SpinnySpinny.State.OUTTAKE_WHILE_SHOOTING)
+                            .withTimeout(intakeSpinnySpinnyShootingReverseTime),
+                    Set.of(spinnySpinny)),
                 sequence(
                     startHoodWithTrenchSafety(),
                     startFlywheel(),
@@ -755,7 +712,6 @@ public class RobotCommands {
             waitSeconds(0.25),
             stopKicker(),
             waitSeconds(0.25),
-            stopIntake(),
             stopFlywheel(),
             runIntakeDown())
         .withName("SpinDownFromShoot");
@@ -765,10 +721,9 @@ public class RobotCommands {
     return sequence(
             stopSpindexer(),
             stopKicker(),
-            stopIntake(),
             stopHood(),
             stopFlywheel(),
-            runOnce(this::stopIntakeUppyDowny, intake))
+            runOnce(this::stopIntakeUppyDowny, uppyDowny))
         .withName("StopShootNoDelay");
   }
 

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
+import frc.robot.subsystems.intake.SpinnySpinny;
 
 public class NZToDepotAuto extends AutoBase {
   @Override
@@ -57,11 +58,18 @@ public class NZToDepotAuto extends AutoBase {
 
     leftTrenchToNZ
         .atTime("NZIntake")
-        .onTrue(requirements.robotCommands().intake().andThen(print("NZIntake")));
+        .onTrue(
+            requirements
+                .spinnySpinny()
+                .setState(SpinnySpinny.State.INTAKE)
+                .andThen(print("NZIntake")));
 
     leftTrenchToNZ
         .done()
-        .onTrue(sequence(requirements.robotCommands().stopIntake(), leftMiddleNZToDepot_0.cmd()));
+        .onTrue(
+            sequence(
+                requirements.spinnySpinny().setState(SpinnySpinny.State.IDLE),
+                leftMiddleNZToDepot_0.cmd()));
 
     leftMiddleNZToDepot_0
         .atTime("StartFlywheel")
@@ -77,7 +85,10 @@ public class NZToDepotAuto extends AutoBase {
             sequence(
                 parallel(
                     requirements.robotCommands().runClimberUp(),
-                    depotIntake.cmd().deadlineFor(requirements.robotCommands().intake()))));
+                    depotIntake
+                        .cmd()
+                        .deadlineFor(
+                            requirements.spinnySpinny().runState(SpinnySpinny.State.INTAKE)))));
 
     depotIntake.done().onTrue(depotIntakeToClimb.cmd());
 

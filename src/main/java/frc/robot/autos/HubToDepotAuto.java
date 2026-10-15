@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.autos.Autos.AutoRequirements;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
+import frc.robot.subsystems.intake.SpinnySpinny;
 
 public class HubToDepotAuto extends AutoBase {
   @Override
@@ -67,7 +68,10 @@ public class HubToDepotAuto extends AutoBase {
             sequence(
                 parallel(
                     requirements.robotCommands().runClimberUp(),
-                    depotIntake.cmd().deadlineFor(requirements.robotCommands().intake()))));
+                    depotIntake
+                        .cmd()
+                        .deadlineFor(
+                            requirements.spinnySpinny().runState(SpinnySpinny.State.INTAKE)))));
 
     depotIntake.done().onTrue(depotIntakeToClimb.cmd());
 

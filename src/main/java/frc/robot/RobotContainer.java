@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveMode;
@@ -65,7 +66,8 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.autoalign.AutoAlignToTargetCommands;
 import frc.robot.subsystems.hopper.Hopper;
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.SpinnySpinny;
+import frc.robot.subsystems.intake.UppyDowny;
 import frc.robot.subsystems.shooter.AimShooterMathLinear;
 import frc.robot.subsystems.shooter.ShooterAimModel;
 import frc.robot.subsystems.shooter.flywheel.Flywheel;
@@ -76,6 +78,7 @@ import frc.robot.util.Elastic;
 import frc.robot.util.choreo.ChoreoTraj;
 import frc.robot.util.choreo.ChoreoVars;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -93,7 +96,8 @@ public class RobotContainer implements Sendable {
   private final AprilTagVision aprilTagVision;
   private final Climber climber;
   private final Hopper hopper;
-  private final Intake intake;
+  private final SpinnySpinny spinnySpinny;
+  private final UppyDowny uppyDowny;
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turret turret;
@@ -154,7 +158,8 @@ public class RobotContainer implements Sendable {
     aprilTagVision = new AprilTagVision(drive);
     climber = new Climber();
     hopper = new Hopper();
-    intake = new Intake();
+    spinnySpinny = new SpinnySpinny();
+    uppyDowny = new UppyDowny();
     flywheel = new Flywheel();
     hood = new Hood();
     turret = new Turret();
@@ -163,7 +168,16 @@ public class RobotContainer implements Sendable {
     shooterAimModel = new AimShooterMathLinear(drive::getPose, drive::getChassisSpeeds);
 
     robotCommands =
-        new RobotCommands(climber, drive, hopper, intake, flywheel, hood, turret, shooterAimModel);
+        new RobotCommands(
+            climber,
+            drive,
+            hopper,
+            spinnySpinny,
+            uppyDowny,
+            flywheel,
+            hood,
+            turret,
+            shooterAimModel);
 
     RobotModeTriggers.autonomous()
         .onTrue(
@@ -253,7 +267,7 @@ public class RobotContainer implements Sendable {
         };
 
     AutoRequirements autoRequirements =
-        new AutoRequirements(autoFactory, robotCommands, drive, shooterAimModel);
+        new AutoRequirements(autoFactory, robotCommands, drive, spinnySpinny, shooterAimModel);
 
     for (AutoBase auto : autos) {
       autoChooser.addRoutine(
@@ -331,8 +345,7 @@ public class RobotContainer implements Sendable {
     registerSysIdAutos("Kicker", hopper.getKickerSysId(), hopper::setKickerOpenLoop);
 
     // Intake
-    registerSysIdAutos(
-        "Intake SpinnySpinny", intake.getSpinnySpinnySysId(), intake::setSpinnySpinnyOpenLoop);
+    registerSysIdAutos("Intake SpinnySpinny", spinnySpinny.getSysId(), spinnySpinny::setOpenLoop);
 
     // Turret
     registerSysIdAutos("Turret", turret.getSysId(), turret::setOpenLoop);
@@ -422,26 +435,54 @@ public class RobotContainer implements Sendable {
     HopperOI.spindexerBackwards()
         .onTrue(robotCommands.startSpindexerReverse())
         .onFalse(
-            either(
-                either(
-                    robotCommands.shootWoIntakeJostle(),
-                    robotCommands.shoot(),
-                    () -> IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone()),
-                robotCommands.stopSpindexer(),
-                ShooterOI.shoot()::getAsBoolean));
+            defer(
+                () -> {
+                  if (ShooterOI.shoot().getAsBoolean()) {
+                    if (IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone()) {
+                      return robotCommands
+                          .shootWoIntakeJostle()
+                          .until(() -> !ShooterOI.shoot().getAsBoolean());
+                    } else {
+                      return robotCommands.shoot().until(() -> !ShooterOI.shoot().getAsBoolean());
+                    }
+                  }
+
+                  return robotCommands.stopSpindexer();
+                },
+                new HashSet<Subsystem>() {
+                  {
+                    addAll(robotCommands.shootWoIntakeJostle().getRequirements());
+                    addAll(robotCommands.shoot().getRequirements());
+                    addAll(robotCommands.stopSpindexer().getRequirements());
+                  }
+                }));
 
     HopperOI.runKicker().onTrue(robotCommands.startKicker()).onFalse(robotCommands.stopKicker());
 
     HopperOI.kickerBackwards()
         .onTrue(robotCommands.startKickerReverse())
         .onFalse(
-            either(
-                either(
-                    robotCommands.shootWoIntakeJostle(),
-                    robotCommands.shoot(),
-                    () -> IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone()),
-                robotCommands.stopKicker(),
-                ShooterOI.shoot()::getAsBoolean));
+            defer(
+                () -> {
+                  if (ShooterOI.shoot().getAsBoolean()) {
+                    if (IntakeOI.intake().getAsBoolean() || !shooterAimModel.isInAllianceZone()) {
+                      return robotCommands
+                          .shootWoIntakeJostle()
+                          .until(() -> !ShooterOI.shoot().getAsBoolean());
+                    } else {
+                      return robotCommands.shoot().until(() -> !ShooterOI.shoot().getAsBoolean());
+                    }
+                  }
+
+                  return robotCommands.stopKicker();
+                },
+                new HashSet<Subsystem>() {
+                  {
+                    addAll(robotCommands.shootWoIntakeJostle().getRequirements());
+                    addAll(robotCommands.shoot().getRequirements());
+                    addAll(robotCommands.stopKicker().getRequirements());
+                  }
+                }));
 
     HopperOI.jiggleRobot().whileTrue(robotCommands.jiggleRobot());
 
@@ -453,29 +494,38 @@ public class RobotContainer implements Sendable {
 
     // #region INTAKE
 
-    IntakeOI.intake()
-        .onTrue(robotCommands.intake().withName("IntakeButtonPress"))
-        .whileFalse(robotCommands.spinDownFromIntake().withName("IntakeButtonRelease"));
+    IntakeOI.intake().whileTrue(spinnySpinny.runState(SpinnySpinny.State.INTAKE));
     IntakeOI.intakeReverse()
-        .onTrue(
-            either(
-                robotCommands.shootWithOuttakeWoJostle(),
-                robotCommands.startIntakeReverse(),
-                ShooterOI.shoot()::getAsBoolean))
+        .whileTrue(
+            defer(
+                () -> {
+                  if (ShooterOI.shoot().getAsBoolean())
+                    return robotCommands.shootWithOuttakeWoJostle();
+
+                  return spinnySpinny.runState(SpinnySpinny.State.OUTTAKE);
+                },
+                new HashSet<Subsystem>() {
+                  {
+                    addAll(robotCommands.shootWithOuttakeWoJostle().getRequirements());
+
+                    addAll(spinnySpinny.runState(SpinnySpinny.State.OUTTAKE).getRequirements());
+                  }
+                }))
         .onFalse(
-            either(
-                robotCommands.shoot(),
-                robotCommands.stopIntake(),
-                ShooterOI.shoot()::getAsBoolean));
+            robotCommands
+                .shoot()
+                .onlyIf(ShooterOI.shoot()::getAsBoolean)
+                .until(() -> !ShooterOI.shoot().getAsBoolean()));
 
     IntakeOI.toggleIntake()
         .onTrue(
-            either(
-                    robotCommands.intake(),
-                    robotCommands.spinDownFromIntake(),
-                    () -> intake.getSpinnySpinnySetpoint().isEquivalent(RPM.zero()))
+            spinnySpinny
+                .runState(SpinnySpinny.State.INTAKE)
+                .onlyIf(() -> spinnySpinny.getSetpoint().isEquivalent(RPM.zero()))
                 .withName("ToggleIntake"));
 
+    IntakeOI.intakeUp().onTrue(robotCommands.runIntakeUp());
+    IntakeOI.intakeDown().onTrue(robotCommands.runIntakeDown());
     IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManual(true));
     IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManual(false));
     IntakeOI.rezeroIntake().onTrue(robotCommands.rezeroIntake());
@@ -498,24 +548,54 @@ public class RobotContainer implements Sendable {
 
     ShooterOI.shoot()
         .whileTrue(
-            either(
-                    robotCommands.shootWithOuttakeWoJostle(),
-                    either(
-                        robotCommands.shoot(),
-                        robotCommands.shootWoIntakeJostle(),
-                        IntakeOI.jostleIntake()::getAsBoolean),
-                    IntakeOI.intakeReverse()::getAsBoolean)
+            defer(
+                    () -> {
+                      if (IntakeOI.intake().getAsBoolean())
+                        return robotCommands.shootWoIntakeJostle();
+                      if (IntakeOI.intakeReverse().getAsBoolean())
+                        return robotCommands.shootWithOuttakeWoJostle();
+
+                      return robotCommands.shoot();
+                    },
+                    new HashSet<Subsystem>() {
+                      {
+                        addAll(robotCommands.shootWoIntakeJostle().getRequirements());
+                        addAll(robotCommands.shootWithOuttakeWoJostle().getRequirements());
+
+                        addAll(robotCommands.shoot().getRequirements());
+                      }
+                    })
                 .withName("ShootButtonPress"))
         .onFalse(
-            sequence(
-                    robotCommands.spinDownFromShoot(),
-                    robotCommands
-                        .startIntakeReverse()
-                        .onlyIf(IntakeOI.intakeReverse()::getAsBoolean),
-                    robotCommands.intake().onlyIf(IntakeOI.intake()::getAsBoolean),
-                    robotCommands
-                        .runIntakeJostleWithTrenchSafety()
-                        .onlyIf(IntakeOI.jostleIntake()::getAsBoolean))
+            defer(
+                    () -> {
+                      if (IntakeOI.intake().getAsBoolean())
+                        return parallel(
+                                robotCommands.spinDownFromShoot(),
+                                spinnySpinny.runState(SpinnySpinny.State.INTAKE))
+                            .until(() -> !IntakeOI.intake().getAsBoolean());
+                      if (IntakeOI.intakeReverse().getAsBoolean())
+                        return parallel(
+                                robotCommands.spinDownFromShoot(),
+                                spinnySpinny.runState(SpinnySpinny.State.OUTTAKE))
+                            .until(() -> !IntakeOI.intakeReverse().getAsBoolean());
+                      if (IntakeOI.jostleIntake().getAsBoolean())
+                        return sequence(
+                                robotCommands.spinDownFromShoot(),
+                                robotCommands.runIntakeJostleWithTrenchSafety())
+                            .until(() -> !IntakeOI.jostleIntake().getAsBoolean());
+
+                      return robotCommands.spinDownFromShoot();
+                    },
+                    new HashSet<Subsystem>() {
+                      {
+                        addAll(spinnySpinny.runState(SpinnySpinny.State.INTAKE).getRequirements());
+                        addAll(spinnySpinny.runState(SpinnySpinny.State.OUTTAKE).getRequirements());
+                        addAll(robotCommands.runIntakeJostleWithTrenchSafety().getRequirements());
+
+                        addAll(robotCommands.spinDownFromShoot().getRequirements());
+                      }
+                    })
                 .withName("ShootButtonRelease"));
 
     ShooterOI.shootClose()
