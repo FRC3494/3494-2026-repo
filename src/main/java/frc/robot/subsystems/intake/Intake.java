@@ -28,9 +28,9 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
-  SparkFlex spinnySpinnyLeftMotor;
-  SparkFlex spinnySpinnyRightMotor;
-  SparkFlex uppyDownyMotor;
+  private SparkFlex spinnySpinnyLeftMotor;
+  private SparkFlex spinnySpinnyRightMotor;
+  private SparkFlex uppyDownyMotor;
 
   @Getter
   @AutoLogOutput(key = "Intake/SpinnySpinny/Setpoint")
@@ -244,7 +244,8 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake/SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
     Logger.recordOutput("Intake/SpinnySpinny/ShootingSpeed", intakeSpinnySpinnyShootingSpeed);
     Logger.recordOutput(
-        "Intake/SpinnySpinny/ShootingReverseTime", intakeSpinnySpinnyShootingReverseTime.in(Seconds));
+        "Intake/SpinnySpinny/ShootingReverseTime",
+        intakeSpinnySpinnyShootingReverseTime.in(Seconds));
     Logger.recordOutput("Intake/SpinnySpinny/PID/kP", spinnySpinnyKp);
     Logger.recordOutput("Intake/SpinnySpinny/PID/kI", spinnySpinnyKi);
     Logger.recordOutput("Intake/SpinnySpinny/PID/kD", spinnySpinnyKd);
