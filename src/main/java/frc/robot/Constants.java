@@ -336,6 +336,10 @@ public final class Constants {
     public static double autoAngularKi = 0.0;
     public static double autoAngularKd = 0.0;
 
+    // Trench safety configuration
+    public static Distance trenchSafetyBuffer = Meters.of(0.5);
+    public static Time trenchSafetyLookahead = Seconds.of(0.5);
+
     public static final Distance fieldWidth = ChoreoVars.FieldWidth;
     public static final Distance fieldLength = ChoreoVars.FieldLength;
 
@@ -671,9 +675,6 @@ public final class Constants {
       public static double hoodKa = 0.0;
 
       public static final double hoodRezeroTimeoutSeconds = 10.0;
-
-      public static double trenchSafetyBufferMeters = 0.5;
-      public static double trenchSafetyLookaheadSeconds = 0.5;
     }
     // #endregion
 

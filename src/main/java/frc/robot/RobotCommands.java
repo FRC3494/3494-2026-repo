@@ -463,15 +463,11 @@ public class RobotCommands {
                                     .getSpindexerFilteredCurrent()
                                     .gt(spindexerCurrentThreshold))
                             || !turret.withinShootingTolerance()
-                            || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
+                            || drive.isUnderTrench()),
                 either(
                     sequence(
                         stopKicker(),
-                        waitUntil(
-                            () ->
-                                turret.withinShootingTolerance()
-                                    && !hood.isUnderTrench(
-                                        drive.getPose(), drive.getChassisSpeeds())),
+                        waitUntil(() -> turret.withinShootingTolerance() && !drive.isUnderTrench()),
                         startKickerWithTrenchSafety()),
                     sequence(
                         unjamSpindexer(() -> spindexerSpeed),
@@ -479,9 +475,7 @@ public class RobotCommands {
                         stopKicker(),
                         waitSeconds(0.1),
                         startKickerWithTrenchSafety()),
-                    () ->
-                        !turret.withinShootingTolerance()
-                            || hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))))
+                    () -> !turret.withinShootingTolerance() || drive.isUnderTrench())))
         .finallyDo(
             () -> {
               resetSpindexerInversion();
@@ -568,9 +562,9 @@ public class RobotCommands {
   public Command runIntakeJostleWithTrenchSafety() {
     // Start by moving up (-RPM) first so we move away from the bottom hard stop
     return repeatingSequence(
-            waitUntil(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
+            waitUntil(() -> !drive.isUnderTrench()),
             defer(this::upDownCommand, this.upDownCommand().getRequirements())
-                .until(() -> hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())),
+                .until(drive::isUnderTrench),
             runIntakeDown())
         .finallyDo(this::stopIntakeUppyDowny)
         .withName("RunIntakeJostleWithTrenchSafety");
@@ -701,7 +695,7 @@ public class RobotCommands {
                     startKickerWithTrenchSafety(),
                     waitUntil(() -> flywheel.atVelocity(flywheelThresholdFactor)))),
             parallel(parallelCommands))
-        .onlyIf(() -> !hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()))
+        .onlyIf(() -> !drive.isUnderTrench())
         .withName(name);
   }
 
@@ -965,7 +959,7 @@ public class RobotCommands {
   public Command autoHoodCommand() {
     return run(
             () -> {
-              if (hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds())) {
+              if (drive.isUnderTrench()) {
                 hood.setShooting(false);
               }
               hood.setPosition(shooterAimModel.getHoodAngle());
@@ -978,7 +972,7 @@ public class RobotCommands {
   public Command runAutoHood() {
     return run(
             () -> {
-              hood.setShooting(!hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()));
+              hood.setShooting(!drive.isUnderTrench());
               hood.setPosition(shooterAimModel.getHoodAngle());
             },
             hood)
@@ -988,7 +982,7 @@ public class RobotCommands {
   public Command runManualHoodWithTrenchSafety() {
     return run(
             () -> {
-              hood.setShooting(!hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()));
+              hood.setShooting(!drive.isUnderTrench());
             },
             hood)
         .withName("ManualHoodWithTrenchSafety");
@@ -1006,7 +1000,7 @@ public class RobotCommands {
   public Command startHoodWithTrenchSafety() {
     return runOnce(
             () -> {
-              hood.setShooting(!hood.isUnderTrench(drive.getPose(), drive.getChassisSpeeds()));
+              hood.setShooting(!drive.isUnderTrench());
             },
             hood)
         .withName("StartHoodWithTrenchSafety");

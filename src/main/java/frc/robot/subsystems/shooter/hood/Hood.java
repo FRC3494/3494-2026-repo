@@ -15,19 +15,14 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.MedianFilter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Robot;
-import frc.robot.util.choreo.ChoreoVars;
 import lombok.Getter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -137,23 +132,6 @@ public class Hood extends SubsystemBase {
             Logger.recordOutput("Shooter/Hood/PID/kV", values[1]);
             Logger.recordOutput("Shooter/Hood/PID/kA", values[2]);
           });
-
-      // Trench Safety Settings
-      builder.addDoubleProperty(
-          "Trench Safety Buffer (ft)",
-          () -> Units.metersToFeet(trenchSafetyBufferMeters),
-          (double value) -> {
-            trenchSafetyBufferMeters = Units.feetToMeters(value);
-            Logger.recordOutput("Shooter/Hood/TrenchSafetyBuffer", Feet.of(value));
-          });
-
-      builder.addDoubleProperty(
-          "Trench Safety Lookahead (s)",
-          () -> trenchSafetyLookaheadSeconds,
-          (double value) -> {
-            trenchSafetyLookaheadSeconds = value;
-            Logger.recordOutput("Shooter/Hood/TrenchSafetyLookahead", Seconds.of(value));
-          });
     }
 
     // Log initial values regardless of tuning mode
@@ -168,9 +146,6 @@ public class Hood extends SubsystemBase {
     Logger.recordOutput("Shooter/Hood/PID/kS", hoodKs);
     Logger.recordOutput("Shooter/Hood/PID/kV", hoodKv);
     Logger.recordOutput("Shooter/Hood/PID/kA", hoodKa);
-    Logger.recordOutput("Shooter/Hood/TrenchSafetyBuffer", Meters.of(trenchSafetyBufferMeters));
-    Logger.recordOutput(
-        "Shooter/Hood/TrenchSafetyLookahead", Seconds.of(trenchSafetyLookaheadSeconds));
   }
 
   @Override
@@ -217,28 +192,6 @@ public class Hood extends SubsystemBase {
           .getClosedLoopController()
           .setSetpoint(position.getRotations(), ControlType.kPosition, ClosedLoopSlot.kSlot1);
     }
-  }
-
-  @AutoLogOutput(key = "Shooter/Hood/IsUnderTrench")
-  public boolean isUnderTrench(Pose2d robotPose, ChassisSpeeds robotRelativeSpeeds) {
-    double robotBlueX = toAllianceXMeters(robotPose.getX());
-    double hubX = ChoreoVars.Poses.Hub.getX();
-    double speedX =
-        ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, robotPose.getRotation())
-            .vxMetersPerSecond;
-
-    if (alliance == Alliance.Red) {
-      speedX = -speedX;
-    }
-
-    double dynamicBuffer;
-    if (robotBlueX < hubX) {
-      dynamicBuffer = trenchSafetyBufferMeters + speedX * trenchSafetyLookaheadSeconds;
-    } else {
-      dynamicBuffer = trenchSafetyBufferMeters - speedX * trenchSafetyLookaheadSeconds;
-    }
-
-    return Math.abs(robotBlueX - hubX) < dynamicBuffer;
   }
 
   public void setOpenLoop(Voltage voltage) {

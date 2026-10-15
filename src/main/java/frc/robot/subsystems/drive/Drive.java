@@ -345,6 +345,23 @@ public class Drive extends SubsystemBase {
             postTrenchOffset = Feet.of(value);
             Logger.recordOutput("Drive/AutoAlign/Trench/PostTrenchOffset", Feet.of(value));
           });
+
+      // Trench Safety Settings
+      builder.addDoubleProperty(
+          "TrenchSafety/Buffer (ft)",
+          () -> trenchSafetyBuffer.in(Feet),
+          (double value) -> {
+            trenchSafetyBuffer = Feet.of(value);
+            Logger.recordOutput("Odometry/TrenchSafety/Buffer", Feet.of(value));
+          });
+
+      builder.addDoubleProperty(
+          "TrenchSafety/Lookahead (s)",
+          () -> trenchSafetyLookahead.in(Seconds),
+          (double value) -> {
+            trenchSafetyLookahead = Seconds.of(value);
+            Logger.recordOutput("Odometry/TrenchSafety/Lookahead", Seconds.of(value));
+          });
     }
 
     // Log initial values regardless of tuning mode
@@ -387,6 +404,9 @@ public class Drive extends SubsystemBase {
         "Drive/AutoAlign/Trench/CloserToOppositeTrenchLine", closerToOppositeTrenchLine);
     Logger.recordOutput("Drive/AutoAlign/Trench/PreTrenchOffset", preTrenchOffset);
     Logger.recordOutput("Drive/AutoAlign/Trench/PostTrenchOffset", postTrenchOffset);
+
+    Logger.recordOutput("Odometry/TrenchSafety/Buffer", trenchSafetyBuffer);
+    Logger.recordOutput("Odometry/TrenchSafety/Lookahead", trenchSafetyLookahead);
   }
   // #endregion
 
@@ -706,6 +726,31 @@ public class Drive extends SubsystemBase {
   private boolean inAllianceZone() {
     return toAllianceX(getPose().getMeasureX()).lte(azLine);
   }
+
+  // #region isUnderTrench()
+  @AutoLogOutput(key = "Odometry/TrenchSafety/IsUnderTrench")
+  public boolean isUnderTrench() {
+    double robotBlueX = toAllianceXMeters(getPose().getX());
+    double hubX = ChoreoVars.Poses.Hub.getX();
+    double speedX =
+        ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getRotation()).vxMetersPerSecond;
+
+    if (alliance == Alliance.Red) {
+      speedX = -speedX;
+    }
+
+    Distance dynamicBuffer;
+    if (robotBlueX < hubX) {
+      dynamicBuffer =
+          trenchSafetyBuffer.plus(MetersPerSecond.of(speedX).times(trenchSafetyLookahead));
+    } else {
+      dynamicBuffer =
+          trenchSafetyBuffer.minus(MetersPerSecond.of(speedX).times(trenchSafetyLookahead));
+    }
+
+    return Math.abs(robotBlueX - hubX) < dynamicBuffer.in(Meters);
+  }
+  // #endregion
 
   public void rezeroTurnEncoders() {
     for (var module : modules) {
