@@ -32,10 +32,17 @@ public class Intake extends SubsystemBase {
   SparkFlex spinnySpinnyRightMotor;
   SparkFlex uppyDownyMotor;
 
-  @Getter @AutoLogOutput AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
+  @Getter
+  @AutoLogOutput(key = "Intake/SpinnySpinny/Setpoint")
+  private AngularVelocity spinnySpinnySetpoint = RPM.of(0.0);
 
-  @Getter @AutoLogOutput double uppyDownySetpoint = 0.0;
-  @Getter @AutoLogOutput double uppyDownySetpointClamped = 0.0;
+  @Getter
+  @AutoLogOutput(key = "Intake/UppyDowny/Setpoint")
+  private double uppyDownySetpoint = 0.0;
+
+  @Getter
+  @AutoLogOutput(key = "Intake/UppyDowny/SetpointClamped")
+  private double uppyDownySetpointClamped = 0.0;
 
   @Getter
   @AutoLogOutput(key = "Intake/SpinnySpinny/Motor/FilteredCurrent")
@@ -104,7 +111,7 @@ public class Intake extends SubsystemBase {
                 null,
                 null,
                 null,
-                (state) -> Logger.recordOutput("Intake/SpinnySpinnySysIdState", state.toString())),
+                (state) -> Logger.recordOutput("Intake/SpinnySpinny/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> setSpinnySpinnyOpenLoop(voltage), null, this));
 
     SmartDashboard.putData("Intake", this);
@@ -118,7 +125,7 @@ public class Intake extends SubsystemBase {
         () -> ((long) intakeSpinnySpinnySpeed.in(RPM)),
         (long value) -> {
           intakeSpinnySpinnySpeed = RPM.of(value);
-          Logger.recordOutput("SpinnySpinny/Speed", RPM.of(value));
+          Logger.recordOutput("Intake/SpinnySpinny/Speed", RPM.of(value));
         });
 
     builder.addIntegerProperty(
@@ -126,7 +133,7 @@ public class Intake extends SubsystemBase {
         () -> ((long) intakeSpinnySpinnyShootingSpeed.in(RPM)),
         (long value) -> {
           intakeSpinnySpinnyShootingSpeed = RPM.of(value);
-          Logger.recordOutput("SpinnySpinny/ShootingSpeed", RPM.of(value));
+          Logger.recordOutput("Intake/SpinnySpinny/ShootingSpeed", RPM.of(value));
         });
 
     builder.addDoubleProperty(
@@ -134,6 +141,7 @@ public class Intake extends SubsystemBase {
         () -> intakeSpinnySpinnyShootingReverseTime.in(Seconds),
         (double value) -> {
           intakeSpinnySpinnyShootingReverseTime = Seconds.of(value);
+          Logger.recordOutput("Intake/SpinnySpinny/ShootingReverseTime", Seconds.of(value));
         });
 
     if (tuningMode) {
@@ -143,9 +151,9 @@ public class Intake extends SubsystemBase {
           () -> new double[] {spinnySpinnyKp, spinnySpinnyKi, spinnySpinnyKd},
           (double[] values) -> {
             setSpinnySpinnyPID(values[0], values[1], values[2]);
-            Logger.recordOutput("SpinnySpinny/PID/kP", values[0]);
-            Logger.recordOutput("SpinnySpinny/PID/kI", values[1]);
-            Logger.recordOutput("SpinnySpinny/PID/kD", values[2]);
+            Logger.recordOutput("Intake/SpinnySpinny/PID/kP", values[0]);
+            Logger.recordOutput("Intake/SpinnySpinny/PID/kI", values[1]);
+            Logger.recordOutput("Intake/SpinnySpinny/PID/kD", values[2]);
           });
 
       builder.addDoubleArrayProperty(
@@ -153,9 +161,9 @@ public class Intake extends SubsystemBase {
           () -> new double[] {spinnySpinnyKs, spinnySpinnyKv, spinnySpinnyKa},
           (double[] values) -> {
             setSpinnySpinnySVA(values[0], values[1], values[2]);
-            Logger.recordOutput("SpinnySpinny/PID/kS", values[0]);
-            Logger.recordOutput("SpinnySpinny/PID/kV", values[1]);
-            Logger.recordOutput("SpinnySpinny/PID/kA", values[2]);
+            Logger.recordOutput("Intake/SpinnySpinny/PID/kS", values[0]);
+            Logger.recordOutput("Intake/SpinnySpinny/PID/kV", values[1]);
+            Logger.recordOutput("Intake/SpinnySpinny/PID/kA", values[2]);
           });
     }
 
@@ -165,7 +173,7 @@ public class Intake extends SubsystemBase {
         () -> uppyDownyDownPosition,
         (double value) -> {
           uppyDownyDownPosition = value;
-          Logger.recordOutput("UppyDowny/DownPosition", value);
+          Logger.recordOutput("Intake/UppyDowny/DownPosition", value);
         });
 
     builder.addDoubleProperty(
@@ -173,7 +181,7 @@ public class Intake extends SubsystemBase {
         () -> uppyDownyUpPosition,
         (double value) -> {
           uppyDownyUpPosition = value;
-          Logger.recordOutput("UppyDowny/UpPosition", value);
+          Logger.recordOutput("Intake/UppyDowny/UpPosition", value);
         });
 
     builder.addDoubleProperty(
@@ -181,7 +189,7 @@ public class Intake extends SubsystemBase {
         () -> jostleIntakeUpTime,
         (double value) -> {
           jostleIntakeUpTime = value;
-          Logger.recordOutput("UppyDowny/JostleIntakeUpTime", value);
+          Logger.recordOutput("Intake/UppyDowny/JostleIntakeUpTime", value);
         });
 
     builder.addDoubleProperty(
@@ -189,7 +197,7 @@ public class Intake extends SubsystemBase {
         () -> jostleIntakeDownTime,
         (double value) -> {
           jostleIntakeDownTime = value;
-          Logger.recordOutput("UppyDowny/JostleIntakeDownTime", value);
+          Logger.recordOutput("Intake/UppyDowny/JostleIntakeDownTime", value);
         });
 
     if (tuningMode) {
@@ -198,7 +206,7 @@ public class Intake extends SubsystemBase {
           () -> uppyDownyTolerance,
           (double value) -> {
             uppyDownyTolerance = value;
-            Logger.recordOutput("UppyDowny/Tolerance", value);
+            Logger.recordOutput("Intake/UppyDowny/Tolerance", value);
           });
 
       builder.addDoubleProperty(
@@ -206,7 +214,7 @@ public class Intake extends SubsystemBase {
           () -> uppyDownyManualVoltage.in(Volts),
           (double value) -> {
             uppyDownyManualVoltage = Volts.of(value);
-            Logger.recordOutput("UppyDowny/ManualVoltage", Volts.of(value));
+            Logger.recordOutput("Intake/UppyDowny/ManualVoltage", Volts.of(value));
           });
 
       // Uppy Downy PID
@@ -215,9 +223,9 @@ public class Intake extends SubsystemBase {
           () -> new double[] {uppyDownyKp, uppyDownyKi, uppyDownyKd},
           (double[] values) -> {
             setUppyDownyPID(values[0], values[1], values[2]);
-            Logger.recordOutput("UppyDowny/PID/kP", values[0]);
-            Logger.recordOutput("UppyDowny/PID/kI", values[1]);
-            Logger.recordOutput("UppyDowny/PID/kD", values[2]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kP", values[0]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kI", values[1]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kD", values[2]);
           });
 
       builder.addDoubleArrayProperty(
@@ -225,45 +233,45 @@ public class Intake extends SubsystemBase {
           () -> new double[] {uppyDownyKs, uppyDownyKv, uppyDownyKa, uppyDownyKg},
           (double[] values) -> {
             setUppyDownySVAG(values[0], values[1], values[2], values[3]);
-            Logger.recordOutput("UppyDowny/PID/kS", values[0]);
-            Logger.recordOutput("UppyDowny/PID/kV", values[1]);
-            Logger.recordOutput("UppyDowny/PID/kA", values[2]);
-            Logger.recordOutput("UppyDowny/PID/kG", values[3]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kS", values[0]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kV", values[1]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kA", values[2]);
+            Logger.recordOutput("Intake/UppyDowny/PID/kG", values[3]);
           });
     }
 
     // Log initial values regardless of tuning mode
-    Logger.recordOutput("SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
-    Logger.recordOutput("SpinnySpinny/ShootingSpeed", intakeSpinnySpinnyShootingSpeed);
+    Logger.recordOutput("Intake/SpinnySpinny/Speed", intakeSpinnySpinnySpeed);
+    Logger.recordOutput("Intake/SpinnySpinny/ShootingSpeed", intakeSpinnySpinnyShootingSpeed);
     Logger.recordOutput(
-        "SpinnySpinny/ShootingReverseTime", intakeSpinnySpinnyShootingReverseTime.in(Seconds));
-    Logger.recordOutput("SpinnySpinny/PID/kP", spinnySpinnyKp);
-    Logger.recordOutput("SpinnySpinny/PID/kI", spinnySpinnyKi);
-    Logger.recordOutput("SpinnySpinny/PID/kD", spinnySpinnyKd);
-    Logger.recordOutput("SpinnySpinny/PID/kS", spinnySpinnyKs);
-    Logger.recordOutput("SpinnySpinny/PID/kV", spinnySpinnyKv);
-    Logger.recordOutput("SpinnySpinny/PID/kA", spinnySpinnyKa);
+        "Intake/SpinnySpinny/ShootingReverseTime", intakeSpinnySpinnyShootingReverseTime.in(Seconds));
+    Logger.recordOutput("Intake/SpinnySpinny/PID/kP", spinnySpinnyKp);
+    Logger.recordOutput("Intake/SpinnySpinny/PID/kI", spinnySpinnyKi);
+    Logger.recordOutput("Intake/SpinnySpinny/PID/kD", spinnySpinnyKd);
+    Logger.recordOutput("Intake/SpinnySpinny/PID/kS", spinnySpinnyKs);
+    Logger.recordOutput("Intake/SpinnySpinny/PID/kV", spinnySpinnyKv);
+    Logger.recordOutput("Intake/SpinnySpinny/PID/kA", spinnySpinnyKa);
 
-    Logger.recordOutput("UppyDowny/DownPosition", uppyDownyDownPosition);
-    Logger.recordOutput("UppyDowny/UpPosition", uppyDownyUpPosition);
-    Logger.recordOutput("UppyDowny/JostleIntakeUpTime", jostleIntakeUpTime);
-    Logger.recordOutput("UppyDowny/JostleIntakeDownTime", jostleIntakeDownTime);
-    Logger.recordOutput("UppyDowny/Tolerance", uppyDownyTolerance);
-    Logger.recordOutput("UppyDowny/ManualVoltage", uppyDownyManualVoltage);
-    Logger.recordOutput("UppyDowny/PID/kP", uppyDownyKp);
-    Logger.recordOutput("UppyDowny/PID/kI", uppyDownyKi);
-    Logger.recordOutput("UppyDowny/PID/kD", uppyDownyKd);
-    Logger.recordOutput("UppyDowny/PID/kS", uppyDownyKs);
-    Logger.recordOutput("UppyDowny/PID/kV", uppyDownyKv);
-    Logger.recordOutput("UppyDowny/PID/kA", uppyDownyKa);
-    Logger.recordOutput("UppyDowny/PID/kG", uppyDownyKg);
+    Logger.recordOutput("Intake/UppyDowny/DownPosition", uppyDownyDownPosition);
+    Logger.recordOutput("Intake/UppyDowny/UpPosition", uppyDownyUpPosition);
+    Logger.recordOutput("Intake/UppyDowny/JostleIntakeUpTime", jostleIntakeUpTime);
+    Logger.recordOutput("Intake/UppyDowny/JostleIntakeDownTime", jostleIntakeDownTime);
+    Logger.recordOutput("Intake/UppyDowny/Tolerance", uppyDownyTolerance);
+    Logger.recordOutput("Intake/UppyDowny/ManualVoltage", uppyDownyManualVoltage);
+    Logger.recordOutput("Intake/UppyDowny/PID/kP", uppyDownyKp);
+    Logger.recordOutput("Intake/UppyDowny/PID/kI", uppyDownyKi);
+    Logger.recordOutput("Intake/UppyDowny/PID/kD", uppyDownyKd);
+    Logger.recordOutput("Intake/UppyDowny/PID/kS", uppyDownyKs);
+    Logger.recordOutput("Intake/UppyDowny/PID/kV", uppyDownyKv);
+    Logger.recordOutput("Intake/UppyDowny/PID/kA", uppyDownyKa);
+    Logger.recordOutput("Intake/UppyDowny/PID/kG", uppyDownyKg);
   }
 
   @Override
   public void periodic() {
     if (Robot.loopCount % loggingFrequency == 0) {
-      logMotorStats("Intake/SpinnySpinnyMotor", spinnySpinnyLeftMotor, false);
-      logMotorStats("Intake/UppyDownyMotor", uppyDownyMotor, false);
+      logMotorStats("Intake/SpinnySpinny/Motor", spinnySpinnyLeftMotor, false);
+      logMotorStats("Intake/UppyDowny/Motor", uppyDownyMotor, false);
     }
 
     spinnySpinnyFilteredCurrent =
