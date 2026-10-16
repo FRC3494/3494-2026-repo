@@ -11,8 +11,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.autos.Autos.AutoRequirements;
-import frc.robot.util.choreo.ChoreoTraj;
-import frc.robot.util.choreo.ChoreoVars;
+import frc.robot.generated.ChoreoTraj;
+import frc.robot.generated.ChoreoVars;
 
 public class WarmUpAuto extends AutoBase {
   @Override

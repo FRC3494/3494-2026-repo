@@ -48,6 +48,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.OI.DriveOI;
 import frc.robot.OI.ShooterOI;
 import frc.robot.generated.TunerConstants;
+import frc.robot.generated.ChoreoVars;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.Getter;

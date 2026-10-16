@@ -205,7 +205,7 @@ spotless {
     java {
         target fileTree(".") {
             include "**/*.java"
-            exclude "**/build/**", "**/build-*/**"
+            exclude "**/build/**", "**/build-*/**", "**/generated/**"
         }
         toggleOffOn()
         googleJavaFormat()
@@ -226,7 +226,7 @@ spotless {
     json {
         target fileTree(".") {
             include "**/*.json"
-            exclude "**/build/**", "**/build-*/**"
+            exclude "**/build/**", "**/build-*/**", "**/generated/**"
         }
         gson().indentWithSpaces(2)
     }

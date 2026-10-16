@@ -1,5 +1,5 @@
 // spotless:off
-package frc.robot.util.choreo;
+package frc.robot.generated;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -134,6 +134,27 @@ public record ChoreoTraj(
         OptionalInt.of(1),
         1.92672,
         new Pose2d(2.99769, 5.32509, Rotation2d.fromRadians(-2.8052)),
+        new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
+    );
+    public static final ChoreoTraj LeftMiddleNZToDepot = new ChoreoTraj(
+        "LeftMiddleNZToDepot",
+        OptionalInt.empty(),
+        4.46069,
+        new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
+        new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
+    );
+    public static final ChoreoTraj LeftMiddleNZToDepot$0 = new ChoreoTraj(
+        "LeftMiddleNZToDepot",
+        OptionalInt.of(0),
+        2.15915,
+        new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
+        new Pose2d(3.71094, 7.42988, Rotation2d.fromRadians(0))
+    );
+    public static final ChoreoTraj LeftMiddleNZToDepot$1 = new ChoreoTraj(
+        "LeftMiddleNZToDepot",
+        OptionalInt.of(1),
+        2.3015399999999997,
+        new Pose2d(3.71094, 7.42988, Rotation2d.fromRadians(0)),
         new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
     );
     public static final ChoreoTraj LeftMiddleNZToShoot_BLUE = new ChoreoTraj(
@@ -395,27 +416,6 @@ public record ChoreoTraj(
         new Pose2d(3.0201, 3.46524, Rotation2d.fromRadians(0)),
         new Pose2d(3.7701, 4.21524, Rotation2d.fromRadians(0))
     );
-    public static final ChoreoTraj LeftMiddleNZToDepot = new ChoreoTraj(
-        "LeftMiddleNZToDepot",
-        OptionalInt.empty(),
-        4.46069,
-        new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
-        new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
-    );
-    public static final ChoreoTraj LeftMiddleNZToDepot$0 = new ChoreoTraj(
-        "LeftMiddleNZToDepot",
-        OptionalInt.of(0),
-        2.15915,
-        new Pose2d(7.80051, 4.92736, Rotation2d.fromRadians(-1.8326)),
-        new Pose2d(3.71094, 7.42988, Rotation2d.fromRadians(0))
-    );
-    public static final ChoreoTraj LeftMiddleNZToDepot$1 = new ChoreoTraj(
-        "LeftMiddleNZToDepot",
-        OptionalInt.of(1),
-        2.3015399999999997,
-        new Pose2d(3.71094, 7.42988, Rotation2d.fromRadians(0)),
-        new Pose2d(0.54124, 7.4, Rotation2d.fromRadians(-1.8326))
-    );
 
     /**
      * A map between trajectory names and their corresponding data.
@@ -438,6 +438,9 @@ public record ChoreoTraj(
         Map.entry("LeftHubToDepot_RED", LeftHubToDepot_RED),
         Map.entry("LeftHubToDepot_RED$0", LeftHubToDepot_RED$0),
         Map.entry("LeftHubToDepot_RED$1", LeftHubToDepot_RED$1),
+        Map.entry("LeftMiddleNZToDepot", LeftMiddleNZToDepot),
+        Map.entry("LeftMiddleNZToDepot$0", LeftMiddleNZToDepot$0),
+        Map.entry("LeftMiddleNZToDepot$1", LeftMiddleNZToDepot$1),
         Map.entry("LeftMiddleNZToShoot_BLUE", LeftMiddleNZToShoot_BLUE),
         Map.entry("LeftMiddleNZToShoot_RED", LeftMiddleNZToShoot_RED),
         Map.entry("LeftShootToNZ_BLUE", LeftShootToNZ_BLUE),
@@ -474,10 +477,7 @@ public record ChoreoTraj(
         Map.entry("RightShootToNZ_RED", RightShootToNZ_RED),
         Map.entry("RightTrenchToNZ_BLUE", RightTrenchToNZ_BLUE),
         Map.entry("RightTrenchToNZ_RED", RightTrenchToNZ_RED),
-        Map.entry("WarmUp", WarmUp),
-        Map.entry("LeftMiddleNZToDepot", LeftMiddleNZToDepot),
-        Map.entry("LeftMiddleNZToDepot$0", LeftMiddleNZToDepot$0),
-        Map.entry("LeftMiddleNZToDepot$1", LeftMiddleNZToDepot$1)
+        Map.entry("WarmUp", WarmUp)
     );
 
     /**

@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotCommands;
+import frc.robot.generated.ChoreoVars;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.autoalign.AutoAlignCommand;
 import frc.robot.subsystems.intake.SpinnySpinny;
 import frc.robot.subsystems.shooter.ShooterAimModel;
-import frc.robot.util.choreo.ChoreoVars;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 

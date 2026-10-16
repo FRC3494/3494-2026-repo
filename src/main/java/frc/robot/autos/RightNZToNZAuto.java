@@ -7,8 +7,8 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.autos.Autos.AutoRequirements;
-import frc.robot.util.choreo.ChoreoTraj;
-import frc.robot.util.choreo.ChoreoVars;
+import frc.robot.generated.ChoreoTraj;
+import frc.robot.generated.ChoreoVars;
 import frc.robot.subsystems.intake.SpinnySpinny;
 
 public class RightNZToNZAuto extends AutoBase {
