@@ -8,7 +8,6 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Time;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
@@ -58,8 +57,4 @@ public interface ModuleIO {
   public default void setTurnPID(double p, double i, double d) {}
 
   public default void setTurnSVA(double s, double v, double a) {}
-
-  public default void setDriveRampRate(Time rate) {}
-
-  public default void setTurnRampRate(Time rate) {}
 }

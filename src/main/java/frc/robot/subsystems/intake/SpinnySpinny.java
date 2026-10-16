@@ -11,7 +11,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -60,7 +59,7 @@ public class SpinnySpinny extends SubsystemBase {
     SparkFlexConfig leftConfig = new SparkFlexConfig();
     leftConfig
         .smartCurrentLimit(((int) spinnySpinnyCurrentLimit.in(Amps)))
-        .idleMode(IdleMode.kCoast)
+        .idleMode(spinnySpinnyIdleMode)
         .inverted(spinnySpinnyInverted)
         .openLoopRampRate(spinnySpinnyRampRate.in(Seconds))
         .closedLoopRampRate(spinnySpinnyRampRate.in(Seconds))

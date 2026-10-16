@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import org.littletonrobotics.junction.Logger;
@@ -169,13 +168,5 @@ public class Module {
 
   public void setTurnSVA(double s, double v, double a) {
     io.setTurnSVA(s, v, a);
-  }
-
-  public void setDriveRampRate(Time rate) {
-    io.setDriveRampRate(rate);
-  }
-
-  public void setTurnRampRate(Time rate) {
-    io.setTurnRampRate(rate);
   }
 }

@@ -269,10 +269,10 @@ public final class Constants {
     public static AngularVelocity maxAngularSpeed = DegreesPerSecond.of(1000);
     public static final double demoModeSpeedFactor = 0.15;
 
-    public static double maxAZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
-    public static double maxAZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
-    public static double maxNZShootingSpeedMetersPerSec = Units.feetToMeters(7.0);
-    public static double maxNZShootingAngularSpeedRadPerSec = Units.degreesToRadians(220);
+    public static LinearVelocity maxAZShootingSpeed = FeetPerSecond.of(7.0);
+    public static AngularVelocity maxAZShootingAngularSpeed = DegreesPerSecond.of(220);
+    public static LinearVelocity maxNZShootingSpeed = FeetPerSecond.of(7.0);
+    public static AngularVelocity maxNZShootingAngularSpeed = DegreesPerSecond.of(220);
 
     public static final Frequency odometryFrequency =
         Hertz.of(TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0);
@@ -326,7 +326,8 @@ public final class Constants {
     public static final boolean mirrorForRedAlliance = true;
 
     // Seconds left when robot tries to climb
-    public static final double climbTime = 5;
+    // TODO: make tunable
+    public static final Time climbTime = Seconds.of(5.0);
 
     public static double autoLinearKp = 10.0;
     public static double autoLinearKi = 0.0;
@@ -451,6 +452,7 @@ public final class Constants {
   // #region INTAKE
   public static final class IntakeConstants {
     public static final boolean spinnySpinnyInverted = true;
+    public static final IdleMode spinnySpinnyIdleMode = IdleMode.kBrake;
     public static final Current spinnySpinnyCurrentLimit = Amps.of(50);
     public static final Current spinnySpinnyCurrentThreshold =
         spinnySpinnyCurrentLimit.minus(Amps.of(5));

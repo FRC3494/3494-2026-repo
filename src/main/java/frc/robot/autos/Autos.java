@@ -101,7 +101,7 @@ public class Autos {
             parallel(
                 requirements.robotCommands().creepBackward(),
                 sequence(
-                    waitUntil(() -> Timer.getMatchTime() <= climbTime)
+                    waitUntil(() -> Seconds.of(Timer.getMatchTime()).lte(climbTime))
                         .deadlineFor(requirements.robotCommands().shoot()),
                     parallel(
                         requirements.robotCommands().runClimberMidWithCurrent(),

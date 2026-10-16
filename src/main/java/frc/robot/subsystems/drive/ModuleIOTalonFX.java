@@ -36,7 +36,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.generated.TunerConstants;
 import java.util.Queue;
@@ -336,8 +335,4 @@ public class ModuleIOTalonFX implements ModuleIO {
                 .withKV(v)
                 .withKA(a));
   }
-
-  public void setDriveRampRate(Time rate) {}
-
-  public void setTurnRampRate(Time rate) {}
 }
