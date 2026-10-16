@@ -90,6 +90,7 @@ public class Drive extends SubsystemBase {
   private final PIDController headingController =
       new PIDController(autoAngularKp, autoAngularKi, autoAngularKd);
 
+  // #region Drive()
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -144,6 +145,7 @@ public class Drive extends SubsystemBase {
       SmartDashboard.putData("Drive", this);
     }
   }
+  // #endregion
 
   // #region initSendable()
   @Override
@@ -453,6 +455,7 @@ public class Drive extends SubsystemBase {
   }
   // #endregion
 
+  // #region runVelocity()
   /**
    * Runs the drive at the desired velocity.
    *
@@ -525,7 +528,9 @@ public class Drive extends SubsystemBase {
     // Apply the generated speeds
     runVelocity(speeds);
   }
+  // #endregion
 
+  // #region runCharacterization
   /** Runs the drive in a straight line with the specified drive output. */
   public void runDriveCharacterization(double output) {
     for (var module : modules) {
@@ -547,64 +552,6 @@ public class Drive extends SubsystemBase {
     modules[3].runDriveCharacterization(output, Rotation2d.fromDegrees(315));
   }
 
-  /** Stops the drive. */
-  public void stop() {
-    runVelocity(new ChassisSpeeds());
-  }
-
-  /**
-   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
-   * return to their normal orientations the next time a nonzero velocity is requested.
-   */
-  public void stopWithX() {
-    Rotation2d[] headings = new Rotation2d[4];
-    for (int i = 0; i < 4; i++) {
-      headings[i] = getModuleTranslations()[i].getAngle();
-    }
-    kinematics.resetHeadings(headings);
-    stop();
-  }
-
-  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
-  @AutoLogOutput(key = "SwerveStates/Measured")
-  private SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++) {
-      states[i] = modules[i].getState();
-    }
-    return states;
-  }
-
-  private void setAutoLinearPID(double p, double i, double d) {
-    autoLinearKp = p;
-    autoLinearKi = i;
-    autoLinearKd = d;
-    xController.setPID(p, i, d);
-    yController.setPID(p, i, d);
-  }
-
-  private void setAutoAngularPID(double p, double i, double d) {
-    autoAngularKp = p;
-    autoAngularKi = i;
-    autoAngularKd = d;
-    headingController.setPID(p, i, d);
-  }
-
-  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
-  private SwerveModulePosition[] getModulePositions() {
-    SwerveModulePosition[] states = new SwerveModulePosition[4];
-    for (int i = 0; i < 4; i++) {
-      states[i] = modules[i].getPosition();
-    }
-    return states;
-  }
-
-  /** Returns the measured chassis speeds of the robot. */
-  @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
-  public ChassisSpeeds getChassisSpeeds() {
-    return kinematics.toChassisSpeeds(getModuleStates());
-  }
-
   /** Returns the position of each module in radians. */
   public double[] getWheelRadiusCharacterizationPositions() {
     double[] values = new double[4];
@@ -622,7 +569,67 @@ public class Drive extends SubsystemBase {
     }
     return output;
   }
+  // #endregion
 
+  // #region stop()
+  /** Stops the drive. */
+  public void stop() {
+    runVelocity(new ChassisSpeeds());
+  }
+
+  /**
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
+   * return to their normal orientations the next time a nonzero velocity is requested.
+   */
+  public void stopWithX() {
+    Rotation2d[] headings = new Rotation2d[4];
+    for (int i = 0; i < 4; i++) {
+      headings[i] = getModuleTranslations()[i].getAngle();
+    }
+    kinematics.resetHeadings(headings);
+    stop();
+  }
+  // #endregion
+
+  // #region getModuleStates()
+  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
+  @AutoLogOutput(key = "SwerveStates/Measured")
+  private SwerveModuleState[] getModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getState();
+    }
+    return states;
+  }
+
+  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
+  private SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] states = new SwerveModulePosition[4];
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getPosition();
+    }
+    return states;
+  }
+  // #endregion
+
+  // #region setAutoPID
+  private void setAutoLinearPID(double p, double i, double d) {
+    autoLinearKp = p;
+    autoLinearKi = i;
+    autoLinearKd = d;
+    xController.setPID(p, i, d);
+    yController.setPID(p, i, d);
+  }
+
+  private void setAutoAngularPID(double p, double i, double d) {
+    autoAngularKp = p;
+    autoAngularKi = i;
+    autoAngularKd = d;
+    headingController.setPID(p, i, d);
+  }
+  // #endregion
+
+  // #region getPose()
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
@@ -631,26 +638,52 @@ public class Drive extends SubsystemBase {
     return pose;
   }
 
-  /** Returns the current odometry rotation. */
-  public Rotation2d getRotation() {
-    return getPose().getRotation();
-  }
-
-  public Rotation2d getRawRotation() {
-    return rawGyroRotation;
-  }
-
-  public double getYawVelocityRadPerSec() {
-    return gyroInputs.yawVelocityRadPerSec;
-  }
-
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
 
     // setRotation(pose.getRotation());
   }
+  // #endregion
 
+  // #region getRotation()
+  /** Returns the current odometry rotation. */
+  public Rotation2d getRotation() {
+    return getPose().getRotation();
+  }
+
+  public void setRotation(Rotation2d rotation) {
+    gyroIO.setYaw(rotation);
+  }
+
+  public void resetYaw() {
+    if (alliance == Alliance.Blue || driveMode == DriveMode.DEMO) {
+      setRotation(Rotation2d.kZero);
+    } else {
+      setRotation(Rotation2d.k180deg);
+    }
+  }
+
+  public Rotation2d getRawRotation() {
+    return rawGyroRotation;
+  }
+  // #endregion
+
+  // #region getChassisSpeeds()
+  /** Returns the measured chassis speeds of the robot. */
+  @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
+  public ChassisSpeeds getChassisSpeeds() {
+    return kinematics.toChassisSpeeds(getModuleStates());
+  }
+  // #endregion
+
+  // #region getYawVelocity
+  public double getYawVelocityRadPerSec() {
+    return gyroInputs.yawVelocityRadPerSec;
+  }
+  // #endregion
+
+  // #region addVisionMeasurement()
   /** Adds a new timestamped vision measurement. */
   public void addVisionMeasurement(
       Pose2d visionRobotPoseMeters,
@@ -663,7 +696,9 @@ public class Drive extends SubsystemBase {
   public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
     poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
   }
+  // #endregion
 
+  // #region getMaxLinearSpeedMetersPerSec()
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
     switch (Constants.driveMode) {
@@ -678,7 +713,9 @@ public class Drive extends SubsystemBase {
       }
     }
   }
+  // #endregion
 
+  // #region getMaxAngularSpeedRadPerSec()
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     switch (Constants.driveMode) {
@@ -693,7 +730,9 @@ public class Drive extends SubsystemBase {
       }
     }
   }
+  // #endregion
 
+  // #region shootingDriveSpeed()
   private boolean shootingDriveSpeed() {
     return inAllianceZone()
         ? ((ShooterOI.shoot().getAsBoolean() || DriveOI.slowDrive().getAsBoolean())
@@ -703,10 +742,13 @@ public class Drive extends SubsystemBase {
             && !(DriveOI.fastDrive().getAsBoolean()
                 || DriveOI.autoDriveThroughTrench().getAsBoolean()));
   }
+  // #endregion
 
+  // #region inAllianceZone()
   private boolean inAllianceZone() {
     return toAllianceX(getPose().getMeasureX()).lte(azLine);
   }
+  // #endregion
 
   // #region isUnderTrench()
   @AutoLogOutput(key = "Odometry/TrenchSafety/IsUnderTrench")
@@ -733,12 +775,15 @@ public class Drive extends SubsystemBase {
   }
   // #endregion
 
+  // #region rezeroTurnEncoders()
   public void rezeroTurnEncoders() {
     for (var module : modules) {
       module.rezeroTurnEncoder();
     }
   }
+  // #endregion
 
+  // #region setDrivePID()
   public void setDrivePID(double p, double i, double d) {
     for (var module : modules) {
       module.setDrivePID(p, i, d);
@@ -750,7 +795,9 @@ public class Drive extends SubsystemBase {
       module.setDriveSVA(s, v, a);
     }
   }
+  // #endregion
 
+  // #region setTurnPID()
   public void setTurnPID(double p, double i, double d) {
     for (var module : modules) {
       module.setTurnPID(p, i, d);
@@ -762,45 +809,12 @@ public class Drive extends SubsystemBase {
       module.setTurnSVA(s, v, a);
     }
   }
+  // #endregion
 
+  // #region isGyroConnected()
   public boolean isGyroConnected() {
     return gyroInputs.connected;
   }
+  // #endregion
 
-  public void setRotation(Rotation2d rotation) {
-    gyroIO.setYaw(rotation);
-  }
-
-  public void resetYaw() {
-    if (alliance == Alliance.Blue || driveMode == DriveMode.DEMO) {
-      setRotation(Rotation2d.kZero);
-    } else {
-      setRotation(Rotation2d.k180deg);
-    }
-  }
-
-  private void setDriveRampRate(Time rate) {
-    driveRampRate = rate;
-
-    for (var module : modules) {
-      module.setDriveRampRate(rate);
-    }
-  }
-
-  private void setTurnRampRate(Time rate) {
-    turnRampRate = rate;
-
-    for (var module : modules) {
-      module.setTurnRampRate(rate);
-    }
-  }
-
-  public static Translation2d[] getModuleTranslations() {
-    return new Translation2d[] {
-      new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
-      new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
-      new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
-      new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
-    };
-  }
 }
