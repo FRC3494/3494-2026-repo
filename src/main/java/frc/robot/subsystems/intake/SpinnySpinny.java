@@ -183,7 +183,7 @@ public class SpinnySpinny extends SubsystemBase {
 
     switch (state) {
       case IDLE:
-        stop();
+        setOpenLoop(Volts.of(0.7));
         break;
 
       case INTAKE:
