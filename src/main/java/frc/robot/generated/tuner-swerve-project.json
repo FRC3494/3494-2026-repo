@@ -6,8 +6,8 @@
       "ModuleName": "Front Left",
       "ModuleId": 0,
       "Encoder": {
-        "Id": 0,
-        "Name": "CANCoder (Device ID 0)",
+        "Id": 40,
+        "Name": "CANCoder (Device ID 40)",
         "Model": "CANCoder",
         "CANbus": "B28AF7B450374E53202020473F3910FF",
         "CANbusFriendly": "canivore",
@@ -27,8 +27,8 @@
         }
       },
       "DriveMotor": {
-        "Id": 1,
-        "Name": "Talon FX vers. C (Device ID 1)",
+        "Id": 41,
+        "Name": "Talon FX vers. C (Device ID 41)",
         "Model": "Talon FX vers. C",
         "CANbus": "B28AF7B450374E53202020473F3910FF",
         "CANbusFriendly": "canivore",
@@ -104,8 +104,8 @@
       "ModuleName": "Back Left",
       "ModuleId": 2,
       "Encoder": {
-        "Id": 2,
-        "Name": "CANCoder (Device ID 2)",
+        "Id": 42,
+        "Name": "CANCoder (Device ID 42)",
         "Model": "CANCoder",
         "CANbus": "B28AF7B450374E53202020473F3910FF",
         "CANbusFriendly": "canivore",
@@ -153,8 +153,8 @@
       "ModuleName": "Back Right",
       "ModuleId": 3,
       "Encoder": {
-        "Id": 3,
-        "Name": "CANCoder vers. H (Device ID 3)",
+        "Id": 43,
+        "Name": "CANCoder vers. H (Device ID 43)",
         "Model": "CANCoder vers. H",
         "CANbus": "B28AF7B450374E53202020473F3910FF",
         "CANbusFriendly": "canivore",
@@ -227,6 +227,6 @@
     "HasVerifiedDrive": true,
     "IsValidConfiguration": true
   },
-  "TeamNumber": 0,
+  "TeamNumber": 3494,
   "schema_version": "1"
 }
