@@ -603,7 +603,7 @@ public final class Constants {
     public static final boolean uppyDownyInverted = false;
     public static final Current uppyDownyCurrentLimit = Amps.of(50);
     public static final Time uppyDownyRampRate = Milliseconds.of(10);
-    public static final double uppyDownyGearRatio = 1.0 / 4.0;
+    public static final double uppyDownyGearRatio = 23.0 / 79.0;
     public static final int uppyDownyCurrentSensingFilterSize = 10;
 
     public static final double uppyDownyMinPosition = 0.0;
