@@ -45,7 +45,6 @@ import frc.robot.Constants.DriveMode;
 import frc.robot.Constants.Mode;
 import frc.robot.OI.DriveOI;
 import frc.robot.OI.ShooterOI;
-import frc.robot.generated.TunerConstants;
 import frc.robot.generated.ChoreoVars;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -69,7 +68,7 @@ public class Drive extends SubsystemBase {
 
   private final Field2d robotField2d = new Field2d();
 
-  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
+  private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = Rotation2d.kZero;
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
@@ -98,10 +97,10 @@ public class Drive extends SubsystemBase {
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
-    modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
-    modules[2] = new Module(blModuleIO, 2, TunerConstants.BackLeft);
-    modules[3] = new Module(brModuleIO, 3, TunerConstants.BackRight);
+    modules[0] = new Module(flModuleIO, 0, frontLeftConstants);
+    modules[1] = new Module(frModuleIO, 1, frontRightConstants);
+    modules[2] = new Module(blModuleIO, 2, backLeftConstants);
+    modules[3] = new Module(brModuleIO, 3, backRightConstants);
 
     headingController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -584,7 +583,7 @@ public class Drive extends SubsystemBase {
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
-      headings[i] = getModuleTranslations()[i].getAngle();
+      headings[i] = moduleTranslations[i].getAngle();
     }
     kinematics.resetHeadings(headings);
     stop();

@@ -10,6 +10,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 import static frc.robot.Constants.*;
+import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
 import choreo.Choreo;
@@ -55,7 +56,6 @@ import frc.robot.autos.RightNZToClimbAuto;
 import frc.robot.autos.RightNZToNZAuto;
 import frc.robot.autos.RightOutpostAuto;
 import frc.robot.autos.WarmUpAuto;
-import frc.robot.generated.TunerConstants;
 import frc.robot.generated.ChoreoTraj;
 import frc.robot.generated.ChoreoVars;
 import frc.robot.subsystems.climber.Climber;
@@ -126,10 +126,10 @@ public class RobotContainer implements Sendable {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
+                new ModuleIOTalonFX(frontLeftConstants),
+                new ModuleIOTalonFX(frontRightConstants),
+                new ModuleIOTalonFX(backLeftConstants),
+                new ModuleIOTalonFX(backRightConstants));
         break;
 
       case SIM:
@@ -137,10 +137,10 @@ public class RobotContainer implements Sendable {
         drive =
             new Drive(
                 new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
+                new ModuleIOSim(frontLeftConstants),
+                new ModuleIOSim(frontRightConstants),
+                new ModuleIOSim(backLeftConstants),
+                new ModuleIOSim(backRightConstants));
         break;
 
       default:

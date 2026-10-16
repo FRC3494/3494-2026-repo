@@ -11,6 +11,18 @@ import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.util.QuadranglesUtil.*;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.GyroTrimConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
+import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -286,42 +298,158 @@ public final class Constants {
                 Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
                 Math.hypot(
                     TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
+    public static final Translation2d[] moduleTranslations =
+        new Translation2d[] {
+          new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+          new Translation2d(
+              TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
+          new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+          new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
+        };
 
-    // Drive motor configuration
-    public static final int driveMotorCurrentLimit = 60;
-    public static Time driveRampRate = Milliseconds.of(10);
-    // When using linear characterization: actual linear distance / wheel delta
+    public static final SwerveDrivetrainConstants drivetrainConstants =
+        TunerConstants.DrivetrainConstants.withPigeon2Configs(
+            new Pigeon2Configuration()
+                .withGyroTrim(
+                    new GyroTrimConfigs()
+                        .withGyroScalarX(0.0)
+                        .withGyroScalarY(0.0)
+                        .withGyroScalarZ(-3.543375))
+                .withMountPose(
+                    new MountPoseConfigs()
+                        .withMountPoseYaw(Degrees.of(-0.03239322453737259))
+                        .withMountPosePitch(Degrees.of(-0.30914023518562317))
+                        .withMountPoseRoll(Degrees.of(-179.48013305664062))));
 
     // Drive PID configuration
-    public static double driveKp = TunerConstants.FrontLeft.DriveMotorGains.kP;
-    public static double driveKi = TunerConstants.FrontLeft.DriveMotorGains.kI;
-    public static double driveKd = TunerConstants.FrontLeft.DriveMotorGains.kD;
-    public static double driveKs = TunerConstants.FrontLeft.DriveMotorGains.kS;
-    public static double driveKv = TunerConstants.FrontLeft.DriveMotorGains.kV;
-    public static double driveKa = TunerConstants.FrontLeft.DriveMotorGains.kA;
-    public static final double driveSimP = 0.05;
-    public static final double driveSimI = 0.0;
-    public static final double driveSimD = 0.0;
-    public static final double driveSimKs = 0.0;
-    public static final double driveSimKv = 0.0789;
-    public static final double driveSimKa = 0.0;
-
-    // Turn motor configuration
-    public static final boolean[] turnInverted = new boolean[] {true, true, true, true};
-    public static final int[] turnMotorCurrentLimit = new int[] {50, 50, 50, 50};
-    public static Time turnRampRate = Milliseconds.of(10);
+    public static double driveKp = 0.20056;
+    public static double driveKi = 0.0;
+    public static double driveKd = 0.0;
+    public static double driveKs = 0.30122;
+    public static double driveKv = 0.13717;
+    public static double driveKa = 0.0061956;
 
     // Turn PID configuration
-    public static double turnKp = TunerConstants.FrontLeft.SteerMotorGains.kP;
-    public static double turnKi = TunerConstants.FrontLeft.SteerMotorGains.kI;
-    public static double turnKd = TunerConstants.FrontLeft.SteerMotorGains.kD;
-    public static double turnKs = TunerConstants.FrontLeft.SteerMotorGains.kS;
-    public static double turnKv = TunerConstants.FrontLeft.SteerMotorGains.kV;
-    public static double turnKa = TunerConstants.FrontLeft.SteerMotorGains.kA;
-    public static final double turnSimP = 8.0;
-    public static final double turnSimI = 0.0;
-    public static final double turnSimD = 0.0;
+    public static double turnKp = 100.0;
+    public static double turnKi = 0.0;
+    public static double turnKd = 0.5;
+    public static double turnKs = 0.1;
+    public static double turnKv = 2.05;
+    public static double turnKa = 0.0;
 
+    private static final SwerveModuleConstantsFactory<
+            TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+        swerveModuleConstantsFactory =
+            new SwerveModuleConstantsFactory<
+                    TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
+                // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
+                // This may need to be tuned to your individual robot
+                .withCouplingGearRatio(3.125)
+                // When using linear characterization: actual linear distance / wheel delta
+                .withWheelRadius(Inches.of(2.0))
+                .withSlipCurrent(Amps.of(80))
+                // .withSpeedAt12Volts(0) // * Use DriveConstants.maxSpeed instead
+                .withDriveMotorGearRatio(
+                    (50.0 / 16.0) * (19.0 / 25.0) * (45.0 / 15.0)) // SDS Mk4i/4n L1+ Gearing
+                .withDriveMotorGains(
+                    new Slot0Configs()
+                        .withKP(driveKp)
+                        .withKI(driveKi)
+                        .withKD(driveKd)
+                        .withKS(driveKs)
+                        .withKV(driveKv)
+                        .withKA(driveKa))
+                .withDriveMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
+                .withDriveMotorType(TunerConstants.FrontLeft.DriveMotorType)
+                .withDriveMotorInitialConfigs(
+                    new TalonFXConfiguration()
+                        .withCurrentLimits(
+                            new CurrentLimitsConfigs()
+                                // Default supply current limit is 70 A, but it can be lowered to
+                                // avoid brownouts. Supply current limits can be larger than the
+                                // breaker current rating.
+                                .withSupplyCurrentLimit(Amps.of(70))
+                                .withSupplyCurrentLimitEnable(true)))
+                .withDriveInertia(KilogramSquareMeters.of(0.025))
+                .withDriveFrictionVoltage(TunerConstants.FrontLeft.DriveFrictionVoltage)
+                .withSteerMotorGearRatio((18.75) / (2.0 * Math.PI)) // Mk4n or Mk4i w/ 16t adapter
+                .withSteerMotorGains(
+                    new Slot0Configs()
+                        .withKP(turnKp)
+                        .withKI(turnKi)
+                        .withKD(turnKd)
+                        .withKS(turnKs)
+                        .withKV(turnKv)
+                        .withKA(turnKa))
+                .withSteerMotorClosedLoopOutput(ClosedLoopOutputType.Voltage)
+                .withSteerMotorType(TunerConstants.FrontLeft.SteerMotorType)
+                .withSteerMotorInitialConfigs(
+                    new TalonFXConfiguration()
+                        .withCurrentLimits(
+                            new CurrentLimitsConfigs()
+                                // Swerve azimuth does not require much torque output, so we can set
+                                // a relatively low stator current limit to help avoid brownouts
+                                // without impacting performance.
+                                .withStatorCurrentLimit(Amps.of(60))
+                                .withStatorCurrentLimitEnable(true)
+                                .withSupplyCurrentLimit(Amps.of(40))
+                                .withSupplyCurrentLimitEnable(true)))
+                .withSteerInertia(KilogramSquareMeters.of(0.004))
+                .withSteerFrictionVoltage(TunerConstants.FrontLeft.SteerFrictionVoltage)
+                .withFeedbackSource(TunerConstants.FrontLeft.FeedbackSource)
+                .withEncoderInitialConfigs(new CANcoderConfiguration());
+    public static final SwerveModuleConstants<
+            TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+        frontLeftConstants =
+            swerveModuleConstantsFactory.createModuleConstants(
+                TunerConstants.FrontLeft.SteerMotorId,
+                TunerConstants.FrontLeft.DriveMotorId,
+                TunerConstants.FrontLeft.EncoderId,
+                TunerConstants.FrontLeft.EncoderOffset,
+                TunerConstants.FrontLeft.LocationX,
+                TunerConstants.FrontLeft.LocationY,
+                false,
+                true,
+                TunerConstants.FrontLeft.EncoderInverted);
+    public static final SwerveModuleConstants<
+            TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+        frontRightConstants =
+            swerveModuleConstantsFactory.createModuleConstants(
+                TunerConstants.FrontRight.SteerMotorId,
+                TunerConstants.FrontRight.DriveMotorId,
+                TunerConstants.FrontRight.EncoderId,
+                TunerConstants.FrontRight.EncoderOffset,
+                TunerConstants.FrontRight.LocationX,
+                TunerConstants.FrontRight.LocationY,
+                true,
+                true,
+                TunerConstants.FrontRight.EncoderInverted);
+    public static final SwerveModuleConstants<
+            TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+        backLeftConstants =
+            swerveModuleConstantsFactory.createModuleConstants(
+                TunerConstants.BackLeft.SteerMotorId,
+                TunerConstants.BackLeft.DriveMotorId,
+                TunerConstants.BackLeft.EncoderId,
+                TunerConstants.BackLeft.EncoderOffset,
+                TunerConstants.BackLeft.LocationX,
+                TunerConstants.BackLeft.LocationY,
+                true,
+                false,
+                TunerConstants.BackLeft.EncoderInverted);
+    public static final SwerveModuleConstants<
+            TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+        backRightConstants =
+            swerveModuleConstantsFactory.createModuleConstants(
+                TunerConstants.BackRight.SteerMotorId,
+                TunerConstants.BackRight.DriveMotorId,
+                TunerConstants.BackRight.EncoderId,
+                TunerConstants.BackRight.EncoderOffset,
+                TunerConstants.BackRight.LocationX,
+                TunerConstants.BackRight.LocationY,
+                false,
+                false,
+                TunerConstants.BackRight.EncoderInverted);
     // Auto config
     public static final boolean mirrorForRedAlliance = true;
 
