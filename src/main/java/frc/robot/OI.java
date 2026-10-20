@@ -253,7 +253,7 @@ public final class OI implements Sendable {
     }
 
     public static Trigger stopWithX() {
-      return primaryController.a(eventLoop);
+      return primaryController.x(eventLoop);
     }
 
     public static Trigger autoAlignClimb() {
@@ -291,7 +291,7 @@ public final class OI implements Sendable {
   // #region HOPPER
   public static final class HopperOI {
     public static Trigger spindexerBackwards() {
-      return rightButtonBoard.button(3, eventLoop).castTo(Trigger::new);
+      return primaryController.a(eventLoop).or(rightButtonBoard.button(3, eventLoop));
     }
 
     public static Trigger runKicker() {
@@ -323,7 +323,7 @@ public final class OI implements Sendable {
     }
 
     public static Trigger intakeReverse() {
-      return primaryController.x(eventLoop).or(rightButtonBoard.button(10, eventLoop));
+      return primaryController.y(eventLoop).or(rightButtonBoard.button(10, eventLoop));
     }
 
     public static Trigger toggleIntake() {
