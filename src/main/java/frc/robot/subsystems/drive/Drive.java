@@ -44,7 +44,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveMode;
 import frc.robot.Constants.Mode;
 import frc.robot.OI.DriveOI;
-import frc.robot.OI.ShooterOI;
 import frc.robot.generated.ChoreoVars;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -734,7 +733,7 @@ public class Drive extends SubsystemBase {
   // #region shootingDriveSpeed()
   private boolean shootingDriveSpeed() {
     return inAllianceZone()
-        ? ((ShooterOI.shoot().getAsBoolean() || DriveOI.slowDrive().getAsBoolean())
+        ? ((DriveOI.slowDrive().getAsBoolean())
             && !(DriveOI.fastDrive().getAsBoolean()
                 || DriveOI.autoDriveThroughTrench().getAsBoolean()))
         : ((DriveOI.slowDrive().getAsBoolean())

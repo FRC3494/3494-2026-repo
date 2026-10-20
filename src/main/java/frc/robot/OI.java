@@ -275,11 +275,11 @@ public final class OI implements Sendable {
     }
 
     public static Trigger slowDrive() {
-      return new Trigger(() -> false);
+      return primaryController.leftBumper(eventLoop);
     }
 
     public static Trigger fastDrive() {
-      return primaryController.leftBumper(eventLoop);
+      return new Trigger(() -> false);
     }
 
     public static Trigger alignToMovementDirection() {
