@@ -623,7 +623,7 @@ public final class Constants {
     public static double uppyDownyTolerance = 0.0;
 
     public static Time jostleIntakeUpTime = Seconds.of(1.0);
-    public static Time jostleIntakeDownTime = Seconds.of(1.0);
+    public static Time jostleIntakeDownTime = Seconds.of(0.3);
     public static Voltage jostleIntakeVoltage = Volts.of(1.0);
 
     public static Voltage uppyDownyManualVoltage = Volts.of(1.0);
