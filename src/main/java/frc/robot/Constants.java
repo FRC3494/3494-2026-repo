@@ -656,14 +656,14 @@ public final class Constants {
 
       public static final double turretTrimDefaultRot = Units.degreesToRotations(0.0);
       public static double turretTrimRot = turretTrimDefaultRot;
-      public static final double turretTrimIncrementRot = Units.degreesToRotations(1.0);
+      public static final double turretTrimIncrementRot = Units.degreesToRotations(2.0);
 
       public static Rotation2d azHoodTrim = Rotation2d.kZero;
       public static Rotation2d nzHoodTrim = Rotation2d.kZero;
       public static AngularVelocity azFlywheelTrim = RPM.zero();
       public static AngularVelocity nzFlywheelTrim = RPM.zero();
 
-      public static final Distance distanceTrimIncrement = Inches.of(1.0);
+      public static final Distance distanceTrimIncrement = Inches.of(3.0);
       public static final Distance xyTrimIncrement = Inches.of(5.0);
 
       public static Distance azDistanceTrimDefault = Inches.of(40.0);

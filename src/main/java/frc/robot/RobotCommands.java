@@ -744,7 +744,7 @@ public class RobotCommands {
   }
 
   public Command changeDistanceTrim(boolean increment) {
-    return run(
+    return runOnce(
             () -> {
               if (shooterAimModel.isInAllianceZone()) {
                 Distance trim =
@@ -1112,7 +1112,7 @@ public class RobotCommands {
   }
 
   public Command changeTurretTrim(boolean increment) {
-    return run(
+    return runOnce(
             () -> {
               if (increment) {
                 double trim = turretTrimRot + turretTrimIncrementRot;

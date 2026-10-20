@@ -260,8 +260,8 @@ public final class OI implements Sendable {
       if (driveMode == DriveMode.DEMO) {
         return new Trigger(() -> false);
       } else {
-        // return primaryController.rightBumper(eventLoop);
-        return new Trigger(() -> false);
+        return primaryController.povRight();
+        // return new Trigger(() -> false);
       }
     }
 
@@ -269,8 +269,8 @@ public final class OI implements Sendable {
       if (driveMode == DriveMode.DEMO) {
         return new Trigger(() -> false);
       } else {
-        // return primaryController.leftBumper(eventLoop);
-        return new Trigger(() -> false);
+        return primaryController.povLeft();
+        // return new Trigger(() -> false);
       }
     }
 
