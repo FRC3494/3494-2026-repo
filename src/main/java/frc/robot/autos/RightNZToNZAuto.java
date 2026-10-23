@@ -75,7 +75,9 @@ public class RightNZToNZAuto extends AutoBase {
                 requirements.robotCommands().shoot().withTimeout(7),
                 requirements.robotCommands().stopShootNoDelay(),
                 requirements.spinnySpinny().setState(SpinnySpinny.State.INTAKE),
-                rightShootToNZ.cmd()));
+                parallel(
+                    requirements.robotCommands().runIntakeDownFast(),  
+                    rightShootToNZ.cmd())));
 
     return routine;
   }
