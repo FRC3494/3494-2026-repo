@@ -589,7 +589,7 @@ public final class Constants {
     public static final int spinnySpinnyCurrentSensingFilterSize = 10;
 
     public static AngularVelocity intakeSpinnySpinnySpeed = RPM.of(6000);
-    public static AngularVelocity intakeSpinnySpinnyShootingSpeed = RPM.of(1500);
+    public static AngularVelocity intakeSpinnySpinnyShootingSpeed = RPM.of(3000);
     public static Time intakeSpinnySpinnyShootingReverseTime = Seconds.of(0.0);
 
     public static double spinnySpinnyKp = 9.3404E-08;
