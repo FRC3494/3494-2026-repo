@@ -591,15 +591,18 @@ public class RobotCommands {
 
   public Command runIntakeDownFast() {
     return sequence(
-      runOnce(() -> {
-        uppyDowny.setPID(2.0, 0.0, 0.0);
-      }, uppyDowny),
-      runIntakeDown(),
-      runOnce(() -> {
-        uppyDowny.setPID(uppyDownyKp,uppyDownyKi, uppyDownyKd);
-      }, uppyDowny)
-
-    ).withName("RunIntakeDownFast");
+            runOnce(
+                () -> {
+                  uppyDowny.setPID(2.0, 0.0, 0.0);
+                },
+                uppyDowny),
+            runIntakeDown(),
+            runOnce(
+                () -> {
+                  uppyDowny.setPID(uppyDownyKp, uppyDownyKi, uppyDownyKd);
+                },
+                uppyDowny))
+        .withName("RunIntakeDownFast");
   }
 
   private void stopIntakeUppyDowny() {
