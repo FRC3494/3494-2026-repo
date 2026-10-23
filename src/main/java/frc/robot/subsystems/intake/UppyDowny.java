@@ -202,7 +202,7 @@ public class UppyDowny extends SubsystemBase {
     motor.getEncoder().setPosition(position);
   }
 
-  private void setPID(double p, double i, double d) {
+  public void setPID(double p, double i, double d) {
     SparkFlexConfig config = new SparkFlexConfig();
     uppyDownyKp = p;
     uppyDownyKi = i;

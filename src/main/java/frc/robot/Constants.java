@@ -605,22 +605,23 @@ public final class Constants {
     public static final Time uppyDownyRampRate = Milliseconds.of(10);
     public static final double uppyDownyGearRatio = 14.0 / 41.0;
     public static final int uppyDownyCurrentSensingFilterSize = 10;
+    public static final Time uppyDownyRezeroTimeout = Seconds.of(10.0);
 
     public static final double uppyDownyMinPosition = 0.0;
-    public static final double uppyDownyMaxPosition = 0.0;
+    public static final double uppyDownyMaxPosition = 5.9965;
 
-    public static double uppyDownyKp = 0.01;
+    public static double uppyDownyKp = 1.0;
     public static double uppyDownyKi = 0.0;
     public static double uppyDownyKd = 0.0;
 
     public static double uppyDownyKs = 0.0;
-    public static double uppyDownyKv = 0.007;
+    public static double uppyDownyKv = 0.0;
     public static double uppyDownyKa = 0.0;
     public static double uppyDownyKg = 0.0;
 
     public static double uppyDownyDownPosition = 0.0;
-    public static double uppyDownyUpPosition = 0.0;
-    public static double uppyDownyTolerance = 0.0;
+    public static double uppyDownyUpPosition = 1.016 + 3.592;
+    public static double uppyDownyTolerance = 0.05;
 
     public static Time jostleIntakeUpTime = Seconds.of(1.0);
     public static Time jostleIntakeDownTime = Seconds.of(0.3);

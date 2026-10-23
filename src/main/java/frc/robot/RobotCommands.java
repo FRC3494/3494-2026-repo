@@ -543,13 +543,12 @@ public class RobotCommands {
 
   private Command upDownCommand() {
     return repeatingSequence(
-            runOnce(() -> uppyDowny.setOpenLoop(jostleIntakeVoltage.plus(Volts.of(uppyDownyKg)))),
-            waitTime(jostleIntakeDownTime),
-            runOnce(
-                () ->
+            run(() -> uppyDowny.setOpenLoop(jostleIntakeVoltage.plus(Volts.of(uppyDownyKg))))
+                .withTimeout(jostleIntakeDownTime),
+            run(() ->
                     uppyDowny.setOpenLoop(
-                        jostleIntakeVoltage.unaryMinus().minus(Volts.of(uppyDownyKg)))),
-            waitTime(jostleIntakeUpTime))
+                        jostleIntakeVoltage.times(-1.0).minus(Volts.of(uppyDownyKg))))
+                .withTimeout(jostleIntakeUpTime))
         .withName("IntakeUpDown");
   }
 
@@ -593,6 +592,19 @@ public class RobotCommands {
     return runIntakeToPosition(() -> uppyDownyDownPosition).withName("RunIntakeDown");
   }
 
+  public Command runIntakeDownFast() {
+    return sequence(
+      runOnce(() -> {
+        uppyDowny.setPID(2.0, 0.0, 0.0);
+      }, uppyDowny),
+      runIntakeDown(),
+      runOnce(() -> {
+        uppyDowny.setPID(uppyDownyKp,uppyDownyKi, uppyDownyKd);
+      }, uppyDowny)
+
+    ).withName("RunIntakeDownFast");
+  }
+
   private void stopIntakeUppyDowny() {
     uppyDowny.setOpenLoop(Volts.zero());
   }
@@ -601,7 +613,7 @@ public class RobotCommands {
     return run(
             () -> {
               uppyDowny.setOpenLoop(
-                  upwards ? uppyDownyManualVoltage : uppyDownyManualVoltage.unaryMinus());
+                  upwards ? uppyDownyManualVoltage : uppyDownyManualVoltage.times(-1.0));
             },
             uppyDowny)
         .finallyDo(this::stopIntakeUppyDowny)
@@ -612,15 +624,15 @@ public class RobotCommands {
     return sequence(
             runOnce(
                 () -> {
-                  uppyDowny.setCurrentLimit(Amps.of(20));
+                  uppyDowny.setCurrentLimit(Amps.of(30));
                   uppyDowny.setOpenLoop(Volts.of(1));
                 },
                 uppyDowny),
-            waitUntil(() -> uppyDowny.getFilteredCurrent().gte(Amps.of(19))),
+            waitUntil(() -> uppyDowny.getFilteredCurrent().gte(Amps.of(28))),
             runOnce(
                 () -> {
                   uppyDowny.setOpenLoop(Volts.zero());
-                  uppyDowny.setRelativeEncoderPosition(uppyDownyUpPosition);
+                  uppyDowny.setRelativeEncoderPosition(uppyDownyMaxPosition);
                 },
                 uppyDowny),
             runOnce(
@@ -629,6 +641,7 @@ public class RobotCommands {
                 },
                 uppyDowny),
             print("Intake Rezero Done ================================================="))
+        .withTimeout(uppyDownyRezeroTimeout)
         .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
         .finallyDo(
             () -> {
@@ -636,6 +649,16 @@ public class RobotCommands {
               uppyDowny.setCurrentLimit(uppyDownyCurrentLimit);
             })
         .withName("RezeroIntake");
+  }
+
+  public Command setIntakeEncoder(boolean up) {
+    return runOnce(
+            () -> {
+              uppyDowny.setRelativeEncoderPosition(
+                  up ? uppyDownyMaxPosition : uppyDownyDownPosition);
+            },
+            uppyDowny)
+        .ignoringDisable(true);
   }
 
   // #endregion

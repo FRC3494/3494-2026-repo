@@ -529,6 +529,9 @@ public class RobotContainer implements Sendable {
     IntakeOI.raiseIntake().whileTrue(robotCommands.intakeManual(true));
     IntakeOI.lowerIntake().whileTrue(robotCommands.intakeManual(false));
     IntakeOI.rezeroIntake().onTrue(robotCommands.rezeroIntake());
+    SmartDashboard.putData("Buttons/SetIntakeEncoderUp", robotCommands.setIntakeEncoder(true));
+    SmartDashboard.putData("Buttons/SetIntakeEncoderDown", robotCommands.setIntakeEncoder(false));
+    SmartDashboard.putData("Buttons/RezeroIntake", robotCommands.rezeroIntake());
 
     IntakeOI.jostleIntake()
         .whileTrue(robotCommands.runIntakeJostle())
