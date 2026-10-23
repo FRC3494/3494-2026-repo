@@ -75,9 +75,7 @@ public class LeftNZToNZAuto extends AutoBase {
                 requirements.robotCommands().shoot().withTimeout(7),
                 requirements.robotCommands().stopShootNoDelay(),
                 requirements.spinnySpinny().setState(SpinnySpinny.State.INTAKE),
-                parallel( 
-                requirements.robotCommands().runIntakeDownFast(),    
-                leftShootToNZ.cmd())));
+                parallel(requirements.robotCommands().runIntakeDownFast(), leftShootToNZ.cmd())));
 
     return routine;
   }
