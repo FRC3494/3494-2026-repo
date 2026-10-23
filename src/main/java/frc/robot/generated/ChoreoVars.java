@@ -15,11 +15,11 @@ public final class ChoreoVars {
     public static final LinearVelocity DepotMaxVelocity = Units.MetersPerSecond.of(0.55);
     public static final Distance FieldLength = Units.Meters.of(16.541);
     public static final Distance FieldWidth = Units.Meters.of(8.0692);
-    public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(1.25);
+    public static final LinearVelocity IntakeMaxVelocity = Units.MetersPerSecond.of(2);
     public static final LinearAcceleration MaxAcceleration = Units.MetersPerSecondPerSecond.of(2);
     public static final LinearVelocity MaxVelocity = Units.MetersPerSecond.of(2);
-    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(4);
-    public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(4.53);
+    public static final LinearAcceleration NZMaxAcceleration = Units.MetersPerSecondPerSecond.of(5);
+    public static final LinearVelocity NZMaxVelocity = Units.MetersPerSecond.of(7);
     public static final Distance RobotBumperSize = Units.Meters.of(0.447675);
     public static final LinearVelocity RobotMaxSpeed = Units.MetersPerSecond.of(4.63);
     public static final LinearVelocity ShootingMaxSpeed = Units.MetersPerSecond.of(1);

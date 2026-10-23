@@ -35,8 +35,8 @@
    "IntakeMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"1.25 m / s",
-     "val":1.25
+     "exp":"2 m / s",
+     "val":2.0
     }
    },
    "MaxAcceleration":{
@@ -56,15 +56,15 @@
    "NZMaxAcceleration":{
     "dimension":"LinAcc",
     "var":{
-     "exp":"4 m / s ^ 2",
-     "val":4.0
+     "exp":"5 m / s ^ 2",
+     "val":5.0
     }
    },
    "NZMaxVelocity":{
     "dimension":"LinVel",
     "var":{
-     "exp":"RobotMaxSpeed - 0.1 m / s",
-     "val":4.53
+     "exp":"7 m / s",
+     "val":7.0
     }
    },
    "RobotBumperSize":{
