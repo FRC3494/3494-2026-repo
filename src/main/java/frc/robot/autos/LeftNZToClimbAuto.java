@@ -45,6 +45,7 @@ public class LeftNZToClimbAuto extends AutoBase {
                 parallel(
                     requirements.robotCommands().enableAutoShooterSettings(),
                     requirements.robotCommands().enableAutoTurret(),
+                    requirements.robotCommands().runIntakeDownFast(),
                     leftTrenchToNZ.cmd())));
 
     leftTrenchToNZ

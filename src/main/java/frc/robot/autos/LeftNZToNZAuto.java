@@ -49,6 +49,7 @@ public class LeftNZToNZAuto extends AutoBase {
                 parallel(
                     requirements.robotCommands().enableAutoShooterSettings(),
                     requirements.robotCommands().enableAutoTurret(),
+                    requirements.robotCommands().runIntakeDownFast(),
                     leftTrenchToNZ.cmd()),
                 print("3")));
 
