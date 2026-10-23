@@ -106,7 +106,7 @@ public class Autos {
                     parallel(
                         requirements.robotCommands().runClimberMidWithCurrent(),
                         requirements.robotCommands().runIntakeUp()),
-                    requirements.robotCommands().shoot())))
+                    requirements.robotCommands().shootWoIntakeJostle())))
         .finallyDo(
             () -> {
               requirements.shooterAimModel().setTurretTrim(turretTrimDefaultRot);
