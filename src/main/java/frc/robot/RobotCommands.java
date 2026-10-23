@@ -543,12 +543,9 @@ public class RobotCommands {
 
   private Command upDownCommand() {
     return repeatingSequence(
-            run(() -> uppyDowny.setOpenLoop(jostleIntakeVoltage.plus(Volts.of(uppyDownyKg))))
-                .withTimeout(jostleIntakeDownTime),
-            run(() ->
-                    uppyDowny.setOpenLoop(
-                        jostleIntakeVoltage.times(-1.0).minus(Volts.of(uppyDownyKg))))
-                .withTimeout(jostleIntakeUpTime))
+            run(() -> uppyDowny.setOpenLoop(jostleIntakeVoltage)).withTimeout(jostleIntakeUpTime),
+            run(() -> uppyDowny.setOpenLoop(jostleIntakeVoltage.times(-1.0)))
+                .withTimeout(jostleIntakeDownTime))
         .withName("IntakeUpDown");
   }
 
