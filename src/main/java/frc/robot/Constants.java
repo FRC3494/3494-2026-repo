@@ -623,7 +623,7 @@ public final class Constants {
     public static double uppyDownyKa = 0.0;
     public static double uppyDownyKg = 0.0;
 
-    public static double uppyDownyDownPosition = 0.0;
+    public static double uppyDownyDownPosition = 0.2;
     public static double uppyDownyUpPosition = 1.016 + 3.592;
     public static double uppyDownyTolerance = 0.05;
 
