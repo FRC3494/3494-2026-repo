@@ -627,7 +627,7 @@ public final class Constants {
     public static double uppyDownyUpPosition = 1.016 + 3.592;
     public static double uppyDownyTolerance = 0.05;
 
-    public static Time jostleIntakeUpTime = Seconds.of(1.0);
+    public static Time jostleIntakeUpTime = Seconds.of(0.8);
     public static Time jostleIntakeDownTime = Seconds.of(0.3);
     public static Voltage jostleIntakeVoltage = Volts.of(1.0);
 
