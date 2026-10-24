@@ -48,15 +48,10 @@ public class HubToOutpostAuto extends AutoBase {
                 parallel(
                     requirements.robotCommands().enableAutoShooterSettings(),
                     requirements.robotCommands().enableAutoTurret(),
+                    requirements.robotCommands().runIntakeDownFast(),
                     rightHubToOutpost_0.cmd())));
 
-    rightHubToOutpost_0
-        .done()
-        .onTrue(
-            sequence(
-                requirements.robotCommands().stopDrive(),
-                requirements.robotCommands().dropIntakeWithSpin(),
-                rightHubToOutpost_1.cmd()));
+    rightHubToOutpost_0.done().onTrue(rightHubToOutpost_1.cmd());
 
     rightHubToOutpost_1
         .done()
