@@ -602,6 +602,10 @@ public class RobotCommands {
                   uppyDowny.setPID(uppyDownyKp, uppyDownyKi, uppyDownyKd);
                 },
                 uppyDowny))
+        .finallyDo(
+            () -> {
+              uppyDowny.setPID(uppyDownyKp, uppyDownyKi, uppyDownyKd);
+            })
         .withName("RunIntakeDownFast");
   }
 

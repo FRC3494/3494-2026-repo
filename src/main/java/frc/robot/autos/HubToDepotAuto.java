@@ -52,15 +52,10 @@ public class HubToDepotAuto extends AutoBase {
                 parallel(
                     requirements.robotCommands().enableAutoShooterSettings(),
                     requirements.robotCommands().enableAutoTurret(),
+                    requirements.robotCommands().runIntakeDownFast(),
                     leftHubToDepot_0.cmd())));
 
-    leftHubToDepot_0
-        .done()
-        .onTrue(
-            sequence(
-                requirements.robotCommands().stopDrive(),
-                requirements.robotCommands().dropIntakeWithSpin(),
-                leftHubToDepot_1.cmd()));
+    leftHubToDepot_0.done().onTrue(leftHubToDepot_1.cmd());
 
     leftHubToDepot_1
         .done()

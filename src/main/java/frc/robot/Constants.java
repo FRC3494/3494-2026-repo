@@ -490,13 +490,17 @@ public final class Constants {
       public static double autoAlignAngularKd = 0.1;
 
       public static final Pose2d climbSetupPoseOutpost_RED =
-          ChoreoVars.Poses.ClimbSetupOutpost.plus(Transform2d.kZero);
+          ChoreoVars.Poses.ClimbSetupOutpost.plus(
+              new Transform2d(Inches.of(2.0), Inches.zero(), Rotation2d.kZero));
       public static final Pose2d climbSetupPoseOutpost_BLUE =
-          ChoreoVars.Poses.ClimbSetupOutpost.plus(Transform2d.kZero);
+          ChoreoVars.Poses.ClimbSetupOutpost.plus(
+              new Transform2d(Inches.of(-2.0), Inches.zero(), Rotation2d.kZero));
       public static final Pose2d climbPoseOutpost_RED =
-          ChoreoVars.Poses.ClimbOutpost.plus(Transform2d.kZero);
+          ChoreoVars.Poses.ClimbOutpost.plus(
+              new Transform2d(Inches.of(2.0), Inches.zero(), Rotation2d.kZero));
       public static final Pose2d climbPoseOutpost_BLUE =
-          ChoreoVars.Poses.ClimbOutpost.plus(Transform2d.kZero);
+          ChoreoVars.Poses.ClimbOutpost.plus(
+              new Transform2d(Inches.of(-2.0), Inches.zero(), Rotation2d.kZero));
       public static final Pose2d climbSetupPoseDepot_RED =
           ChoreoVars.Poses.ClimbSetupDepot.plus(Transform2d.kZero);
       public static final Pose2d climbSetupPoseDepot_BLUE =
@@ -619,11 +623,11 @@ public final class Constants {
     public static double uppyDownyKa = 0.0;
     public static double uppyDownyKg = 0.0;
 
-    public static double uppyDownyDownPosition = 0.0;
+    public static double uppyDownyDownPosition = 0.2;
     public static double uppyDownyUpPosition = 1.016 + 3.592;
     public static double uppyDownyTolerance = 0.05;
 
-    public static Time jostleIntakeUpTime = Seconds.of(1.0);
+    public static Time jostleIntakeUpTime = Seconds.of(0.8);
     public static Time jostleIntakeDownTime = Seconds.of(0.3);
     public static Voltage jostleIntakeVoltage = Volts.of(1.0);
 
